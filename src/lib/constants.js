@@ -1,0 +1,57 @@
+export const MightScoreByLevel = {
+  45: 1,
+  46: 1,
+  47: 1,
+  48: 1,
+  49: 1,
+  50: 1,
+  51: 1,
+  52: 2,
+  53: 2,
+  54: 3,
+  55: 4,
+  56: 5,
+  57: 6,
+  58: 7,
+  59: 8,
+  60: 10,
+  61: 13,
+  62: 16,
+  63: 20,
+  64: 25,
+  65: 40,
+  66: 60,
+  67: 80,
+  68: 100,
+  69: 120,
+  70: 140,
+  71: 140,
+};
+
+export const MightMinLevel = 45;
+export const MightMaxLevel = 71;
+
+export const Warden = {
+  Ranks: [
+    {
+      rank: 0,
+      mightMultiplier: 1,
+      requiredLevel: 1,
+    },
+    {
+      rank: 1,
+      mightMultiplier: 1.5,
+      requiredLevel: 66,
+    },
+    {
+      rank: 2,
+      mightMultiplier: 1.75,
+      requiredLevel: 67,
+    },
+    {
+      rank: 3,
+      mightMultiplier: 2.0,
+      requiredLevel: 70,
+    },
+  ],
+};

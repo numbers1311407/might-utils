@@ -1,0 +1,24 @@
+- roster
+  - tags
+  - level
+  - class
+  - name
+  - warden no, 1, 2, 3
+  - enabled/disabled
+- class tags
+- rules by level
+
+- execution config
+  - min level
+  - max level
+  - min size
+  - max size
+  - or just size, needs a UI toggle or can we just let them type both numbers
+    - ui should probably not allow setting min>max or setting either out of range
+
+- arch topics
+  - tags
+    - do they need to be managed or can we just allow people typing anything
+    - should there be a tags UI to delete/add tags separately
+  - limiting results? and what limit.
+  - roster is probably a separate tab from the results
