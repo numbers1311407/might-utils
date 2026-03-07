@@ -1,4 +1,5 @@
 import * as tags from "@/lib/tags";
+// import { getNumberedArray } from "@/lib/utils";
 import {
   MightScoreByLevel,
   MightMaxLevel,
@@ -32,10 +33,13 @@ export const defaultFindLineupsOptions = {
   maxSize: 12,
   margin: 0,
   checkTags: true,
-  // tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
-  tagGroups: Object.keys(tags.getDefaultClassTags()).map((cls) =>
-    tags.t(cls, { type: "class" }),
-  ),
+  tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
+  // tagGroups: getNumberedArray(MightMinLevel, MightMaxLevel).map((lvl) =>
+  //   tags.t(lvl, { type: "level" }),
+  // ),
+  // tagGroups: Object.keys(tags.getDefaultClassTags()).map((cls) =>
+  //   tags.t(cls, { type: "class" }),
+  // ),
   rules: tags.getDefaultTagRules(),
   classTags: tags.getDefaultClassTags(),
 };

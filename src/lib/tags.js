@@ -1,5 +1,5 @@
 import { Warden } from "@/lib/constants";
-import { cloneObject, countKeys } from "@/lib/utils";
+import { getNumberedArray, cloneObject, countKeys } from "@/lib/utils";
 
 const standardTags = [
   { value: "dps", type: "role" },
@@ -74,7 +74,7 @@ export const formatTag = (value, options = {}) => {
 export const t = formatTag;
 
 export const prepareTagRules = (maxSize, ruleSet) => {
-  return Array.from({ length: maxSize }, (_, i) => i + 1).reduce(
+  return getNumberedArray(maxSize).reduce(
     (acc, size) => {
       const rules = ruleSet[size];
       // if we have new rules prepare them and replace the curren tset built for
@@ -130,13 +130,13 @@ export const generateTagCounts = (lineup) => {
   return counts;
 };
 
+const validWardenRanks = Warden.Ranks.map(({ rank }) => rank);
 export const generateCharacterTags = (char, options = {}) => {
   const {
     warden = char.warden,
     classTags = defaultClassTags,
     tagGroups,
   } = options;
-  const validWardenRanks = Warden.Ranks.map(({ rank }) => rank);
 
   const tags = [
     t(char.name, { type: "name" }),
@@ -172,24 +172,41 @@ export const generateCharacterTags = (char, options = {}) => {
   }
 
   if (tagGroups?.length) {
-    tags.push(getGroupTag(tagGroups, char, tags));
+    tags.push(getGroupTag(tagGroups, char, tags, { warden }));
   }
 
   return new Set(tags.sort());
 };
 
-export const getGroupTag = (tagGroups, char, tags) => {
-  const { level, warden, name } = char;
+export const getGroupTag = (tagGroups, char, tags, options = {}) => {
+  const { warden = char.warden } = options;
   const assigned = tagGroups.filter((tag) => tags.includes(tag));
   const groupTag = assigned[0];
   const len = assigned.length;
   if (len !== 1) {
     throw (
-      `Tag grouping requires exactly 1 of each tag to be present on every character. ${name} ` +
+      `Tag grouping requires exactly 1 of each tag to be present on every character. ${char.name} ` +
       (len > 1
         ? `has ${len} of tags [${tagGroups.join(", ")}], found [${assigned.join(", ")}].`
         : `has 0 of [${tagGroups.join(", ")}].`)
     );
   }
-  return t(`${groupTag}:${level}`, { warden, type: "group" });
+  return t(`${groupTag}:${char.level}`, { warden, type: "group" });
+};
+
+const acronyms = new Set(["dps", "rdps", "mdps"]);
+
+export const humanizeTag = (tag) => {
+  const [type, value] = tag.split("-");
+
+  switch (type) {
+    case "c":
+      return value.toUpperCase();
+    case "t":
+    case "l":
+    default:
+      return acronyms.has(value)
+        ? value.toUpperCase()
+        : value.replace(/^./, (l) => l.toUpperCase());
+  }
 };

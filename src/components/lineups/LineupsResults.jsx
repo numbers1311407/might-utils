@@ -1,52 +1,27 @@
 import { useMemo } from "react";
 import { Table, Text, Container } from "@mantine/core";
 import { useFindLineupsResults } from "@/lib/lineups";
-
-const acronyms = new Set(["dps", "rdps", "mdps"]);
-const humanizeTag = (tag) => {
-  const [type, value] = tag.split("-");
-  switch (type) {
-    case "c":
-      return value.toUpperCase();
-    case "t":
-    case "l":
-    default:
-      return acronyms.has(value)
-        ? value.toUpperCase()
-        : value.replace(/^./, (l) => l.toUpperCase());
-  }
-};
+import { humanizeTag } from "@/lib/tags";
 
 const getGroupTitle = (group) => {
   return group
     .split(";")
-    .map((term) => {
-      const [tag, levelr, count] = term.split(":");
+    .map((t) => {
+      const [tag, levelr, count] = t.split(":");
       const [level, rank] = levelr.split("+");
-      return `${count} ${humanizeTag(tag)} ${level}${rank === "0" ? "" : `rk${rank}`}`;
+      const isLevelTag = tag.startsWith("l-");
+      return `${count} ${isLevelTag ? "Level" : humanizeTag(tag)} ${level}${rank === "0" ? "" : `rk${rank}`}`;
     })
     .join(", ");
 };
 
-const GroupedLineups = ({ lineups }) => {
-  const groups = useMemo(() => {
-    return lineups.reduce((acc, lineup) => {
-      acc[lineup.group] ||= [];
-      acc[lineup.group].push(lineup);
-      return acc;
-    }, {});
-  }, [lineups]);
-
-  return (
-    <>
-      {Object.entries(groups).map(([group, lineups]) => (
-        <Container key={group}>
-          <Text>{getGroupTitle(group)}</Text>
-          <LineupsTable lineups={lineups} />
-        </Container>
-      ))}
-    </>
-  );
+const GroupedLineups = ({ groups }) => {
+  return groups.map(([group, lineups]) => (
+    <Container key={group}>
+      <Text px="xs">{getGroupTitle(group)}</Text>
+      <LineupsTable lineups={lineups} />
+    </Container>
+  ));
 };
 
 const LineupsTable = ({ lineups }) => (
@@ -80,13 +55,27 @@ const LineupsTable = ({ lineups }) => (
 export const LineupsResults = () => {
   const { size, lineups, grouped } = useFindLineupsResults();
 
+  const groups = useMemo(() => {
+    return (
+      grouped &&
+      Object.entries(
+        lineups.reduce((acc, lineup) => {
+          acc[lineup.group] ||= [];
+          acc[lineup.group].push(lineup);
+          return acc;
+        }, {}),
+      )
+    );
+  }, [lineups, grouped]);
+
   return (
     <>
       <Text py="sm" px="xs">
         {size} Results
+        {grouped && ` in ${groups.length} level/rank configurations`}
       </Text>
       {grouped ? (
-        <GroupedLineups lineups={lineups} />
+        <GroupedLineups groups={groups} />
       ) : (
         <LineupsTable lineups={lineups} />
       )}

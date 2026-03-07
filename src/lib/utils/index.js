@@ -36,3 +36,12 @@ export const log = (message) => {
     });
   }
 };
+
+export const getNumberedArray = (start, end) => {
+  if (end === undefined) {
+    end = start;
+    start = 1;
+  }
+  const length = end - start + 1;
+  return Array.from({ length }, (_, i) => i + start);
+};
