@@ -11,32 +11,32 @@ More features may follow.
 
 ### Current Todos
 
-[ ] - UI based configuration of the group size based tag rules (currently static)
-[ ] - UI based management of the main roster (currently static)
-[ ] - Refinement of the results display and overall UI layout, including results format & grouping
-[ ] - Addition of react-query to the data layer to provide caching
+- [ ] UI based configuration of the group size based tag rules (currently static)
+- [ ] UI based management of the main roster (currently static)
+- [ ] Refinement of the results display and overall UI layout, including results format & grouping
+- [ ] Addition of react-query to the data layer to provide caching
 
 ### Potential Feature Roadmap
 
 - Easy selection of might difficulty thresholds by instance name or tier (in a dropdown or similar).
 
-      This feels like it'd be a big QoL improvement. I.e. you select "Timeless Guk (Normal)" and your
-      score req is set to 400 and team size set to max 3. It'd require a full list of instances of
-      course as well as full confirmation of the scores and difficulty requirement calculation.
+  This feels like it'd be a big QoL improvement. I.e. you select "Timeless Guk (Normal)" and your
+  score req is set to 400 and team size set to max 3. It'd require a full list of instances of
+  course as well as full confirmation of the scores and difficulty requirement calculation.
       
 - Saved tag rule configuration sets.
 
-      Could be useful especially if one is using niche teams that don't fit typical comps.
+  Could be useful especially if one is using niche teams that don't fit typical comps.
       
 - Saved lineup results.
 
-      Could be useful to keep track of go to team comps for different score reqs.
+  Could be useful to keep track of go to team comps for different score reqs.
       
 - Saved teams in roster management.
 
-      This may or may not be worthwhile as by design, the calculator is pulling from all available
-      characters to try to achieve the might score, and it should already be easy to filter lineup
-      output by using tags. The initial concept was just toggling on/off of active status to reduce
-      the pool size up front, but saved teams may be useful for people with lage character counts,
-      and particularly useful for people who keep multiple characters on the same accounts, meaning
-      only subsets of characters can be active at once. Still, this is probably low priority.
+  This may or may not be worthwhile as by design, the calculator is pulling from all available
+  characters to try to achieve the might score, and it should already be easy to filter lineup
+  output by using tags. The initial concept was just toggling on/off of active status to reduce
+  the pool size up front, but saved teams may be useful for people with lage character counts,
+  and particularly useful for people who keep multiple characters on the same accounts, meaning
+  only subsets of characters can be active at once. Still, this is probably low priority.
