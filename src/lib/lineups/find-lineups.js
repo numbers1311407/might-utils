@@ -1,4 +1,3 @@
-import { log } from "@/lib/utils";
 import * as tags from "@/lib/tags";
 import {
   MightScoreByLevel,
@@ -26,7 +25,6 @@ const getTagGroupKey = (tagCounts) => {
 };
 
 export const defaultFindLineupsOptions = {
-  debug: true,
   targetScore: 1250,
   minLevel: MightMinLevel,
   maxLevel: MightMaxLevel,
