@@ -28,7 +28,7 @@ const defaultClassTags = {
   MNK: ["dps", "mdps", "leather", "melee"],
   NEC: ["dps", "rdps", "cloth", "pet"],
   PAL: ["tank", "plate", "melee"],
-  RNG: ["dps", "rdps", "mdps", "chain"],
+  RNG: ["dps", "rdps", "chain"],
   ROG: ["dps", "mdps", "chain"],
   SHD: ["tank", "plate", "melee"],
   SHM: ["healer", "chain"],
@@ -65,7 +65,8 @@ export const getDefaultTagRules = () => cloneObject(defaultTagRules);
 export const getDefaultClassTags = () => cloneObject(defaultClassTags);
 
 export const formatTag = (value, options = {}) => {
-  const prefix = { name: "n-", class: "c-", level: "l-" }[options.type] || "t-";
+  const prefix =
+    { name: "n-", class: "c-", group: "g-", level: "l-" }[options.type] || "t-";
   const suffix =
     { true: "+", 0: "+0", 1: "+1", 2: "+2", 3: "+3" }[options.warden] || "";
   return `${prefix}${String(value).toLowerCase()}${suffix}`;
@@ -130,7 +131,11 @@ export const generateTagCounts = (lineup) => {
 };
 
 export const generateCharacterTags = (char, options = {}) => {
-  const { warden = char.warden, classTags = defaultClassTags } = options;
+  const {
+    warden = char.warden,
+    classTags = defaultClassTags,
+    tagGroups,
+  } = options;
   const validWardenRanks = Warden.Ranks.map(({ rank }) => rank);
 
   const tags = [
@@ -166,5 +171,25 @@ export const generateCharacterTags = (char, options = {}) => {
     );
   }
 
+  if (tagGroups?.length) {
+    tags.push(getGroupTag(tagGroups, char, tags));
+  }
+
   return new Set(tags.sort());
+};
+
+export const getGroupTag = (tagGroups, char, tags) => {
+  const { level, warden, name } = char;
+  const assigned = tagGroups.filter((tag) => tags.includes(tag));
+  const groupTag = assigned[0];
+  const len = assigned.length;
+  if (len !== 1) {
+    throw (
+      `Tag grouping requires exactly 1 of each tag to be present on every character. ${name} ` +
+      (len > 1
+        ? `has ${len} of tags [${tagGroups.join(", ")}], found [${assigned.join(", ")}].`
+        : `has 0 of [${tagGroups.join(", ")}].`)
+    );
+  }
+  return t(`${groupTag}:${level}`, { warden, type: "group" });
 };

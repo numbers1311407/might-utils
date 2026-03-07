@@ -1,3 +1,4 @@
+import { log } from "@/lib/utils";
 import * as tags from "@/lib/tags";
 import {
   MightScoreByLevel,
@@ -13,7 +14,19 @@ const sortLineups = (lineups) =>
     return a.size === b.size ? b.score - a.score : b.size - a.size;
   });
 
+const sortLineup = (lineup) =>
+  lineup.slice().sort((a, b) => a.name.localeCompare(b.name));
+
+const getTagGroupKey = (tagCounts) => {
+  return Object.entries(tagCounts)
+    .filter(([tag]) => tag.startsWith("g-"))
+    .map(([tag, count]) => [tag.replace(/^g-/, ""), count].join(":"))
+    .sort()
+    .join(";");
+};
+
 export const defaultFindLineupsOptions = {
+  debug: true,
   targetScore: 1250,
   minLevel: MightMinLevel,
   maxLevel: MightMaxLevel,
@@ -21,6 +34,10 @@ export const defaultFindLineupsOptions = {
   maxSize: 12,
   margin: 0,
   checkTags: true,
+  // tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
+  tagGroups: Object.keys(tags.getDefaultClassTags()).map((cls) =>
+    tags.t(cls, { type: "class" }),
+  ),
   rules: tags.getDefaultTagRules(),
   classTags: tags.getDefaultClassTags(),
 };
@@ -33,6 +50,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     minLevel,
     rules,
     checkTags,
+    tagGroups,
     ...restOptions
   } = {
     ...defaultFindLineupsOptions,
@@ -53,40 +71,43 @@ export const findLineups = (roster, targetScore, options = {}) => {
 
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
+  const useTagGroups = !!tagGroups?.length;
 
   const pool = roster
     // filter out of bounds levels
     .filter(({ level, active }) => {
       return active && level >= minLevel && level <= maxLevel;
     })
+    .filter((char) => {
+      // TODO better validation (and/or more flexibility) for roster characters.
+      if (!char.class) {
+        throw "all roster characters must have a class property";
+      }
+      return true;
+    })
     // reduce to object array and inject warden options
     .reduce((acc, char) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
 
-      // TODO better validation (and/or more flexibility) for roster characters.
-      if (!char.class) {
-        throw "all roster characters must have a class property";
-      }
-
-      for (const {
-        rank: warden,
-        requiredLevel,
-        mightMultiplier,
-      } of Warden.Ranks) {
+      for (const rank of Warden.Ranks) {
+        const { rank: warden, requiredLevel, mightMultiplier } = rank;
         if (char.warden >= warden && level >= requiredLevel) {
           acc.push({
             ...char,
             score: score * mightMultiplier,
             warden,
-            tags: tags.generateCharacterTags(char, { warden, classTags }),
+            tags: tags.generateCharacterTags(char, {
+              warden,
+              classTags,
+              tagGroups,
+            }),
           });
         }
       }
 
       return acc;
     }, [])
-    // sort ascending by score for algorithm
     .sort((a, b) => a.score - b.score);
 
   // TODO consider more prechecks that could be done up front to exit early if the search is impossible,
@@ -125,13 +146,19 @@ export const findLineups = (roster, targetScore, options = {}) => {
           return;
         }
 
-        // push the completed linup and end this branch
-        lineups.push({
-          lineup: lineup.slice().sort((a, b) => a.name.localeCompare(b.name)),
+        const lu = {
+          lineup: sortLineup(lineup),
           score: targetScore - remainingScore,
           size: lineupSize,
           tags: tagCounts,
-        });
+        };
+
+        if (useTagGroups) {
+          lu.group = getTagGroupKey(tagCounts);
+        }
+
+        // push the completed linup and end this branch
+        lineups.push(lu);
       }
 
       return;
@@ -163,10 +190,13 @@ export const findLineups = (roster, targetScore, options = {}) => {
   recurse(targetScore, [], 0);
 
   return {
+    // TODO ideally we'd sort in the and have options
+    lineups: sortLineups(lineups),
     params: { roster, targetScore, options },
+    pool,
     recursionCount,
     rules: rulesByLineupSize,
-    pool,
-    lineups: sortLineups(lineups),
+    size: lineups.length,
+    grouped: useTagGroups,
   };
 };
