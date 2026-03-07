@@ -5,7 +5,9 @@ possible group compositions for a given might score.
 
 Basically add your characters to the roster, optionally configure their personal tags or class
 specific tags, define tag based rules to specify requirements by group size (i.e. a 6-man group
-may require 1 tank and 3 dps, while a 12-man group may require 2 tanks and >=5 dps, and so on).
+may require 1 tank and 3 dps, while a 12-man group may require 2 tanks and >=5 dps, and so on),
+then input your target might score & options into the calculator to see how you can assemble
+your current team & warden ranks.
 
 More features may follow.
 
@@ -31,12 +33,22 @@ More features may follow.
 - Saved lineup results.
 
   Could be useful to keep track of go to team comps for different score reqs.
+  
+- Manual lineup editing/creation.
+
+  Goes along with saved lineup results. If you can save a lineup it's likely you'd also want
+  to be able to adjust it. Or perhaps you just want to manually assemble the team and don't
+  need the lineup generator. 
       
-- Saved teams in roster management.
+- Saved teams/pools in roster management.
+
+  Note the difference between what the code refers to as "lineups" and "pools" ("team" may be
+  a better word than "pool", tbd). The lineup is the team you're taking into an instance, while
+  the team/pool is all the characters available for the calculator to draw from.
 
   This may or may not be worthwhile as by design, the calculator is pulling from all available
   characters to try to achieve the might score, and it should already be easy to filter lineup
   output by using tags. The initial concept was just toggling on/off of active status to reduce
-  the pool size up front, but saved teams may be useful for people with lage character counts,
+  the pool size up front, but saved pools may be useful for people with lage character counts,
   and particularly useful for people who keep multiple characters on the same accounts, meaning
-  only subsets of characters can be active at once. Still, this is probably low priority.
+  only subsets of characters can be active at once.
