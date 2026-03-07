@@ -37,7 +37,7 @@ More features may follow.
 - Manual lineup editing/creation.
 
   Goes along with saved lineup results. If you can save a lineup it's likely you'd also want
-  to be able to adjust it. Or perhaps you just want to manually assemble the team and don't
+  to be able to adjust it. Or perhaps you just want to manually assemble your group and don't
   need the lineup generator. 
       
 - Saved teams/pools in roster management.
