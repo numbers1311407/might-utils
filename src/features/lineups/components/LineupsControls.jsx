@@ -1,7 +1,7 @@
 import { useCallback } from "react";
+import { MightMaxLevel, MightMinLevel } from "@/common/might";
 import { Input, NumberInput } from "@mantine/core";
-import { useLineupsSettingStore } from "@/lib/lineups";
-import { MightMaxLevel, MightMinLevel } from "@/lib/constants";
+import { useLineupsSettingStore } from "../hooks.js";
 
 export const LineupControlsInput = ({
   defaultValue,

@@ -1,6 +1,6 @@
 import { MantineProvider } from "@mantine/core";
+import { Lineups } from "@/features/lineups";
 import { theme } from "./theme.js";
-import { Lineups } from "./components";
 
 import "@mantine/core/styles.css";
 

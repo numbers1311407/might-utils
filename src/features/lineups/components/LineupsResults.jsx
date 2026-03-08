@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Table, Text, Container } from "@mantine/core";
-import { useFindLineupsResults } from "@/lib/lineups";
-import { humanizeTag } from "@/lib/tags";
+import { humanizeTag } from "@/common/tags";
+import { useFindLineupsResults } from "../hooks";
 
 const getGroupTitle = (group) => {
   return group

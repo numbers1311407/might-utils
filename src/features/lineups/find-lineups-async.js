@@ -3,6 +3,8 @@ import LineupsWorker from "./find-lineups.worker.js?worker";
 export const findLineupsAsync = async (roster, targetScore, options) => {
   const lineupsWorker = new LineupsWorker();
 
+  console.log({ roster, targetScore, options });
+
   return new Promise((resolve, reject) => {
     lineupsWorker.addEventListener("message", ({ data }) => {
       if (data.type === "WORKER_LOG") {

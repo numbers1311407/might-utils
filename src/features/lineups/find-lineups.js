@@ -1,11 +1,12 @@
-import * as tags from "@/lib/tags";
-// import { getNumberedArray } from "@/lib/utils";
+import * as tags from "@/common/tags";
+// import { getNumberedArray } from "@/utils";
+// TODO the logic around warden should just live in warden.js
+import { Warden } from "@/common/warden";
 import {
   MightScoreByLevel,
   MightMaxLevel,
   MightMinLevel,
-  Warden,
-} from "@/lib/constants";
+} from "@/common/might";
 
 const MaxFindLineupsRecursions = 5_000_000;
 
@@ -25,7 +26,7 @@ const getTagGroupKey = (tagCounts) => {
     .join(";");
 };
 
-export const defaultFindLineupsOptions = {
+export const defaultOptions = {
   targetScore: 1250,
   minLevel: MightMinLevel,
   maxLevel: MightMaxLevel,
@@ -40,8 +41,8 @@ export const defaultFindLineupsOptions = {
   // tagGroups: Object.keys(tags.getDefaultClassTags()).map((cls) =>
   //   tags.t(cls, { type: "class" }),
   // ),
-  rules: tags.getDefaultTagRules(),
-  classTags: tags.getDefaultClassTags(),
+  rules: tags.defaultTagRules,
+  classTags: tags.defaultClassTags,
 };
 
 export const findLineups = (roster, targetScore, options = {}) => {
@@ -55,7 +56,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     tagGroups,
     ...restOptions
   } = {
-    ...defaultFindLineupsOptions,
+    ...defaultOptions,
     ...options,
   };
 

@@ -1,68 +1,8 @@
-import { Warden } from "@/lib/constants";
-import { getNumberedArray, cloneObject, countKeys } from "@/lib/utils";
+import { Warden } from "@/common/warden";
+import { getNumberedArray, countKeys } from "@/utils";
+import { defaultClassTags } from "./defaults.js";
 
-const standardTags = [
-  { value: "dps", type: "role" },
-  { value: "tank", type: "role" },
-  { value: "support", type: "role" },
-  { value: "healer", type: "role" },
-  { value: "mdps", type: "role" },
-  { value: "rdps", type: "role" },
-  { value: "cloth", type: "armor" },
-  { value: "plate", type: "armor" },
-  { value: "chain", type: "armor" },
-  { value: "leather", type: "armor" },
-  { value: "warden", type: "other" },
-  { value: "pet", type: "other" },
-  { value: "melee", type: "other" },
-];
-
-const defaultClassTags = {
-  BER: ["dps", "mdps", "chain"],
-  BRD: ["support", "plate", "melee"],
-  BST: ["dps", "mdps", "leather", "melee", "pet"],
-  CLR: ["healer", "plate"],
-  DRU: ["healer", "leather"],
-  ENC: ["support", "cloth"],
-  MAG: ["dps", "rdps", "cloth", "pet"],
-  MNK: ["dps", "mdps", "leather", "melee"],
-  NEC: ["dps", "rdps", "cloth", "pet"],
-  PAL: ["tank", "plate", "melee"],
-  RNG: ["dps", "rdps", "chain"],
-  ROG: ["dps", "mdps", "chain"],
-  SHD: ["tank", "plate", "melee"],
-  SHM: ["healer", "chain"],
-  WAR: ["tank", "plate", "melee"],
-  WIZ: ["dps", "rdps", "cloth"],
-};
-
-const defaultTagRules = {
-  2: [
-    { type: "name", value: "geese", warden: 2 },
-    { type: "tag", value: "tank", range: 1 },
-    { type: "tag", value: "healer", range: 1 },
-    { type: "name", value: "phatos", warden: 0 },
-  ],
-  5: [
-    { type: "tag", value: "healer", range: 2 },
-    { type: "tag", value: "support", range: [0, 1] },
-  ],
-  6: [{ type: "tag", value: "dps", range: 2 }],
-  9: [
-    { type: "tag", value: "healer", range: [0, 1] },
-    { type: "tag", value: "tank", range: 2 },
-    { type: "tag", value: "dps", range: [4] },
-    { type: "tag", value: "support", range: [2] },
-  ],
-  12: [
-    { type: "tag", value: "dps", range: [5] },
-    { type: "tag", value: "healer", range: 3 },
-  ],
-};
-
-export const getStandardTags = () => cloneObject(standardTags);
-export const getDefaultTagRules = () => cloneObject(defaultTagRules);
-export const getDefaultClassTags = () => cloneObject(defaultClassTags);
+export * from "./defaults.js";
 
 export const formatTag = (value, options = {}) => {
   const prefix =

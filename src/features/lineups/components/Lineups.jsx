@@ -1,4 +1,4 @@
-import { Layout } from "@/components/Layout.jsx";
+import { Layout } from "@/common/components";
 import { LineupsControls } from "./LineupsControls.jsx";
 import { LineupsContextProvider } from "./LineupsContextProvider.jsx";
 import { LineupsMain } from "./LineupsMain.jsx";
