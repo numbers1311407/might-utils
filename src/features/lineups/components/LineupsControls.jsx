@@ -1,111 +1,68 @@
-import { useCallback } from "react";
+import { NumberField } from "@/common/components";
 import { MightMaxLevel, MightMinLevel } from "@/common/might";
-import { Input, NumberInput } from "@mantine/core";
-import { useLineupsSettingStore } from "../hooks.js";
+import { useLineupsStore } from "../store.js";
 
-export const LineupControlsInput = ({
-  defaultValue,
-  label,
-  setting,
-  ...restProps
-}) => {
-  const [value, setValue, persistValue] = useLineupsSettingStore(setting);
-  const min = restProps.min;
-  const max = restProps.max;
+export const LineupOptionInput = ({ option, ...restProps }) => {
+  const setOption = useLineupsStore((store) => store.setOption);
+  const options = useLineupsStore((store) => store.options);
+  const value = options[option];
+  const setValue = (value) => setOption(option, value);
 
-  const commitValue = useCallback(
-    ({ target }) => {
-      if (isNaN(target.value)) {
-        persistValue(defaultValue);
-      } else {
-        let value = Number(target.value);
-        if (min !== undefined && value < min) {
-          value = min;
-        }
-        if (max !== undefined && value > max) {
-          value = max;
-        }
-        persistValue(value);
-      }
-    },
-    [defaultValue, persistValue, min, max],
-  );
-
-  const blurOnEnter = useCallback(({ key, target }) => {
-    if (key === "Enter") target.blur();
-  }, []);
-
-  return (
-    <Input.Wrapper label={label}>
-      <NumberInput
-        allowNegative={false}
-        value={value}
-        onChange={setValue}
-        onKeyDown={blurOnEnter}
-        onBlur={commitValue}
-        {...restProps}
-      />
-    </Input.Wrapper>
-  );
+  return <NumberField value={value} setValue={setValue} {...restProps} />;
 };
 
 const MaxLevelInput = () => (
-  <LineupControlsInput
-    setting="maxLevel"
+  <LineupOptionInput
+    option="maxLevel"
     label="Max Char Level"
     placeholder={`Highest allowed char level, default ${MightMinLevel}`}
     min={MightMinLevel}
     max={MightMaxLevel}
-    defaultValue={MightMaxLevel}
   />
 );
 
 const MinLevelInput = () => (
-  <LineupControlsInput
-    setting="minLevel"
+  <LineupOptionInput
+    option="minLevel"
     label="Min Char Level"
     placeholder={`Lowest allowed char level, default ${MightMinLevel}`}
     min={MightMinLevel}
     max={MightMaxLevel}
-    defaultValue={MightMinLevel}
   />
 );
 
 const MaxSizeInput = () => (
-  <LineupControlsInput
-    setting="maxSize"
+  <LineupOptionInput
+    option="maxSize"
     label="Max Lineup Size"
     placeholder="Max desired size of lineup, default 12"
     min={1}
     max={20}
-    defaultValue={12}
   />
 );
 
 const MinSizeInput = () => (
-  <LineupControlsInput
-    setting="minSize"
+  <LineupOptionInput
+    option="minSize"
     label="Min Lineup Size"
     placeholder="Min lineup size, default 6"
     min={1}
     max={20}
-    defaultValue={6}
   />
 );
 
 const MarginInput = () => (
-  <LineupControlsInput
-    setting="margin"
+  <LineupOptionInput
+    option="margin"
     label="Margin"
     placeholder="Allowance under target score, default 0"
     min={0}
-    defaultValue={0}
   />
 );
 
 const TargetScoreInput = () => (
-  <LineupControlsInput
-    setting="targetScore"
+  <LineupOptionInput
+    option="targetScore"
     label="Target Might Score"
     placeholder="The score you need your team to hit"
     type="number"

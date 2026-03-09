@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useAppStorage } from "@/common/store";
 import { LineupsContext } from "../context.js";
-import { defaultOptions } from "../find-lineups.js";
 import { findLineupsAsync } from "../find-lineups-async.js";
+import { useLineupsStore } from "../store.js";
+import { useClassTagsStore } from "@/common/tags/store.js";
 
 const defaultRoster = [
   { name: "geese", class: "SHD", level: 68, warden: 2, active: true },
@@ -23,33 +23,30 @@ const defaultRoster = [
 ];
 
 export const LineupsContextProvider = ({ children }) => {
-  const [{ lineups = defaultOptions, roster = defaultRoster }] =
-    useAppStorage();
-  const targetScore = lineups.targetScore;
-  const options = useMemo(() => {
-    return {
-      margin: lineups.margin,
-      maxLevel: lineups.maxLevel,
-      minLevel: lineups.minLevel,
-      maxSize: lineups.maxSize,
-      minSize: lineups.minSize,
-    };
-  }, [lineups]);
+  const options = useLineupsStore((store) => store.options);
+  const classTags = useClassTagsStore((store) => store.tags);
+  const roster = defaultRoster;
 
   const resultsPromise = useMemo(
-    () => findLineupsAsync(roster, targetScore, options),
-    [roster, targetScore, options],
+    () => findLineupsAsync(roster, options.targetScore, options),
+    [roster, options],
   );
 
-  const value = useMemo(
-    () => ({
-      options,
+  const value = useMemo(() => {
+    const { targetScore, ...restOptions } = options;
+
+    return {
+      options: {
+        ...restOptions,
+        classTags,
+      },
       resultsPromise,
       roster,
       targetScore,
-    }),
-    [options, resultsPromise, roster, targetScore],
-  );
+    };
+  }, [options, resultsPromise, roster, classTags]);
+
+  console.log({ value });
 
   return <LineupsContext value={value}>{children}</LineupsContext>;
 };

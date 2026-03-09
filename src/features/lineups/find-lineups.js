@@ -1,5 +1,4 @@
 import * as tags from "@/common/tags";
-// import { getNumberedArray } from "@/utils";
 // TODO the logic around warden should just live in warden.js
 import { Warden } from "@/common/warden";
 import {
@@ -9,6 +8,13 @@ import {
 } from "@/common/might";
 
 const MaxFindLineupsRecursions = 5_000_000;
+
+class AppError extends Error {
+  constructor(message, data) {
+    super(message);
+    this.data = data;
+  }
+}
 
 const sortLineups = (lineups) =>
   lineups.slice().sort((a, b) => {
@@ -34,15 +40,16 @@ export const defaultOptions = {
   maxSize: 12,
   margin: 0,
   checkTags: true,
-  tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
+  // tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
   // tagGroups: getNumberedArray(MightMinLevel, MightMaxLevel).map((lvl) =>
   //   tags.t(lvl, { type: "level" }),
   // ),
   // tagGroups: Object.keys(tags.getDefaultClassTags()).map((cls) =>
   //   tags.t(cls, { type: "class" }),
   // ),
-  rules: tags.defaultTagRules,
-  classTags: tags.defaultClassTags,
+  tagGroups: [],
+  rules: [],
+  classTags: {},
 };
 
 export const findLineups = (roster, targetScore, options = {}) => {
@@ -69,7 +76,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
   // This will allow early determination of whether the remaining roster can possibly
   // satisfy tag rules.
   if (roster === undefined || targetScore === undefined) {
-    throw "Invalid call: Roster and targetScore required";
+    throw new AppError("Invalid call: Roster and targetScore required");
   }
 
   const minSize = restOptions.size || restOptions.minSize;
@@ -116,7 +123,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
   // TODO consider more prechecks that could be done up front to exit early if the search is impossible,
   // i.e. impossible tag filter configurations.
   if (!pool.length) {
-    throw "Arguments resulted in no characters";
+    throw new AppError(JSON.stringify(options));
   }
 
   if (pool[0].score <= margin) {

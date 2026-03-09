@@ -1,5 +1,3 @@
-import { produce } from "immer";
-
 export const isEmpty = (value) => {
   if (value == null) return true;
   for (const key in value) {
@@ -48,24 +46,24 @@ export const getNumberedArray = (start, end) => {
   return Array.from({ length }, (_, i) => i + start);
 };
 
-export const getDeep = (obj, path) =>
-  path.reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), obj);
+// export const getDeep = (obj, path) =>
+//   path.reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), obj);
 
-export const setDeep = (obj, path, val) => {
-  return produce(obj, (draft) => {
-    const key = path[path.length - 1];
+// export const setDeep = (obj, path, val) => {
+//   return produce(obj, (draft) => {
+//     const key = path[path.length - 1];
 
-    const targetObj = path.slice(0, -1).reduce((acc, key) => {
-      if (!acc[key] || typeof acc[key] !== "object") {
-        acc[key] = {};
-      }
-      return acc[key];
-    }, draft);
+//     const targetObj = path.slice(0, -1).reduce((acc, key) => {
+//       if (!acc[key] || typeof acc[key] !== "object") {
+//         acc[key] = {};
+//       }
+//       return acc[key];
+//     }, draft);
 
-    if (typeof val === "function") {
-      targetObj[key] = val(targetObj[key]);
-    } else {
-      targetObj[key] = val;
-    }
-  });
-};
+//     if (typeof val === "function") {
+//       targetObj[key] = val(targetObj[key]);
+//     } else {
+//       targetObj[key] = val;
+//     }
+//   });
+// };

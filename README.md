@@ -13,7 +13,7 @@ More features may follow.
 
 ### Current Todos
 
-- [ ] - Fix the store clusterf*
+- [x] - Fix the store clusterf*
 - [ ] - Initial UI based configuration of the group size based tag rules (currently static)
 - [ ] - Initial UI based management of the main roster (currently static)
 - [ ] - Refinement of the results display and overall UI layout, including results format & grouping
