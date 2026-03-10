@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { LineupsContext } from "../context.js";
 import { findLineupsAsync } from "../find-lineups-async.js";
 import { useLineupsStore } from "../store.js";
-import { useClassTagsStore } from "@/common/tags/store.js";
+import { useClassTagsStore } from "@/common/tags/store";
 
 const defaultRoster = [
   { name: "geese", class: "SHD", level: 68, warden: 2, active: true },
@@ -45,8 +45,6 @@ export const LineupsContextProvider = ({ children }) => {
       targetScore,
     };
   }, [options, resultsPromise, roster, classTags]);
-
-  console.log({ value });
 
   return <LineupsContext value={value}>{children}</LineupsContext>;
 };

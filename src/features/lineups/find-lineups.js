@@ -9,13 +9,6 @@ import {
 
 const MaxFindLineupsRecursions = 5_000_000;
 
-class AppError extends Error {
-  constructor(message, data) {
-    super(message);
-    this.data = data;
-  }
-}
-
 const sortLineups = (lineups) =>
   lineups.slice().sort((a, b) => {
     return a.size === b.size ? b.score - a.score : b.size - a.size;
@@ -76,7 +69,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
   // This will allow early determination of whether the remaining roster can possibly
   // satisfy tag rules.
   if (roster === undefined || targetScore === undefined) {
-    throw new AppError("Invalid call: Roster and targetScore required");
+    throw new Error("Invalid call: Roster and targetScore required");
   }
 
   const minSize = restOptions.size || restOptions.minSize;
@@ -91,7 +84,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     .filter((char) => {
       // TODO better validation (and/or more flexibility) for roster characters.
       if (!char.class) {
-        throw "all roster characters must have a class property";
+        throw new Error("all roster characters must have a class property");
       }
       return true;
     })
@@ -123,11 +116,13 @@ export const findLineups = (roster, targetScore, options = {}) => {
   // TODO consider more prechecks that could be done up front to exit early if the search is impossible,
   // i.e. impossible tag filter configurations.
   if (!pool.length) {
-    throw new AppError(JSON.stringify(options));
+    throw new Error("no eligible roster members found");
   }
 
   if (pool[0].score <= margin) {
-    throw `Margin must be less than minimum individual score: (${pool[0].score}), got: ${margin}`;
+    throw new Error(
+      `Margin must be less than minimum individual score: (${pool[0].score}), got: ${margin}`,
+    );
   }
 
   const rulesByLineupSize = tags.prepareTagRules(maxSize, rules);
@@ -138,7 +133,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
 
   const recurse = (remainingScore, lineup, startIndex) => {
     if (recursionCount++ >= MaxFindLineupsRecursions) {
-      throw "max recursions reached, try increasing specificity";
+      throw new Error("max recursions reached, try increasing specificity");
     }
 
     // TODO prune by checking early whether the sum of the highest possible score for each roster

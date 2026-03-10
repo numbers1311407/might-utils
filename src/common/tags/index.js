@@ -28,13 +28,11 @@ export const prepareTagRules = (maxSize, ruleSet) => {
             type === "name" ? [1, 1] : Array.isArray(r) ? r : [r, r];
           const value = t(v, { type, warden });
 
-          if (range.length === 2) {
-            if (range[0] > range[1]) {
-              throw (
-                `Rule "${value}" for size ${size} invalid: range must be [low, high], ` +
-                `found [${range.join(", ")}]`
-              );
-            }
+          if (range.length === 2 && range[0] > range[1]) {
+            throw (
+              `Rule "${value}" for size ${size} invalid: range must be [low, high], ` +
+              `found [${range.join(", ")}]`
+            );
           }
 
           acc.current[value] = range;
