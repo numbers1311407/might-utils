@@ -37,6 +37,7 @@ export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
       <Modal
         opened={opened}
         onClose={() => close()}
+        closeOnClickOutside={false}
         title={char ? `Edit ${char.name}` : "Add Character"}
       >
         <RosterCharForm
