@@ -76,12 +76,13 @@ export const generateCharacterTags = (char, options = {}) => {
     tagGroups,
   } = options;
 
+  const ntags = [...(classTags[char.class] || []), ...(char.tags || [])];
+
   const tags = [
     t(char.name, { type: "name" }),
     t(char.level, { type: "level" }),
     t(char.class, { type: "class" }),
-    ...(classTags[char.class] || []).map(t),
-    ...(char.tags || []).map(t),
+    ...ntags.map(t),
   ];
 
   if (warden !== undefined) {
@@ -96,6 +97,7 @@ export const generateCharacterTags = (char, options = {}) => {
           t(char.class, { type: "class", warden: true }),
           t(char.name, { type: "name", warden: true }),
           t(char.level, { type: "level", warden: true }),
+          ...ntags.map((tag) => t(tag, { warden: true })),
         ],
       );
     }
@@ -105,6 +107,7 @@ export const generateCharacterTags = (char, options = {}) => {
         t(char.class, { type: "class", warden }),
         t(char.name, { type: "name", warden }),
         t(char.level, { type: "level", warden }),
+        ...ntags.map((tag) => t(tag, { warden })),
       ],
     );
   }

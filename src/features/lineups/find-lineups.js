@@ -195,7 +195,6 @@ export const findLineups = (roster, targetScore, options = {}) => {
   recurse(targetScore, [], 0);
 
   return {
-    // TODO ideally we'd sort in the and have options
     lineups: sortLineups(lineups),
     params: { roster, targetScore, options },
     pool,

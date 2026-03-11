@@ -46,24 +46,7 @@ export const getNumberedArray = (start, end) => {
   return Array.from({ length }, (_, i) => i + start);
 };
 
-// export const getDeep = (obj, path) =>
-//   path.reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), obj);
-
-// export const setDeep = (obj, path, val) => {
-//   return produce(obj, (draft) => {
-//     const key = path[path.length - 1];
-
-//     const targetObj = path.slice(0, -1).reduce((acc, key) => {
-//       if (!acc[key] || typeof acc[key] !== "object") {
-//         acc[key] = {};
-//       }
-//       return acc[key];
-//     }, draft);
-
-//     if (typeof val === "function") {
-//       targetObj[key] = val(targetObj[key]);
-//     } else {
-//       targetObj[key] = val;
-//     }
-//   });
-// };
+export const capitalize = (str = "") => {
+  if (!str.length) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};

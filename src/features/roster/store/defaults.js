@@ -1,0 +1,17 @@
+export const defaultRoster = [
+  { name: "Geese", class: "SHD", level: 68, warden: 2, active: true },
+  { name: "Snarf", class: "PAL", level: 66, warden: 2, active: true },
+  { name: "Phatos", class: "CLR", level: 67, warden: 0, active: true },
+  { name: "Huffpo", class: "DRU", level: 67, warden: 0, active: true },
+  { name: "Chacha", class: "SHM", level: 66, warden: 0, active: true },
+  { name: "Dellingr", class: "WIZ", level: 68, warden: 2, active: true },
+  { name: "Difa", class: "MAG", level: 67, warden: 2, active: true },
+  { name: "Guta", class: "NEC", level: 67, warden: 2, active: true },
+  { name: "Delulu", class: "ENC", level: 66, warden: 0, active: true },
+  { name: "Rodeo", class: "MNK", level: 67, warden: 2, active: true },
+  { name: "Kwok", class: "BST", level: 67, warden: 2, active: true },
+  { name: "Lala", class: "BRD", level: 66, warden: 0, active: true },
+  { name: "Rizzt", class: "RNG", level: 65, warden: 0, active: true },
+  { name: "Oldboy", class: "BER", level: 65, warden: 0, active: true },
+  { name: "Yeti", class: "WAR", level: 65, warden: 0, active: true },
+];

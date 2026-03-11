@@ -1,21 +1,23 @@
 import { Suspense } from "react";
 import { Tabs, Loader } from "@mantine/core";
-import { LineupsResults } from "./LineupsResults.jsx";
-import { ClassTags } from "./ClassTags.jsx";
+import { ClassTags } from "@/features/class-tags";
+import { Roster } from "@/features/roster";
 import { Route, useRoute, useLocation } from "wouter";
+import { LineupsResults } from "./LineupsResults.jsx";
 
 export const LineupsMain = () => {
   const [, params] = useRoute("/might-utils/:page?");
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
   const activeTab = params?.["page"] || "lineups";
+  const onTabsChange = (tab) => {
+    navigate(`/might-utils/${tab !== "lineups" ? tab : ""}`);
+  };
 
   return (
     <Tabs
       defaultValue="lineups"
       value={activeTab}
-      onChange={(tab) => {
-        navigate(`/might-utils/${tab !== "lineups" ? tab : ""}`);
-      }}
+      onChange={onTabsChange}
       w="100%"
     >
       <Tabs.List>
@@ -31,7 +33,9 @@ export const LineupsMain = () => {
           </Suspense>
         </Route>
       </Tabs.Panel>
-      <Tabs.Panel value="roster">roster</Tabs.Panel>
+      <Tabs.Panel value="roster">
+        <Roster />
+      </Tabs.Panel>
       <Tabs.Panel value="class-tags">
         <ClassTags />
       </Tabs.Panel>
