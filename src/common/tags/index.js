@@ -24,15 +24,41 @@ export const prepareTagRules = (maxSize, ruleSet) => {
 
         for (const rule of rules) {
           const { type, warden, value: v, range: r } = rule;
-          const range =
-            type === "name" ? [1, 1] : Array.isArray(r) ? r : [r, r];
           const value = t(v, { type, warden });
-
-          if (range.length === 2 && range[0] > range[1]) {
+          const throwInvalid = (v) => {
             throw (
-              `Rule "${value}" for size ${size} invalid: range must be [low, high], ` +
-              `found [${range.join(", ")}]`
+              `Rule "${value}" for size ${size} invalid: range must be [min], [min, max], or * ` +
+              `found ${v}`
             );
+          };
+
+          let range;
+
+          // name type rules must be exactly 1 for obvious reasons
+          if (type === "name") {
+            range = [1, 1];
+
+            // keep special * rule as is
+          } else if (r === "*") {
+            range = r;
+
+            // if range a single number shorthand replace it with a min/max array
+          } else if (typeof r === "number") {
+            range = [r, r];
+
+            // keep predefined arrays as written but do minimal validation
+          } else if (
+            Array.isArray(r) &&
+            r.every((v) => typeof v === "number")
+          ) {
+            if (r.length > 2 || (r.length === 2 && r[0] > r[1])) {
+              throwInvalid(`[${range.join(", ")}]`);
+            }
+            range = r;
+
+            // finally throw on whatever didn't match
+          } else {
+            throwInvalid(r);
           }
 
           acc.current[value] = range;
@@ -48,9 +74,12 @@ export const prepareTagRules = (maxSize, ruleSet) => {
   ).map;
 };
 
-export const validateTagCounts = (counts = {}, rules = {}) => {
+export const validateTagCounts = (counts, rules, size) => {
   for (const tag in rules) {
-    const range = rules[tag];
+    // The special * rule transforms into the exact size of the lineup. This is intended
+    // for setups like tagging based on keys/flagging where you want to ensure each character
+    // is eligible to do the instance.
+    const range = rules[tag] === "*" ? [size, size] : rules[tag];
     const count = counts[tag] || 0;
 
     if (count < range[0] || (range[1] !== undefined && count > range[1])) {

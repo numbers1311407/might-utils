@@ -147,7 +147,11 @@ export const findLineups = (roster, targetScore, options = {}) => {
         const tagCounts = tags.generateTagCounts(lineup);
 
         // and the lineups is valid re: tags
-        if (rules && checkTags && !tags.validateTagCounts(tagCounts, rules)) {
+        if (
+          rules &&
+          checkTags &&
+          !tags.validateTagCounts(tagCounts, rules, lineupSize)
+        ) {
           return;
         }
 
