@@ -17,7 +17,7 @@ export const RosterChar = ({ char, roster, update, remove }) => {
           }}
         />
         <RosterCharModal
-          key={char.name + char.class}
+          key={char.name}
           roster={roster}
           char={char}
           onSubmit={(char) => update(char)}
