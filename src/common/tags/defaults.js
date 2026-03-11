@@ -3,7 +3,7 @@ export const defaultClassTags = {
   BRD: ["support", "plate"],
   BST: ["dps", "mdps", "leather", "pet", "hybrid"],
   CLR: ["healer", "plate"],
-  DRU: ["healer", "leather"],
+  DRU: ["healer", "leather", "ports"],
   ENC: ["support", "cloth"],
   MAG: ["dps", "rdps", "cloth", "pet"],
   MNK: ["dps", "mdps", "leather"],
@@ -14,12 +14,13 @@ export const defaultClassTags = {
   SHD: ["tank", "plate", "hybrid"],
   SHM: ["healer", "chain"],
   WAR: ["tank", "plate"],
-  WIZ: ["dps", "rdps", "cloth"],
+  WIZ: ["dps", "rdps", "cloth", "ports"],
 };
 
 export const defaultTagRules = {
   2: [
     { type: "tag", value: "tank", range: 1 },
+    { type: "level", value: "68", range: 2 },
     { type: "tag", value: "healer", range: 1 },
     { type: "tag", value: "support", range: [0, 1] },
   ],
