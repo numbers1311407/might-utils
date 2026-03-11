@@ -67,7 +67,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
       active: char?.active ?? true,
       class: char?.class || "",
       warden: String(char?.warden || 0),
-      tags: [],
+      tags: char?.tags || [],
       siblings: roster
         .map(({ name }) => name)
         .filter((name) => !char || char.name !== name),
