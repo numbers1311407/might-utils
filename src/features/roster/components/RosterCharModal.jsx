@@ -5,14 +5,17 @@ import {
   Modal,
   NumberInput,
   Select,
+  Stack,
   TextInput,
 } from "@mantine/core";
 import * as z from "zod";
+import { useState } from "react";
 import { capitalize } from "@/utils";
 import { useDisclosure } from "@mantine/hooks";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 import { TagsInput } from "@/common/components";
+import { useClassTagsStore } from "@/common/tags/store";
 import { charSchema } from "../schema";
 
 // create a form-specific schema extension that adds roster uniquness
@@ -38,7 +41,7 @@ export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
         opened={opened}
         onClose={() => close()}
         closeOnClickOutside={false}
-        title={char ? `Edit ${char.name}` : "Add Character"}
+        title={char ? `Edit Character: ${char.name}` : "Add Character"}
       >
         <RosterCharForm
           // note this key hack is to get around mantine's aggressive form caching
@@ -60,6 +63,8 @@ export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
 };
 
 const RosterCharForm = ({ char, onSubmit, roster }) => {
+  const classTags = useClassTagsStore((store) => store.tags);
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -81,6 +86,21 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
       };
     },
     validate: zod4Resolver(formCharSchema),
+  });
+
+  // Display "locked" tags which will be inherited from the character class  tags and
+  // are unnecessary to add to characters separately. In the form these tags appear in
+  // the field but aren't editable, and will prevent duplicates being added. On class
+  // change we reset the class tags and strip any duplicates, which shouldn't be a big deal?
+  const [lockedTags, setLockedTags] = useState(classTags?.[char?.class] || []);
+  form.watch("class", ({ value }) => {
+    const newClassTags = classTags[value];
+    const tags = form.getValues()?.tags || [];
+    setLockedTags(newClassTags);
+    form.setFieldValue(
+      "tags",
+      tags.filter((tag) => !newClassTags.includes(tag)),
+    );
   });
 
   const addTag = (tag) => {
@@ -106,59 +126,69 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
 
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
-      <TextInput
-        withAsterisk
-        label="Name"
-        placeholder="Character name"
-        key={form.key("name")}
-        {...form.getInputProps("name")}
-      />
-      <NumberInput
-        withAsterisk
-        label="Level"
-        placeholder="Character level"
-        key={form.key("level")}
-        {...form.getInputProps("level")}
-      />
-      <Select
-        withAsterisk
-        label="Class"
-        placeholder="Select class"
-        autoSelectOnBlur
-        searchable
-        data={charSchema.shape.class.options}
-        key={form.key("class")}
-        {...form.getInputProps("class")}
-      />
-      <Select
-        withAsterisk
-        label="Warden"
-        placeholder="Max warden rank"
-        autoSelectOnBlur
-        data={[
-          { label: "Unwardened", value: "0" },
-          { label: "Rank 1", value: "1" },
-          { label: "Rank 2", value: "2" },
-          { label: "Rank 3", value: "3" },
-        ]}
-        key={form.key("warden")}
-        {...form.getInputProps("warden")}
-      />
-      <TagsInput
-        label="Tags"
-        removeTag={removeTag}
-        addTag={addTag}
-        key={form.key("tags")}
-        {...form.getInputProps("tags")}
-      />
-      <Checkbox
-        label="Active"
-        key={form.key("active")}
-        {...form.getInputProps("active", { type: "checkbox" })}
-      />
-      <Group justify="flex-end">
-        <Button type="submit">Submit</Button>
-      </Group>
+      <Stack gap="xs">
+        <TextInput
+          withAsterisk
+          label="Character Name"
+          placeholder="Character name"
+          description={
+            char
+              ? "Note name changes will not propagate to any rules for this character"
+              : undefined
+          }
+          key={form.key("name")}
+          {...form.getInputProps("name")}
+        />
+        <NumberInput
+          withAsterisk
+          label="Current Level"
+          placeholder="Current character level"
+          key={form.key("level")}
+          {...form.getInputProps("level")}
+        />
+        <Select
+          withAsterisk
+          label="Class"
+          placeholder="Select class"
+          autoSelectOnBlur
+          searchable
+          data={charSchema.shape.class.options}
+          key={form.key("class")}
+          {...form.getInputProps("class")}
+        />
+        <Select
+          withAsterisk
+          label="Warden Rank"
+          placeholder="Max warden rank"
+          description="Max attained, do not account for deleveling"
+          autoSelectOnBlur
+          data={[
+            { label: "Unwardened", value: "0" },
+            { label: "Rank 1", value: "1" },
+            { label: "Rank 2", value: "2" },
+            { label: "Rank 3", value: "3" },
+          ]}
+          key={form.key("warden")}
+          {...form.getInputProps("warden")}
+        />
+        <TagsInput
+          label="Tags"
+          description="Tags in addition to the base class tags, shown here as uneditable"
+          removeTag={removeTag}
+          addTag={addTag}
+          lockedTags={lockedTags}
+          key={form.key("tags")}
+          {...form.getInputProps("tags")}
+        />
+        <Checkbox
+          label="Active (include in lineups results)"
+          key={form.key("active")}
+          {...form.getInputProps("active", { type: "checkbox" })}
+        />
+        <Group justify="flex-end">
+          <Button type="submit">Submit</Button>
+        </Group>
+      </Stack>
     </form>
   );
 };

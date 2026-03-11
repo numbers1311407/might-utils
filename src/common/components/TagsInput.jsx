@@ -5,16 +5,26 @@ export const TagsInput = ({
   label,
   defaultValue,
   value: tags = defaultValue,
+  lockedTags = [],
   removeTag,
   addTag,
   ...restProps
 }) => {
   const [value, setValue] = useState("");
-  const tagPills = tags.map((tag) => (
-    <Pill key={tag} withRemoveButton onRemove={() => removeTag(tag)}>
-      {tag}
-    </Pill>
-  ));
+  const allTags = [...lockedTags, ...tags];
+  const tagPills = allTags.map((tag, i) => {
+    const locked = i < lockedTags.length;
+    return (
+      <Pill
+        key={tag}
+        withRemoveButton={!locked}
+        disabled={locked}
+        onRemove={locked ? undefined : () => removeTag(tag)}
+      >
+        {tag}
+      </Pill>
+    );
+  });
 
   return (
     <PillsInput label={label} {...restProps}>
@@ -32,7 +42,7 @@ export const TagsInput = ({
             if (
               e.key === "Backspace" &&
               value.length === 0 &&
-              tagPills.length > 0
+              tagPills.length > lockedTags.length
             ) {
               e.preventDefault();
               removeTag(tags[tags.length - 1], e);
@@ -41,7 +51,7 @@ export const TagsInput = ({
               value.length > 0
             ) {
               e.preventDefault();
-              if (!tags.includes(value.toLowerCase())) {
+              if (!allTags.includes(value.toLowerCase())) {
                 addTag(value.toLowerCase(), e);
               }
               setValue("");
