@@ -8,7 +8,7 @@ import { useRosterStore } from "@/features/roster";
 export const LineupsContextProvider = ({ children }) => {
   const lineupsOptions = useLineupsStore((store) => store.options);
   const classTags = useClassTagsStore((store) => store.tags);
-  const rules = useTagRulesStore((store) => store.rules);
+  const rules = useTagRulesStore((store) => store.currentRuleSet());
   const roster = useRosterStore((store) => store.roster);
 
   const [targetScore, options] = useMemo(() => {

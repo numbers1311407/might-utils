@@ -4,6 +4,7 @@ import { ClassTags } from "@/features/class-tags";
 import { Roster } from "@/features/roster";
 import { Route, useRoute, useLocation } from "wouter";
 import { LineupsResults } from "./LineupsResults.jsx";
+import { TagRules } from "@/common/tags/components";
 
 export const LineupsMain = () => {
   const [, params] = useRoute("/might-utils/:page?");
@@ -39,7 +40,9 @@ export const LineupsMain = () => {
       <Tabs.Panel value="class-tags">
         <ClassTags />
       </Tabs.Panel>
-      <Tabs.Panel value="tag-rules">tag rules</Tabs.Panel>
+      <Tabs.Panel value="tag-rules">
+        <TagRules />
+      </Tabs.Panel>
     </Tabs>
   );
 };

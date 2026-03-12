@@ -12,6 +12,7 @@ export const findLineupsAsync = async (roster, targetScore, options) => {
       if (data.error) {
         reject(data.error);
       } else {
+        console.log({ data });
         resolve(data);
       }
     });

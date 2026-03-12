@@ -1,2 +1,2 @@
-export * from "./classTagsStore.js";
-export * from "./tagRulesStore.js";
+export * from "./class-tags-store.js";
+export * from "./tag-rules-store.js";
