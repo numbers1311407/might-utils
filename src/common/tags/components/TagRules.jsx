@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Table } from "@mantine/core";
 import { useTagRulesStore } from "../store";
 

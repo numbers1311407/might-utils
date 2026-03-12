@@ -19,7 +19,7 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
       removeTag={removeTag}
       label={
         <Flex align="center" gap="xs">
-          <ClassIcon cls={cls} height="20px" width="20px" />
+          <ClassIcon cls={cls} size={20} />
           {cls}
         </Flex>
       }

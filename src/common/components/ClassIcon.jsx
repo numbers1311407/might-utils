@@ -36,6 +36,14 @@ const icons = {
   WIZ,
 };
 
-export const ClassIcon = ({ cls, ...props }) => (
-  <Image width="40px" height="40px" radius="sm" src={icons[cls]} {...props} />
+const defaultSize = 40;
+
+export const ClassIcon = ({ cls, size = defaultSize, ...props }) => (
+  <Image
+    height={`${size}px`}
+    width={`${size}px`}
+    radius="sm"
+    src={icons[cls]}
+    {...props}
+  />
 );
