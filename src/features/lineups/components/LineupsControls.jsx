@@ -60,6 +60,7 @@ const MarginInput = () => (
     help="Acceptable deviation under your target score. Must be higher than the lowest might score on your roster."
     placeholder="Almost! - Default 0"
     min={0}
+    step={5}
   />
 );
 
@@ -72,6 +73,7 @@ const TargetScoreInput = () => (
     placeholder="How mighty do you need to be?"
     type="number"
     min={0}
+    step={10}
   />
 );
 

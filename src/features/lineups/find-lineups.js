@@ -37,9 +37,6 @@ export const defaultOptions = {
   // of here and done separately in separate modules, replacing tag validation and
   // so on with callback functions. This would allow isolating the tags code from
   // this function.
-  rules: [],
-  classTags: {},
-  tagGroups: [],
   // tagGroups: ["rdps", "mdps", "support", "tank", "healer"].map(tags.t),
   // tagGroups: getNumberedArray(MightMinLevel, MightMaxLevel).map((lvl) =>
   //   tags.t(lvl, { type: "level" }),
@@ -51,12 +48,12 @@ export const defaultOptions = {
 
 export const findLineups = (roster, targetScore, options = {}) => {
   const {
-    classTags,
-    tagGroups,
+    classTags = {},
+    tagGroups = [],
     margin,
     maxLevel,
     minLevel,
-    rules,
+    rules = {},
     checkTags,
     ...restOptions
   } = {
@@ -129,7 +126,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     );
   }
 
-  const rulesByLineupSize = tags.prepareTagRules(maxSize, rules);
+  const rulesByLineupSize = tags.prepareTagRules(maxSize, rules || {});
   const lineups = [];
   const usedNames = new Set();
 
