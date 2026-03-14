@@ -135,7 +135,7 @@ export const TagRules = ({ type = "filters" }) => {
         )}
         <Button
           onClick={() => {
-            setDraft({ name: "", type: "filters", rules: {} });
+            setDraft({ name: "", type, rules: {} });
           }}
         >
           New Ruleset
