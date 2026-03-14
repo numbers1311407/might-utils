@@ -7,17 +7,21 @@ import {
   useTagRulesStoreApi as tagRulesApi,
 } from "../store";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
+import { TagRuleModal } from "./TagRuleModal.jsx";
 
 const head = ["Size", "Type", "Value", "Range", "Warden", ""];
 
-const formatRange = (range) => {
-  if (Array.isArray(range)) {
-    return range.length === 2 ? range.join(" to ") : `${range}+`;
-  }
-  if (range === "*") {
-    return "All";
-  }
-  return range ?? "-";
+const stringifyWarden = (input) => {
+  if (input === true) return "Rank 1+";
+  return input < 0 ? "Any" : `Rank ${input}`;
+};
+
+const stringifyRange = (input) => {
+  if (input === "*") return input;
+  if (typeof input === "number") return `${input}`;
+  if (input.length === 1) return `${input}+`;
+  if (input[0] === 0) return `${input[1]}-`;
+  return input.join("-");
 };
 
 const TagRuleSetSelect = ({ type, setValue, value }) => {
@@ -50,23 +54,34 @@ const DeleteButton = (props) => (
   </ActionIcon>
 );
 
-const RowActions = ({ removeRule }) => {
+const RowActions = ({ size, rule, ruleset, addRule, removeRule }) => {
   return (
     <Group gap={4}>
-      <EditButton onClick={() => {}} />
-      <DeleteButton onClick={() => removeRule()} />
+      <TagRuleModal
+        rule={rule}
+        ruleset={ruleset}
+        size={size}
+        onSubmit={addRule}
+      />
+      <DeleteButton onClick={removeRule} />
     </Group>
   );
 };
 
-const rulesToRow = (rules, api, size) =>
+const rulesToRow = (rules, ruleset, api, size) =>
   rules.map((rule) => [
     rule === rules[0] ? size : "",
     rule.type,
     rule.value,
-    formatRange(rule.range),
-    rule.warden || "-",
-    <RowActions removeRule={() => api.removeCurrentRule(size, rule)} />,
+    stringifyRange(rule.range),
+    stringifyWarden(rule.warden),
+    <RowActions
+      rule={rule}
+      size={size}
+      ruleset={ruleset}
+      addRule={(size, rule) => api.addCurrentRule(size, rule)}
+      removeRule={() => api.removeCurrentRule(size, rule)}
+    />,
   ]);
 
 export const TagRules = ({ type = "filters" }) => {
@@ -75,7 +90,7 @@ export const TagRules = ({ type = "filters" }) => {
 
   const body = Object.entries(current.rules || []).reduce(
     (acc, [size, rules]) => {
-      return acc.concat(rulesToRow(rules, api, size));
+      return acc.concat(rulesToRow(rules, current, api, size));
     },
     [],
   );
@@ -125,6 +140,9 @@ export const TagRules = ({ type = "filters" }) => {
         >
           New Ruleset
         </Button>
+        <TagRuleModal
+          onSubmit={(size, rule) => api.addCurrentRule(size, rule)}
+        />
       </Group>
       <Table data={{ head, body }} />
       {draft && (

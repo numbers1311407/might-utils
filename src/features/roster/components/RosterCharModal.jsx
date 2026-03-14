@@ -17,6 +17,7 @@ import { useForm } from "@mantine/form";
 import { TagsInput } from "@/common/components";
 import { useClassTagsStore } from "@/common/tags/store";
 import { charSchema } from "../schema";
+import { MightMinLevel, MightMaxLevel } from "@/common/might";
 
 // create a form-specific schema extension that adds roster uniquness
 // validation to the character model
@@ -41,7 +42,7 @@ export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
         opened={opened}
         onClose={() => close()}
         closeOnClickOutside={false}
-        title={char ? `Edit Character: ${char.name}` : "Add Character"}
+        title={char ? `Edit Character: ${char.name}` : "New Character"}
       >
         <RosterCharForm
           // note this key hack is to get around mantine's aggressive form caching
@@ -126,7 +127,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
 
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
-      <Stack gap="xs">
+      <Stack gap={6}>
         <TextInput
           withAsterisk
           label="Character Name"
@@ -144,13 +145,14 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           label="Current Level"
           placeholder="Current character level"
           key={form.key("level")}
+          min={MightMinLevel}
+          max={MightMaxLevel}
           {...form.getInputProps("level")}
         />
         <Select
           withAsterisk
           label="Class"
           placeholder="Select class"
-          autoSelectOnBlur
           searchable
           data={charSchema.shape.class.options}
           key={form.key("class")}

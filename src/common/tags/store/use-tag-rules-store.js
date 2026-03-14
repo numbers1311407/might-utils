@@ -2,16 +2,12 @@ import { deepEqual } from "fast-equals";
 import { createStore } from "@/common/store";
 import { defaultFiltersTagRules } from "../defaults.js";
 import { tagRuleSetSchema } from "../schema";
+import { current } from "immer";
 
 // TODOS
-// - Rule sets probably need IDs, this will solve a few problems. IDs
-//   would be generated on add, possibly in a pre-validation step outside
-//   the store so the UI could access it immediately. One nice feature here
-//   would be clean URLs to maintain current rule set in history.
 //
 // - Add the rule set selector on the finder controls.
 //
-// - Rename rule set modal.
 // - Add/edit rule modal.
 //
 // - Complete the roster list UI
@@ -171,13 +167,30 @@ export const useTagRulesStoreApi = {
       const ruleSet = state.sets[id];
 
       if (ruleSet) {
-        const rules = (ruleSet.rules[size] ||= []);
-        const i = findRuleIndex(rules[size], rule);
-        if (i !== -1) {
-          rules[size].push({ ...rule });
+        ruleSet.rules[size] ||= [];
+
+        const i = findRuleIndex(ruleSet.rules[size], rule);
+
+        console.log({
+          i,
+          rules: current(ruleSet.rules),
+          rule,
+          size,
+        });
+
+        if (i === -1) {
+          ruleSet.rules[size].push({ ...rule });
         } else {
-          rules[size][i] = { ...rule };
+          ruleSet.rules[size][i] = { ...rule };
         }
+
+        console.log({
+          ok: "ok",
+          i,
+          rules: current(ruleSet.rules),
+          rule,
+          size,
+        });
 
         const clone = tagRuleSetSchema.parse(ruleSet);
         handleDirtyDefaults(clone, state);
