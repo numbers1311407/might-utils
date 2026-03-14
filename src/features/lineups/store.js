@@ -1,4 +1,4 @@
-import { createStore } from "@/common/store";
+import { createStore } from "@/utils";
 import { defaultOptions } from "./find-lineups.js";
 
 export const useLineupsStore = createStore(

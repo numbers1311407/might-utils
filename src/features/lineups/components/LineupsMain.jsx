@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import { LoadingPage } from "@/core/components";
 import { LineupsResults } from "./LineupsResults.jsx";
-import { LoadingPage } from "@/common/components/LoadingPage.jsx";
 
 export const LineupsMain = () => {
   return (

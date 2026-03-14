@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { Anchor, AppShell, Flex, Tabs, Title } from "@mantine/core";
-import { ColorSchemeButton } from "@/common/components";
+import { ColorSchemeButton } from "@/core/components";
 import { useRoute, Link, useLocation } from "wouter";
 
 const useTabNavigation = (defaultTab = "lineups") => {

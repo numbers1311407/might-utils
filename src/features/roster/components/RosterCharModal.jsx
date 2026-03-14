@@ -10,14 +10,15 @@ import {
 } from "@mantine/core";
 import * as z from "zod";
 import { useState } from "react";
-import { capitalize } from "@/utils";
 import { useDisclosure } from "@mantine/hooks";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
-import { TagsInput } from "@/common/components";
-import { useClassTagsStore } from "@/common/tags/store";
-import { charSchema } from "../schema";
-import { MightMinLevel, MightMaxLevel } from "@/common/might";
+
+import { capitalize } from "@/utils";
+import { TagsInput } from "@/core/components";
+import { charSchema } from "@/core/schemas";
+import { useClassTagsStore } from "@/core/store";
+import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 
 // create a form-specific schema extension that adds roster uniquness
 // validation to the character model

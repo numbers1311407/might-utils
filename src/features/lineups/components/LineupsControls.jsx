@@ -1,7 +1,7 @@
 import { Stack } from "@mantine/core";
-import { NumberField } from "@/common/components";
-import { MightMaxLevel, MightMinLevel } from "@/common/might";
-import { useLineupsStore } from "../store.js";
+import { NumberField } from "@/core/components";
+import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
+import { useLineupsStore } from "../store";
 
 export const LineupOptionInput = ({ option, ...restProps }) => {
   const setOption = useLineupsStore((store) => store.setOption);

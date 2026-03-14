@@ -1,5 +1,5 @@
-import { createStore } from "@/common/store";
-import { defaultClassTags } from "../defaults.js";
+import { createStore } from "@/utils";
+import { defaultClassTags } from "@/core/config/defaults";
 
 export const useClassTagsStore = createStore(
   "might-utils-class-tags",

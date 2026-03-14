@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CloseButton, Button, Modal, TextInput, Group } from "@mantine/core";
-import { useTagRulesStoreApi } from "@/common/tags/store";
+import { useTagRulesStoreApi } from "@/core/store";
 
 const { nameAvailable } = useTagRulesStoreApi;
 

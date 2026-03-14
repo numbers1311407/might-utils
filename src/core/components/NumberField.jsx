@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { NumberInput } from "@mantine/core";
-import { HelpLabel } from "@/common/components/HelpLabel.jsx";
-import { useDraftState } from "@/common/hooks";
+import { useDraftState } from "@/core/hooks";
+import { HelpLabel } from "./HelpLabel.jsx";
 
 export const NumberField = ({
   label: propsLabel,

@@ -12,10 +12,10 @@ import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { charSchema } from "@/features/roster/schema";
-import { MightMinLevel, MightMaxLevel } from "@/common/might";
-import { HelpLabel } from "@/common/components";
-import { tagRuleSchema } from "../schema";
+
+import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
+import { HelpLabel } from "@/core/components";
+import { charSchema, tagRuleSchema } from "@/core/schemas";
 
 const stringifyRange = (input) => {
   if (input === "*") return input;

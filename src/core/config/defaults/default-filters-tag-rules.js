@@ -1,22 +1,3 @@
-export const defaultClassTags = {
-  BER: ["dps", "mdps", "chain"],
-  BRD: ["support", "plate"],
-  BST: ["dps", "mdps", "leather", "pet", "hybrid"],
-  CLR: ["healer", "plate"],
-  DRU: ["healer", "leather", "ports"],
-  ENC: ["support", "cloth"],
-  MAG: ["dps", "rdps", "cloth", "pet"],
-  MNK: ["dps", "mdps", "leather"],
-  NEC: ["dps", "rdps", "cloth", "pet"],
-  PAL: ["tank", "plate", "hybrid"],
-  RNG: ["dps", "rdps", "chain", "hybrid"],
-  ROG: ["dps", "mdps", "chain"],
-  SHD: ["tank", "plate", "hybrid"],
-  SHM: ["healer", "chain"],
-  WAR: ["tank", "plate"],
-  WIZ: ["dps", "rdps", "cloth", "ports"],
-};
-
 export const defaultFiltersTagRules = {
   name: "Default",
   type: "filters",

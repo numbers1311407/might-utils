@@ -1,8 +1,8 @@
-import { Warden } from "@/common/warden";
 import { getNumberedArray, countKeys } from "@/utils";
-import { defaultClassTags } from "./defaults.js";
+import { Warden } from "@/core/config/warden";
+import { defaultClassTags } from "@/core/config/defaults";
 
-export * from "./defaults.js";
+export * from "./humanize-tag.js";
 
 export const formatTag = (value, options = {}) => {
   const prefix =
@@ -162,21 +162,4 @@ export const getGroupTag = (tagGroups, char, tags, options = {}) => {
     );
   }
   return t(`${groupTag}:${char.level}`, { warden, type: "group" });
-};
-
-const acronyms = new Set(["dps", "rdps", "mdps"]);
-
-export const humanizeTag = (tag) => {
-  const [type, value] = tag.split("-");
-
-  switch (type) {
-    case "c":
-      return value.toUpperCase();
-    case "t":
-    case "l":
-    default:
-      return acronyms.has(value)
-        ? value.toUpperCase()
-        : value.replace(/^./, (l) => l.toUpperCase());
-  }
 };

@@ -1,7 +1,7 @@
 import { Route } from "wouter";
 import { Lineups } from "@/features/lineups";
 import { ClassTags } from "@/features/class-tags";
-import { TagRules } from "@/common/tags/components";
+import { TagRules } from "@/features/tag-rules";
 import { Roster } from "@/features/roster";
 
 export const Routes = () => {

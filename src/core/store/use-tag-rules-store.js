@@ -1,8 +1,8 @@
 import { deepEqual } from "fast-equals";
-import { createStore } from "@/common/store";
-import { defaultFiltersTagRules } from "../defaults.js";
-import { tagRuleSetSchema } from "../schema";
 import { current } from "immer";
+import { createStore } from "@/utils";
+import { defaultFiltersTagRules } from "@/core/config/defaults";
+import { tagRuleSetSchema } from "@/core/schemas";
 
 // TODOS
 //

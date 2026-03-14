@@ -1,12 +1,13 @@
 import { useMemo } from "react";
 import {
+  useRosterStore,
   useClassTagsStore,
   useTagRulesActiveFilters,
-} from "@/common/tags/store";
+} from "@/core/store";
+
+import { useLineupsStore } from "../store.js";
 import { LineupsContext } from "../context.js";
 import { findLineupsAsync } from "../find-lineups-async.js";
-import { useLineupsStore } from "../store.js";
-import { useRosterStore } from "@/features/roster";
 
 export const LineupsContextProvider = ({ children }) => {
   const lineupsOptions = useLineupsStore((store) => store.options);

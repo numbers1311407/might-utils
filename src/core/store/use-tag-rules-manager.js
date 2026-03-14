@@ -1,9 +1,7 @@
 import { useCallback, useState } from "react";
-import {
-  useTagRulesStore,
-  useTagRulesStoreApi as api,
-} from "./use-tag-rules-store.js";
-import { defaultFiltersTagRules } from "../defaults.js";
+
+import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
+import { defaultFiltersTagRules } from "@/core/config/defaults";
 
 // TODO this defaults code needs to be lifted up and improved
 const defaultIdMap = {

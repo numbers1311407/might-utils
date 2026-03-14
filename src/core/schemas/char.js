@@ -1,9 +1,9 @@
 import * as z from "zod";
 import { capitalize } from "@/utils";
+import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { charClassSchema } from "./char-class";
-import { MightMinLevel, MightMaxLevel } from "@/common/might";
 
-const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`
+const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
 
 export const charSchema = z.object({
   active: z.boolean().default(true),

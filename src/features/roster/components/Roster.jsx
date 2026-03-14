@@ -1,6 +1,6 @@
 import { CloseButton, Box, Button, Stack, Switch } from "@mantine/core";
+import { useRosterStore } from "@/core/store";
 import { RosterCharModal } from "./RosterCharModal.jsx";
-import { useRosterStore } from "../store";
 
 export const RosterChar = ({ char, roster, update, remove }) => {
   return (

@@ -1,6 +1,6 @@
 import * as z from "zod";
-import { tagRuleSchema } from "./tag-rule.js";
 import { nanoid } from "nanoid";
+import { tagRuleSchema } from "./tag-rule.js";
 
 export const tagRuleSetSchema = z.object({
   name: z.string(),

@@ -1,11 +1,11 @@
-import * as tags from "@/common/tags";
+import * as tags from "@/core/tags";
 // TODO the logic around warden should just live in warden.js
-import { Warden } from "@/common/warden";
 import {
+  Warden,
   MightScoreByLevel,
   MightMaxLevel,
   MightMinLevel,
-} from "@/common/might";
+} from "@/core/config";
 
 const MaxFindLineupsRecursions = 5_000_000;
 

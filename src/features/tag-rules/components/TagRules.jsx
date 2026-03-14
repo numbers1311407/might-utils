@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { ActionIcon, Button, Box, Group, Select, Table } from "@mantine/core";
+
 import {
   useTagRulesManager,
   useTagRulesSelectOptions,
   useTagRulesStoreApi as tagRulesApi,
-} from "../store";
+} from "@/core/store";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
 import { TagRuleModal } from "./TagRuleModal.jsx";
 

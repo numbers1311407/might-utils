@@ -1,15 +1,7 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Flex,
-  Pill,
-  PillsInput,
-  Stack,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Stack } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
-import { useClassTagsStore } from "@/common/tags/store";
-import { ClassIcon, TagsInput } from "@/common/components";
+import { useClassTagsStore } from "@/core/store";
+import { ClassIcon, TagsInput } from "@/core/components";
 
 export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
   return (

@@ -1,6 +1,6 @@
-import { createStore } from "@/common/store";
-import { defaultRoster } from "./defaults.js";
-import { rosterSchema, charSchema } from "../schema";
+import { createStore } from "@/utils";
+import { defaultRoster } from "@/core/config/defaults";
+import { rosterSchema, charSchema } from "@/core/schemas";
 
 const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
