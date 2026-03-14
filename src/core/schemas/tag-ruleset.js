@@ -2,7 +2,7 @@ import * as z from "zod";
 import { nanoid } from "nanoid";
 import { tagRuleSchema } from "./tag-rule.js";
 
-export const tagRuleSetSchema = z.object({
+export const tagRulesetSchema = z.object({
   name: z.string(),
   id: z.union([
     z.nanoid().default(() => nanoid()),

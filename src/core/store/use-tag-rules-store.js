@@ -2,7 +2,7 @@ import { deepEqual } from "fast-equals";
 import { current } from "immer";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
-import { tagRuleSetSchema } from "@/core/schemas";
+import { tagRulesetSchema } from "@/core/schemas";
 
 // TODOS
 //
@@ -46,16 +46,16 @@ const defaultsMap = {
 const defaults = Object.values(defaultsMap).flat();
 const defaultIds = defaults.map((set) => set.id);
 
-const handleDirtyDefaults = (ruleSet, state) => {
-  const origDefaults = defaults.find((d) => d.id === ruleSet.id);
+const handleDirtyDefaults = (ruleset, state) => {
+  const origDefaults = defaults.find((d) => d.id === ruleset.id);
 
   if (origDefaults) {
-    if (deepEqual(ruleSet, origDefaults)) {
+    if (deepEqual(ruleset, origDefaults)) {
       state.dirtyDefaults = state.dirtyDefaults.filter(
-        (id) => id !== ruleSet.id,
+        (id) => id !== ruleset.id,
       );
     } else {
-      state.dirtyDefaults.push(ruleSet.id);
+      state.dirtyDefaults.push(ruleset.id);
     }
   }
 };
@@ -87,16 +87,16 @@ export const useTagRulesStoreApi = {
 
   activate: (id) => {
     set((state) => {
-      const ruleSet = state.sets[id];
-      const type = ruleSet?.type;
+      const ruleset = state.sets[id];
+      const type = ruleset?.type;
 
       if (type in defaultTypeStorage) {
         const storage = defaultTypeStorage[type];
 
         if (storage === "unique") {
-          state.active[type] = [ruleSet.id];
+          state.active[type] = [ruleset.id];
         } else {
-          state.active[type] = addUniquely(state.active[type], ruleSet.id);
+          state.active[type] = addUniquely(state.active[type], ruleset.id);
         }
       }
     });
@@ -104,12 +104,12 @@ export const useTagRulesStoreApi = {
 
   deactivate: (id) => {
     set((state) => {
-      const ruleSet = state.sets[id];
-      const type = ruleSet?.type;
+      const ruleset = state.sets[id];
+      const type = ruleset?.type;
 
       if (state.active[type].includes(id)) {
         state.active[type] = (state.active[type] || []).filter(
-          (id) => id !== ruleSet.id,
+          (id) => id !== ruleset.id,
         );
       }
     });
@@ -119,8 +119,8 @@ export const useTagRulesStoreApi = {
     return get().sets[id];
   },
 
-  addSet: (ruleSet, done) => {
-    const clone = tagRuleSetSchema.parse(ruleSet);
+  addSet: (ruleset, done) => {
+    const clone = tagRulesetSchema.parse(ruleset);
 
     set((state) => {
       state.sets[clone.id] = clone;
@@ -133,15 +133,15 @@ export const useTagRulesStoreApi = {
     if (defaultIds.includes(id)) return;
 
     set((state) => {
-      const ruleSet = state.sets[id];
+      const ruleset = state.sets[id];
 
-      if (ruleSet) {
+      if (ruleset) {
         delete state.sets[id];
 
-        const type = ruleSet.type;
+        const type = ruleset.type;
         if (state.active[type].includes(id)) {
           state.active[type] = (state.active[type] || []).filter(
-            (id) => id !== ruleSet.id,
+            (id) => id !== ruleset.id,
           );
         }
       }
@@ -153,46 +153,46 @@ export const useTagRulesStoreApi = {
     if (defaultIds.includes(id)) return;
 
     set((state) => {
-      const ruleSet = state.sets[id];
+      const ruleset = state.sets[id];
       const names = Object.values(state.sets).map((set) => set.name);
 
-      if (ruleSet && names.every((n) => n !== name)) {
-        ruleSet.name = name;
+      if (ruleset && names.every((n) => n !== name)) {
+        ruleset.name = name;
       }
     });
   },
 
   addRule: (id, size, rule) => {
     set((state) => {
-      const ruleSet = state.sets[id];
+      const ruleset = state.sets[id];
 
-      if (ruleSet) {
-        ruleSet.rules[size] ||= [];
+      if (ruleset) {
+        ruleset.rules[size] ||= [];
 
-        const i = findRuleIndex(ruleSet.rules[size], rule);
+        const i = findRuleIndex(ruleset.rules[size], rule);
 
         console.log({
           i,
-          rules: current(ruleSet.rules),
+          rules: current(ruleset.rules),
           rule,
           size,
         });
 
         if (i === -1) {
-          ruleSet.rules[size].push({ ...rule });
+          ruleset.rules[size].push({ ...rule });
         } else {
-          ruleSet.rules[size][i] = { ...rule };
+          ruleset.rules[size][i] = { ...rule };
         }
 
         console.log({
           ok: "ok",
           i,
-          rules: current(ruleSet.rules),
+          rules: current(ruleset.rules),
           rule,
           size,
         });
 
-        const clone = tagRuleSetSchema.parse(ruleSet);
+        const clone = tagRulesetSchema.parse(ruleset);
         handleDirtyDefaults(clone, state);
       }
     });
@@ -200,20 +200,20 @@ export const useTagRulesStoreApi = {
 
   removeRule: (id, size, value) => {
     set((state) => {
-      const ruleSet = state.sets[id];
+      const ruleset = state.sets[id];
 
-      if (ruleSet?.rules?.[size]) {
+      if (ruleset?.rules?.[size]) {
         const i =
           typeof value === "number"
             ? value
-            : findRuleIndex(ruleSet.rules[size], value);
+            : findRuleIndex(ruleset.rules[size], value);
 
         if (i !== -1) {
-          const rule = ruleSet.rules[size][i];
-          ruleSet.rules[size] = ruleSet.rules[size].filter((r) => r !== rule);
+          const rule = ruleset.rules[size][i];
+          ruleset.rules[size] = ruleset.rules[size].filter((r) => r !== rule);
         }
 
-        const clone = tagRuleSetSchema.parse(ruleSet);
+        const clone = tagRulesetSchema.parse(ruleset);
         handleDirtyDefaults(clone, state);
       }
       return state;

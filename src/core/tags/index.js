@@ -13,10 +13,10 @@ export const formatTag = (value, options = {}) => {
 };
 export const t = formatTag;
 
-export const prepareTagRules = (maxSize, ruleSet) => {
+export const prepareTagRules = (maxSize, ruleset) => {
   return getNumberedArray(maxSize).reduce(
     (acc, size) => {
-      const rules = ruleSet[size];
+      const rules = ruleset[size];
       // if we have new rules prepare them and replace the curren tset built for
       // the previous threshold
       if (rules) {
