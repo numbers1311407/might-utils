@@ -7,7 +7,7 @@ const rosterSort = (a, b) => {
 };
 
 export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
-  roster: [...defaultRoster],
+  roster: rosterSchema.parse(defaultRoster),
   setRoster: (roster = defaultRoster) => {
     set((state) => {
       rosterSchema.parse(roster);
@@ -23,8 +23,7 @@ export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
   addChar: (char) => {
     set((state) => {
       if (!state.roster.find(({ name }) => char.name === name)) {
-        charSchema.parse(char);
-        state.roster = [...state.roster, char].sort(rosterSort);
+        state.roster = [...state.roster, charSchema.parse(char)].sort(rosterSort);
       }
     });
   },

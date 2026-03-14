@@ -1,8 +1,10 @@
+import { nanoid } from "nanoid";
 import * as z from "zod";
 
 const posInt = z.number().int().min(0);
 
 export const tagRuleSchema = z.object({
+  id: z.nanoid().default(() => nanoid()),
   type: z.enum(["name", "level", "class", "tag", "role"]).default("tag"),
   value: z.string(),
   warden: z.union([

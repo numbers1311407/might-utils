@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { nanoid } from "nanoid";
 import { capitalize } from "@/utils";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { charClassSchema } from "./char-class";
@@ -6,6 +7,7 @@ import { charClassSchema } from "./char-class";
 const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
 
 export const charSchema = z.object({
+  id: z.nanoid().default(() => nanoid()),
   active: z.boolean().default(true),
   class: charClassSchema,
   level: z.coerce

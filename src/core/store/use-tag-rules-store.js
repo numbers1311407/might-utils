@@ -2,7 +2,7 @@ import { deepEqual } from "fast-equals";
 import { current } from "immer";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
-import { tagRulesetSchema } from "@/core/schemas";
+import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
 
 // TODOS
 //
@@ -66,7 +66,7 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   },
   dirtyDefaults: [],
   sets: {
-    [defaultFilters.id]: defaultFilters,
+    [defaultFilters.id]: tagRulesetSchema.parse(defaultFilters),
   },
 }));
 
@@ -168,29 +168,15 @@ export const useTagRulesStoreApi = {
 
       if (ruleset) {
         ruleset.rules[size] ||= [];
+        rule = tagRuleSchema.parse(rule);
 
         const i = findRuleIndex(ruleset.rules[size], rule);
 
-        console.log({
-          i,
-          rules: current(ruleset.rules),
-          rule,
-          size,
-        });
-
         if (i === -1) {
-          ruleset.rules[size].push({ ...rule });
+          ruleset.rules[size].push(rule);
         } else {
-          ruleset.rules[size][i] = { ...rule };
+          ruleset.rules[size][i] = rule;
         }
-
-        console.log({
-          ok: "ok",
-          i,
-          rules: current(ruleset.rules),
-          rule,
-          size,
-        });
 
         const clone = tagRulesetSchema.parse(ruleset);
         handleDirtyDefaults(clone, state);
