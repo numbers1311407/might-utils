@@ -1,7 +1,7 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { AppShell, MantineProvider } from "@mantine/core";
 import { Router } from "wouter";
-import { Routes } from "./Routes.jsx";
+import { Routes } from "./routes";
 import { Header } from "./Header.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { theme } from "./theme.js";
