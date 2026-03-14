@@ -5,6 +5,7 @@ import { Router } from "wouter";
 import { Routes } from "./routes";
 import { Header } from "./Header.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
+import { ScrollToTop } from "./ScrollToTop.jsx";
 import { theme } from "./theme.js";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             </ErrorBoundary>
           </AppShell.Main>
         </AppShell>
+        <ScrollToTop />
       </Router>
     </MantineProvider>
   );
