@@ -1,0 +1,4 @@
+.header {
+  background-color: alpha(var(--mantine-color-body), 0.85);
+  backdrop-filter: blur(5px);
+}

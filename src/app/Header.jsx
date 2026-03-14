@@ -1,7 +1,8 @@
 import { useCallback } from "react";
-import { Anchor, AppShell, Flex, Tabs, Title } from "@mantine/core";
+import { Anchor, AppShell, Flex, Tabs, Title, Text } from "@mantine/core";
 import { ColorSchemeButton } from "@/core/components";
 import { useRoute, Link, useLocation } from "wouter";
+import classes from "./Header.module.css";
 
 const useTabNavigation = (defaultTab = "lineups") => {
   const [, params] = useRoute("/:page?");
@@ -11,7 +12,7 @@ const useTabNavigation = (defaultTab = "lineups") => {
     (tab) => {
       navigate(`/${tab !== defaultTab ? tab : ""}`);
     },
-    [navigate],
+    [navigate, defaultTab],
   );
 
   return { value, onChange };
@@ -22,9 +23,14 @@ export const Header = () => {
   const tabProps = useTabNavigation(defaultTab);
 
   return (
-    <AppShell.Header>
-      <Flex h="50px" px="md" wrap="nowrap" align="center">
-        <Title order={1} size="h2">
+    <AppShell.Header className={classes.header}>
+      <Flex
+        h="50px"
+        px="md"
+        wrap={{ base: "wrap", sm: "nowrap" }}
+        align="center"
+      >
+        <Title order={1} size="h2" whitespace="nowrap">
           <Anchor
             component={Link}
             href="/"
@@ -35,7 +41,18 @@ export const Header = () => {
             Might Utils
           </Anchor>
         </Title>
-        <ColorSchemeButton style={{ marginLeft: "auto" }} />
+        <Text
+          size="md"
+          visibleFrom="sm"
+          align-self="bottom"
+          pt={2}
+          px="lg"
+          flex="1"
+        >
+          Fan made utilities for the awesome{" "}
+          <Anchor href="https://eqmight.com">EQ Might server</Anchor>
+        </Text>
+        <ColorSchemeButton ml="auto" />
       </Flex>
       <Tabs {...tabProps}>
         <Tabs.List px={4}>

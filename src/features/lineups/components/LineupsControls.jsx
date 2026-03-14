@@ -85,18 +85,18 @@ const TargetScoreInput = (props) => (
 
 export const LineupsControls = () => {
   return (
-    <Stack gap="xs">
-      <Flex gap="xs" wrap={{ base: "wrap", sm: "nowrap" }}>
-        <TargetScoreInput flex="1 0 50%" />
-        <MarginInput flex="1 0 50%" />
+    <Stack gap="xs" width="auto">
+      <Flex gap="xs" wrap={{ base: "wrap", md: "nowrap" }}>
+        <TargetScoreInput flex="1 1 200px" />
+        <MarginInput flex="1 1 200px" />
       </Flex>
       <Flex gap="xs" wrap={{ base: "wrap", sm: "nowrap" }}>
-        <MinLevelInput flex="1 0 50%" />
-        <MaxLevelInput flex="1 0 50%" />
+        <MinLevelInput flex="1 1 200px" />
+        <MaxLevelInput flex="1 1 200px" />
       </Flex>
       <Flex gap="xs" wrap={{ base: "wrap", sm: "nowrap" }}>
-        <MinSizeInput flex="1 0 50%" />
-        <MaxSizeInput flex="1 0 50%" />
+        <MinSizeInput flex="1 1 200px" />
+        <MaxSizeInput flex="1 1 200px" />
       </Flex>
     </Stack>
   );
