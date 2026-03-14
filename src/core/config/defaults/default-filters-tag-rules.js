@@ -5,7 +5,6 @@ export const defaultFiltersTagRules = {
   rules: {
     2: [
       { type: "tag", value: "tank", range: 1 },
-      { type: "name", value: "geese", warden: 2 },
       { type: "tag", value: "healer", range: 1 },
       { type: "tag", value: "support", range: [0, 1] },
     ],

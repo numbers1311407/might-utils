@@ -5,9 +5,9 @@ import {
   useTagRulesActiveFilters,
 } from "@/core/store";
 
+import { findLineupsAsync } from "../find-lineups";
 import { useLineupsStore } from "../store.js";
 import { LineupsContext } from "../context.js";
-import { findLineupsAsync } from "../find-lineups-async.js";
 
 export const LineupsContextProvider = ({ children }) => {
   const lineupsOptions = useLineupsStore((store) => store.options);

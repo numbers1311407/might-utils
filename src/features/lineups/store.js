@@ -1,5 +1,5 @@
 import { createStore } from "@/utils";
-import { defaultOptions } from "./find-lineups.js";
+import { defaultOptions } from "./find-lineups";
 
 export const useLineupsStore = createStore(
   "might-utils-lineups",
