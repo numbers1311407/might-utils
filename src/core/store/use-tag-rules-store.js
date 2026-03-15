@@ -2,33 +2,11 @@ import { deepEqual } from "fast-equals";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
-import { current } from "immer";
 
-// TODOS
-//
-// - Add the rule set selector on the finder controls.
-//
-// - Add/edit rule modal.
-//
-// - Complete the roster list UI
-//   - There probably doesn't need to be a clear roster button.
-//   - The roster list should show each characters current score and a total current
-//     score for active characters and maybe some simple stats like a tag cloud.
-//
-// - At some point all the pages should have JSON editors for power users
-//   - Each rule set
-//   - Class tags
-//   - Roster
-//
-// - Special case the "role" tag
-//   - Define the base role tag set
-//   - Add multiple roles grouping (by adding a char twice like Difa (tank) & Difa (dps)
-//
-// - Finish up the grouping functionality and add the grouping dropdown on the
-//   lineups finder controls.
-
-const findRuleIndex = (rules, { type, value }) => {
-  return rules.findIndex((r) => r.type === type && r.value === value);
+const findRuleIndex = (rules, { type, value, warden }) => {
+  return rules.findIndex(
+    (r) => r.type === type && r.value === value && r.warden === warden,
+  );
 };
 
 const addUniquely = (array, value) => {

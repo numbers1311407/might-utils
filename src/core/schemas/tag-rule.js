@@ -3,6 +3,18 @@ import * as z from "zod";
 
 export const tagRuleRangeRegex = /^(\*)$|^(\d+)([+-])?$|^(\d+)-(\d+)$/;
 
+const ALL = "*";
+
+export const parseTagRuleWarden = (warden) =>
+  ({
+    Any: "",
+    0: 0,
+    1: 1,
+    "1+": true,
+    2: 2,
+    3: 3,
+  })[warden] ?? "";
+
 export const parseTagRuleRange = (range) => {
   const match = range.replace(/\s/g, "").match(tagRuleRangeRegex);
 
@@ -12,20 +24,21 @@ export const parseTagRuleRange = (range) => {
 
   const [_full, all, singleInt, modifier, rangeMin, rangeMax] = match;
 
-  if (all) return { type: "ALL" };
+  if (all) return all;
 
   if (rangeMin && rangeMax) {
     const min = parseInt(rangeMin, 10);
     const max = parseInt(rangeMax, 10);
     if (min > max) throw new Error("Range min cannot be greater than max");
-    return { type: "RANGE", min, max };
+    return [min, max];
   }
 
   const val = parseInt(singleInt, 10);
-  if (modifier === "+") return { type: "AT_LEAST", min: val };
-  if (modifier === "-") return { type: "AT_MOST", max: val };
+  if (modifier === "+") return [val];
+  if (modifier === "-") return [0, val];
 
-  return { type: "EXACT", value: val };
+  // if we've gotten here it's an exact match
+  return [val, val];
 };
 
 export const tagRuleSchema = z.object({

@@ -1,6 +1,7 @@
 import { getNumberedArray, countKeys } from "@/utils";
 import { Warden } from "@/core/config/warden";
 import { defaultClassTags } from "@/core/config/defaults";
+import { parseTagRuleWarden, parseTagRuleRange } from "@/core/schemas";
 
 export * from "./humanize-tag.js";
 
@@ -17,51 +18,20 @@ export const prepareTagRules = (maxSize, ruleset) => {
   return getNumberedArray(maxSize).reduce(
     (acc, size) => {
       const rules = ruleset[size];
-      // if we have new rules prepare them and replace the curren tset built for
-      // the previous threshold
+      // if we have new rules prepare them and replace the current set built for the
+      // previous threshold, this will be assigned to all sizes until the next set
+      // is generated.
       if (rules) {
         acc.current = { ...(acc.current || {}) };
 
+        // for each rule, generate a corresponding tag and parse the range value from
+        // the stored string into a range expected by the algorithm.
         for (const rule of rules) {
-          const { type, warden, value: v, range: r } = rule;
-          const value = t(v, { type, warden });
-          const throwInvalid = (v) => {
-            throw (
-              `Rule "${value}" for size ${size} invalid: range must be [min], [min, max], or * ` +
-              `found ${v}`
-            );
-          };
-
-          let range;
-
-          // name type rules must be exactly 1 for obvious reasons
-          if (type === "name") {
-            range = [1, 1];
-
-            // keep special * rule as is
-          } else if (r === "*") {
-            range = r;
-
-            // if range a single number shorthand replace it with a min/max array
-          } else if (typeof r === "number") {
-            range = [r, r];
-
-            // keep predefined arrays as written but do minimal validation
-          } else if (
-            Array.isArray(r) &&
-            r.every((v) => typeof v === "number")
-          ) {
-            if (r.length > 2 || (r.length === 2 && r[0] > r[1])) {
-              throwInvalid(`[${range.join(", ")}]`);
-            }
-            range = r;
-
-            // finally throw on whatever didn't match
-          } else {
-            throwInvalid(r);
-          }
-
-          acc.current[value] = range;
+          const { type, warden: w, value: v, range: r } = rule;
+          const value = t(v, { type, warden: parseTagRuleWarden(w) });
+          // NOTE just forcing [1, 1] here for name rules since it must be so, though
+          // technically the rule *should* be "1", there's no reason to parse it.
+          acc.current[value] = type === "name" ? [1, 1] : parseTagRuleRange(r);
         }
       }
       acc.map[size] = acc.current;
@@ -77,7 +47,7 @@ export const prepareTagRules = (maxSize, ruleset) => {
 export const validateTagCounts = (counts, rules, size) => {
   for (const tag in rules) {
     // The special * rule transforms into the exact size of the lineup. This is intended
-    // for setups like tagging based on keys/flagging where you want to ensure each character
+    // for setups like tagging based on keys/flags where you want to ensure each character
     // is eligible to do the instance.
     const range = rules[tag] === "*" ? [size, size] : rules[tag];
     const count = counts[tag] || 0;
