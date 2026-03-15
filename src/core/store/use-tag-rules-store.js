@@ -1,8 +1,8 @@
 import { deepEqual } from "fast-equals";
-import { current } from "immer";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
+import { current } from "immer";
 
 // TODOS
 //
@@ -176,6 +176,18 @@ export const useTagRulesStoreApi = {
           ruleset.rules[size].push(rule);
         } else {
           ruleset.rules[size][i] = rule;
+        }
+
+        // if this was an existing rule then this operation was a move,
+        // strip it from other arrays.
+        for (const [othersize, rules] of Object.entries(ruleset.rules)) {
+          if (othersize === String(size)) {
+            continue;
+          }
+          const i = rules.findIndex((r) => r.id === rule.id);
+          if (i !== -1) {
+            rules.splice(i, 1);
+          }
         }
 
         const clone = tagRulesetSchema.parse(ruleset);

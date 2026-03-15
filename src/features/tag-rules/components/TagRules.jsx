@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { ActionIcon, Button, Box, Group, Select, Table } from "@mantine/core";
+import classes from "./TagRules.module.css";
 
 import {
   useTagRulesManager,
@@ -8,22 +9,7 @@ import {
   useTagRulesStoreApi as tagRulesApi,
 } from "@/core/store";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
-import { TagRuleModal } from "./TagRuleModal.jsx";
-
-const head = ["Size", "Type", "Value", "Range", "Warden", ""];
-
-const stringifyWarden = (input) => {
-  if (input === true) return "Rank 1+";
-  return input < 0 ? "Any" : `Rank ${input}`;
-};
-
-const stringifyRange = (input) => {
-  if (input === "*") return input;
-  if (typeof input === "number") return `${input}`;
-  if (input.length === 1) return `${input}+`;
-  if (input[0] === 0) return `${input[1]}-`;
-  return input.join("-");
-};
+import { TagRuleModal, TagRuleModalButton } from "./TagRuleModal.jsx";
 
 const TagRuleSetSelect = ({ type, setValue, value }) => {
   const data = useTagRulesSelectOptions(type);
@@ -55,44 +41,45 @@ const DeleteButton = (props) => (
   </ActionIcon>
 );
 
-const RowActions = ({ size, rule, ruleset, addRule, removeRule }) => {
-  return (
-    <Group gap={4}>
-      <TagRuleModal
-        rule={rule}
-        ruleset={ruleset}
-        size={size}
-        onSubmit={addRule}
-      />
-      <DeleteButton onClick={removeRule} />
-    </Group>
-  );
-};
-
-const rulesToRow = (rules, ruleset, api, size) =>
-  rules.map((rule) => [
-    rule === rules[0] ? size : "",
-    rule.type,
-    rule.value,
-    stringifyRange(rule.range),
-    stringifyWarden(rule.warden),
-    <RowActions
-      rule={rule}
-      size={size}
-      ruleset={ruleset}
-      addRule={(size, rule) => api.addCurrentRule(size, rule)}
-      removeRule={() => api.removeCurrentRule(size, rule)}
-    />,
-  ]);
-
 export const TagRules = ({ type = "filters" }) => {
-  const [current = {}, setCurrent, api] = useTagRulesManager(type);
-  const [draft, setDraft] = useState(null);
+  const [ruleset = {}, setRuleset, api] = useTagRulesManager(type);
+  const [draftRuleset, setDraftRuleset] = useState(null);
+  const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
+  const [newRule, setNewRule] = useState(null);
 
-  const body = Object.entries(current.rules || []).reduce(
-    (acc, [size, rules]) => {
-      return acc.concat(rulesToRow(rules, current, api, size));
-    },
+  const flashRuleRow = (rule) => {
+    setNewRule(rule);
+    setTimeout(() => {
+      setNewRule(null);
+    }, 1200);
+  };
+
+  const rows = Object.entries(ruleset.rules || []).reduce(
+    (acc, [size, rules]) =>
+      acc.concat(
+        rules.map((rule) => (
+          <Table.Tr
+            key={rule.id}
+            className={newRule?.id === rule.id ? classes.highlightRow : ""}
+          >
+            <Table.Td>{rule === rules[0] ? size : ""}</Table.Td>
+            <Table.Td>{rule.type}</Table.Td>
+            <Table.Td>{rule.value}</Table.Td>
+            <Table.Td>{rule.range}</Table.Td>
+            <Table.Td>{rule.warden}</Table.Td>
+            <Table.Td>
+              <Group gap={4}>
+                <Button
+                  onClick={() => setDraftTagRuleProps({ rule, ruleset, size })}
+                />
+                <DeleteButton
+                  onClick={() => api.removeCurrentRule(size, rule)}
+                />
+              </Group>
+            </Table.Td>
+          </Table.Tr>
+        )),
+      ),
     [],
   );
 
@@ -102,59 +89,96 @@ export const TagRules = ({ type = "filters" }) => {
         <TagRuleSetSelect
           type={type}
           setValue={(id) => {
-            setCurrent(tagRulesApi.getSet(id));
+            setRuleset(tagRulesApi.getSet(id));
           }}
-          value={current.id}
+          value={ruleset.id}
         />
+
         <Button
           disabled={api.currentActive}
           onClick={() => api.activateCurrent()}
         >
           Set as Active
         </Button>
+
         <Button onClick={() => api.duplicateCurrent()}>Duplicate</Button>
-        <Button
-          disabled={api.currentDefault}
-          onClick={() => api.removeCurrent()}
-        >
-          Remove
-        </Button>
-        <Button
-          onClick={() => {
-            setDraft(current);
-          }}
-        >
-          Rename
-        </Button>
+
+        {!api.currentDefault && (
+          <>
+            <Button
+              onClick={() => {
+                setDraftRuleset(ruleset);
+              }}
+            >
+              Rename
+            </Button>
+            <Button
+              disabled={api.currentDefault}
+              onClick={() => api.removeCurrent()}
+            >
+              Remove
+            </Button>
+          </>
+        )}
+
         {api.currentDefault && (
           <Button
             disabled={!api.currentDefaultDirty}
-            onClick={() => tagRulesApi.restoreDefaultSet(current.id)}
+            onClick={() => tagRulesApi.restoreDefaultSet(ruleset.id)}
           >
             Reset to defaults
           </Button>
         )}
+
+        <Button onClick={() => setDraftRuleset({ type })}>New Ruleset</Button>
+
         <Button
           onClick={() => {
-            setDraft({ name: "", type, rules: {} });
+            setDraftTagRuleProps({});
           }}
         >
-          New Ruleset
+          New Rule
         </Button>
-        <TagRuleModal
-          onSubmit={(size, rule) => api.addCurrentRule(size, rule)}
-        />
       </Group>
-      <Table data={{ head, body }} />
-      {draft && (
+
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Size</Table.Th>
+            <Table.Th>Type</Table.Th>
+            <Table.Th>Value</Table.Th>
+            <Table.Th>Range</Table.Th>
+            <Table.Th>Warden</Table.Th>
+            <Table.Th></Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+
+      {draftRuleset && (
         <TagRulesNameModal
-          ruleset={draft}
+          ruleset={draftRuleset}
           onClose={() => {
-            setDraft(null);
+            setDraftRuleset(null);
           }}
           onCommit={(ruleset) => {
-            setDraft(null);
-            tagRulesApi.addSet(ruleset, (set) => setCurrent(set));
+            setDraftRuleset(null);
+            tagRulesApi.addSet(ruleset, (set) => setRuleset(set));
+          }}
+        />
+      )}
+
+      {draftTagRuleProps && (
+        <TagRuleModal
+          {...draftTagRuleProps}
+          opened
+          onClose={() => {
+            setDraftTagRuleProps(null);
+          }}
+          onSubmit={(size, rule) => {
+            flashRuleRow(rule);
+            setDraftTagRuleProps(null);
+            api.addCurrentRule(size, rule);
           }}
         />
       )}

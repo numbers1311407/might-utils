@@ -1,0 +1,17 @@
+@keyframes row-pulse {
+  0% {
+    background-color: transparent;
+  }
+  20% {
+    background-color: var(--mantine-color-blue-light);
+    box-shadow: 0 0 8px var(--mantine-color-blue-light);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.highlightRow {
+  animation: row-pulse 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}

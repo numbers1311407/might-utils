@@ -17,40 +17,6 @@ import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { HelpLabel } from "@/core/components";
 import { charSchema, tagRuleSchema } from "@/core/schemas";
 
-const stringifyRange = (input) => {
-  if (input === "*") return input;
-  if (typeof input === "number") return `${input}`;
-  if (input.length === 1) return `${input}+`;
-  if (input[0] === 0) return `${input[1]}-`;
-  return input.join("-");
-};
-
-const parseRange = (input) => {
-  const regex = /^(\*)$|^(\d+)([+-])?$|^(\d+)-(\d+)$/;
-  const match = input.replace(/\s/g, "").match(regex);
-
-  if (!match) {
-    throw new Error(`Invalid constraint format: "${input}"`);
-  }
-
-  const [_full, all, singleInt, modifier, rangeMin, rangeMax] = match;
-
-  if (all) return { type: "ALL" };
-
-  if (rangeMin && rangeMax) {
-    const min = parseInt(rangeMin, 10);
-    const max = parseInt(rangeMax, 10);
-    if (min > max) throw new Error("Range min cannot be greater than max");
-    return { type: "RANGE", min, max };
-  }
-
-  const val = parseInt(singleInt, 10);
-  if (modifier === "+") return { type: "AT_LEAST", min: val };
-  if (modifier === "-") return { type: "AT_MOST", max: val };
-
-  return { type: "EXACT", value: val };
-};
-
 const typeHelp =
   "Rules work by counting character tags or attributes like level & class, and requiring that the " +
   "count falls within the defined range to qualify the lineup as valid.For a name type rule, the " +
@@ -64,54 +30,60 @@ const sizeHelp =
 const rangeHelp =
   'A single number ("1") represents an exact count. Appending +/- ("1+" or "1-") would mean at least 1 ' +
   'or at most 1, respectively. A range is expressed with a hyphen, e.g. "1-3" would mean between 1 and 3. ' +
-  'and finally asterisk ("*") means everyone.';
+  'and finally asterisk ("*") means everyone in the group.';
 
-const formSchema = tagRuleSchema
-  .extend({
-    size: z.coerce.number().int(),
-    warden: z.string(),
-    range: z.string(),
-    value: z.union([z.string(), z.number()]),
-  })
-  .refine(
-    ({ range }) => {
-      try {
-        parseRange(range);
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    {
-      message: "Range is invalid, hover (?) to see format help.",
-      path: ["range"],
-    },
+const formSchema = tagRuleSchema.extend({
+  size: z.number({ error: "Size is required to be a number" }).int().default(1),
+  value: z.union([
+    z.string().min(1, { error: "Value must be present" }),
+    z.number(),
+  ]),
+});
+
+export const TagRuleModal = ({
+  onClose,
+  onSubmit,
+  opened,
+  rule,
+  ruleset,
+  size,
+}) => {
+  return (
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      closeOnClickOutside={false}
+      title={rule ? `Edit Rule` : `New Rule`}
+    >
+      <TagRuleForm
+        // note this key hack is to get around mantine's aggressive form caching
+        key={opened ? "opened" : "closed"}
+        rule={rule}
+        ruleset={ruleset}
+        size={size}
+        onSubmit={(size, rule) => {
+          onSubmit(size, rule);
+        }}
+      />
+    </Modal>
   );
+};
 
-export const TagRuleModal = ({ rule, ruleset, size, children, onSubmit }) => {
+export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      <Modal
+      <TagRuleModal
         opened={opened}
         onClose={() => close()}
-        closeOnClickOutside={false}
-        title={rule ? `Edit Rule` : `New Rule`}
-      >
-        <TagRuleForm
-          // note this key hack is to get around mantine's aggressive form caching
-          key={opened ? "opened" : "closed"}
-          rule={rule}
-          ruleset={ruleset}
-          size={size}
-          onSubmit={(size, rule) => {
-            onSubmit(size, rule);
-            close();
-          }}
-        />
-      </Modal>
-
+        onSubmit={(size, rule) => {
+          close();
+          onSubmit(size, rule);
+        }}
+        rule={rule}
+        {...props}
+      />
       <Button variant="default" onClick={open}>
         {children || (rule ? "Edit" : "Add Rule")}
       </Button>
@@ -119,54 +91,19 @@ export const TagRuleModal = ({ rule, ruleset, size, children, onSubmit }) => {
   );
 };
 
-const TagRuleForm = ({ rule, size, onSubmit }) => {
+const TagRuleForm = ({ rule = {}, size, onSubmit }) => {
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: {
-      size,
-      type: rule?.type || "tag",
-      value: rule?.value || "",
-      range: stringifyRange(rule?.range || "1"),
-      warden: String(rule?.warden ?? "-1"),
-    },
+    initialValues: formSchema
+      .partial()
+      .parse({ ...rule, size: isNaN(size) ? 1 : Number(size) }),
     transformValues: (values) => {
-      const {
-        size,
-        range: stringRange,
-        value,
-        warden: stringWarden,
-        ...restValues
-      } = values;
-      const result = parseRange(stringRange);
-
-      const warden =
-        stringWarden === "true" ? true : parseInt(stringWarden, 10);
-
-      let range;
-      switch (result.type) {
-        case "ALL":
-          range = "*";
-          break;
-        case "AT_LEAST":
-          range = [Math.min(result.min, size)];
-          break;
-        case "AT_MOST":
-          range = [0, Math.min(result.max, size)];
-          break;
-        case "RANGE":
-          range = [result.min, result.max].map((v) => Math.min(v, size));
-          break;
-        case "EXACT":
-          range = Math.min(result.value, size);
-          break;
-      }
+      const { size, value, ...restValues } = values;
 
       return {
-        range,
-        warden,
+        ...restValues,
         value: String(value),
         size: parseInt(size, 10),
-        ...restValues,
       };
     },
     validate: zod4Resolver(formSchema),
@@ -212,9 +149,9 @@ const TagRuleForm = ({ rule, size, onSubmit }) => {
           placeholder="Got warden?"
           description="Should this rule require warden or a specific warden rank?"
           data={[
-            { label: "Any", value: "-1" },
+            { label: "Any", value: "Any" },
             { label: "Rank 0", value: "0" },
-            { label: "Rank 1+", value: "true" },
+            { label: "Rank 1+", value: "1+" },
             { label: "Rank 1", value: "1" },
             { label: "Rank 2", value: "2" },
             { label: "Rank 3", value: "3" },

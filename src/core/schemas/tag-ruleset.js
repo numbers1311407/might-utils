@@ -17,6 +17,7 @@ export const tagRulesetSchema = z.object({
   type: z.enum(["filters"]).default("filters"),
   rules: z
     .record(z.number().int(), z.array(tagRuleSchema))
+    .default({})
     .superRefine((map, ctx) => {
       for (const [key, rules] of Object.entries(map)) {
         const seen = new Set();
