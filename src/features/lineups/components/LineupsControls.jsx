@@ -1,4 +1,4 @@
-import { Stack, Flex, Group } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { NumberField } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
@@ -17,7 +17,7 @@ const MaxLevelInput = (props) => (
   <LineupOptionInput
     option="maxLevel"
     label="Max Char Level"
-    placeholder={`The carries - Default: ${MightMaxLevel}`}
+    placeholder="The carries"
     min={MightMinLevel}
     max={MightMaxLevel}
     {...props}
@@ -28,7 +28,7 @@ const MinLevelInput = (props) => (
   <LineupOptionInput
     option="minLevel"
     label="Min Char Level"
-    placeholder={`The weakest links - Default: ${MightMinLevel}`}
+    placeholder="The twinks"
     min={MightMinLevel}
     max={MightMaxLevel}
     {...props}
@@ -39,7 +39,7 @@ const MaxSizeInput = (props) => (
   <LineupOptionInput
     option="maxSize"
     label="Max Lineup Size"
-    placeholder="Mob mentality - Default 12"
+    placeholder="Big party"
     min={1}
     max={20}
     {...props}
@@ -50,7 +50,7 @@ const MinSizeInput = (props) => (
   <LineupOptionInput
     option="minSize"
     label="Min Lineup Size"
-    placeholder="Who needs numbers? - Default 6"
+    placeholder="Lil' party"
     min={1}
     max={20}
     {...props}
@@ -62,7 +62,7 @@ const MarginInput = (props) => (
     option="margin"
     label="Tolerance"
     help="Acceptable deviation under your target score. Must be higher than the lowest might score on your roster."
-    placeholder="Almost! - Default 0"
+    placeholder="Close enough?"
     min={0}
     step={5}
     {...props}
@@ -73,9 +73,9 @@ const TargetScoreInput = (props) => (
   <LineupOptionInput
     withAsterisk
     option="targetScore"
-    label="Target Might Score"
+    label="Target Might"
     help="The required score for the instance & difficulty you're trying to hit."
-    placeholder="How mighty do you need to be?"
+    placeholder="How mighty?"
     type="number"
     min={0}
     step={10}
@@ -85,19 +85,13 @@ const TargetScoreInput = (props) => (
 
 export const LineupsControls = () => {
   return (
-    <Stack gap="xs" width="auto">
-      <Flex gap="xs" wrap={{ base: "wrap", md: "nowrap" }}>
-        <TargetScoreInput flex="1 1 200px" />
-        <MarginInput flex="1 1 200px" />
-      </Flex>
-      <Flex gap="xs" wrap={{ base: "wrap", sm: "nowrap" }}>
-        <MinLevelInput flex="1 1 200px" />
-        <MaxLevelInput flex="1 1 200px" />
-      </Flex>
-      <Flex gap="xs" wrap={{ base: "wrap", sm: "nowrap" }}>
-        <MinSizeInput flex="1 1 200px" />
-        <MaxSizeInput flex="1 1 200px" />
-      </Flex>
-    </Stack>
+    <Flex gap="xs" wrap={{ base: "wrap", md: "nowrap" }}>
+      <TargetScoreInput flex="1 1 120px" />
+      <MarginInput flex="1 1 120px" />
+      <MinLevelInput flex="1 1 120px" />
+      <MaxLevelInput flex="1 1 120px" />
+      <MinSizeInput flex="1 1 120px" />
+      <MaxSizeInput flex="1 1 120px" />
+    </Flex>
   );
 };

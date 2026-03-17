@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Group,
   Modal,
@@ -14,7 +15,7 @@ import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
-import { HelpLabel } from "@/core/components";
+import { HelpLabel, RangeInput } from "@/core/components";
 import { charSchema, tagRuleSchema } from "@/core/schemas";
 
 const typeHelp =
@@ -158,6 +159,11 @@ const TagRuleForm = ({ rule = {}, size, onSubmit }) => {
           ]}
           {...form.getInputProps("warden")}
         />
+        <Group>
+          <Box flex="1">
+            <RangeInput value="2,3" />
+          </Box>
+        </Group>
         <Group justify="flex-end">
           <Button type="submit">Submit</Button>
         </Group>

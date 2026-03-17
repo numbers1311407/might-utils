@@ -1,5 +1,14 @@
 import { useCallback } from "react";
-import { Anchor, AppShell, Flex, Tabs, Title, Text } from "@mantine/core";
+import {
+  Anchor,
+  Box,
+  AppShell,
+  Divider,
+  Flex,
+  Tabs,
+  Title,
+  Text,
+} from "@mantine/core";
 import { ColorSchemeButton } from "@/core/components";
 import { useRoute, Link, useLocation } from "wouter";
 import classes from "./Header.module.css";
@@ -30,29 +39,29 @@ export const Header = () => {
         wrap={{ base: "wrap", sm: "nowrap" }}
         align="center"
       >
-        <Title order={1} size="h2" whitespace="nowrap">
+        <Title order={1} size="h2" whitespace="nowrap" display="flex" flex="1">
           <Anchor
             component={Link}
             href="/"
             c="var(--mantine-color-text)"
             underline="never"
             inherit
+            display="box"
           >
-            Might Utils
+            <Flex align="center" gap={6}>
+              <Text size="xl" pt={4} fw="bold" c="blue.4" fs="italic">
+                Suggested
+              </Text>{" "}
+              <Box>Might</Box>
+            </Flex>
           </Anchor>
         </Title>
-        <Text
-          size="md"
-          visibleFrom="sm"
-          align-self="bottom"
-          pt={2}
-          px="lg"
-          flex="1"
-        >
-          Fan made utilities for the awesome{" "}
-          <Anchor href="https://eqmight.com">EQ Might server</Anchor>
+        <Text size="md" visibleFrom="sm" flex="1" ml="auto" ta="right">
+          Party building utility for{" "}
+          <Anchor href="https://eqmight.com">EQ Might</Anchor>
         </Text>
-        <ColorSchemeButton ml="auto" />
+        <Divider orientation="vertical" mx="md" my="sm" />
+        <ColorSchemeButton />
       </Flex>
       <Tabs {...tabProps}>
         <Tabs.List px={4}>

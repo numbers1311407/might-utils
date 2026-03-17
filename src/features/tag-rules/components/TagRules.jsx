@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IconEdit, IconX } from "@tabler/icons-react";
 import { ActionIcon, Button, Box, Group, Select, Table } from "@mantine/core";
 import classes from "./TagRules.module.css";
+import { RangeInput } from "@/core/components";
 
 import {
   useTagRulesManager,
@@ -85,6 +86,7 @@ export const TagRules = ({ type = "filters" }) => {
 
   return (
     <Box>
+      <RangeInput value="2,4" />
       <Group gap="xs" align="flex-end">
         <TagRuleSetSelect
           type={type}
