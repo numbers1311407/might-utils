@@ -2,18 +2,17 @@ import { deepEqual } from "fast-equals";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
+import { current } from "immer";
 
-const findRuleIndex = (rules, { type, value, warden }) => {
-  return rules.findIndex(
-    (r) => r.type === type && r.value === value && r.warden === warden,
-  );
+const findRuleIndex = (rules, { id }) => {
+  return rules.findIndex((r) => r.id === id);
 };
 
 const addUniquely = (array, value) => {
   return Array.from(new Set([...array, value]));
 };
 
-const defaultFilters = structuredClone(defaultFiltersTagRules);
+const defaultFilters = tagRulesetSchema.parse(defaultFiltersTagRules);
 
 const defaultTypeStorage = {
   filters: "unique",
@@ -32,7 +31,7 @@ const handleDirtyDefaults = (ruleset, state) => {
       state.dirtyDefaults = state.dirtyDefaults.filter(
         (id) => id !== ruleset.id,
       );
-    } else {
+    } else if (state.dirtyDefaults.indexOf(ruleset.id) === -1) {
       state.dirtyDefaults.push(ruleset.id);
     }
   }
@@ -140,32 +139,19 @@ export const useTagRulesStoreApi = {
     });
   },
 
-  addRule: (id, size, rule) => {
+  addRule: (id, rule) => {
     set((state) => {
       const ruleset = state.sets[id];
 
       if (ruleset) {
-        ruleset.rules[size] ||= [];
         rule = tagRuleSchema.parse(rule);
 
-        const i = findRuleIndex(ruleset.rules[size], rule);
+        const i = findRuleIndex(ruleset.rules, rule);
 
         if (i === -1) {
-          ruleset.rules[size].push(rule);
+          ruleset.rules.push(rule);
         } else {
-          ruleset.rules[size][i] = rule;
-        }
-
-        // if this was an existing rule then this operation was a move,
-        // strip it from other arrays.
-        for (const [othersize, rules] of Object.entries(ruleset.rules)) {
-          if (othersize === String(size)) {
-            continue;
-          }
-          const i = rules.findIndex((r) => r.id === rule.id);
-          if (i !== -1) {
-            rules.splice(i, 1);
-          }
+          ruleset.rules[i] = rule;
         }
 
         const clone = tagRulesetSchema.parse(ruleset);
@@ -174,25 +160,20 @@ export const useTagRulesStoreApi = {
     });
   },
 
-  removeRule: (id, size, value) => {
+  removeRule: (id, value) => {
     set((state) => {
       const ruleset = state.sets[id];
 
-      if (ruleset?.rules?.[size]) {
-        const i =
-          typeof value === "number"
-            ? value
-            : findRuleIndex(ruleset.rules[size], value);
+      const i =
+        typeof value === "number" ? value : findRuleIndex(ruleset.rules, value);
 
-        if (i !== -1) {
-          const rule = ruleset.rules[size][i];
-          ruleset.rules[size] = ruleset.rules[size].filter((r) => r !== rule);
-        }
-
-        const clone = tagRulesetSchema.parse(ruleset);
-        handleDirtyDefaults(clone, state);
+      if (i !== -1) {
+        const rule = ruleset.rules[i];
+        ruleset.rules = ruleset.rules.filter((r) => r !== rule);
       }
-      return state;
+
+      const clone = tagRulesetSchema.parse(ruleset);
+      handleDirtyDefaults(clone, state);
     });
   },
 };

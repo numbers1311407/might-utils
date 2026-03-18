@@ -41,8 +41,11 @@ export const parseTagRuleRange = (range) => {
   return [val, val];
 };
 
+const size = z.number().min(1).max(20).default([3, 6]);
+
 export const tagRuleSchema = z.object({
   id: z.nanoid().default(() => nanoid()),
+  size: z.tuple([size, size]),
   type: z.enum(["name", "level", "class", "tag", "role"]).default("tag"),
   value: z.string(),
   warden: z.enum(["Any", "0", "1", "1+", "2", "3"]).default("Any"),

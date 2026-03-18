@@ -4,8 +4,10 @@ import {
   Group,
   Modal,
   NumberInput,
+  RangeSlider,
   Select,
   Stack,
+  Text,
   TextInput,
 } from "@mantine/core";
 import * as z from "zod";
@@ -15,7 +17,7 @@ import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
-import { HelpLabel, RangeInput } from "@/core/components";
+import { HelpLabel } from "@/core/components";
 import { charSchema, tagRuleSchema } from "@/core/schemas";
 
 const typeHelp =
@@ -34,21 +36,13 @@ const rangeHelp =
   'and finally asterisk ("*") means everyone in the group.';
 
 const formSchema = tagRuleSchema.extend({
-  size: z.number({ error: "Size is required to be a number" }).int().default(1),
   value: z.union([
     z.string().min(1, { error: "Value must be present" }),
     z.number(),
   ]),
 });
 
-export const TagRuleModal = ({
-  onClose,
-  onSubmit,
-  opened,
-  rule,
-  ruleset,
-  size,
-}) => {
+export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
     <Modal
       opened={opened}
@@ -61,9 +55,8 @@ export const TagRuleModal = ({
         key={opened ? "opened" : "closed"}
         rule={rule}
         ruleset={ruleset}
-        size={size}
-        onSubmit={(size, rule) => {
-          onSubmit(size, rule);
+        onSubmit={(rule) => {
+          onSubmit(rule);
         }}
       />
     </Modal>
@@ -78,9 +71,9 @@ export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
       <TagRuleModal
         opened={opened}
         onClose={() => close()}
-        onSubmit={(size, rule) => {
+        onSubmit={(rule) => {
           close();
-          onSubmit(size, rule);
+          onSubmit(rule);
         }}
         rule={rule}
         {...props}
@@ -92,42 +85,49 @@ export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
   );
 };
 
-const TagRuleForm = ({ rule = {}, size, onSubmit }) => {
+const TagRuleForm = ({ rule = {}, onSubmit }) => {
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: formSchema
-      .partial()
-      .parse({ ...rule, size: isNaN(size) ? 1 : Number(size) }),
+    initialValues: formSchema.partial().parse(rule),
     transformValues: (values) => {
-      const { size, value, ...restValues } = values;
-
+      const { value, ...restValues } = values;
       return {
         ...restValues,
         value: String(value),
-        size: parseInt(size, 10),
       };
     },
     validate: zod4Resolver(formSchema),
   });
 
   const onFormSubmit = (values) => {
-    const { size, ...rule } = values;
-    onSubmit(size, rule);
+    onSubmit(values);
   };
 
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
       <Stack gap={6}>
-        <NumberInput
-          withAsterisk
-          label={<HelpLabel label="Size" help={sizeHelp} />}
-          description="This rule will apply to all groups from this size up, until overridden."
-          placeholder="How deep are we rolling?"
-          key={form.key("size")}
-          min={1}
-          max={20}
-          {...form.getInputProps("size")}
-        />
+        <Stack mb="lg" gap="xs">
+          <HelpLabel label="Size" help={sizeHelp} />
+          <RangeSlider
+            key={form.key("size")}
+            min={1}
+            max={20}
+            minRange={0}
+            step={1}
+            {...form.getInputProps("size")}
+            marks={[
+              { value: 1, label: 1 },
+              { value: 3, label: 3 },
+              { value: 3, label: 3 },
+              { value: 6, label: 6 },
+              { value: 9, label: 9 },
+              { value: 12, label: 12 },
+              { value: 15, label: 15 },
+              { value: 18, label: 18 },
+              { value: 20, label: 20 },
+            ]}
+          />
+        </Stack>
         <Select
           withAsterisk
           label={<HelpLabel label="Type" help={typeHelp} />}
@@ -159,11 +159,6 @@ const TagRuleForm = ({ rule = {}, size, onSubmit }) => {
           ]}
           {...form.getInputProps("warden")}
         />
-        <Group>
-          <Box flex="1">
-            <RangeInput value="2,3" />
-          </Box>
-        </Group>
         <Group justify="flex-end">
           <Button type="submit">Submit</Button>
         </Group>

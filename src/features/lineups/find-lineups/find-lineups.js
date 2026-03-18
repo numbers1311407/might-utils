@@ -53,7 +53,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     margin,
     maxLevel,
     minLevel,
-    rules = {},
+    rules = [],
     checkTags,
     ...restOptions
   } = {
@@ -126,7 +126,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     );
   }
 
-  const rulesByLineupSize = tags.prepareTagRules(maxSize, rules || {});
+  const rulesByLineupSize = tags.prepareTagRules(rules);
   const lineups = [];
   const usedNames = new Set();
 

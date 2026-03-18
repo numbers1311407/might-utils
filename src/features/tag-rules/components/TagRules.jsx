@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { IconEdit, IconX } from "@tabler/icons-react";
-import { ActionIcon, Button, Box, Group, Select, Table } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Box,
+  Grid,
+  Group,
+  Select,
+  RangeSlider,
+  Table,
+  Text,
+} from "@mantine/core";
 import classes from "./TagRules.module.css";
-import { RangeInput } from "@/core/components";
 
 import {
   useTagRulesManager,
@@ -42,6 +51,54 @@ const DeleteButton = (props) => (
   </ActionIcon>
 );
 
+const ResultsTable = ({ ruleset, newRule, api, setDraftTagRuleProps }) => {
+  const rows = ruleset.rules.map((rule) => (
+    <Table.Tr
+      key={rule.id}
+      className={newRule?.id === rule.id ? classes.highlightRow : ""}
+    >
+      <Table.Td>{rule.size.join(", ")}</Table.Td>
+      <Table.Td>{rule.type}</Table.Td>
+      <Table.Td>{rule.value}</Table.Td>
+      <Table.Td>{rule.range}</Table.Td>
+      <Table.Td>{rule.warden}</Table.Td>
+      <Table.Td>
+        <Group gap={4}>
+          <Button onClick={() => setDraftTagRuleProps({ rule, ruleset })} />
+          <DeleteButton onClick={() => api.removeCurrentRule(rule)} />
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
+  return (
+    <Table>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>Size</Table.Th>
+          <Table.Th>Type</Table.Th>
+          <Table.Th>Value</Table.Th>
+          <Table.Th>Range</Table.Th>
+          <Table.Th>Warden</Table.Th>
+          <Table.Th></Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>{rows}</Table.Tbody>
+    </Table>
+  );
+};
+
+const humanizeRule = (rule) => {
+  return (
+    <>
+      <Text size="xs">{rule.type}</Text>
+      <Text size="xs" component="span">
+        {rule.value}
+      </Text>
+      : <Text component="span">{rule.range}</Text>
+    </>
+  );
+};
+
 export const TagRules = ({ type = "filters" }) => {
   const [ruleset = {}, setRuleset, api] = useTagRulesManager(type);
   const [draftRuleset, setDraftRuleset] = useState(null);
@@ -55,38 +112,8 @@ export const TagRules = ({ type = "filters" }) => {
     }, 1200);
   };
 
-  const rows = Object.entries(ruleset.rules || []).reduce(
-    (acc, [size, rules]) =>
-      acc.concat(
-        rules.map((rule) => (
-          <Table.Tr
-            key={rule.id}
-            className={newRule?.id === rule.id ? classes.highlightRow : ""}
-          >
-            <Table.Td>{rule === rules[0] ? size : ""}</Table.Td>
-            <Table.Td>{rule.type}</Table.Td>
-            <Table.Td>{rule.value}</Table.Td>
-            <Table.Td>{rule.range}</Table.Td>
-            <Table.Td>{rule.warden}</Table.Td>
-            <Table.Td>
-              <Group gap={4}>
-                <Button
-                  onClick={() => setDraftTagRuleProps({ rule, ruleset, size })}
-                />
-                <DeleteButton
-                  onClick={() => api.removeCurrentRule(size, rule)}
-                />
-              </Group>
-            </Table.Td>
-          </Table.Tr>
-        )),
-      ),
-    [],
-  );
-
   return (
     <Box>
-      <RangeInput value="2,4" />
       <Group gap="xs" align="flex-end">
         <TagRuleSetSelect
           type={type}
@@ -143,19 +170,34 @@ export const TagRules = ({ type = "filters" }) => {
         </Button>
       </Group>
 
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Size</Table.Th>
-            <Table.Th>Type</Table.Th>
-            <Table.Th>Value</Table.Th>
-            <Table.Th>Range</Table.Th>
-            <Table.Th>Warden</Table.Th>
-            <Table.Th></Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      <Grid gutter="md" my={16}>
+        {ruleset.rules.map((rule) => (
+          <Fragment key={rule.id}>
+            <Grid.Col span={1}>{humanizeRule(rule)}</Grid.Col>
+            <Grid.Col span={10} my={8}>
+              <RangeSlider
+                min={1}
+                max={20}
+                minRange={0}
+                step={1}
+                value={rule.size}
+                marks={[
+                  { value: 1, label: 1 },
+                  { value: 3, label: 3 },
+                  { value: 3, label: 3 },
+                  { value: 6, label: 6 },
+                  { value: 9, label: 9 },
+                  { value: 12, label: 12 },
+                  { value: 15, label: 15 },
+                  { value: 18, label: 18 },
+                  { value: 20, label: 20 },
+                ]}
+              />
+            </Grid.Col>
+            <Grid.Col span={1} my={8}></Grid.Col>
+          </Fragment>
+        ))}
+      </Grid>
 
       {draftRuleset && (
         <TagRulesNameModal
@@ -177,10 +219,10 @@ export const TagRules = ({ type = "filters" }) => {
           onClose={() => {
             setDraftTagRuleProps(null);
           }}
-          onSubmit={(size, rule) => {
+          onSubmit={(rule) => {
             flashRuleRow(rule);
             setDraftTagRuleProps(null);
-            api.addCurrentRule(size, rule);
+            api.addCurrentRule(rule);
           }}
         />
       )}

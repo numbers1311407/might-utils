@@ -7,41 +7,40 @@ export * from "./humanize-tag.js";
 
 export const formatTag = (value, options = {}) => {
   const prefix =
-    { name: "n-", class: "c-", group: "g-", level: "l-" }[options.type] || "t-";
+    {
+      name: "n-",
+      class: "c-",
+      group: "g-",
+      level: "l-",
+    }[options.type] || "t-";
+
   const suffix =
-    { true: "+", 0: "+0", 1: "+1", 2: "+2", 3: "+3" }[options.warden] || "";
+    {
+      true: "+",
+      0: "+0",
+      1: "+1",
+      2: "+2",
+      3: "+3",
+    }[options.warden] || "";
+
   return `${prefix}${String(value).toLowerCase()}${suffix}`;
 };
 export const t = formatTag;
 
-export const prepareTagRules = (maxSize, ruleset) => {
-  return getNumberedArray(maxSize).reduce(
-    (acc, size) => {
-      const rules = ruleset[size];
-      // if we have new rules prepare them and replace the current set built for the
-      // previous threshold, this will be assigned to all sizes until the next set
-      // is generated.
-      if (rules) {
-        acc.current = { ...(acc.current || {}) };
-
-        // for each rule, generate a corresponding tag and parse the range value from
-        // the stored string into a range expected by the algorithm.
-        for (const rule of rules) {
-          const { type, warden: w, value: v, range: r } = rule;
-          const value = t(v, { type, warden: parseTagRuleWarden(w) });
-          // NOTE just forcing [1, 1] here for name rules since it must be so, though
-          // technically the rule *should* be "1", there's no reason to parse it.
-          acc.current[value] = type === "name" ? [1, 1] : parseTagRuleRange(r);
-        }
+export const prepareTagRules = (rules) => {
+  return [...rules]
+    .sort((a, b) =>
+      a.size[0] === b.size[0] ? a.size[1] - b.size[1] : a.size[0] - b.size[0],
+    )
+    .reduce((acc, rule) => {
+      for (const size of getNumberedArray(rule.size[0], rule.size[1])) {
+        acc[size] ||= {};
+        const { type, warden: w, value: v, range: r } = rule;
+        const value = t(v, { type, warden: parseTagRuleWarden(w) });
+        acc[size][value] ||= type === "name" ? [1, 1] : parseTagRuleRange(r);
       }
-      acc.map[size] = acc.current;
       return acc;
-    },
-    {
-      map: [],
-      current: undefined,
-    },
-  ).map;
+    }, {});
 };
 
 export const validateTagCounts = (counts, rules, size) => {

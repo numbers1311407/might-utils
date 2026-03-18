@@ -15,27 +15,25 @@ export const tagRulesetSchema = z.object({
   // 6 characters. These classifications would be displayed on lineups results and
   // incorporated into group tags.
   type: z.enum(["filters"]).default("filters"),
-  rules: z
-    .record(z.number().int(), z.array(tagRuleSchema))
-    .default({})
-    .superRefine((map, ctx) => {
-      for (const [key, rules] of Object.entries(map)) {
-        const seen = new Set();
-        rules.forEach((rule, i) => {
-          // validate that no two rules in the set have the same type & value
-          const id = `${rule.type}:${rule.value}:${rule.warden}`;
-          if (seen.has(id)) {
-            ctx.addIssue({
-              code: "custom",
-              message:
-                `Rule idx ${i} has duplicate type/value/warden with ` +
-                `${rule.type} / ${rule.value} / ${rule.warden}`,
-              path: [key, i],
-            });
-          } else {
-            seen.add(id);
-          }
-        });
-      }
-    }),
+  rules: z.array(tagRuleSchema).default([]),
+  // .superRefine((map, ctx) => {
+  //   for (const [key, rules] of Object.entries(map)) {
+  //     const seen = new Set();
+  //     rules.forEach((rule, i) => {
+  //       // validate that no two rules in the set have the same type & value
+  //       const id = `${rule.type}:${rule.value}:${rule.warden}`;
+  //       if (seen.has(id)) {
+  //         ctx.addIssue({
+  //           code: "custom",
+  //           message:
+  //             `Rule idx ${i} has duplicate type/value/warden with ` +
+  //             `${rule.type} / ${rule.value} / ${rule.warden}`,
+  //           path: [key, i],
+  //         });
+  //       } else {
+  //         seen.add(id);
+  //       }
+  //     });
+  //   }
+  // }),
 });

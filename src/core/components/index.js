@@ -4,5 +4,4 @@ export * from "./HelpIconTooltip.jsx";
 export * from "./HelpLabel.jsx";
 export * from "./LoadingPage.jsx";
 export * from "./NumberField.jsx";
-export * from "./RangeInput.jsx";
 export * from "./TagsInput.jsx";
