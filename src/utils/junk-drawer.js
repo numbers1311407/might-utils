@@ -50,3 +50,28 @@ export const capitalize = (str = "") => {
   if (!str.length) return str;
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export const formatSortedNumbers = (nums) => {
+  if (!nums || nums.length === 0) return "";
+
+  const result = [];
+  let start = nums[0];
+
+  for (let i = 0; i < nums.length; i++) {
+    if (i === nums.length - 1 || nums[i + 1] !== nums[i] + 1) {
+      const end = nums[i];
+
+      if (start === end) {
+        result.push(`${start}`);
+      } else {
+        result.push(`${start}-${end}`);
+      }
+
+      if (i < nums.length - 1) {
+        start = nums[i + 1];
+      }
+    }
+  }
+
+  return result.join(", ");
+};

@@ -28,19 +28,15 @@ export const formatTag = (value, options = {}) => {
 export const t = formatTag;
 
 export const prepareTagRules = (rules) => {
-  return [...rules]
-    .sort((a, b) =>
-      a.size[0] === b.size[0] ? a.size[1] - b.size[1] : a.size[0] - b.size[0],
-    )
-    .reduce((acc, rule) => {
-      for (const size of getNumberedArray(rule.size[0], rule.size[1])) {
-        acc[size] ||= {};
-        const { type, warden: w, value: v, range: r } = rule;
-        const value = t(v, { type, warden: parseTagRuleWarden(w) });
-        acc[size][value] ||= type === "name" ? [1, 1] : parseTagRuleRange(r);
-      }
-      return acc;
-    }, {});
+  return [...rules].reduce((acc, rule) => {
+    for (const size of getNumberedArray(rule.size[0], rule.size[1])) {
+      acc[size] ||= {};
+      const { type, warden: w, value: v, range: r } = rule;
+      const value = t(v, { type, warden: parseTagRuleWarden(w) });
+      acc[size][value] = type === "name" ? [1, 1] : parseTagRuleRange(r);
+    }
+    return acc;
+  }, {});
 };
 
 export const validateTagCounts = (counts, rules, size) => {

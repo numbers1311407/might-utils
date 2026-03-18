@@ -1,16 +1,24 @@
-const acronyms = new Set(["dps", "rdps", "mdps"]);
-
-export const humanizeTag = (tag) => {
+export const humanizeTag = (tag, typePrefix = false) => {
   const [type, value] = tag.split("-");
+  const prefix = typePrefix
+    ? {
+        c: "class ",
+        t: "tag ",
+        l: "level ",
+        n: "name ",
+      }[type] || ""
+    : "";
 
   switch (type) {
     case "c":
-      return value.toUpperCase();
-    case "t":
+      return prefix + value.toUpperCase();
     case "l":
+      return prefix + value;
+    case "n":
+      return prefix + value.replace(/^./, (l) => l.toUpperCase());
+    case "t":
+      return prefix + `"${value}"`;
     default:
-      return acronyms.has(value)
-        ? value.toUpperCase()
-        : value.replace(/^./, (l) => l.toUpperCase());
+      return prefix + value;
   }
 };

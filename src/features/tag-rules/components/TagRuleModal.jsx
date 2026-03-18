@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Group,
   Modal,
@@ -7,7 +6,6 @@ import {
   RangeSlider,
   Select,
   Stack,
-  Text,
   TextInput,
 } from "@mantine/core";
 import * as z from "zod";
@@ -19,6 +17,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { HelpLabel } from "@/core/components";
 import { charSchema, tagRuleSchema } from "@/core/schemas";
+import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 
 const typeHelp =
   "Rules work by counting character tags or attributes like level & class, and requiring that the " +
@@ -26,9 +25,9 @@ const typeHelp =
   "range is always 1.";
 
 const sizeHelp =
-  "Size is the number of characters required in the lineup for the rule to apply. The important thing " +
-  "to understand about size is that rules of lower size merge upwards into rules of higher size until " +
-  "they're overridden by a rule with the same type & value.";
+  "The size range defines each group size for which this rule applies. Each size can only have one " +
+  "rule per combination of type, value, and warden requirement. If a conflict is found, the rule with " +
+  "the higher size range will take precedence.";
 
 const rangeHelp =
   'A single number ("1") represents an exact count. Appending +/- ("1+" or "1-") would mean at least 1 ' +
@@ -108,24 +107,10 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
       <Stack gap={6}>
         <Stack mb="lg" gap="xs">
           <HelpLabel label="Size" help={sizeHelp} />
-          <RangeSlider
+          <TagRuleSizeSlider
             key={form.key("size")}
-            min={1}
-            max={20}
-            minRange={0}
-            step={1}
-            {...form.getInputProps("size")}
-            marks={[
-              { value: 1, label: 1 },
-              { value: 3, label: 3 },
-              { value: 3, label: 3 },
-              { value: 6, label: 6 },
-              { value: 9, label: 9 },
-              { value: 12, label: 12 },
-              { value: 15, label: 15 },
-              { value: 18, label: 18 },
-              { value: 20, label: 20 },
-            ]}
+            onChange={(value) => form.setFieldValue("size", value)}
+            value={form.values.size}
           />
         </Stack>
         <Select
@@ -198,6 +183,7 @@ const ValueField = ({ form }) => {
         description="Class of the characters required by this rule."
         searchable
         data={charSchema.shape.class.options}
+        {...props}
       />
     );
   } else if (state === "level") {
@@ -248,7 +234,7 @@ const RangeField = ({ form }) => {
       withAsterisk
       disabled={disabled}
       description="Count of characters who must fulfill this rule."
-      label={<HelpLabel label="Range" help={rangeHelp} />}
+      label={<HelpLabel label="Count" help={rangeHelp} />}
       {...form.getInputProps("range")}
     />
   );

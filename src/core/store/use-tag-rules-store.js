@@ -2,7 +2,6 @@ import { deepEqual } from "fast-equals";
 import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
-import { current } from "immer";
 
 const findRuleIndex = (rules, { id }) => {
   return rules.findIndex((r) => r.id === id);
@@ -174,6 +173,18 @@ export const useTagRulesStoreApi = {
 
       const clone = tagRulesetSchema.parse(ruleset);
       handleDirtyDefaults(clone, state);
+    });
+  },
+
+  sortRuleset: (id) => {
+    set((state) => {
+      const ruleset = state.sets[id];
+
+      if (ruleset) {
+        const clone = tagRulesetSchema.parse(ruleset);
+        state.sets[id] = clone;
+        handleDirtyDefaults(clone, state);
+      }
     });
   },
 };

@@ -3,17 +3,19 @@ import { useCallback, useState } from "react";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 
-// TODO this defaults code needs to be lifted up and improved
 const defaultIdMap = {
   filters: [defaultFiltersTagRules.id],
 };
 const defaultIds = Object.values(defaultIdMap).flat();
 
 export const useTagRulesManager = (type, initialId) => {
-  const defaultId = defaultIdMap[type]?.[0];
-  const [currentId, setCurrentId] = useState(initialId || defaultId);
-  const current = useTagRulesStore((store) => store.sets[currentId]);
   const active = useTagRulesStore((store) => store.active[type] || []);
+  const firstActiveId = active[0];
+  const defaultId = defaultIdMap[type]?.[0];
+  const [currentId, setCurrentId] = useState(
+    initialId || firstActiveId || defaultId,
+  );
+  const current = useTagRulesStore((store) => store.sets[currentId]);
   const currentDefaultDirty = useTagRulesStore((store) =>
     store.dirtyDefaults.includes(currentId),
   );
@@ -56,15 +58,15 @@ export const useTagRulesManager = (type, initialId) => {
   }, [currentId, defaultId]);
 
   const addCurrentRule = useCallback(
-    (size, rule) => {
-      api.addRule(currentId, size, rule);
+    (rule) => {
+      api.addRule(currentId, rule);
     },
     [currentId],
   );
 
   const removeCurrentRule = useCallback(
-    (size, rule) => {
-      api.removeRule(currentId, size, rule);
+    (rule) => {
+      api.removeRule(currentId, rule);
     },
     [currentId],
   );
@@ -86,6 +88,10 @@ export const useTagRulesManager = (type, initialId) => {
     api.deactivate(currentId);
   }, [currentId]);
 
+  const sortCurrent = useCallback(() => {
+    api.sortRuleset(currentId);
+  }, [currentId]);
+
   return [
     current,
     setCurrent,
@@ -100,6 +106,7 @@ export const useTagRulesManager = (type, initialId) => {
       removeCurrent,
       removeCurrentRule,
       renameCurrent,
+      sortCurrent,
     },
   ];
 };

@@ -5,6 +5,18 @@ export const tagRuleRangeRegex = /^(\*)$|^(\d+)([+-])?$|^(\d+)-(\d+)$/;
 
 const ALL = "*";
 
+export const abbreviateTagRuleType = (type) => {
+  return (
+    {
+      name: "NAM",
+      type: "TYP",
+      level: "LVL",
+      class: "CLS",
+      tag: "TAG",
+    }[type] || type
+  );
+};
+
 export const parseTagRuleWarden = (warden) =>
   ({
     Any: "",
