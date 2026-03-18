@@ -45,7 +45,7 @@ export const TagRulesetPreview = ({ ruleset }) => {
       <Flex mx={-6}>
         <HoverCard.Group openDelay={200}>
           {getNumberedArray(1, 20).map((size) => (
-            <HoverCard width={220} shadow="md" key={size}>
+            <HoverCard width={270} shadow="md" key={size}>
               <HoverCard.Target>
                 <UnstyledButton flex="0 0 5%" ta="center">
                   <Text td={preparedRules[size] && "underline"} size="sm">
