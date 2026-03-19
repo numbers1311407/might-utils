@@ -2,7 +2,7 @@ import { Flex } from "@mantine/core";
 import { NumberField } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
-import { GroupSelect } from "./GroupSelect.jsx";
+import { ResultsGroupingSelect } from "./ResultsGroupingSelect.jsx";
 
 export const LineupOptionInput = ({ option, ...restProps }) => {
   const setOption = useLineupsStore((store) => store.setOption);
@@ -94,8 +94,8 @@ export const LineupsControls = () => {
         <MaxLevelInput flex="1 1 120px" />
         <MinSizeInput flex="1 1 120px" />
         <MaxSizeInput flex="1 1 120px" />
+        <ResultsGroupingSelect flex="1 1 120px" />
       </Flex>
-      <GroupSelect />
     </>
   );
 };

@@ -24,6 +24,14 @@ const groupTagsOptions = {
   tag: (id) => tgapi.get(id)?.tags.map(formatTag),
 };
 
+const getGroupTagsOption = (groupBy) => {
+  const [group, ...groupArgs] = groupBy?.split(":") || ["none"];
+
+  return typeof groupTagsOptions[group] === "function"
+    ? groupTagsOptions[group](...groupArgs)
+    : groupTagsOptions[group];
+};
+
 export const LineupsContextProvider = ({ children }) => {
   const lineupsOptions = useLineupsStore((store) => store.options);
   const classTags = useClassTagsStore((store) => store.tags);
@@ -33,18 +41,12 @@ export const LineupsContextProvider = ({ children }) => {
 
   const [targetScore, options] = useMemo(() => {
     const { targetScore, groupBy, ...restOptions } = lineupsOptions;
-    const [group, groupArg] = groupBy?.split(":") || ["none"];
-
-    const tagGroups =
-      typeof groupTagsOptions[group] === "function"
-        ? groupTagsOptions[group](groupArg)
-        : groupTagsOptions[group];
 
     return [
       targetScore,
       {
         ...restOptions,
-        tagGroups,
+        tagGroups: getGroupTagsOption(groupBy),
         rules,
         classTags,
       },
