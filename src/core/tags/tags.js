@@ -1,6 +1,5 @@
 import { getNumberedArray, countKeys } from "@/utils";
 import { Warden } from "@/core/config/warden";
-import { defaultClassTags } from "@/core/config/defaults";
 import { parseTagRuleWarden, parseTagRuleRange } from "@/core/schemas";
 import {
   ALL_RANGE_LITERAL,
@@ -79,13 +78,9 @@ export const generateTagCounts = (lineup) => {
 
 const validWardenRanks = Warden.Ranks.map(({ rank }) => rank);
 export const generateCharacterTags = (char, options = {}) => {
-  const {
-    warden = char.warden,
-    classTags = defaultClassTags,
-    tagGroups,
-  } = options;
+  const { warden = char.warden, classTags, tagGroups } = options;
 
-  const ntags = [...(classTags[char.class] || []), ...(char.tags || [])];
+  const ntags = [...(classTags?.[char.class] || []), ...(char.tags || [])];
 
   const tags = [
     t(char.name, { type: "name" }),
@@ -145,6 +140,7 @@ export const getGroupTag = (tagGroups, char, tags, options = {}) => {
   // effectively merging the tags and relying on the initial type prefix. This just makes
   // the tag a little more straightforward to parse later.
   const tag = assigned
+    .sort()
     .map((t, i) => {
       return i === 0 ? t : t.split(TYPE_DELIMITER)[1];
     })

@@ -6,8 +6,17 @@ import {
   MightMaxLevel,
   MightMinLevel,
 } from "@/core/config";
+import { charClassSchema } from "@/core/schemas";
+import { getNumberedArray } from "@/utils";
 
 const MaxFindLineupsRecursions = 5_000_000;
+
+const groupingTags = {
+  level: getNumberedArray(MightMinLevel, MightMaxLevel).map((level) =>
+    tags.t(level, { type: "level" }),
+  ),
+  class: charClassSchema.options.map((cls) => tags.t(cls, { type: "class" })),
+};
 
 const sortLineups = (lineups) =>
   lineups.slice().sort((a, b) => {
@@ -25,12 +34,14 @@ export const defaultOptions = {
   maxSize: 12,
   margin: 0,
   checkTags: true,
+  distinctTagGroups: false,
 };
 
 export const findLineups = (roster, targetScore, options = {}) => {
   const {
     classTags = {},
-    tagGroups = [],
+    tagGroups,
+    distinctTagGroups,
     margin,
     maxLevel,
     minLevel,
@@ -63,14 +74,14 @@ export const findLineups = (roster, targetScore, options = {}) => {
     .filter(({ level, active }) => {
       return active && level >= minLevel && level <= maxLevel;
     })
+    // transform characters to "slots" which may represent the same character
+    // repeatedly through warden options (and later multi tags)
     .filter((char) => {
-      // TODO better validation (and/or more flexibility) for roster characters.
       if (!char.class) {
         throw new Error("all roster characters must have a class property");
       }
       return true;
     })
-    // reduce to object array and inject warden options
     .reduce((acc, char) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
@@ -82,17 +93,92 @@ export const findLineups = (roster, targetScore, options = {}) => {
             ...char,
             score: score * mightMultiplier,
             warden,
-            tags: tags.generateCharacterTags(char, {
-              warden,
-              classTags,
-              tagGroups,
-            }),
+            tags: [
+              // note merging of class tags still happens in tag generation if the
+              // classTags option is passed, but it was moved to be done ahead of time
+              // here to solve some order issues in generating group tags.
+              ...(classTags?.[char.class] || []),
+              ...(char.tags || []),
+            ],
           });
         }
       }
 
       return acc;
     }, [])
+    // reduce to validate tag type tag grouping and inject multi-tag slot alternates
+    // if the grouping is distinct (1 given tag per character per slot)
+    .reduce((acc, slot) => {
+      // special behavior is only required here if tagGroups is an array, meaning
+      // it's an array of user-editable "tag" type tags. The other grouping
+      // options (level, class, etc?) are static and guarantee 1 tag per char.
+      if (!tagGroups?.length || !Array.isArray(tagGroups)) {
+        return [...acc, slot];
+      }
+
+      // find the tags specified assigned to the character
+      const gtags = slot.tags.filter((tag) => tagGroups.includes(tag));
+      // If the character has none of the grouping tags, throw. Having at least
+      // one of the tags is required so all characters can be grouped.
+      if (gtags.length === 0) {
+        throw new Error(
+          `all characters must have at least 1 tag in the "tagGroups" option, ` +
+            `found "${slot.name}" has none of [${tagGroups.join(", ")}], found [${slot.tags.join(", ")}]`,
+        );
+      }
+
+      // If the character has one of the grouping tags, or the options don't specify
+      // distinct tag groups, continue normally
+      if (!distinctTagGroups || gtags.length === 1) {
+        return [...acc, slot];
+      }
+
+      // Otherwise we need to break this character up into distinct alternate roster
+      // slots, 1 per group tag.
+      //
+      // For context, the difference is in how you want to treat characters that are
+      // assigned multiple tags. Can they represent both tags at once, or not? A realistic
+      // scenario might be a mage tank. Normally a mage is DPS, but when functioning
+      // as a tank you're probably using a tank pet and prioritizing heals, and perhaps
+      // they should no longer count toward your "DPS" tag requirements.
+      //
+      // Or maybe they still do rockin DPS and can perform both "tank" and "DPS" roles
+      // at once.
+      //
+      // If the `distinctTagGroups` option is passed, the algorithm will create two+
+      // virtual roster slots for the character, each only keeping one of the grouping
+      // tags and removing the others, effectively creating a roster slot for a mage
+      // in this case which is a "tank" but NOT "dps", and vice-versa.
+      //
+      // If the `distinctTagGroups` option is NOT true. The mage will still be allowed
+      // to occupy both roles. Groups that have characters with multi-tags will have
+      // this reflected in their makeup, with dual characters being identified in the
+      // tags, i.e. if the mage was included, the grouped comp would have a "dps/tank"
+      // tagged slot.
+      for (const gtag of gtags) {
+        acc.push({
+          ...slot,
+          tags: slot.tags.filter(
+            (tag) => tag === gtag || !tagGroups.includes(tag),
+          ),
+        });
+      }
+      return acc;
+    }, [])
+    // do one last pass here generating full tags for each slot
+    .map((slot) => {
+      const derivedTagGroups = Array.isArray(tagGroups)
+        ? tagGroups.map(tags.t)
+        : groupingTags[tagGroups];
+
+      return {
+        ...slot,
+        tags: tags.generateCharacterTags(slot, {
+          warden: slot.warden,
+          tagGroups: derivedTagGroups,
+        }),
+      };
+    })
     .sort((a, b) => a.score - b.score);
 
   // TODO consider more prechecks that could be done up front to exit early if the search is impossible,

@@ -5,23 +5,15 @@ import {
   useTagRulesActiveFilters,
   useTagGroupsStoreApi as tgapi,
 } from "@/core/store";
-import { MightMaxLevel, MightMinLevel } from "@/core/config";
-import { getNumberedArray } from "@/utils";
-import { charClassSchema } from "@/core/schemas";
-import { formatTag } from "@/core/tags";
 import { findLineupsAsync } from "../find-lineups";
 import { useLineupsStore } from "../store.js";
 import { LineupsContext } from "../context.js";
 
 const groupTagsOptions = {
   none: undefined,
-  level: getNumberedArray(MightMinLevel, MightMaxLevel).map((level) =>
-    formatTag(level, { type: "level" }),
-  ),
-  class: charClassSchema.options.map((cls) =>
-    formatTag(cls, { type: "class" }),
-  ),
-  tag: (id) => tgapi.get(id)?.tags.map(formatTag),
+  level: "level",
+  class: "class",
+  tag: (id) => tgapi.get(id)?.tags,
 };
 
 const getGroupTagsOption = (groupBy) => {
