@@ -16,7 +16,7 @@ import { useForm } from "@mantine/form";
 
 import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
-import { charSchema } from "@/core/schemas";
+import { charSchema, tagSchema } from "@/core/schemas";
 import { useClassTagsStore } from "@/core/store";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 
@@ -66,6 +66,7 @@ export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
 
 const RosterCharForm = ({ char, onSubmit, roster }) => {
   const classTags = useClassTagsStore((store) => store.tags);
+  const [tagsError, setTagsError] = useState(null);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -108,6 +109,16 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
   const addTag = (tag) => {
     tag = tag.toLowerCase();
     const tags = form.getValues()?.tags || [];
+
+    const result = tagSchema.safeParse(tag);
+
+    if (!result.success) {
+      setTagsError(result.error.issues[0].message);
+      return;
+    }
+
+    setTagsError(null);
+
     if (!tags.includes(tag)) {
       form.insertListItem("tags", tag);
     }
@@ -181,7 +192,13 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           addTag={addTag}
           lockedTags={lockedTags}
           key={form.key("tags")}
+          // NOTE This input does not accept onChange, rather addTag and removeTag combined
+          // manage the tag state
           {...form.getInputProps("tags")}
+          onKeyDown={() => {
+            setTagsError(null);
+          }}
+          error={tagsError || form.errors.tags}
         />
         <Checkbox
           label="Active (include in lineups results)"

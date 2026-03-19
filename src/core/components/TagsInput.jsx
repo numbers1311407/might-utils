@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Pill, PillsInput } from "@mantine/core";
+import { ZodError } from "zod";
 
 export const TagsInput = ({
   label,
+  error: propsError,
   defaultValue,
   value: tags = defaultValue,
   lockedTags = [],
   removeTag,
   addTag,
   onKeyDown: propsOnKeyDown,
+  onChange: propsOnChange,
   ...restProps
 }) => {
+  const [error, setError] = useState(null);
   const [value, setValue] = useState("");
   const allTags = [...lockedTags, ...tags];
   const tagPills = allTags.map((tag, i) => {
@@ -27,8 +31,24 @@ export const TagsInput = ({
     );
   });
 
+  // NOTE this catch is here as a bit of a safety net, if there's no
+  // validation upstream before hitting the store directly. In typical
+  // forms it's still going to be better to handle validation in the
+  // form state.
+  const addTagWithCatch = (tag) => {
+    try {
+      addTag(tag);
+    } catch (e) {
+      if (e instanceof ZodError) {
+        setError(e.issues?.[0]?.message || "The entered tag is invalid");
+      } else {
+        setError("An unknown error has occurred");
+      }
+    }
+  };
+
   return (
-    <PillsInput label={label} {...restProps}>
+    <PillsInput label={label} error={error || propsError} {...restProps}>
       <Pill.Group>
         {tagPills}
         <PillsInput.Field
@@ -40,6 +60,7 @@ export const TagsInput = ({
           onKeyDown={(e) => {
             e.stopPropagation();
             propsOnKeyDown?.(e);
+            setError(null);
 
             if (
               e.key === "Backspace" &&
@@ -54,7 +75,7 @@ export const TagsInput = ({
             ) {
               e.preventDefault();
               if (!allTags.includes(value.toLowerCase())) {
-                addTag(value.toLowerCase(), e);
+                addTagWithCatch(value.toLowerCase(), e);
               }
               setValue("");
             } else if (e.code === "Space") {

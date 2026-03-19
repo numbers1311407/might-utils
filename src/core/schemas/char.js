@@ -2,7 +2,8 @@ import * as z from "zod";
 import { nanoid } from "nanoid";
 import { capitalize } from "@/utils";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
-import { charClassSchema } from "./char-class";
+import { charClassSchema } from "./char-class.js";
+import { tagSchema } from "./tag.js";
 
 const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
 
@@ -20,6 +21,6 @@ export const charSchema = z.object({
       message: "Name is required",
     })
     .transform(capitalize),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(tagSchema).default([]),
   warden: z.coerce.number().min(0).max(3).default(0),
 });

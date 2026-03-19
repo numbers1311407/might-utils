@@ -1,30 +1,13 @@
-import { useState } from "react";
 import { ActionIcon, Box, Button, Flex, Stack } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import { useClassTagsStore } from "@/core/store";
 import { ClassIcon, TagsInput } from "@/core/components";
-import { ZodError } from "zod";
 
 export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
-  const [error, setError] = useState(null);
-
-  const addTagWithCatch = (tag) => {
-    try {
-      addTag(tag);
-    } catch (e) {
-      if (e instanceof ZodError) {
-        setError(e.issues?.[0]?.message || "Invalid tag");
-      } else {
-        setError("An unknown error has occurred");
-      }
-    }
-  };
-
   return (
     <TagsInput
-      error={error}
       value={tags}
-      addTag={addTagWithCatch}
+      addTag={addTag}
       removeTag={removeTag}
       label={
         <Flex align="center" gap="xs">
@@ -32,9 +15,6 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
           {cls}
         </Flex>
       }
-      onKeyDown={() => {
-        setError(null);
-      }}
       rightSection={
         <ActionIcon
           aria-label="Reset to default tags"
