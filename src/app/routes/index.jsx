@@ -1,6 +1,7 @@
 import { Route } from "wouter";
 import { Lineups } from "@/features/lineups";
 import { ClassTags } from "@/features/class-tags";
+import { TagGroups } from "@/features/tag-groups";
 import { TagRules } from "@/features/tag-rules";
 import { Roster } from "@/features/roster";
 
@@ -18,6 +19,9 @@ export const Routes = () => {
       </Route>
       <Route path="/class-tags">
         <ClassTags />
+      </Route>
+      <Route path="/tag-groups">
+        <TagGroups />
       </Route>
     </>
   );

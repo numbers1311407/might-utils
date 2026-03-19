@@ -97,12 +97,14 @@ export const useTagRulesStoreApi = {
 
   addSet: (ruleset, done) => {
     const clone = tagRulesetSchema.parse(ruleset);
+    const id = clone.id;
 
     set((state) => {
-      state.sets[clone.id] = clone;
+      state.sets[id] = clone;
       handleDirtyDefaults(clone, state);
-      done?.(clone);
     });
+
+    done?.(get().getSet(id));
   },
 
   removeSet: (id) => {

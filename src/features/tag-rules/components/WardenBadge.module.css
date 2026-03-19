@@ -2,12 +2,6 @@
   font-family: var(--mantine-font-family-monospace);
 }
 
-.warden-rank-any {
-}
-
-.warden-rank-active {
-}
-
 .warden-rank-1 {
   border: 1px solid #cd7f32;
 }

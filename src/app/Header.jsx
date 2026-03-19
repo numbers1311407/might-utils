@@ -69,6 +69,7 @@ export const Header = () => {
           <Tabs.Tab value="roster">Roster</Tabs.Tab>
           <Tabs.Tab value="class-tags">Class Tags</Tabs.Tab>
           <Tabs.Tab value="tag-rules">Tag Rules</Tabs.Tab>
+          <Tabs.Tab value="tag-groups">Tag Groups</Tabs.Tab>
         </Tabs.List>
       </Tabs>
     </AppShell.Header>
