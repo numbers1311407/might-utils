@@ -34,6 +34,13 @@ const rangeHelp =
   'or at most 1, respectively. A range is expressed with a hyphen, e.g. "1-3" would mean between 1 and 3. ' +
   'and finally asterisk ("*") means everyone in the group.';
 
+const wardenHelp =
+  "Rules can specify warden status, but it's important to note that this increases the specificity of the rule. " +
+  'For instance you can specify exactly 1 "tank" with rank 2, but that will not affect inclusion of ' +
+  "tanks with different status. This is by design for flexibility. If you want to require exactly " +
+  "1 tank with a specific warden status, you need two rules: one requiring a tank with warden X, and " +
+  'one requiring 1 tank of "Any" warden status.';
+
 const formSchema = tagRuleSchema.extend({
   value: z.union([tagSchema, z.number()]),
 });
@@ -128,7 +135,7 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
         <RangeField form={form} />
         <Select
           key={form.key("warden")}
-          label="Warden Status"
+          label={<HelpLabel label="Warden Status" help={wardenHelp} />}
           placeholder="Got warden?"
           description="Should this rule require warden or a specific warden rank?"
           data={[
