@@ -9,7 +9,7 @@ export const defaultClassTags = {
   MNK: ["dps", "mdps", "leather"],
   NEC: ["dps", "rdps", "cloth", "pet"],
   PAL: ["tank", "plate", "hybrid"],
-  RNG: ["dps", "rdps", "chain", "hybrid"],
+  RNG: ["dps", "mdps", "rdps", "chain", "hybrid"],
   ROG: ["dps", "mdps", "chain"],
   SHD: ["tank", "plate", "hybrid"],
   SHM: ["healer", "chain"],

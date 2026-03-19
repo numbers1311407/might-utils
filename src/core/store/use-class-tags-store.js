@@ -1,5 +1,14 @@
 import { createStore } from "@/utils";
+import { charClassSchema, tagSchema } from "@/core/schemas";
 import { defaultClassTags } from "@/core/config/defaults";
+
+const isValidClass = (cls) => {
+  return !!cls && charClassSchema.options.includes(cls);
+};
+
+const parseTag = (tag) => {
+  return tagSchema.parse(tag);
+};
 
 export const useClassTagsStore = createStore(
   "might-utils-class-tags",
@@ -7,21 +16,21 @@ export const useClassTagsStore = createStore(
     tags: { ...defaultClassTags },
     setClassTags: (cls, clsTags) => {
       set(({ tags }) => {
-        if (!tags[cls]) throw "invalid class";
-        tags[cls] = clsTags ?? [...defaultClassTags[cls]];
+        if (!isValidClass(cls)) throw "invalid class";
+        tags[cls] = (clsTags ?? [...defaultClassTags[cls]]).map(parseTag);
       });
     },
     removeClassTag: (cls, tag) => {
       set(({ tags }) => {
-        if (!tags[cls]) throw "invalid class";
+        if (!isValidClass(cls)) throw "invalid class";
         tags[cls] = tags[cls].filter((t) => t !== tag);
       });
     },
     addClassTag: (cls, tag) => {
       set(({ tags }) => {
-        if (!tags[cls]) throw "invalid class";
+        if (!isValidClass(cls)) throw "invalid class";
         if (tags[cls].indexOf(tag) === -1) {
-          tags[cls].push(tag);
+          tags[cls].push(parseTag(tag));
         }
       });
     },

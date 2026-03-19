@@ -8,6 +8,7 @@ export const TagsInput = ({
   lockedTags = [],
   removeTag,
   addTag,
+  onKeyDown: propsOnKeyDown,
   ...restProps
 }) => {
   const [value, setValue] = useState("");
@@ -38,6 +39,7 @@ export const TagsInput = ({
           }}
           onKeyDown={(e) => {
             e.stopPropagation();
+            propsOnKeyDown?.(e);
 
             if (
               e.key === "Backspace" &&
