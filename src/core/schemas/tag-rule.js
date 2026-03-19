@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import * as z from "zod";
+import { tagSchema } from "./tag.js";
 
 export const tagRuleRangeRegex = /^(\*)$|^(\d+)([+-])?$|^(\d+)-(\d+)$/;
 
@@ -59,7 +60,7 @@ export const tagRuleSchema = z.object({
   id: z.nanoid().default(() => nanoid()),
   size: z.tuple([size, size]),
   type: z.enum(["name", "level", "class", "tag", "role"]).default("tag"),
-  value: z.string(),
+  value: tagSchema,
   warden: z.enum(["Any", "0", "1", "1+", "2", "3"]).default("Any"),
   range: z
     .string()

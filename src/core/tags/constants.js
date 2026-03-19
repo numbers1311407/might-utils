@@ -1,0 +1,11 @@
+export const TYPE_DELIMITER = "|";
+export const WARDEN_DELIMITER = "+";
+export const ALL_RANGE_LITERAL = "*";
+export const MULTI_GROUP_TAG_DELIMITER = "/";
+export const GROUP_TAG_DELIMITER = ":";
+export const GROUP_TAG_KEY_DELIMITER = ";";
+export const TYPE_PREFIX_NAME = "n";
+export const TYPE_PREFIX_LEVEL = "l";
+export const TYPE_PREFIX_TAG = "t";
+export const TYPE_PREFIX_GROUP = "g";
+export const TYPE_PREFIX_CLASS = "c";

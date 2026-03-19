@@ -1,24 +1,12 @@
 import { useMemo } from "react";
 import { Table, Text, Container } from "@mantine/core";
-import { humanizeTag } from "@/core/tags";
+import { humanizeTag, humanizeGroupTag } from "@/core/tags";
 import { useFindLineupsResults } from "../hooks";
 
-const getGroupTitle = (group) => {
-  return group
-    .split(";")
-    .map((t) => {
-      const [tag, levelr, count] = t.split(":");
-      const [level, rank] = levelr.split("+");
-      const isLevelTag = tag.startsWith("l-");
-      return `${count} ${isLevelTag ? "Level" : humanizeTag(tag)} ${level}${rank === "0" ? "" : `rk${rank}`}`;
-    })
-    .join(", ");
-};
-
 const GroupedLineups = ({ groups }) => {
-  return groups.map(([group, lineups]) => (
-    <Container key={group}>
-      <Text px="xs">{getGroupTitle(group)}</Text>
+  return groups.map(([groupTag, lineups]) => (
+    <Container key={groupTag}>
+      <Text px="xs">{humanizeGroupTag(groupTag)}</Text>
       <LineupsTable lineups={lineups} />
     </Container>
   ));

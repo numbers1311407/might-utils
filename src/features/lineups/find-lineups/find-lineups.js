@@ -17,14 +17,6 @@ const sortLineups = (lineups) =>
 const sortLineup = (lineup) =>
   lineup.slice().sort((a, b) => a.name.localeCompare(b.name));
 
-const getTagGroupKey = (tagCounts) => {
-  return Object.entries(tagCounts)
-    .filter(([tag]) => tag.startsWith("g-"))
-    .map(([tag, count]) => [tag.replace(/^g-/, ""), count].join(":"))
-    .sort()
-    .join(";");
-};
-
 export const defaultOptions = {
   targetScore: 1250,
   minLevel: MightMinLevel,
@@ -153,7 +145,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
         };
 
         if (useTagGroups) {
-          lu.group = getTagGroupKey(tagCounts);
+          lu.group = tags.getTagGroupKey(tagCounts);
         }
 
         // push the completed linup and end this branch
