@@ -16,7 +16,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { HelpLabel } from "@/core/components";
-import { charSchema, tagRuleSchema } from "@/core/schemas";
+import { charSchema, tagRuleSchema, tagSchema } from "@/core/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 
 const typeHelp =
@@ -35,10 +35,7 @@ const rangeHelp =
   'and finally asterisk ("*") means everyone in the group.';
 
 const formSchema = tagRuleSchema.extend({
-  value: z.union([
-    z.string().min(1, { error: "Value must be present" }),
-    z.number(),
-  ]),
+  value: z.union([tagSchema, z.number()]),
 });
 
 export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
