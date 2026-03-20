@@ -1,4 +1,4 @@
-import { createStore } from "@/utils";
+import { createStore } from "./helpers";
 import { defaultRoster } from "@/core/config/defaults";
 import { rosterSchema, charSchema } from "@/core/schemas";
 
@@ -23,7 +23,9 @@ export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
   addChar: (char) => {
     set((state) => {
       if (!state.roster.find(({ name }) => char.name === name)) {
-        state.roster = [...state.roster, charSchema.parse(char)].sort(rosterSort);
+        state.roster = [...state.roster, charSchema.parse(char)].sort(
+          rosterSort,
+        );
       }
     });
   },

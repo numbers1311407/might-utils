@@ -1,7 +1,7 @@
 import { deepEqual } from "fast-equals";
-import { createStore } from "@/utils";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
+import { createStore } from "./helpers";
 
 const findRuleIndex = (rules, { id }) => {
   return rules.findIndex((r) => r.id === id);

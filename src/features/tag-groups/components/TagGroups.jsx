@@ -34,7 +34,7 @@ export const TagGroup = ({
 };
 
 export const TagGroups = () => {
-  const groups = useTagGroupsStore((store) => store.groups);
+  const groups = useTagGroupsStore((store) => store.registry);
   const [currentGroup, setCurrentGroup] = useState(null);
 
   const closeModal = () => setCurrentGroup(null);
