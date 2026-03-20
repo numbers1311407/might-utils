@@ -41,7 +41,7 @@ export const TagRulesetPreview = ({ ruleset }) => {
 
   return (
     <Box>
-      <Text>Hover these links for per-size summaries</Text>
+      <Text>Hover these numbers for rule summaries:</Text>
       <Flex mx={-6}>
         <HoverCard.Group openDelay={200}>
           {getNumberedArray(1, 20).map((size) => (
@@ -55,7 +55,7 @@ export const TagRulesetPreview = ({ ruleset }) => {
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Text size="sm" mb="sm">
-                  A group of size {size} requires:
+                  A squad of size {size} requires:
                 </Text>
                 <RulesList rules={preparedRules[size]} />
               </HoverCard.Dropdown>

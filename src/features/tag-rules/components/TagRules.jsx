@@ -167,7 +167,7 @@ export const TagRules = ({ type = "filters" }) => {
         <Grid.Col span={2}></Grid.Col>
         <Grid.Col span={3}>Rules</Grid.Col>
         <Grid.Col span={7}>
-          <Text>Group Sizes Applied</Text>
+          <Text>Squad Sizes</Text>
         </Grid.Col>
         <Grid.Col span={2}></Grid.Col>
         {ruleset.rules.map((rule) => (
