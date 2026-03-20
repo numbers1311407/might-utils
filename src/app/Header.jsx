@@ -13,7 +13,7 @@ import { ColorSchemeButton } from "@/core/components";
 import { useRoute, Link, useLocation } from "wouter";
 import classes from "./Header.module.css";
 
-const useTabNavigation = (defaultTab = "lineups") => {
+const useTabNavigation = (defaultTab = "find-squads") => {
   const [, params] = useRoute("/:page?");
   const [, navigate] = useLocation();
   const value = params?.["page"] || defaultTab;
@@ -28,7 +28,7 @@ const useTabNavigation = (defaultTab = "lineups") => {
 };
 
 export const Header = () => {
-  const defaultTab = "lineups";
+  const defaultTab = "find-squads";
   const tabProps = useTabNavigation(defaultTab);
 
   return (
@@ -65,7 +65,7 @@ export const Header = () => {
       </Flex>
       <Tabs {...tabProps}>
         <Tabs.List px={4}>
-          <Tabs.Tab value={defaultTab}>Find Lineups</Tabs.Tab>
+          <Tabs.Tab value={defaultTab}>Find Squads</Tabs.Tab>
           <Tabs.Tab value="roster">Roster</Tabs.Tab>
           <Tabs.Tab value="class-tags">Class Tags</Tabs.Tab>
           <Tabs.Tab value="tag-rules">Tag Rules</Tabs.Tab>

@@ -201,7 +201,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           error={tagsError || form.errors.tags}
         />
         <Checkbox
-          label="Active (include in lineups results)"
+          label="Active (eligible for squad finder)"
           key={form.key("active")}
           {...form.getInputProps("active", { type: "checkbox" })}
         />
