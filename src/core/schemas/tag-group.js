@@ -8,7 +8,10 @@ export const tagGroupSchema = z.object({
     z.literal("defaults-roles"),
     z.literal("defaults-roles-split"),
   ]),
-  name: z.string(),
-  tags: z.array(tagSchema).default([]),
+  name: z.string().min(1, { message: "Name is required" }),
+  tags: z
+    .array(tagSchema)
+    .min(2, { message: "Must contain at least 2 tags" })
+    .default([]),
   active: z.boolean().default(true),
 });

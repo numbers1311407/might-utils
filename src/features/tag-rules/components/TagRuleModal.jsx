@@ -3,7 +3,6 @@ import {
   Group,
   Modal,
   NumberInput,
-  RangeSlider,
   Select,
   Stack,
   TextInput,

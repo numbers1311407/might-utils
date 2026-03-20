@@ -29,19 +29,46 @@ export const useTagGroupsStore = createStore("might-utils-tag-groups", () => ({
 }));
 
 const { getState: get, setState: set } = useTagGroupsStore;
-export const useTagGroupsStoreApi = {
-  nameAvailable: (name) => {
-    const used = Object.values(get().groups).map((group) =>
-      group.name.toLowerCase(),
-    );
+const api = {
+  nameAvailable: (group) => {
+    let name;
+    if (typeof group === "string") {
+      name = group;
+      group = null;
+    } else {
+      name = group.name;
+    }
+    const used = Object.values(get().groups)
+      .filter((g) => !group || g.id !== group.id)
+      .map((g) => g.name.toLowerCase());
+
     return !used.includes(name.toLowerCase());
   },
 
-  restoreDefaultGroup: (id) => {
+  isRemovable: (group) => {
+    return !api.isDefault(group);
+  },
+
+  isDefault: (group) => {
+    const id = typeof group === "string" ? group : group?.id;
+    return !!id && id in defaults;
+  },
+
+  isDirtyDefault: (group) => {
+    const id = typeof group === "string" ? group : group?.id;
+    return api.isDefault(group) && !deepEqual(defaults[id], group);
+  },
+
+  isNew: (group) => {
+    return !group?.id || !(group.id in get().groups);
+  },
+
+  resetDefault: (group) => {
+    const id = typeof group === "string" ? group : group?.id;
     const origDefault = defaults[id];
 
     if (origDefault) {
-      useTagGroupsStoreApi.addGroup(origDefault);
+      api.add(origDefault);
     }
   },
 
@@ -49,22 +76,42 @@ export const useTagGroupsStoreApi = {
     return get().groups[id];
   },
 
-  add: (group, done) => {
-    const clone = tagGroupSchema.parse(group);
-    const id = clone.id;
-
-    set((state) => {
-      state.groups[id] = clone;
-      handleDirtyDefaults(clone, state);
-    });
-    done?.(get().getSet(id));
+  copy: (group, done) => {
+    return api.add(api.getCopy(group), done);
   },
 
-  remove: (id) => {
+  getCopy: (group) => {
+    let { id: _, ...copy } = group;
+    let i = 1;
+    let name = group.name;
+    while (name && !api.nameAvailable(name)) {
+      name = `${group.name} (${i++})`;
+    }
+    return tagGroupSchema.parse({ ...copy, name });
+  },
+
+  add: (group, done) => {
+    set((state) => {
+      const clone = api.isNew(group)
+        ? api.getCopy(group)
+        : tagGroupSchema.parse(group);
+
+      state.groups[clone.id] = clone;
+      handleDirtyDefaults(clone, state);
+    });
+    done?.(api.get(id));
+  },
+
+  remove: (group) => {
+    const id = typeof group === "string" ? group : group?.id;
+
     if (id in defaults) return;
 
     set((state) => {
-      delete state.groups[id];
+      const { [id]: _, ...groups } = state.groups;
+      state.groups = groups;
     });
   },
 };
+
+export const useTagGroupsStoreApi = api;
