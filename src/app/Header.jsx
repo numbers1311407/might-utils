@@ -66,6 +66,7 @@ export const Header = () => {
       <Tabs {...tabProps}>
         <Tabs.List px={4}>
           <Tabs.Tab value={defaultTab}>Find Squads</Tabs.Tab>
+          <Tabs.Tab value="squads">Saved Squads</Tabs.Tab>
           <Tabs.Tab value="roster">Roster</Tabs.Tab>
           <Tabs.Tab value="class-tags">Class Tags</Tabs.Tab>
           <Tabs.Tab value="tag-rules">Tag Rules</Tabs.Tab>

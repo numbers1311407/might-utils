@@ -127,7 +127,7 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
     remove: (record) => {
       const id = typeof record === "string" ? record : record?.id;
 
-      if (id in defaults) return;
+      if (!!defaults && id in defaults) return;
 
       set((state) => {
         const { [id]: _, ...registry } = state.registry;

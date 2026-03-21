@@ -30,7 +30,7 @@ export const ResultsGroupingSelect = (props) => {
     (store) => store.options?.groupBy || staticOptions.none.value,
   );
   const setOption = useLineupsStore((store) => store.setOption);
-  const groups = useTagGroupsStore((store) => store.groups);
+  const groups = useTagGroupsStore((store) => store.registry);
   const combobox = useCombobox();
 
   const activeGroupOptions = useMemo(() => {
