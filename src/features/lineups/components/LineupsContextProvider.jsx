@@ -13,6 +13,7 @@ const groupTagsOptions = {
   none: undefined,
   level: "level",
   class: "class",
+  warden: "warden",
   tag: (id) => tgapi.get(id)?.tags,
 };
 

@@ -6,6 +6,7 @@ const colors = {
   tag: "orange",
   class: "pink",
   level: "green",
+  warden: "purple",
 };
 
 export const TagRuleBadge = ({ rule, ...props }) => {

@@ -42,7 +42,7 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   },
   dirtyDefaults: [],
   sets: {
-    [defaultFilters.id]: tagRulesetSchema.parse(defaultFilters),
+    [defaultFilters.id]: defaultFilters,
   },
 }));
 

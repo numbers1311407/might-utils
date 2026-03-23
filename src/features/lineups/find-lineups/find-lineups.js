@@ -16,6 +16,9 @@ const groupingTags = {
     tags.t(level, { type: "level" }),
   ),
   class: charClassSchema.options.map((cls) => tags.t(cls, { type: "class" })),
+  warden: ["0", "1", "2", "3", "1+"].map((warden) =>
+    tags.t("", { type: "warden", warden }),
+  ),
 };
 
 const sortLineups = (lineups) =>
@@ -41,7 +44,6 @@ export const findLineups = (roster, targetScore, options = {}) => {
   const {
     classTags = {},
     tagGroups,
-    distinctTagGroups,
     margin,
     maxLevel,
     minLevel,
@@ -52,6 +54,11 @@ export const findLineups = (roster, targetScore, options = {}) => {
     ...defaultOptions,
     ...options,
   };
+
+  const isCustomTagGroups = Array.isArray(tagGroups);
+  const distinctTagGroups = isCustomTagGroups
+    ? false
+    : restOptions.distinctTagGroups;
 
   // TODO only checking these 2 args here as the options are assumed to be backed
   // by defaults but technically we should be determining whwat baseline args
@@ -167,7 +174,7 @@ export const findLineups = (roster, targetScore, options = {}) => {
     }, [])
     // do one last pass here generating full tags for each slot
     .map((slot) => {
-      const derivedTagGroups = Array.isArray(tagGroups)
+      const derivedTagGroups = isCustomTagGroups
         ? tagGroups.map(tags.t)
         : groupingTags[tagGroups];
 

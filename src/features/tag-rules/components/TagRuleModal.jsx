@@ -15,7 +15,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { HelpLabel } from "@/core/components";
-import { charSchema, tagRuleSchema, tagSchema } from "@/core/schemas";
+import { charSchema, tagRuleSchema } from "@/core/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 
 const typeHelp =
@@ -34,15 +34,11 @@ const rangeHelp =
   'and finally asterisk ("*") means everyone in the group.';
 
 const wardenHelp =
-  "Rules can specify warden status, but it's important to note that this increases the specificity of the rule. " +
-  'For instance you can specify exactly 1 "tank" with rank 2, but that will not affect inclusion of ' +
-  "tanks with different status. This is by design for flexibility. If you want to require exactly " +
-  "1 tank with a specific warden status, you need two rules: one requiring a tank with warden X, and " +
+  "Rules can specify warden rank, but note that this increases the specificity of the rule. " +
+  'For instance you can specify exactly 1 "tank" with rk. 2, but that will not affect inclusion of ' +
+  "tanks with different ranks. This is by design for flexibility. If you want to require exactly " +
+  "1 tank with a specific warden rank, you need two rules: one requiring a tank with warden rk. X, and " +
   'one requiring 1 tank of "Any" warden status.';
-
-const formSchema = tagRuleSchema.extend({
-  value: z.union([tagSchema, z.number()]),
-});
 
 export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
@@ -88,17 +84,15 @@ export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
 };
 
 const TagRuleForm = ({ rule = {}, onSubmit }) => {
+  const parsed = tagRuleSchema.safeParse(rule);
+  const initialValues = parsed.success
+    ? parsed.data
+    : { type: "tag", value: "", size: [1, 20] };
+
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: formSchema.partial().parse(rule),
-    transformValues: (values) => {
-      const { value, ...restValues } = values;
-      return {
-        ...restValues,
-        value: String(value),
-      };
-    },
-    validate: zod4Resolver(formSchema),
+    initialValues,
+    validate: zod4Resolver(tagRuleSchema),
   });
 
   const onFormSubmit = (values) => {
@@ -126,6 +120,7 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
             { label: "Name", value: "name" },
             { label: "Level", value: "level" },
             { label: "Class", value: "class" },
+            { label: "Warden Rk.", value: "warden" },
           ]}
           key={form.key("type")}
           {...form.getInputProps("type")}
@@ -134,7 +129,7 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
         <RangeField form={form} />
         <Select
           key={form.key("warden")}
-          label={<HelpLabel label="Warden Status" help={wardenHelp} />}
+          label={<HelpLabel label="Warden Rk." help={wardenHelp} />}
           placeholder="Got warden?"
           description="Should this rule require warden or a specific warden rank?"
           data={[
@@ -161,7 +156,14 @@ const ValueField = ({ form }) => {
 
   form.watch("type", ({ value: type }) => {
     setState(type);
-    form.setFieldValue("value", "");
+    const defaultValue = {
+      class: "BER",
+      level: 65,
+      name: "",
+      tag: "",
+      warden: "warden",
+    }[type];
+    form.setFieldValue("value", defaultValue);
   });
 
   const props = {
@@ -209,6 +211,8 @@ const ValueField = ({ form }) => {
         {...props}
       />
     );
+  } else if (state === "warden") {
+    return null;
   }
 
   return null;

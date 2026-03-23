@@ -23,7 +23,7 @@ export const WardenBadge = ({ rule, hideAny, ...props }) => {
       title={`Warden: ${rule.warden}`}
       {...props}
     >
-      W-{rule.warden}
+      Rk.{rule.warden}
     </Badge>
   );
 };

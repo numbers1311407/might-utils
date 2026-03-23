@@ -12,6 +12,7 @@ import {
   TYPE_PREFIX_LEVEL,
   TYPE_PREFIX_NAME,
   TYPE_PREFIX_TAG,
+  TYPE_PREFIX_WARDEN,
   WARDEN_DELIMITER,
 } from "./constants.js";
 
@@ -22,6 +23,7 @@ export const formatTag = (value, options = {}) => {
       class: TYPE_PREFIX_CLASS,
       group: TYPE_PREFIX_GROUP,
       level: TYPE_PREFIX_LEVEL,
+      warden: TYPE_PREFIX_WARDEN,
     }[options.type] || TYPE_PREFIX_TAG) + TYPE_DELIMITER;
 
   const wardenSuffixEnds = {
@@ -31,12 +33,15 @@ export const formatTag = (value, options = {}) => {
     2: "2",
     3: "3",
   };
+
   const suffix =
     options.warden in wardenSuffixEnds
       ? WARDEN_DELIMITER + wardenSuffixEnds[options.warden]
       : "";
 
-  return `${prefix}${String(value).toLowerCase()}${suffix}`;
+  const body = options.type === "warden" ? "rank" : String(value).toLowerCase();
+
+  return `${prefix}${body}${suffix}`;
 };
 export const t = formatTag;
 
@@ -101,6 +106,7 @@ export const generateCharacterTags = (char, options = {}) => {
           t(char.class, { type: "class", warden: true }),
           t(char.name, { type: "name", warden: true }),
           t(char.level, { type: "level", warden: true }),
+          t(char.warden, { type: "warden", warden: true }),
           ...ntags.map((tag) => t(tag, { warden: true })),
         ],
       );
@@ -111,6 +117,7 @@ export const generateCharacterTags = (char, options = {}) => {
         t(char.class, { type: "class", warden }),
         t(char.name, { type: "name", warden }),
         t(char.level, { type: "level", warden }),
+        t(char.warden, { type: "warden", warden }),
         ...ntags.map((tag) => t(tag, { warden })),
       ],
     );

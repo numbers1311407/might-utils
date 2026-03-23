@@ -23,6 +23,10 @@ const staticOptions = {
     label: "By Class",
     value: "class",
   },
+  warden: {
+    label: "By Warden Rk.",
+    value: "warden",
+  },
 };
 
 export const ResultsGroupingSelect = (props) => {
@@ -92,6 +96,9 @@ export const ResultsGroupingSelect = (props) => {
             </Combobox.Option>
             <Combobox.Option value={staticOptions.level}>
               {staticOptions.level.label}
+            </Combobox.Option>
+            <Combobox.Option value={staticOptions.warden}>
+              {staticOptions.warden.label}
             </Combobox.Option>
           </Combobox.Group>
           {!!activeGroupOptions.length && (

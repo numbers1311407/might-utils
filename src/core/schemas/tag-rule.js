@@ -1,10 +1,12 @@
 import { nanoid } from "nanoid";
 import * as z from "zod";
 import { tagSchema } from "./tag.js";
+import { charClassSchema, charNameSchema, charLevelSchema } from "./char.js";
 
 export const tagRuleRangeRegex = /^(\*)$|^(\d+)([+-])?$|^(\d+)-(\d+)$/;
 
 const ALL = "*";
+const WARDEN_ANY_OPTION = "Any";
 
 export const abbreviateTagRuleType = (type) => {
   return (
@@ -14,13 +16,14 @@ export const abbreviateTagRuleType = (type) => {
       level: "LVL",
       class: "CLS",
       tag: "TAG",
+      warden: "WRD",
     }[type] || type
   );
 };
 
 export const parseTagRuleWarden = (warden) =>
   ({
-    Any: "",
+    [WARDEN_ANY_OPTION]: "",
     0: 0,
     1: 1,
     "1+": true,
@@ -54,13 +57,17 @@ export const parseTagRuleRange = (range) => {
   return [val, val];
 };
 
-const size = z.number().min(1).max(20).default([3, 6]);
+const sizeBound = z.number().min(1).max(20);
+const size = z
+  .tuple([sizeBound, sizeBound])
+  .default([sizeBound.minValue, sizeBound.maxValue])
+  .refine(([a, b]) => b >= a, {
+    message: "Upper bound must be equal or higher to lower bound",
+  });
 
-export const tagRuleSchema = z.object({
+const base = z.object({
   id: z.nanoid().default(() => nanoid()),
-  size: z.tuple([size, size]),
-  type: z.enum(["name", "level", "class", "tag", "role"]).default("tag"),
-  value: tagSchema,
+  size,
   warden: z.enum(["Any", "0", "1", "1+", "2", "3"]).default("Any"),
   range: z
     .string()
@@ -70,4 +77,22 @@ export const tagRuleSchema = z.object({
     })
     .meta({ flag: "invalid_range" })
     .default("1+"),
+});
+
+const variance = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("name"), value: charNameSchema }),
+  z.object({ type: z.literal("level"), value: charLevelSchema }),
+  z.object({ type: z.literal("class"), value: charClassSchema }),
+  z.object({ type: z.literal("tag"), value: tagSchema }),
+  z.object({ type: z.literal("warden"), value: z.literal("warden") }),
+]);
+
+export const tagRuleSchema = base.and(variance).superRefine((data, ctx) => {
+  if (data.type === "warden" && data.warden === WARDEN_ANY_OPTION) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["warden"],
+      message: "Warden type rules must set warden status",
+    });
+  }
 });

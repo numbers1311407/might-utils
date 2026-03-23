@@ -9,3 +9,4 @@ export const TYPE_PREFIX_LEVEL = "l";
 export const TYPE_PREFIX_TAG = "t";
 export const TYPE_PREFIX_GROUP = "g";
 export const TYPE_PREFIX_CLASS = "c";
+export const TYPE_PREFIX_WARDEN = "w";
