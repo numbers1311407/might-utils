@@ -47,7 +47,7 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
 }));
 
 const { getState: get, setState: set } = useTagRulesStore;
-export const useTagRulesStoreApi = {
+export const api = {
   nameAvailable: (name) => {
     const used = Object.values(get().sets).map((set) => set.name.toLowerCase());
     return !used.includes(name.toLowerCase());
@@ -104,7 +104,7 @@ export const useTagRulesStoreApi = {
       handleDirtyDefaults(clone, state);
     });
 
-    done?.(get().getSet(id));
+    done?.(api.getSet(id));
   },
 
   removeSet: (id) => {
@@ -190,3 +190,5 @@ export const useTagRulesStoreApi = {
     });
   },
 };
+
+export const useTagRulesStoreApi = api;
