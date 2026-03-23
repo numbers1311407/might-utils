@@ -18,7 +18,7 @@ export const humanizeTag = (tag, typePrefix = false) => {
         [TYPE_PREFIX_TAG]: "tag ",
         [TYPE_PREFIX_LEVEL]: "level ",
         [TYPE_PREFIX_NAME]: "named ",
-        [TYPE_PREFIX_WARDEN]: "rk. ",
+        [TYPE_PREFIX_WARDEN]: "warden ",
       }[type] || ""
     : "";
 
@@ -36,7 +36,7 @@ export const humanizeTag = (tag, typePrefix = false) => {
     case TYPE_PREFIX_TAG:
       return prefix + `"${value}"` + suffix;
     case TYPE_PREFIX_WARDEN:
-      return suffix.trim();
+      return prefix + (warden === "" ? " rk. 1+" : ` rk. ${warden}`);
     default:
       return prefix + value + suffix;
   }
