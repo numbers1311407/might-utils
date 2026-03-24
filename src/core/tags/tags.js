@@ -1,6 +1,6 @@
 import { getNumberedArray, countKeys } from "@/utils";
 import { Warden } from "@/core/config/warden";
-import { parseTagRuleWarden, parseTagRuleRange } from "@/core/schemas";
+import { parseTagRuleWarden, parseRangeString } from "@/core/schemas";
 import {
   ALL_RANGE_LITERAL,
   GROUP_TAG_DELIMITER,
@@ -52,7 +52,7 @@ export const prepareTagRules = (rules) => {
       const { type, warden: w, value: v, range: r } = rule;
       const value = t(v, { type, warden: parseTagRuleWarden(w) });
       // if type is name just ignore the range, it must be [1, 1]
-      acc[size][value] = type === "name" ? [1, 1] : parseTagRuleRange(r);
+      acc[size][value] = type === "name" ? [1, 1] : parseRangeString(r);
     }
     return acc;
   }, {});

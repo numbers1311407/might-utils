@@ -11,11 +11,6 @@ your current team & warden ranks.
 
 ### Potential Feature Roadmap
 
-- Allow rules to specify only warden
-
-  You should be able to specify that you want 2 rank 2 wardens, etc, without also attaching that
-  requirement to level, name, class, tag.
-
 - Count-like range expression for level rules, e.g. 68+, 65-66.
 
 - Easy selection of might difficulty thresholds by instance name or tier (in a dropdown or similar).

@@ -9,7 +9,7 @@ const TagRuleTextTag = ({ value }) => `"${value}"`;
 const TagRuleTextLevel = ({ value }) => `Level ${value}`;
 const TagRuleTextClass = ({ value }) => `${value}`;
 const TagRuleTextName = ({ value }) => `${capitalize(value)}`;
-const TagRuleTextWarden = () => `warden`;
+const TagRuleTextWarden = () => `Warden`;
 
 const comps = {
   tag: TagRuleTextTag,
