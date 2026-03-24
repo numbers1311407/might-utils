@@ -1,5 +1,5 @@
 import { Flex } from "@mantine/core";
-import { NumberField } from "@/core/components";
+import { NumberField, ActiveTagFiltersSelect } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
 import { ResultsGroupingSelect } from "./ResultsGroupingSelect.jsx";
@@ -95,6 +95,7 @@ export const LineupsControls = () => {
         <MinSizeInput flex="1 1 120px" />
         <MaxSizeInput flex="1 1 120px" />
         <ResultsGroupingSelect flex="1 1 120px" />
+        <ActiveTagFiltersSelect flex="1 1 120px" />
       </Flex>
     </>
   );

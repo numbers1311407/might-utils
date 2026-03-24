@@ -56,7 +56,7 @@ export const ResultsGroupingSelect = (props) => {
     }
     for (const option of activeGroupOptions) {
       if (value === option.value) {
-        return `Tag: ${option.label}`;
+        return `Tags: ${option.label}`;
       }
     }
     return staticOptions.none.label;
@@ -87,10 +87,10 @@ export const ResultsGroupingSelect = (props) => {
           </InputBase>
         </Combobox.Target>
         <Combobox.Dropdown>
-          <Combobox.Option value={staticOptions.none}>
-            {staticOptions.none.label}
-          </Combobox.Option>
-          <Combobox.Group label="Standard Groupings">
+          <Combobox.Group label="Standard">
+            <Combobox.Option value={staticOptions.none}>
+              {staticOptions.none.label}
+            </Combobox.Option>
             <Combobox.Option value={staticOptions.class}>
               {staticOptions.class.label}
             </Combobox.Option>
@@ -102,7 +102,7 @@ export const ResultsGroupingSelect = (props) => {
             </Combobox.Option>
           </Combobox.Group>
           {!!activeGroupOptions.length && (
-            <Combobox.Group label="Tag Groupings">
+            <Combobox.Group label="Tag Groups">
               {activeGroupOptions.map((group) => (
                 <Combobox.Option value={group} key={group.value}>
                   {group.label}

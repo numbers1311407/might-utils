@@ -1,19 +1,10 @@
 import { Fragment, useMemo, useState } from "react";
 import { IconEdit, IconX, IconAlertCircle } from "@tabler/icons-react";
-import {
-  ActionIcon,
-  Alert,
-  Button,
-  Box,
-  Grid,
-  Group,
-  Select,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Alert, Button, Box, Grid, Group } from "@mantine/core";
 import classes from "./TagRules.module.css";
+import { TagRulesetSelect } from "@/core/components";
 import {
   useTagRulesManager,
-  useTagRulesSelectOptions,
   useTagRulesStoreApi as tagRulesApi,
 } from "@/core/store";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
@@ -22,24 +13,6 @@ import { TagRule } from "./TagRule.jsx";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { TagRulesetPreview } from "./TagRulesetPreview.jsx";
 import { lintTagRuleset } from "@/core/schemas";
-
-const TagRuleSetSelect = ({ type, setValue, value }) => {
-  const data = useTagRulesSelectOptions(type);
-
-  return (
-    <Select
-      label="Rule Set"
-      value={value}
-      data={data}
-      onChange={(value) => {
-        // NOTE unsure if intended but if you click the current value in the
-        // select it will call onChange with null. Preventing that from calling
-        // upstream here.
-        if (value) setValue(value);
-      }}
-    />
-  );
-};
 
 const EditButton = (props) => (
   <ActionIcon aria-label="Edit" size="sm" {...props}>
@@ -52,6 +25,22 @@ const DeleteButton = (props) => (
     <IconX />
   </ActionIcon>
 );
+
+const GridRow = ({ left, right, main, ...props }) => {
+  return (
+    <>
+      <Grid.Col span={{ base: 12, md: 3, lg: 2 }} {...props}>
+        {left}
+      </Grid.Col>
+      <Grid.Col span={{ base: 11, md: 8, lg: 9 }} {...props}>
+        {main}
+      </Grid.Col>
+      <Grid.Col span={{ base: 1, md: 1, lg: 1 }} {...props}>
+        {right}
+      </Grid.Col>
+    </>
+  );
+};
 
 const LintAlert = ({ errors }) => {
   return (
@@ -88,9 +77,9 @@ export const TagRules = ({ type = "filters" }) => {
   return (
     <Box>
       <Group gap="xs" align="flex-end">
-        <TagRuleSetSelect
+        <TagRulesetSelect
           type={type}
-          setValue={(id) => {
+          onChange={(id) => {
             setRuleset(tagRulesApi.getSet(id));
           }}
           value={ruleset.id}
@@ -159,42 +148,47 @@ export const TagRules = ({ type = "filters" }) => {
 
       {!lintResult.ok && <LintAlert errors={lintResult.errors} />}
 
-      <Grid gutter="md" my={16}>
-        <Grid.Col span={3}></Grid.Col>
-        <Grid.Col span={7}>
-          <TagRulesetPreview ruleset={ruleset} />
-        </Grid.Col>
-        <Grid.Col span={2}></Grid.Col>
-        <Grid.Col span={3}>Rules</Grid.Col>
-        <Grid.Col span={7}>
-          <Text>Squad Sizes</Text>
-        </Grid.Col>
-        <Grid.Col span={2}></Grid.Col>
+      <Grid gutter="lg" my={16} align="center">
+        <GridRow
+          main={
+            <TagRulesetPreview
+              ruleset={ruleset}
+              mx={{ base: 0, md: -8, lg: -16 }}
+            />
+          }
+        />
+        <GridRow
+          display={{ base: "none", md: "block" }}
+          left="Rules"
+          main="Squad Sizes"
+        />
         {ruleset.rules.map((rule) => (
-          <Fragment key={rule.id}>
-            <Grid.Col span={3}>
+          <GridRow
+            key={rule.id}
+            className={newRule?.id === rule.id ? classes.highlightRow : ""}
+            left={
               <TagRule
                 rule={rule}
                 conflicts={lintResult.errors[rule.id]}
                 onClick={(rule) => setDraftTagRuleProps({ rule })}
               />
-            </Grid.Col>
-            <Grid.Col
-              className={newRule?.id === rule.id ? classes.highlightRow : ""}
-              span={7}
-            >
+            }
+            main={
               <TagRuleSizeSlider
                 value={rule.size}
+                mb={20}
                 onChange={(size) => {
                   api.addCurrentRule({ ...rule, size });
                 }}
               />
-            </Grid.Col>
-            <Grid.Col span={2} my={8}>
-              <EditButton onClick={() => setDraftTagRuleProps({ rule })} />
-              <DeleteButton onClick={() => api.removeCurrentRule(rule)} />
-            </Grid.Col>
-          </Fragment>
+            }
+            right={
+              <>
+                <EditButton onClick={() => setDraftTagRuleProps({ rule })} />
+                <DeleteButton onClick={() => api.removeCurrentRule(rule)} />
+              </>
+            }
+          />
         ))}
       </Grid>
 

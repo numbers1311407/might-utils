@@ -14,7 +14,7 @@ export const Routes = () => {
       <Route path="/roster">
         <Roster />
       </Route>
-      <Route path="/tag-rules">
+      <Route path="/filter-rulesets">
         <TagRules />
       </Route>
       <Route path="/class-tags">

@@ -30,7 +30,7 @@ const RulesList = ({ rules }) => {
   return <List size="sm">{items}</List>;
 };
 
-export const TagRulesetPreview = ({ ruleset }) => {
+export const TagRulesetPreview = ({ ruleset, ...props }) => {
   const preparedRules = useMemo(() => {
     return ruleset ? prepareTagRules(ruleset.rules) : null;
   }, [ruleset]);
@@ -40,7 +40,7 @@ export const TagRulesetPreview = ({ ruleset }) => {
   }
 
   return (
-    <Box>
+    <Box {...props}>
       <Text>Hover these numbers for rule summaries:</Text>
       <Flex mx={-6}>
         <HoverCard.Group openDelay={200}>

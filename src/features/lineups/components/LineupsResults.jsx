@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Table, Text, Container } from "@mantine/core";
-import { humanizeTag, humanizeGroupTag } from "@/core/tags";
+import { humanizeGroupTag } from "@/core/tags";
 import { useFindLineupsResults } from "../hooks";
 
 const GroupedLineups = ({ groups }) => {

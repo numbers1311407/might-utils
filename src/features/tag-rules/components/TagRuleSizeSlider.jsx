@@ -10,6 +10,7 @@ export const TagRuleSizeSlider = ({
   defaultValue,
   value = defaultValue,
   onChange: propsOnChange,
+  ...props
 }) => {
   const [draft, setDraft] = useDraftState(value);
 
@@ -36,6 +37,7 @@ export const TagRuleSizeSlider = ({
       onChange={onChange}
       onChangeEnd={onChangeEnd}
       marks={marks}
+      {...props}
     />
   );
 };
