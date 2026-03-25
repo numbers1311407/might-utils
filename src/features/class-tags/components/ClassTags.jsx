@@ -38,7 +38,7 @@ export const ClassTags = () => {
   );
 
   return (
-    <Box my="md" style={{ maxWidth: 1200 }}>
+    <Box my="md">
       <Box mb="sm">
         Class tags are default tags added to each class, useful for filtering
         group composition results using tag based rules. Enter tags into each

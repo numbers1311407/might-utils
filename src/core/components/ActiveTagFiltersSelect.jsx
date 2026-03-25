@@ -7,7 +7,6 @@ export const ActiveTagFiltersSelect = (props) => {
   return (
     <TagRulesetSelect
       type="filters"
-      label="Filter Ruleset"
       {...props}
       onChange={(id) => api.activate(id)}
       value={value}

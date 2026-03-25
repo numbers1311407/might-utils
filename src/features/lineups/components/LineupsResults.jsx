@@ -1,15 +1,19 @@
 import { useMemo } from "react";
-import { Table, Text, Container } from "@mantine/core";
+import { Stack, Table, Text } from "@mantine/core";
 import { humanizeGroupTag } from "@/core/tags";
 import { useFindLineupsResults } from "../hooks";
 
 const GroupedLineups = ({ groups }) => {
-  return groups.map(([groupTag, lineups]) => (
-    <Container key={groupTag}>
-      <Text px="xs">{humanizeGroupTag(groupTag)}</Text>
-      <LineupsTable lineups={lineups} />
-    </Container>
-  ));
+  return (
+    <Stack>
+      {groups.map(([groupTag, lineups]) => (
+        <div key={groupTag}>
+          <Text px="xs">{humanizeGroupTag(groupTag)}</Text>
+          <LineupsTable lineups={lineups} />
+        </div>
+      ))}
+    </Stack>
+  );
 };
 
 const LineupsTable = ({ lineups }) => (
@@ -57,7 +61,7 @@ export const LineupsResults = () => {
   }, [lineups, grouped]);
 
   return (
-    <>
+    <Stack gap={0}>
       <Text py="sm" px="xs">
         {size} Results
         {grouped && ` in ${groups.length} level/rank configurations`}
@@ -67,6 +71,6 @@ export const LineupsResults = () => {
       ) : (
         <LineupsTable lineups={lineups} />
       )}
-    </>
+    </Stack>
   );
 };

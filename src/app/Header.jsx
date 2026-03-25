@@ -1,44 +1,30 @@
-import { useCallback } from "react";
 import {
   Anchor,
   Box,
+  Burger,
+  Container,
   AppShell,
   Divider,
   Flex,
-  Tabs,
   Title,
   Text,
 } from "@mantine/core";
 import { ColorSchemeButton } from "@/core/components";
-import { useRoute, Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import classes from "./Header.module.css";
 
-const useTabNavigation = (defaultTab = "find-squads") => {
-  const [, params] = useRoute("/:page?");
-  const [, navigate] = useLocation();
-  const value = params?.["page"] || defaultTab;
-  const onChange = useCallback(
-    (tab) => {
-      navigate(`/${tab !== defaultTab ? tab : ""}`);
-    },
-    [navigate, defaultTab],
-  );
-
-  return { value, onChange };
-};
-
-export const Header = () => {
-  const defaultTab = "find-squads";
-  const tabProps = useTabNavigation(defaultTab);
-
-  return (
-    <AppShell.Header className={classes.header}>
-      <Flex
-        h="50px"
-        px="md"
-        wrap={{ base: "wrap", sm: "nowrap" }}
-        align="center"
-      >
+export const Header = ({ burgerOpened, onBurgerClick }) => (
+  <AppShell.Header className={classes.header}>
+    <Container size={1920}>
+      <Flex h="50px" wrap={{ base: "wrap", sm: "nowrap" }} align="center">
+        <Burger
+          opened={burgerOpened}
+          onClick={onBurgerClick}
+          hiddenFrom="md"
+          size="sm"
+          mr="sm"
+          ml={-4}
+        />
         <Title order={1} size="h2" whitespace="nowrap" display="flex" flex="1">
           <Anchor
             component={Link}
@@ -63,16 +49,6 @@ export const Header = () => {
         <Divider orientation="vertical" mx="md" my="sm" />
         <ColorSchemeButton />
       </Flex>
-      <Tabs {...tabProps}>
-        <Tabs.List px={4}>
-          <Tabs.Tab value={defaultTab}>Find Squads</Tabs.Tab>
-          <Tabs.Tab value="squads">Saved Squads</Tabs.Tab>
-          <Tabs.Tab value="roster">Roster</Tabs.Tab>
-          <Tabs.Tab value="class-tags">Class Tags</Tabs.Tab>
-          <Tabs.Tab value="filter-rulesets">Filter Rulesets</Tabs.Tab>
-          <Tabs.Tab value="tag-groups">Tag Groups</Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
-    </AppShell.Header>
-  );
-};
+    </Container>
+  </AppShell.Header>
+);

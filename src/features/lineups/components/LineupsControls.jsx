@@ -1,4 +1,4 @@
-import { Flex } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { NumberField, ActiveTagFiltersSelect } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
@@ -87,16 +87,16 @@ const TargetScoreInput = (props) => (
 export const LineupsControls = () => {
   return (
     <>
-      <Flex gap="xs" wrap={{ base: "wrap", md: "nowrap" }}>
-        <TargetScoreInput flex="1 1 120px" />
-        <MarginInput flex="1 1 120px" />
-        <MinLevelInput flex="1 1 120px" />
-        <MaxLevelInput flex="1 1 120px" />
-        <MinSizeInput flex="1 1 120px" />
-        <MaxSizeInput flex="1 1 120px" />
-        <ResultsGroupingSelect flex="1 1 120px" />
-        <ActiveTagFiltersSelect flex="1 1 120px" />
-      </Flex>
+      <Stack gap={8}>
+        <ResultsGroupingSelect />
+        <ActiveTagFiltersSelect />
+        <TargetScoreInput />
+        <MarginInput />
+        <MinLevelInput />
+        <MaxLevelInput />
+        <MinSizeInput />
+        <MaxSizeInput />
+      </Stack>
     </>
   );
 };
