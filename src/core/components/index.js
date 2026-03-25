@@ -1,4 +1,5 @@
 export * from "./ActiveTagFiltersSelect.jsx";
+export * from "./AppLink.jsx";
 export * from "./Aside.jsx";
 export * from "./ClassIcon.jsx";
 export * from "./ColorSchemeButton.jsx";

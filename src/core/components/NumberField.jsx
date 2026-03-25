@@ -50,6 +50,11 @@ export const NumberField = ({
       // the store reverting to default on empty it was creating some odd behavior.
       value={localValue ?? value}
       onChange={onChange}
+      onValueChange={(values, sourceInfo) => {
+        if (sourceInfo.source !== "event") {
+          commitValue({ target: { value: values.value } });
+        }
+      }}
       onKeyDown={blurOnEnter}
       onBlur={commitValue}
       {...restProps}

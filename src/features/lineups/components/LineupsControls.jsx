@@ -1,4 +1,5 @@
-import { Stack } from "@mantine/core";
+import { Divider, Group, Stack } from "@mantine/core";
+import { useThrottledCallback } from "@mantine/hooks";
 import { NumberField, ActiveTagFiltersSelect } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
@@ -8,9 +9,9 @@ export const LineupOptionInput = ({ option, ...restProps }) => {
   const setOption = useLineupsStore((store) => store.setOption);
   const options = useLineupsStore((store) => store.options);
   const value = options[option];
-  const setValue = (value) => {
+  const setValue = useThrottledCallback((value) => {
     setOption(option, value === "" ? undefined : value);
-  };
+  }, 400);
   return <NumberField value={value} setValue={setValue} {...restProps} />;
 };
 
@@ -74,7 +75,7 @@ const TargetScoreInput = (props) => (
   <LineupOptionInput
     withAsterisk
     option="targetScore"
-    label="Target Might"
+    label="Tight Might"
     help="The required score for the instance & difficulty you're trying to hit."
     placeholder="How mighty?"
     type="number"
@@ -90,12 +91,19 @@ export const LineupsControls = () => {
       <Stack gap={8}>
         <ResultsGroupingSelect />
         <ActiveTagFiltersSelect />
-        <TargetScoreInput />
-        <MarginInput />
-        <MinLevelInput />
-        <MaxLevelInput />
-        <MinSizeInput />
-        <MaxSizeInput />
+        <Divider m="md" />
+        <Group wrap="nowrap">
+          <TargetScoreInput />
+          <MarginInput />
+        </Group>
+        <Group wrap="nowrap">
+          <MinLevelInput />
+          <MaxLevelInput />
+        </Group>
+        <Group wrap="nowrap">
+          <MinSizeInput />
+          <MaxSizeInput />
+        </Group>
       </Stack>
     </>
   );

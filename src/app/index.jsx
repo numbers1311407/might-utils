@@ -20,7 +20,7 @@ const CONTAINER_WIDTH = 1920;
 const HEADER_HEIGHT = 50;
 const HEADER_CONTENT_OFFSET = HEADER_HEIGHT + 12;
 const NAVBAR_WIDTH = 250;
-const ASIDE_WIDTH = 316;
+const ASIDE_WIDTH = 300;
 
 const Shell = () => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false);
