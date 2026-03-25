@@ -10,13 +10,12 @@ import {
 } from "@mantine/core";
 import * as z from "zod";
 import { useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 
 import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
-import { charSchema, tagSchema } from "@/core/schemas";
+import { charSchema, charClassSchema, tagSchema } from "@/core/schemas";
 import { useClassTagsStore } from "@/core/store";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 
@@ -34,49 +33,43 @@ const formCharSchema = charSchema
     },
   );
 
-export const RosterCharModal = ({ roster, char, children, onSubmit }) => {
-  const [opened, { open, close }] = useDisclosure(false);
-
+export const RosterCharModal = ({ roster, char, onClose, onSubmit }) => {
   return (
-    <>
-      <Modal
-        opened={opened}
-        onClose={() => close()}
-        closeOnClickOutside={false}
-        title={char ? `Edit Character: ${char.name}` : "New Character"}
-      >
+    <Modal
+      opened={!!char}
+      onClose={onClose}
+      closeOnClickOutside={false}
+      title={char?.name ? `Edit Character: ${char.name}` : "New Character"}
+    >
+      {char && (
         <RosterCharForm
           // note this key hack is to get around mantine's aggressive form caching
-          key={opened ? "opened" : "closed"}
+          key={!!char ? "opened" : "closed"}
           char={char}
           roster={roster}
-          onSubmit={(char) => {
-            onSubmit(char);
-            close();
-          }}
+          onSubmit={onSubmit}
         />
-      </Modal>
-
-      <Button variant="default" onClick={open}>
-        {children || (char ? "Edit" : "Add Character")}
-      </Button>
-    </>
+      )}
+    </Modal>
   );
 };
 
 const RosterCharForm = ({ char, onSubmit, roster }) => {
   const classTags = useClassTagsStore((store) => store.tags);
   const [tagsError, setTagsError] = useState(null);
+  const charClass = char.class || charClassSchema.options[0];
+  const charClassTags = classTags[charClass] || [];
 
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      name: char?.name || "",
-      level: char?.level,
-      active: char?.active ?? true,
-      class: char?.class || "",
-      warden: String(char?.warden || 0),
-      tags: char?.tags || [],
+      id: char.id,
+      name: char.name || "",
+      level: char.level || 65,
+      active: char.active ?? true,
+      class: charClass,
+      warden: String(char.warden || 0),
+      tags: char.tags || [],
       siblings: roster
         .map(({ name }) => name)
         .filter((name) => !char || char.name !== name),
@@ -95,7 +88,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
   // are unnecessary to add to characters separately. In the form these tags appear in
   // the field but aren't editable, and will prevent duplicates being added. On class
   // change we reset the class tags and strip any duplicates, which shouldn't be a big deal?
-  const [lockedTags, setLockedTags] = useState(classTags?.[char?.class] || []);
+  const [lockedTags, setLockedTags] = useState(charClassTags);
   form.watch("class", ({ value }) => {
     const newClassTags = classTags[value];
     const tags = form.getValues()?.tags || [];
@@ -145,8 +138,8 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           label="Character Name"
           placeholder="Character name"
           description={
-            char
-              ? "Note name changes will not propagate to any rules for this character"
+            char.id
+              ? 'Note name edits will not auto-update "name" rules for this character'
               : undefined
           }
           key={form.key("name")}
@@ -175,7 +168,6 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           label="Warden Rank"
           placeholder="Max warden rank"
           description="Max attained, do not account for deleveling"
-          autoSelectOnBlur
           data={[
             { label: "Unwardened", value: "0" },
             { label: "Rank 1", value: "1" },

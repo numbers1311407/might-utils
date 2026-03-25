@@ -40,8 +40,8 @@ const defaultSize = 40;
 
 export const ClassIcon = ({ cls, size = defaultSize, ...props }) => (
   <Image
-    height={`${size}px`}
-    width={`${size}px`}
+    h={`${size}px`}
+    w={`${size}px`}
     radius="sm"
     src={icons[cls]}
     {...props}

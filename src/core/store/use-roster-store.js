@@ -7,49 +7,55 @@ const rosterSort = (a, b) => {
 };
 
 export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
-  roster: rosterSchema.parse(defaultRoster),
+  roster: rosterSchema.parse(defaultRoster).sort(rosterSort),
+
   setRoster: (roster = defaultRoster) => {
     set((state) => {
       rosterSchema.parse(roster);
       state.roster = [...roster].sort(rosterSort);
     });
   },
+
   resetRoster: () => {
     get().setRoster(undefined);
   },
+
   clearRoster: () => {
     get().setRoster([]);
   },
-  addChar: (char) => {
-    set((state) => {
-      if (!state.roster.find(({ name }) => char.name === name)) {
-        state.roster = [...state.roster, charSchema.parse(char)].sort(
-          rosterSort,
-        );
-      }
-    });
-  },
-  removeChar: (char) => {
-    set((state) => {
-      if (typeof char === "number") {
-        state.roster.splice(char, 1);
-      } else if (char?.name) {
-        state.roster = state.roster.filter(({ name }) => char.name !== name);
-      }
-    });
-  },
-  updateChar: (char, key, value) => {
-    const update = typeof key === "string" ? { [key]: value } : key;
 
-    set(({ roster }) => {
-      const idx =
-        typeof char === "number"
-          ? char
-          : roster.findIndex(({ name }) => char.name === name);
+  removeChar: (char) => {
+    const id = typeof char === "string" ? char : char.id;
+
+    set((state) => {
+      state.roster = state.roster.filter((char) => char.id !== id);
+    });
+  },
+
+  getChar: (id) => {
+    return get().roster.find((char) => char.id === id);
+  },
+
+  updateChar: (id, update, done) => {
+    get().addChar({ ...update, id }, done);
+  },
+
+  addChar: (char, done) => {
+    const id = char.id;
+
+    set((state) => {
+      const { roster } = state;
+      const idx = roster.findIndex(({ id }) => char.id === id);
 
       if (idx !== -1) {
-        roster[idx] = { ...roster[idx], ...update };
+        roster[idx] = charSchema.parse({ ...roster[idx], ...char });
+      } else {
+        roster.push(charSchema.parse(char));
       }
+
+      state.roster = [...roster].sort(rosterSort);
     });
+
+    done?.(get().getChar(id));
   },
 }));

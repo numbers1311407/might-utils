@@ -1,34 +1,85 @@
-import { CloseButton, Box, Button, Stack, Switch } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Card,
+  CloseButton,
+  Divider,
+  Group,
+  Stack,
+  Switch,
+  Text,
+  Title,
+} from "@mantine/core";
+import { useState } from "react";
 import { useRosterStore } from "@/core/store";
 import { RosterCharModal } from "./RosterCharModal.jsx";
+import { Aside, ClassIcon } from "@/core/components";
+import { IconEdit, IconPlus, IconMinus } from "@tabler/icons-react";
 
-export const RosterChar = ({ char, roster, update, remove }) => {
+const PlusButton = (props) => (
+  <ActionIcon size="sm" {...props}>
+    <IconPlus />
+  </ActionIcon>
+);
+
+const MinusButton = (props) => (
+  <ActionIcon size="sm" {...props}>
+    <IconMinus />
+  </ActionIcon>
+);
+
+const EditButton = (props) => (
+  <ActionIcon size="sm" {...props}>
+    <IconEdit />
+  </ActionIcon>
+);
+
+const LevelButtons = ({ level, onChange }) => (
+  <Group gap={0} display="inline-flex">
+    <MinusButton
+      aria-label="Reduce char level by 1"
+      onClick={() => onChange?.(level - 1)}
+    />
+    <Box flex={1} bg="gray.8" px={8}>
+      {level}
+    </Box>
+    <PlusButton
+      aria-label="Increase char level by 1"
+      onClick={() => onChange?.(level + 1)}
+    />
+  </Group>
+);
+
+export const RosterChar = ({ char, edit, update, remove }) => {
   return (
-    <Box>
+    <Card p="sm">
       <Box>
-        {char.name}, {char.level}, rank {char.warden}
+        <ClassIcon size={40} cls={char.class} />
+        {char.name}, rank {char.warden}
       </Box>
       <Box>
         <Switch
           aria-label="Toggle Active Status"
+          color="green"
           checked={char.active}
           onChange={(e) => {
             update({ active: e.currentTarget.checked });
           }}
         />
-        <RosterCharModal
-          key={char.name}
-          roster={roster}
-          char={char}
-          onSubmit={(char) => update(char)}
+        <LevelButtons
+          level={char.level}
+          onChange={(level) => update({ level })}
         />
         <CloseButton aria-label="Remove Character" onClick={() => remove()} />
+        <EditButton aria-label="Edit character" title="Edit" onClick={edit} />
       </Box>
-    </Box>
+    </Card>
   );
 };
 
 export const Roster = () => {
+  const [char, setChar] = useState(null);
   const roster = useRosterStore((store) => store.roster);
 
   const addChar = useRosterStore((store) => store.addChar);
@@ -39,28 +90,45 @@ export const Roster = () => {
 
   return (
     <Box>
-      <Box>
-        <Button onClick={() => resetRoster()}>Reset Roster</Button>
-        <Button onClick={() => clearRoster()}>Clear Roster</Button>
-        <RosterCharModal
-          key="new-char"
-          roster={roster}
-          onSubmit={(char) => addChar(char)}
-        />
-      </Box>
-      <Stack>
+      <Title size="h2" mb="xs">
+        Character Roster
+      </Title>
+      <Stack gap="xs" my="md">
         {roster.map((char) => (
           <RosterChar
-            key={char.name}
+            key={char.id}
             char={char}
             roster={roster}
+            edit={() => setChar(char)}
             remove={() => removeChar(char)}
             update={(update) => {
-              updateChar(char, update);
+              updateChar(char.id, update);
             }}
           />
         ))}
       </Stack>
+      <Aside>
+        <Text mb="sm">
+          Your stable of characters. The characters defined here will be
+          considered when finding squads.
+        </Text>
+        <Text>
+          By default, only characters marked as "active" will be eligible,
+          though this behavior is toggleable.
+        </Text>
+        <Divider my="lg" />
+        <Button onClick={() => resetRoster()}>Reset Roster</Button>
+        <Button onClick={() => clearRoster()}>Clear Roster</Button>
+        <Button onClick={() => setChar({})}>New Character</Button>
+      </Aside>
+      <RosterCharModal
+        roster={roster}
+        char={char}
+        onSubmit={(char) => {
+          addChar(char, () => setChar(null));
+        }}
+        onClose={() => setChar(null)}
+      />
     </Box>
   );
 };
