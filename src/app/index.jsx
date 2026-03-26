@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   AppShell,
@@ -7,7 +8,7 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Router } from "wouter";
+import { Router, useLocation } from "wouter";
 import { AppContextProvider, useAppContext } from "@/core/context";
 import { Routes } from "./routes";
 import { Header } from "./Header.jsx";
@@ -19,12 +20,19 @@ import { theme } from "./theme.js";
 const CONTAINER_WIDTH = 1920;
 const HEADER_HEIGHT = 50;
 const HEADER_CONTENT_OFFSET = HEADER_HEIGHT + 12;
-const NAVBAR_WIDTH = 250;
-const ASIDE_WIDTH = 300;
+const NAVBAR_WIDTH = 200;
+const ASIDE_WIDTH = 260;
 
 const Shell = () => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false);
   const { hasAside } = useAppContext();
+  const [pathname] = useLocation();
+
+  // on route change we must close the mobile menu as it's covering
+  // the contentl
+  useEffect(() => {
+    toggleMobile(false);
+  }, [pathname]);
 
   return (
     <AppShell

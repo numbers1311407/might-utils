@@ -40,7 +40,7 @@ const MinLevelInput = (props) => (
 const MaxSizeInput = (props) => (
   <LineupOptionInput
     option="maxSize"
-    label="Max Squad Size"
+    label="Max Party Size"
     placeholder="Big party"
     min={1}
     max={20}
@@ -51,7 +51,7 @@ const MaxSizeInput = (props) => (
 const MinSizeInput = (props) => (
   <LineupOptionInput
     option="minSize"
-    label="Min Squad Size"
+    label="Min Party Size"
     placeholder="Lil' party"
     min={1}
     max={20}

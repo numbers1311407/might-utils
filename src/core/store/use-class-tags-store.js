@@ -14,6 +14,10 @@ export const useClassTagsStore = createStore(
   "might-utils-class-tags",
   (set, get) => ({
     tags: { ...defaultClassTags },
+    getClassTags: (cls) => {
+      if (!isValidClass(cls)) throw "invalid class";
+      return get().tags[cls];
+    },
     setClassTags: (cls, clsTags) => {
       set(({ tags }) => {
         if (!isValidClass(cls)) throw "invalid class";

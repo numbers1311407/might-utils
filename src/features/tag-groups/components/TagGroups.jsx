@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Pill, Button } from "@mantine/core";
+import { Box, Pill, Button, Title } from "@mantine/core";
 import { useTagGroupsStore, useTagGroupsStoreApi as tgapi } from "@/core/store";
 import { TagGroupModal } from "./TagGroupModal.jsx";
 
@@ -45,6 +45,9 @@ export const TagGroups = () => {
 
   return (
     <Box>
+      <Title order={2} mb="xs">
+        Tag Groups
+      </Title>
       <Box>
         <Button onClick={() => setCurrentGroup({})}>New Group</Button>
       </Box>

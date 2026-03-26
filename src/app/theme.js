@@ -18,4 +18,11 @@ export const theme = createTheme({
     mightColors,
   },
   primaryColor: "mightColors",
+  breakpoints: {
+    xs: "48em",
+    sm: "62em",
+    md: "75em",
+    lg: "88em",
+    xl: "110em",
+  },
 });

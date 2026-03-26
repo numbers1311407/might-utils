@@ -20,7 +20,7 @@ import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 
 const typeHelp =
   "Rules work by counting character tags or attributes like level & class, and requiring that the " +
-  "count falls within the defined range to qualify the squad as valid. For a name type rule, the " +
+  "count falls within the defined range to qualify the party as valid. For a name type rule, the " +
   "range is always 1.";
 
 const sizeHelp =

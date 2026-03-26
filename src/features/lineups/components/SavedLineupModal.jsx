@@ -35,7 +35,7 @@ export const SavedLineupForm = ({ record, onSubmit }) => {
       <Stack gap={6}>
         <TextInput
           label="Name"
-          description="Name to describe your squad"
+          description="Name to describe your party"
           placeholder="Enter name"
           key={form.key("name")}
           {...form.getInputProps("name")}
@@ -54,7 +54,7 @@ export const SavedLineupModal = ({ record, onClose, onCommit }) => {
       opened={!!record}
       onClose={() => onClose?.()}
       closeOnClickOutside={false}
-      title={record?.id ? `Edit Squad: ${record.name}` : "New Squad"}
+      title={record?.id ? `Edit Party: ${record.name}` : "New Party"}
     >
       {record && (
         <SavedLineupForm

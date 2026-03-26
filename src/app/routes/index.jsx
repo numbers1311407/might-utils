@@ -23,7 +23,7 @@ export const Routes = () => {
       <Route path="/tag-groups">
         <TagGroups />
       </Route>
-      <Route path="/squads">
+      <Route path="/parties">
         <SavedLineups />
       </Route>
     </>

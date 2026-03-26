@@ -14,7 +14,7 @@ const formSchema = tagGroupSchema
   });
 
 const tagsHelp =
-  "In squad searches, individual characters may be grouped by these tags. For this to be " +
+  "In party searches, individual characters may be grouped by these tags. For this to be " +
   "possible, all characters must have one of these tags, either directly assigned or defaulting " +
   "from their class tags. Tags can contain letters, numbers, and hyphens.";
 

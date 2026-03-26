@@ -160,7 +160,7 @@ export const TagRules = ({ type = "filters" }) => {
         <GridRow
           display={{ base: "none", md: "block" }}
           left="Rules"
-          main="Squad Sizes"
+          main="Party Sizes"
         />
         {ruleset.rules.map((rule) => (
           <GridRow

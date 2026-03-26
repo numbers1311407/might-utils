@@ -6,9 +6,13 @@ const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
 };
 
-export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
+export const useRosterStore = createStore("might-utils-roster", () => ({
   roster: rosterSchema.parse(defaultRoster).sort(rosterSort),
+}));
 
+const { getState: get, setState: set } = useRosterStore;
+
+const api = {
   setRoster: (roster = defaultRoster) => {
     set((state) => {
       rosterSchema.parse(roster);
@@ -17,11 +21,11 @@ export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
   },
 
   resetRoster: () => {
-    get().setRoster(undefined);
+    api.setRoster(undefined);
   },
 
   clearRoster: () => {
-    get().setRoster([]);
+    api.setRoster([]);
   },
 
   removeChar: (char) => {
@@ -37,7 +41,7 @@ export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
   },
 
   updateChar: (id, update, done) => {
-    get().addChar({ ...update, id }, done);
+    api.addChar({ ...update, id }, done);
   },
 
   addChar: (char, done) => {
@@ -56,6 +60,8 @@ export const useRosterStore = createStore("might-utils-roster", (set, get) => ({
       state.roster = [...roster].sort(rosterSort);
     });
 
-    done?.(get().getChar(id));
+    done?.(api.getChar(id));
   },
-}));
+};
+
+export const useRosterStoreApi = api;

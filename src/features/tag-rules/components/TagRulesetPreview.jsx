@@ -55,7 +55,7 @@ export const TagRulesetPreview = ({ ruleset, ...props }) => {
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Text size="sm" mb="sm">
-                  A squad of size {size} requires:
+                  A party of size {size} requires:
                 </Text>
                 <RulesList rules={preparedRules[size]} />
               </HoverCard.Dropdown>

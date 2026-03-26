@@ -169,7 +169,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           placeholder="Max warden rank"
           description="Max attained, do not account for deleveling"
           data={[
-            { label: "Unwardened", value: "0" },
+            { label: "Rank 0 (Not Warden)", value: "0" },
             { label: "Rank 1", value: "1" },
             { label: "Rank 2", value: "2" },
             { label: "Rank 3", value: "3" },
@@ -193,7 +193,7 @@ const RosterCharForm = ({ char, onSubmit, roster }) => {
           error={tagsError || form.errors.tags}
         />
         <Checkbox
-          label="Active (eligible for squad finder)"
+          label="Active (eligible for party finder)"
           key={form.key("active")}
           {...form.getInputProps("active", { type: "checkbox" })}
         />

@@ -32,7 +32,7 @@ export const SavedLineups = () => {
   return (
     <Box>
       <Box>
-        <Button onClick={() => setCurrentRecord({})}>New Squad</Button>
+        <Button onClick={() => setCurrentRecord({})}>Create a Party</Button>
       </Box>
       <Box>
         {Object.values(registry).map((record) => (

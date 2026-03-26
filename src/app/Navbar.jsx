@@ -20,10 +20,10 @@ export const Navbar = (props) => {
     <Box {...props}>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs">
-          Execute
+          Party Utils
         </Text>
-        <NavbarLink label="Find Squads" href="/" />
-        <NavbarLink label="Saved Squads" href="/squads" />
+        <NavbarLink label="Party Finder" href="/" />
+        <NavbarLink label="Saved Parties" href="/parties" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs">
@@ -31,7 +31,7 @@ export const Navbar = (props) => {
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />
         <NavbarLink label="Filter Rulesets" href="/filter-rulesets" />
-        <NavbarLink label="Tag Grouping" href="/tag-groups" />
+        <NavbarLink label="Tag Groups" href="/tag-groups" />
         <NavbarLink label="Class Tags" href="/class-tags" />
       </Stack>
     </Box>
