@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Box, AppShell, Stack } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { useAppContext } from "@/core/context";
 
 export const Aside = ({ children, ...props }) => {
