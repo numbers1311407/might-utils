@@ -15,8 +15,7 @@ const { getState: get, setState: set } = useRosterStore;
 const api = {
   setRoster: (roster = defaultRoster) => {
     set((state) => {
-      rosterSchema.parse(roster);
-      state.roster = [...roster].sort(rosterSort);
+      state.roster = rosterSchema.parse(roster).sort(rosterSort);
     });
   },
 
