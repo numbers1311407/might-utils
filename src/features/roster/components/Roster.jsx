@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { charLevelSchema } from "@/core/schemas";
 import {
+  useConfirmationStore,
   useRosterStore,
   useRosterStoreApi as rosterApi,
   useClassTagsStore,
@@ -157,7 +158,10 @@ export const RosterChar = ({ char, classTags, edit, update, remove }) => {
                 title="Edit"
                 onClick={() => edit(char)}
               />
-              <TrashButton aria-label="Remove character" onClick={remove} />
+              <TrashButton
+                aria-label="Remove character"
+                onClick={() => remove(char)}
+              />
             </Group>
           </Flex>
 
@@ -203,6 +207,16 @@ export const RosterChar = ({ char, classTags, edit, update, remove }) => {
 
 export const RosterGrid = ({ roster, onEdit }) => {
   const classTags = useClassTagsStore((store) => store.tags);
+  const { getConfirmation } = useConfirmationStore();
+
+  const onRemove = getConfirmation(
+    (char) => {
+      rosterApi.removeChar(char);
+    },
+    {
+      title: "Are you sure you want to remove this character?",
+    },
+  );
 
   return (
     <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} gap="xs" my="md">
@@ -212,7 +226,7 @@ export const RosterGrid = ({ roster, onEdit }) => {
           char={char}
           classTags={classTags}
           edit={onEdit}
-          remove={() => rosterApi.removeChar(char)}
+          remove={onRemove}
           update={(update) => {
             rosterApi.updateChar(char.id, update);
           }}

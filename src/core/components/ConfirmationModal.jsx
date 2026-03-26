@@ -1,57 +1,23 @@
-import { useMemo, useState } from "react";
-import { Button, Flex, Modal } from "@mantine/core";
+import { Button, Flex, Modal, Stack, Text } from "@mantine/core";
 
 export const ConfirmationModal = ({
   onConfirm,
   onCancel,
+  opened = false,
   title = "Are you sure?",
-  yes = "Confirm",
-  no = "Cancel",
-  body,
-}) => {
-  return (
-    <Modal opened onClose={onCancel} title={title}>
-      {body}
-      <Flex gap="sm" align="flex-end">
-        <Button onClick={onCancel}>{no}</Button>
-        <Button onClick={onConfirm}>{yes}</Button>
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  message,
+}) => (
+  <Modal opened={opened} onClose={onCancel} title={title}>
+    <Stack>
+      {typeof message === "string" ? <Text>{message}</Text> : message}
+      <Flex gap="sm" justify="flex-end">
+        <Button variant="outline" onClick={onCancel}>
+          {cancelLabel}
+        </Button>
+        <Button onClick={onConfirm}>{confirmLabel}</Button>
       </Flex>
-    </Modal>
-  );
-};
-
-export const withConfirmation = (
-  Component,
-  callbacks = {},
-  modalProps = {},
-) => {
-  return (props) => {
-    const [state, setState] = useState(null);
-    const overrides = useMemo(() => {
-      const o = {};
-      for (const key of Object.keys(callbacks)) {
-        o[key] = (...args) => {
-          setState({ key, args });
-        };
-      }
-      return o;
-    }, [setState]);
-
-    return (
-      <>
-        <Component {...props} {...overrides} />
-        {!!state && (
-          <ConfirmationModal
-            {...modalProps}
-            onConfirm={() => {
-              callbacks[state.key](true, ...state.args);
-            }}
-            onCancel={() => {
-              callbacks[state.key](false);
-            }}
-          />
-        )}
-      </>
-    );
-  };
-};
+    </Stack>
+  </Modal>
+);

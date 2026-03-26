@@ -15,6 +15,7 @@ import { Header } from "./Header.jsx";
 import { Navbar } from "./Navbar.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { ScrollToTop } from "./ScrollToTop.jsx";
+import { GlobalConfirmationModal } from "./GlobalConfirmationModal.jsx";
 import { theme } from "./theme.js";
 
 const CONTAINER_WIDTH = 1920;
@@ -24,14 +25,15 @@ const NAVBAR_WIDTH = 200;
 const ASIDE_WIDTH = 260;
 
 const Shell = () => {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false);
+  const [mobileNavOpened, { close: closeMobileNav, toggle: toggleMobileNav }] =
+    useDisclosure(false);
   const { hasAside } = useAppContext();
   const [pathname] = useLocation();
 
   // on route change we must close the mobile menu as it's covering
   // the contentl
   useEffect(() => {
-    toggleMobile(false);
+    closeMobileNav();
   }, [pathname]);
 
   return (
@@ -41,10 +43,10 @@ const Shell = () => {
       navbar={{
         width: NAVBAR_WIDTH,
         breakpoint: "md",
-        collapsed: { mobile: !mobileOpened, desktop: true },
+        collapsed: { mobile: !mobileNavOpened, desktop: true },
       }}
     >
-      <Header burgerOpened={mobileOpened} onBurgerClick={toggleMobile} />
+      <Header burgerOpened={mobileNavOpened} onBurgerClick={toggleMobileNav} />
       <AppShell.Navbar>
         <Navbar />
       </AppShell.Navbar>
@@ -85,6 +87,7 @@ function App() {
         <Router base="/might-utils">
           <Shell />
           <ScrollToTop />
+          <GlobalConfirmationModal />
         </Router>
       </AppContextProvider>
     </MantineProvider>

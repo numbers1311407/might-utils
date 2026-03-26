@@ -1,4 +1,5 @@
 export * from "./use-class-tags-store.js";
+export * from "./use-confirmation-store.js";
 export * from "./use-roster-store.js";
 export * from "./use-saved-lineups-store.js";
 export * from "./use-tag-groups-store.js";
