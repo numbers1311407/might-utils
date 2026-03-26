@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Anchor,
   Box,
   Button,
   Card,
@@ -220,6 +221,12 @@ export const RosterGrid = ({ roster, onEdit }) => {
 
   return (
     <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} gap="xs" my="md">
+      {!roster?.length && (
+        <Box>
+          You have no characters on your roster. Would you like to{" "}
+          <Anchor onClick={() => onEdit({})}>create a new character?</Anchor>
+        </Box>
+      )}
       {roster.map((char) => (
         <RosterChar
           key={char.id}
@@ -238,7 +245,28 @@ export const RosterGrid = ({ roster, onEdit }) => {
 
 export const Roster = () => {
   const roster = useRosterStore((store) => store.roster);
+  const { getConfirmation } = useConfirmationStore();
   const [char, setChar] = useState(null);
+
+  const onResetRoster = getConfirmation(
+    () => {
+      rosterApi.resetRoster();
+    },
+    {
+      message:
+        "This will reset the roster back to the initial example roster, " +
+        "removing any characters you may have added.",
+    },
+  );
+
+  const onClearRoster = getConfirmation(
+    () => {
+      rosterApi.clearRoster();
+    },
+    {
+      message: "This will clear all characters from the roster!",
+    },
+  );
 
   return (
     <Box>
@@ -258,9 +286,13 @@ export const Roster = () => {
           though this behavior is toggleable.
         </Text>
         <Divider my="lg" />
-        <Button onClick={() => rosterApi.resetRoster()}>Reset Roster</Button>
-        <Button onClick={() => rosterApi.clearRoster()}>Clear Roster</Button>
-        <Button onClick={() => setChar({})}>New Character</Button>
+        <Stack>
+          <Button onClick={onResetRoster}>Reset Roster</Button>
+          <Button disabled={!roster?.length} onClick={onClearRoster}>
+            Clear Roster
+          </Button>
+          <Button onClick={() => setChar({})}>Create a New Character</Button>
+        </Stack>
       </Aside>
 
       <RosterCharModal
