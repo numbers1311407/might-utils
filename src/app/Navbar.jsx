@@ -24,6 +24,7 @@ export const Navbar = (props) => {
         </Text>
         <NavbarLink label="Party Finder" href="/" />
         <NavbarLink label="Saved Parties" href="/parties" />
+        <NavbarLink label="Instance Calculator" href="/instance-calculator" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs">

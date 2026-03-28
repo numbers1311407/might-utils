@@ -2,6 +2,7 @@ import { Route } from "wouter";
 import { Lineups, SavedLineups } from "@/features/lineups";
 import { ClassTags } from "@/features/class-tags";
 import { TagGroups } from "@/features/tag-groups";
+import { InstanceCalculator } from "@/features/instance-calculator";
 import { TagRules } from "@/features/tag-rules";
 import { Roster } from "@/features/roster";
 
@@ -13,6 +14,9 @@ export const Routes = () => {
       </Route>
       <Route path="/roster">
         <Roster />
+      </Route>
+      <Route path="/instance-calculator">
+        <InstanceCalculator />
       </Route>
       <Route path="/filter-rulesets">
         <TagRules />
