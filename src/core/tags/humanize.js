@@ -45,12 +45,17 @@ export const humanizeTag = (tag, typePrefix = false) => {
 // TODO "warden" and "level" grouping break this whole idea so it'll need to be
 // revisited, but it may just be removed/changed with the final results UI.
 export const humanizeGroupTag = (groupTag) => {
-  return groupTag
+  let counts = 0;
+
+  const body = groupTag
     .split(GROUP_TAG_KEY_DELIMITER)
     .map((t) => {
       const [tag, levelr, count] = t.split(GROUP_TAG_DELIMITER);
+      counts += Number(count);
       const [level, rank] = levelr.split(WARDEN_DELIMITER);
-      return `${count} ${humanizeTag(tag)} ${level}${rank === "0" ? "" : ` rk${rank}`}`;
+      return `${count}x${humanizeTag(tag)}${rank === "0" ? "" : `r${rank}`}`;
     })
     .join(", ");
+
+  return `${counts} chars: ${body}`;
 };
