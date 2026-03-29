@@ -1,8 +1,14 @@
 import { Link, useRoute } from "wouter";
 import { Box, Stack, NavLink, Text } from "@mantine/core";
+import { useAppContext } from "@/core/context";
 
 const NavbarLink = (props) => {
   const [active] = useRoute(props.href);
+
+  // the nav closes on route change, but its closed explicitly here
+  // so it will also close on clicking current route link.
+  const { closeMobileNav } = useAppContext();
+
   return (
     <NavLink
       py={4}
@@ -10,6 +16,7 @@ const NavbarLink = (props) => {
       bdrs="md"
       component={Link}
       active={active}
+      onClick={closeMobileNav}
       {...props}
     />
   );

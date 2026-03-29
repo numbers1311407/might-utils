@@ -7,8 +7,7 @@ import {
   Container,
   MantineProvider,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Router, useLocation } from "wouter";
+import { Router } from "wouter";
 import { AppContextProvider, useAppContext } from "@/core/context";
 import { Routes } from "./routes";
 import { Header } from "./Header.jsx";
@@ -25,16 +24,7 @@ const NAVBAR_WIDTH = 200;
 const ASIDE_WIDTH = 260;
 
 const Shell = () => {
-  const [mobileNavOpened, { close: closeMobileNav, toggle: toggleMobileNav }] =
-    useDisclosure(false);
-  const { hasAside } = useAppContext();
-  const [pathname] = useLocation();
-
-  // on route change we must close the mobile menu as it's covering
-  // the contentl
-  useEffect(() => {
-    closeMobileNav();
-  }, [pathname]);
+  const { hasAside, toggleMobileNav, mobileNavOpened } = useAppContext();
 
   return (
     <AppShell
