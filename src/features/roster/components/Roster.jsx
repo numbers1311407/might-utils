@@ -3,13 +3,12 @@ import {
   Anchor,
   Box,
   Button,
-  Card,
   Divider,
   Flex,
-  SimpleGrid,
   Group,
   Stack,
   Switch,
+  Table,
   Text,
   Title,
   UnstyledButton,
@@ -120,91 +119,102 @@ const IncrementButtons = ({
   onChange,
   label = "value",
 }) => (
-  <Group gap={0} display="inline-flex" wrap="nowrap">
+  <Paper
+    display="inline-flex"
+    withBorder
+    px={2}
+    py={1}
+    style={{
+      alignItems: "center",
+      borderRadius: 4,
+      wrap: "nowrap",
+      gap: 0,
+    }}
+  >
     <MinusButton
       aria-label={`Reduce ${label} by 1`}
       disabled={min !== undefined && value <= min}
       onClick={() => onChange?.(value - 1)}
     />
-    <Paper flex={1} px={8}>
+    <Text px={8} flex={1} span align="center">
       {value}
-    </Paper>
+    </Text>
     <PlusButton
       aria-label={`Increase ${label} by 1`}
       disabled={max !== undefined && value >= max}
       onClick={() => onChange?.(value + 1)}
     />
-  </Group>
+  </Paper>
 );
 
-export const RosterChar = ({ char, classTags, edit, update, remove }) => {
-  return (
-    <Card p="sm" withBorder>
-      <Flex gap="sm">
+export const RosterEmpty = ({ children }) => (
+  <Table.Row>
+    <Table.Cell colspan={6}>{children}</Table.Cell>
+  </Table.Row>
+);
+
+export const RosterChar = ({ char, classTags, edit, update, remove }) => (
+  <Table.Tr>
+    <Table.Td>
+      <Switch
+        aria-label="Toggle Active Status"
+        color="green"
+        checked={char.active}
+        onChange={(e) => {
+          update({ active: e.currentTarget.checked });
+        }}
+      />
+    </Table.Td>
+    <Table.Td>
+      <Text style={{ opacity: char.active ? 1 : 0.5 }}>{char.name}</Text>
+    </Table.Td>
+    <Table.Td>
+      <Group gap={8} wrap="nowrap">
         <ClassIcon
-          size={80}
+          size={24}
           cls={char.class}
           style={{ opacity: char.active ? 1 : 0.25 }}
         />
-
-        <Stack gap={8} flex="1">
-          <Flex gap={6} align="center">
-            <Text flex={1} size="xl" lh={1}>
-              {char.name} - {char.class}
-            </Text>
-            <Group gap={4}>
-              <TagsPopover char={char} classTags={classTags} />
-              <EditButton
-                aria-label="Edit character"
-                title="Edit"
-                onClick={() => edit(char)}
-              />
-              <TrashButton
-                aria-label="Remove character"
-                onClick={() => remove(char)}
-              />
-            </Group>
-          </Flex>
-
-          <Flex gap="lg">
-            <Stack gap={0} align="flex-start">
-              <Text>Level</Text>
-              <IncrementButtons
-                value={char.level}
-                label="char level"
-                min={charLevelSchema.minValue}
-                max={charLevelSchema.maxValue}
-                onChange={(level) => update({ level })}
-              />
-            </Stack>
-            <Stack gap={0} align="flex-start">
-              <Text>Warden</Text>
-              <IncrementButtons
-                value={char.warden}
-                label="char level"
-                min={0}
-                max={3}
-                onChange={(warden) => update({ warden })}
-              />
-            </Stack>
-            <Box flex={1} />
-            <Stack gap={0} align="center">
-              <Text>Active</Text>
-              <Switch
-                aria-label="Toggle Active Status"
-                color="green"
-                checked={char.active}
-                onChange={(e) => {
-                  update({ active: e.currentTarget.checked });
-                }}
-              />
-            </Stack>
-          </Flex>
-        </Stack>
-      </Flex>
-    </Card>
-  );
-};
+        <Text style={{ opacity: char.active ? 1 : 0.5 }}>{char.class}</Text>
+      </Group>
+    </Table.Td>
+    <Table.Td></Table.Td>
+    <Table.Td>
+      <IncrementButtons
+        value={char.level}
+        label="char level"
+        min={charLevelSchema.minValue}
+        max={charLevelSchema.maxValue}
+        onChange={(level) => update({ level })}
+      />
+    </Table.Td>
+    <Table.Td>
+      <IncrementButtons
+        value={char.warden}
+        label="char level"
+        min={0}
+        max={3}
+        onChange={(warden) => update({ warden })}
+      />
+    </Table.Td>
+    <Table.Td align="center">
+      <TagsPopover char={char} classTags={classTags} />
+    </Table.Td>
+    <Table.Td>
+      <Group gap={4} justify="flex-end">
+        <EditButton
+          aria-label="Edit character"
+          title="Edit"
+          onClick={() => edit(char)}
+        />
+        <TrashButton
+          aria-label="Remove character"
+          onClick={() => remove(char)}
+        />
+      </Group>
+    </Table.Td>
+  </Table.Tr>
+);
 
 export const RosterGrid = ({ roster, onEdit }) => {
   const classTags = useClassTagsStore((store) => store.tags);
@@ -220,26 +230,42 @@ export const RosterGrid = ({ roster, onEdit }) => {
   );
 
   return (
-    <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} gap="xs" my="md">
-      {!roster?.length && (
-        <Box>
-          You have no characters on your roster. Would you like to{" "}
-          <Anchor onClick={() => onEdit({})}>create a new character?</Anchor>
-        </Box>
-      )}
-      {roster.map((char) => (
-        <RosterChar
-          key={char.id}
-          char={char}
-          classTags={classTags}
-          edit={onEdit}
-          remove={onRemove}
-          update={(update) => {
-            rosterApi.updateChar(char.id, update);
-          }}
-        />
-      ))}
-    </SimpleGrid>
+    <Table highlightOnHover stickyHeader stickyHeaderOffset={50}>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th width={65}>Active</Table.Th>
+          <Table.Th>Name</Table.Th>
+          <Table.Th>Class</Table.Th>
+          <Table.Th>Might</Table.Th>
+          <Table.Th width={72}>Level</Table.Th>
+          <Table.Th width={72}>Warden</Table.Th>
+          <Table.Th width={50}>Tags</Table.Th>
+          <Table.Th width={70} ta="right">
+            Actions
+          </Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {!roster.length && (
+          <RosterEmpty>
+            You have no characters on your roster. Would you like to{" "}
+            <Anchor onClick={() => onEdit({})}>create a new character?</Anchor>
+          </RosterEmpty>
+        )}
+        {roster.map((char) => (
+          <RosterChar
+            key={char.id}
+            char={char}
+            classTags={classTags}
+            edit={onEdit}
+            remove={onRemove}
+            update={(update) => {
+              rosterApi.updateChar(char.id, update);
+            }}
+          />
+        ))}
+      </Table.Tbody>
+    </Table>
   );
 };
 
@@ -270,30 +296,27 @@ export const Roster = () => {
 
   return (
     <Box>
-      <Title order={2} mb="xs">
-        Character Roster
-      </Title>
+      <Group gap={4}>
+        <Title order={2} mb="xs" flex={1}>
+          Character Roster
+        </Title>
+        <Button size="xs" onClick={() => setChar({})}>
+          New Character
+        </Button>
+        <Button variant="light" size="xs" onClick={onResetRoster}>
+          Reset
+        </Button>
+        <Button
+          variant="light"
+          size="xs"
+          disabled={!roster?.length}
+          onClick={onClearRoster}
+        >
+          Clear
+        </Button>
+      </Group>
 
       <RosterGrid roster={roster} onEdit={(char) => setChar(char)} />
-
-      <Aside>
-        <Text mb="sm">
-          Your stable of characters. The characters defined here will be
-          considered when finding parties.
-        </Text>
-        <Text>
-          By default, only characters marked as "active" will be eligible,
-          though this behavior is toggleable.
-        </Text>
-        <Divider my="lg" />
-        <Stack>
-          <Button onClick={onResetRoster}>Reset Roster</Button>
-          <Button disabled={!roster?.length} onClick={onClearRoster}>
-            Clear Roster
-          </Button>
-          <Button onClick={() => setChar({})}>Create a New Character</Button>
-        </Stack>
-      </Aside>
 
       <RosterCharModal
         roster={roster}
