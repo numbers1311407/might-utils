@@ -35,10 +35,12 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
             display="box"
           >
             <Flex align="center" gap={6}>
-              <Text size="xl" pt={4} fw="bold" c="blue.4" fs="italic">
+              <Text size="xl" pt={4} fw="bold" c="primary.4" fs="italic">
                 Suggested
               </Text>{" "}
-              <Box>Might</Box>
+              <Text size="2xl" fw="bold" tt="uppercase">
+                Might
+              </Text>
             </Flex>
           </Anchor>
         </Title>

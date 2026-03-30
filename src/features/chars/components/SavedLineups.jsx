@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Pill, Button } from "@mantine/core";
+import { Box, Button } from "@mantine/core";
 import {
   useSavedLineupsStore,
   useSavedLineupsStoreApi as storeApi,

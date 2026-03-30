@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useSavedLineupsStoreApi as storeApi } from "@/core/store";
-import { tagSchema, lineupSchema } from "@/core/schemas";
+import { lineupSchema } from "@/core/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { HelpLabel, TagsInput } from "@/core/components";
 
 const formSchema = lineupSchema
   .safeExtend({})

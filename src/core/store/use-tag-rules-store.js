@@ -78,6 +78,12 @@ export const api = {
     });
   },
 
+  deactivateType: (type) => {
+    set((state) => {
+      state.active[type] = [];
+    });
+  },
+
   deactivate: (id) => {
     set((state) => {
       const ruleset = state.sets[id];

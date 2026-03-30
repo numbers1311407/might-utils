@@ -1,6 +1,6 @@
 import { Divider, Group, Stack } from "@mantine/core";
 import { useThrottledCallback } from "@mantine/hooks";
-import { NumberField, ActiveTagFiltersSelect } from "@/core/components";
+import { ActiveTagFiltersSelect, NumberField } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
 import { useLineupsStore } from "../store";
 import { ResultsGroupingSelect } from "./ResultsGroupingSelect.jsx";

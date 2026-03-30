@@ -1,4 +1,4 @@
-import { Image } from "@mantine/core";
+import { alpha, Image } from "@mantine/core";
 
 import BER from "@/assets/class-icons/ber.webp";
 import BRD from "@/assets/class-icons/brd.webp";
@@ -36,14 +36,16 @@ const icons = {
   WIZ,
 };
 
-const defaultSize = 40;
+const defaultSize = 42;
 
 export const ClassIcon = ({ cls, size = defaultSize, ...props }) => (
   <Image
+    radius={2}
     h={`${size}px`}
     w={`${size}px`}
-    radius="sm"
-    src={icons[cls]}
+    p={1}
+    bg={alpha("var(--mantine-color-yellow-3)", 0.8)}
     {...props}
+    src={icons[cls]}
   />
 );

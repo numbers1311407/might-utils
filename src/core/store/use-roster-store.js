@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { createStore } from "./helpers";
 import { defaultRoster } from "@/core/config/defaults";
 import { rosterSchema, charSchema } from "@/core/schemas";
@@ -8,11 +9,22 @@ const rosterSort = (a, b) => {
 
 export const useRosterStore = createStore("might-utils-roster", () => ({
   roster: rosterSchema.parse(defaultRoster).sort(rosterSort),
+  activeOnly: false,
 }));
 
 const { getState: get, setState: set } = useRosterStore;
 
 const api = {
+  setActiveOnly: (value) => {
+    set((state) => {
+      state.activeOnly = value;
+    });
+  },
+
+  toggleActiveOnly: () => {
+    api.setActiveOnly(!get().activeOnly);
+  },
+
   setRoster: (roster = defaultRoster) => {
     set((state) => {
       state.roster = rosterSchema.parse(roster).sort(rosterSort);
@@ -64,3 +76,18 @@ const api = {
 };
 
 export const useRosterStoreApi = api;
+
+export const useRoster = () => {
+  const roster = useRosterStore((store) => store.roster);
+  const activeOnly = useRosterStore((store) => store.activeOnly);
+
+  const filteredRoster = useMemo(() => {
+    return roster.filter((char) => (activeOnly ? char.active : true));
+  }, [roster, activeOnly]);
+
+  return {
+    roster: filteredRoster,
+    activeOnly,
+    setActiveOnly: api.setActiveOnly,
+  };
+};

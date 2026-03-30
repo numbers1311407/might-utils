@@ -41,8 +41,7 @@ export const TagRulesetPreview = ({ ruleset, ...props }) => {
 
   return (
     <Box {...props}>
-      <Text>Hover these numbers for rule summaries:</Text>
-      <Flex mx={-6}>
+      <Flex mx={-6} my={0}>
         <HoverCard.Group openDelay={200}>
           {getNumberedArray(1, 20).map((size) => (
             <HoverCard width={270} shadow="md" key={size}>

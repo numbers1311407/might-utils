@@ -1393,6 +1393,11 @@ node-releases@^2.0.27:
   resolved "https://registry.npmjs.org/node-releases/-/node-releases-2.0.27.tgz"
   integrity sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==
 
+non.geist@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/non.geist/-/non.geist-2.0.1.tgz#319f5a9839188362494a40e1d3e128dff9f10a12"
+  integrity sha512-hCl7GMAbrEcxTTxVA7tJfqRuFkvLmqQKoKxyOiIFjaoWG7ZZu5TrZN7GqNJ83QLPDZgwqINnJVhRKVwb/Sz1JA==
+
 optionator@^0.9.3:
   version "0.9.4"
   resolved "https://registry.npmjs.org/optionator/-/optionator-0.9.4.tgz"

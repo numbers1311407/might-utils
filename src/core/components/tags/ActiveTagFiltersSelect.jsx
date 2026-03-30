@@ -2,15 +2,24 @@ import { TagRulesetSelect } from "./TagRulesetSelect.jsx";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
 
 export const ActiveTagFiltersSelect = (props) => {
-  const value = useTagRulesStore((store) => store.active.filters?.[0]);
+  const value = useTagRulesStore((store) => store.active.filters?.[0] || "");
 
   return (
     <TagRulesetSelect
       type="filters"
       {...props}
-      onChange={(id) => api.activate(id)}
+      onChange={(id) => {
+        if (id) {
+          api.activate(id);
+        } else {
+          api.deactivateType("filters");
+        }
+      }}
       value={value}
+      placeholder="Select ruleset..."
       labelActive={false}
+      clearable
+      includeNone
     />
   );
 };

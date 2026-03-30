@@ -1,8 +1,22 @@
-import { Fragment, useMemo, useState } from "react";
-import { IconEdit, IconX, IconAlertCircle } from "@tabler/icons-react";
-import { ActionIcon, Alert, Button, Box, Grid, Group } from "@mantine/core";
+import { useMemo, useState } from "react";
+import {
+  IconEdit,
+  IconX,
+  IconAlertCircle,
+  IconArrowRight,
+} from "@tabler/icons-react";
+import {
+  ActionIcon,
+  Alert,
+  Button,
+  Box,
+  Group,
+  Grid,
+  Text,
+  Stack,
+} from "@mantine/core";
 import classes from "./TagRules.module.css";
-import { TagRulesetSelect } from "@/core/components";
+import { Aside, TagRulesetSelect } from "@/core/components";
 import {
   useTagRulesManager,
   useTagRulesStoreApi as tagRulesApi,
@@ -42,17 +56,17 @@ const GridRow = ({ left, right, main, ...props }) => {
   );
 };
 
-const LintAlert = ({ errors }) => {
+const LintAlert = ({ count, ...props }) => {
   return (
     <Alert
       variant="light"
       title="Warning: Overlapping Rules"
       icon={<IconAlertCircle />}
+      {...props}
     >
-      You have {Object.keys(errors).length} rule(s) which have conflicting
-      sizes. Rules that apply to the same group size must have unique type,
-      value, and warden requirement. When there is a conflict, the rule with the
-      higher size range wins.
+      You have {count} rule(s) which have conflicting sizes. Rules that apply to
+      the same group size must have unique type, value, and warden requirement.
+      When there is a conflict, the rule with the higher size range wins.
     </Alert>
   );
 };
@@ -76,84 +90,103 @@ export const TagRules = ({ type = "filters" }) => {
 
   return (
     <Box>
-      <Group gap="xs" align="flex-end">
-        <TagRulesetSelect
-          type={type}
-          onChange={(id) => {
-            setRuleset(tagRulesApi.getSet(id));
-          }}
-          value={ruleset.id}
-        />
+      <Aside>
+        <Stack>
+          <TagRulesetSelect
+            type={type}
+            onChange={(id) => {
+              setRuleset(tagRulesApi.getSet(id));
+            }}
+            value={ruleset.id}
+          />
 
-        <Button
-          disabled={api.currentActive}
-          onClick={() => api.activateCurrent()}
-        >
-          Set as Active
-        </Button>
-
-        <Button onClick={() => api.duplicateCurrent()}>Duplicate</Button>
-
-        {!api.currentDefault && (
-          <>
-            <Button
-              aria-label="Rename ruleset"
-              onClick={() => {
-                setDraftRuleset(ruleset);
-              }}
-            >
-              Rename
-            </Button>
-            <Button
-              aria-label="Remove ruleset"
-              disabled={api.currentDefault}
-              onClick={() => api.removeCurrent()}
-            >
-              Remove
-            </Button>
-          </>
-        )}
-
-        {api.currentDefault && (
           <Button
-            aria-label="Reset to defaults"
-            disabled={!api.currentDefaultDirty}
-            onClick={() => tagRulesApi.restoreDefaultSet(ruleset.id)}
+            disabled={api.currentActive}
+            onClick={() => api.activateCurrent()}
           >
-            Reset to defaults
+            Set as Active
           </Button>
+
+          <Button onClick={() => api.duplicateCurrent()}>Duplicate</Button>
+
+          {!api.currentDefault && (
+            <>
+              <Button
+                aria-label="Rename ruleset"
+                onClick={() => {
+                  setDraftRuleset(ruleset);
+                }}
+              >
+                Rename
+              </Button>
+              <Button
+                aria-label="Remove ruleset"
+                disabled={api.currentDefault}
+                onClick={() => api.removeCurrent()}
+              >
+                Remove
+              </Button>
+            </>
+          )}
+
+          {api.currentDefault && (
+            <Button
+              aria-label="Reset to defaults"
+              disabled={!api.currentDefaultDirty}
+              onClick={() => tagRulesApi.restoreDefaultSet(ruleset.id)}
+            >
+              Reset to defaults
+            </Button>
+          )}
+
+          <Button onClick={() => setDraftRuleset({ type })}>New Ruleset</Button>
+
+          <Button
+            aria-label="Add a rule"
+            onClick={() => {
+              setDraftTagRuleProps({});
+            }}
+          >
+            Add Rule
+          </Button>
+
+          <Button
+            title="Resort rules from lowest to highest size range"
+            aria-label="Resort rules"
+            onClick={() => {
+              api.sortCurrent();
+            }}
+          >
+            Resort Rules
+          </Button>
+        </Stack>
+      </Aside>
+
+      <Grid gutter="lg" align="center">
+        {!lintResult.ok && (
+          <GridRow
+            main={<LintAlert count={Object.keys(lintResult.errors).length} />}
+          />
         )}
-
-        <Button onClick={() => setDraftRuleset({ type })}>New Ruleset</Button>
-
-        <Button
-          aria-label="Add a rule"
-          onClick={() => {
-            setDraftTagRuleProps({});
-          }}
-        >
-          Add Rule
-        </Button>
-
-        <Button
-          title="Resort rules from lowest to highest size range"
-          aria-label="Resort rules"
-          onClick={() => {
-            api.sortCurrent();
-          }}
-        >
-          Resort Rules
-        </Button>
-      </Group>
-
-      {!lintResult.ok && <LintAlert errors={lintResult.errors} />}
-
-      <Grid gutter="lg" my={16} align="center">
         <GridRow
+          left={
+            <Group
+              gap={4}
+              justify="right"
+              c="dark"
+              visibleFrom="lg"
+              wrap="nowrap"
+            >
+              <Text ta="right" span>
+                Hover for summaries
+              </Text>
+              <IconArrowRight size={24} />
+            </Group>
+          }
           main={
             <TagRulesetPreview
               ruleset={ruleset}
-              mx={{ base: 0, md: -8, lg: -16 }}
+              mx={{ base: 0, md: -8, lg: -12 }}
             />
           }
         />

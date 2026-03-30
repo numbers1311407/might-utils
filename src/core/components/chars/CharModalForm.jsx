@@ -16,11 +16,9 @@ import { useForm } from "@mantine/form";
 import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
 import { charSchema, charClassSchema, tagSchema } from "@/core/schemas";
-import { useClassTagsStore } from "@/core/store";
+import { useClassTagsStore, useRosterStore } from "@/core/store";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 
-// create a form-specific schema extension that adds roster uniquness
-// validation to the character model
 const formCharSchema = charSchema
   .extend({
     siblings: z.array(z.string()),
@@ -28,12 +26,12 @@ const formCharSchema = charSchema
   .refine(
     ({ name, siblings }) => !name || !siblings.includes(capitalize(name)),
     {
-      message: "Character name is already on the roster",
+      message: "Character name is already taken",
       path: ["name"],
     },
   );
 
-export const RosterCharModal = ({ roster, char, onClose, onSubmit }) => {
+export const CharModalForm = ({ char, onClose, onSubmit }) => {
   return (
     <Modal
       opened={!!char}
@@ -42,11 +40,10 @@ export const RosterCharModal = ({ roster, char, onClose, onSubmit }) => {
       title={char?.name ? `Edit Character: ${char.name}` : "New Character"}
     >
       {char && (
-        <RosterCharForm
+        <CharForm
           // note this key hack is to get around mantine's aggressive form caching
           key={!!char ? "opened" : "closed"}
           char={char}
-          roster={roster}
           onSubmit={onSubmit}
         />
       )}
@@ -54,7 +51,8 @@ export const RosterCharModal = ({ roster, char, onClose, onSubmit }) => {
   );
 };
 
-const RosterCharForm = ({ char, onSubmit, roster }) => {
+const CharForm = ({ char, onSubmit }) => {
+  const roster = useRosterStore((store) => store.roster);
   const classTags = useClassTagsStore((store) => store.tags);
   const [tagsError, setTagsError] = useState(null);
   const charClass = char.class || charClassSchema.options[0];

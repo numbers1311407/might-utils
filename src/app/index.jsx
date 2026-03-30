@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   AppShell,
@@ -15,7 +14,10 @@ import { Navbar } from "./Navbar.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { ScrollToTop } from "./ScrollToTop.jsx";
 import { GlobalConfirmationModal } from "./GlobalConfirmationModal.jsx";
+
 import { theme } from "./theme.js";
+import { cssVariablesResolver } from "./css-variables-resolver.js";
+import "./style.css";
 
 const CONTAINER_WIDTH = 1920;
 const HEADER_HEIGHT = 50;
@@ -72,7 +74,11 @@ const Shell = () => {
 
 function App() {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider
+      theme={theme}
+      cssVariablesResolver={cssVariablesResolver}
+      defaultColorScheme="dark"
+    >
       <AppContextProvider>
         <Router base="/might-utils">
           <Shell />

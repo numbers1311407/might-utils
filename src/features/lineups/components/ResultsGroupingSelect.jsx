@@ -1,19 +1,26 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import {
   Box,
+  CheckIcon,
+  Group,
+  CloseIcon,
   Combobox,
   useCombobox,
   Input,
   InputBase,
   InputLabel,
+  Text,
+  Select,
+  UnstyledButton,
 } from "@mantine/core";
+import { useDraftState } from "@/core/hooks";
 import { useTagGroupsStore } from "@/core/store";
 import { useLineupsStore } from "../store";
 
 const staticOptions = {
   none: {
     label: "Ungrouped",
-    value: "none",
+    value: "",
   },
   level: {
     label: "By Level",
@@ -24,7 +31,7 @@ const staticOptions = {
     value: "class",
   },
   warden: {
-    label: "By Warden Rk.",
+    label: "By Warden Rank",
     value: "warden",
   },
 };
@@ -33,9 +40,11 @@ export const ResultsGroupingSelect = (props) => {
   const value = useLineupsStore(
     (store) => store.options?.groupBy || staticOptions.none.value,
   );
+  const [search, setSearch] = useDraftState(value);
   const setOption = useLineupsStore((store) => store.setOption);
   const groups = useTagGroupsStore((store) => store.registry);
   const combobox = useCombobox();
+  const ref = useRef();
 
   const activeGroupOptions = useMemo(() => {
     return Object.values(groups)
@@ -46,72 +55,40 @@ export const ResultsGroupingSelect = (props) => {
       }));
   }, [groups]);
 
-  const valueLabel = useMemo(() => {
-    for (const option of Object.values(staticOptions)) {
-      if (value === option.value) {
-        return value === staticOptions.none.value
-          ? staticOptions.none.label
-          : `Standard: ${option.label}`;
-      }
-    }
-    for (const option of activeGroupOptions) {
-      if (value === option.value) {
-        return `Tags: ${option.label}`;
-      }
-    }
-    return staticOptions.none.label;
-  }, [value, activeGroupOptions]);
+  const data = useMemo(() => {
+    return [
+      {
+        group: "Standard",
+        items: Object.values(staticOptions),
+      },
+      {
+        group: "Tag Groups",
+        items: activeGroupOptions,
+      },
+    ];
+  }, [activeGroupOptions]);
 
   return (
-    <Box {...props}>
-      <InputLabel>Results Grouping</InputLabel>
-      <Combobox
-        onOptionSubmit={({ value }) => {
-          setOption("groupBy", value);
-          combobox.closeDropdown();
-        }}
-        store={combobox}
-      >
-        <Combobox.Target>
-          <InputBase
-            component="button"
-            type="button"
-            pointer
-            rightSection={<Combobox.Chevron />}
-            onClick={() => combobox.toggleDropdown()}
-            rightSectionPointerEvents="none"
-          >
-            {valueLabel || (
-              <Input.Placeholder>Choose grouping</Input.Placeholder>
-            )}
-          </InputBase>
-        </Combobox.Target>
-        <Combobox.Dropdown>
-          <Combobox.Group label="Standard">
-            <Combobox.Option value={staticOptions.none}>
-              {staticOptions.none.label}
-            </Combobox.Option>
-            <Combobox.Option value={staticOptions.class}>
-              {staticOptions.class.label}
-            </Combobox.Option>
-            <Combobox.Option value={staticOptions.level}>
-              {staticOptions.level.label}
-            </Combobox.Option>
-            <Combobox.Option value={staticOptions.warden}>
-              {staticOptions.warden.label}
-            </Combobox.Option>
-          </Combobox.Group>
-          {!!activeGroupOptions.length && (
-            <Combobox.Group label="Tag Groups">
-              {activeGroupOptions.map((group) => (
-                <Combobox.Option value={group} key={group.value}>
-                  {group.label}
-                </Combobox.Option>
-              ))}
-            </Combobox.Group>
-          )}
-        </Combobox.Dropdown>
-      </Combobox>
-    </Box>
+    <Select
+      allowDeselect={false}
+      clearable
+      data={data}
+      label="Results Grouping"
+      onSearchChange={setSearch}
+      placeholder="Select grouping..."
+      ref={ref}
+      searchValue={search}
+      searchable
+      value={value}
+      onFocus={() => {
+        setSearch("");
+      }}
+      onChange={(value) => {
+        setOption("groupBy", value || null);
+      }}
+      onDropdownClose={() => {
+        ref.current?.blur();
+      }}
+    />
   );
 };
