@@ -19,7 +19,7 @@ import { theme } from "./theme.js";
 import { cssVariablesResolver } from "./css-variables-resolver.js";
 import "./style.css";
 
-const CONTAINER_WIDTH = 1920;
+const CONTAINER_WIDTH = 1600;
 const HEADER_HEIGHT = 50;
 const HEADER_CONTENT_OFFSET = HEADER_HEIGHT + 12;
 const NAVBAR_WIDTH = 200;

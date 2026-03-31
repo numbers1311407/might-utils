@@ -29,12 +29,12 @@ const sizeHelp =
   "the higher size range will take precedence.";
 
 const rangeHelp =
-  'A single number ("1") represents an exact count. Appending +/- ("1+" or "1-") would mean at least 1 ' +
-  'or at most 1, respectively. A range is expressed with a hyphen, e.g. "1-3" would mean between 1 and 3. ' +
-  'and finally asterisk ("*") means everyone in the group.';
+  "A single number (e.g. 2) represents an exact count. Appending +/- (2+ or 2-) would mean at least 2 " +
+  "or at most 2, respectively. A range is expressed with a hyphen, e.g. 1-3 would mean between 1 and 3. " +
+  "and finally asterisk (*) means everyone in the group.";
 
 const wardenHelp =
-  "Rules can specify warden rank, but note that this increases the specificity of the rule. " +
+  "Note that specifying warden rank on non-warden rules increases the specificity of the rule. " +
   'For instance you can specify exactly 1 "tank" with rk. 2, but that will not affect inclusion of ' +
   "tanks with different ranks. This is by design for flexibility. If you want to require exactly " +
   "1 tank with a specific warden rank, you need two rules: one requiring a tank with warden rk. X, and " +
@@ -114,7 +114,16 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
           withAsterisk
           label={<HelpLabel label="Type" help={typeHelp} />}
           placeholder="What are we counting?"
-          description="Type defines what this rule counts to determine pass/fail."
+          description={
+            {
+              tag: "This rule will filter characters tagged with this tag.",
+              name: "This rule will filter the character with this name.",
+              level: "This rule will filter characters of this level.",
+              class: "This rule will filter characters of this class.",
+              warden: "This rule will filter characters by warden status.",
+            }[form.values.type] ||
+            "Type defines what this rule counts to determine pass/fail."
+          }
           data={[
             { label: "Tag", value: "tag" },
             { label: "Name", value: "name" },
@@ -240,7 +249,7 @@ const RangeField = ({ form }) => {
       key={form.key("range")}
       withAsterisk
       disabled={disabled}
-      description="Count of characters who must fulfill this rule."
+      description="Count or range of characters who must fulfill this rule."
       label={<HelpLabel label="Count" help={rangeHelp} />}
       {...form.getInputProps("range")}
     />

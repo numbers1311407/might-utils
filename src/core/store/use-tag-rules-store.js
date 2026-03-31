@@ -48,7 +48,15 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
 
 const { getState: get, setState: set } = useTagRulesStore;
 export const api = {
-  nameAvailable: (name) => {
+  nameAvailable: (name, record) => {
+    if (typeof name === "object") {
+      record = name;
+      name = record?.name;
+    }
+    const persisted = record?.id && api.getSet(record.id);
+    if (persisted && persisted.name === name) {
+      return true;
+    }
     const used = Object.values(get().sets).map((set) => set.name.toLowerCase());
     return !used.includes(name.toLowerCase());
   },

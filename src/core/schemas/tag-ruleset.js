@@ -47,7 +47,14 @@ export const sortTagRulesetRules = (rules) => {
 };
 
 export const tagRulesetSchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(1, {
+      message: "Name must be present.",
+    })
+    .max(30, {
+      message: "Name must be 30 chars or less",
+    }),
   id: z.union([
     z.nanoid().default(() => nanoid()),
     z.literal("default-filters"),

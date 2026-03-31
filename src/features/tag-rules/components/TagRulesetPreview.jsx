@@ -17,17 +17,21 @@ const humanizeRange = (r) => {
   return `${r.join("-")}`;
 };
 
-const RulesList = ({ rules }) => {
+const RulesList = ({ rules, Item = List.Item, ...listProps }) => {
   const items = !rules ? (
-    <List.Item>No rules at this size</List.Item>
+    <Item>No rules at this size</Item>
   ) : (
     Object.entries(rules).map(([tag, range]) => (
-      <List.Item key={tag}>
+      <Item key={tag}>
         {humanizeRange(range)} {humanizeTag(tag, true)}
-      </List.Item>
+      </Item>
     ))
   );
-  return <List size="sm">{items}</List>;
+  return (
+    <List size="sm" {...listProps}>
+      {items}
+    </List>
+  );
 };
 
 export const TagRulesetPreview = ({ ruleset, ...props }) => {
@@ -41,7 +45,7 @@ export const TagRulesetPreview = ({ ruleset, ...props }) => {
 
   return (
     <Box {...props}>
-      <Flex mx={-6} my={0}>
+      <Flex mx={-2} my={0}>
         <HoverCard.Group openDelay={200}>
           {getNumberedArray(1, 20).map((size) => (
             <HoverCard width={270} shadow="md" key={size}>
@@ -65,3 +69,5 @@ export const TagRulesetPreview = ({ ruleset, ...props }) => {
     </Box>
   );
 };
+
+TagRulesetPreview.RulesList = RulesList;

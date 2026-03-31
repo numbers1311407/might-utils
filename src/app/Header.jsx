@@ -15,7 +15,7 @@ import classes from "./Header.module.css";
 
 export const Header = ({ burgerOpened, onBurgerClick }) => (
   <AppShell.Header className={classes.header}>
-    <Container size={1920}>
+    <Container size={1600}>
       <Flex h="50px" wrap={{ base: "wrap", sm: "nowrap" }} align="center">
         <Burger
           opened={burgerOpened}

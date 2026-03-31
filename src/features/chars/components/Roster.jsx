@@ -55,26 +55,23 @@ export const Roster = () => {
   return (
     <Box>
       <PageTitle
-        buttons={
-          <>
-            <Button size="xs" onClick={() => setChar({})}>
-              New Character
-            </Button>
-            <Button variant="light" size="xs" onClick={onResetRoster}>
-              Reset
-            </Button>
-            <Button
-              variant="light"
-              size="xs"
-              disabled={!roster?.length}
-              onClick={onClearRoster}
-            >
-              Clear
-            </Button>
-          </>
-        }
+        title="Character Roster"
+        subtitle="All your characters live here"
       >
-        Character Roster
+        <Button variant="outline" size="xs" onClick={onResetRoster}>
+          Reset
+        </Button>
+        <Button
+          size="xs"
+          disabled={!roster?.length}
+          onClick={onClearRoster}
+          variant="outline"
+        >
+          Clear
+        </Button>
+        <Button size="xs" onClick={() => setChar({})}>
+          New Character
+        </Button>
       </PageTitle>
 
       <CharsTable
@@ -85,8 +82,12 @@ export const Roster = () => {
         onRemove={onRemove}
         emptyContent={
           <>
-            <Text>You have no characters on your roster.</Text>
-            <Anchor onClick={() => setChar({})}>Create a new character?</Anchor>
+            <Text size="lg" mb="md">
+              You have no characters on your roster.
+            </Text>
+            <Button size="md" onClick={() => setChar({})}>
+              Create a character?
+            </Button>
           </>
         }
       />

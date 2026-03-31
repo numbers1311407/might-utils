@@ -3,6 +3,7 @@ import {
   Box,
   Flex,
   Group,
+  Paper,
   Stack,
   SegmentedControl,
   Table,
@@ -45,6 +46,28 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
     );
   }, [activeOnly, chars]);
 
+  const avgLevel = useMemo(() => {
+    if (!chars.length) return "n/a";
+
+    return Math.round(
+      chars.reduce((sum, char) => (sum += char.level), 0) / chars.length,
+    );
+  }, [chars]);
+
+  const levels = useMemo(() => {
+    if (!chars.length) return "n/a";
+
+    return chars
+      .reduce(
+        (acc, char) => [
+          Math.min(acc[0], char.level),
+          Math.max(acc[1], char.level),
+        ],
+        [chars[0].level, chars[0].level],
+      )
+      .join("-");
+  }, [chars]);
+
   return (
     <Aside component={Stack} {...asideProps}>
       {isRoster && (
@@ -55,11 +78,39 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
           fullWidth
           data={[
             { label: "Show All", value: false },
-            { label: "Show Active only", value: true },
+            { label: "Hide Inactive", value: true },
           ]}
           onChange={setActiveOnly}
         />
       )}
+      <Table variant="vertical" withTableBorder>
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Th width="50%">Count:</Table.Th>
+            <Table.Td c="yellow.5" ta="right">
+              <Text size="lg" ff="mono">
+                {chars.length}
+              </Text>
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Level range:</Table.Th>
+            <Table.Td c="yellow.5" ta="right">
+              <Text size="lg" ff="mono">
+                {levels}
+              </Text>
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Average level:</Table.Th>
+            <Table.Td c="yellow.5" ta="right">
+              <Text size="lg" ff="mono">
+                {avgLevel}
+              </Text>
+            </Table.Td>
+          </Table.Tr>
+        </Table.Tbody>
+      </Table>
       <Table withTableBorder withColumnBorders>
         {isRoster ? (
           <>
@@ -71,13 +122,17 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
             </Table.Thead>
             <Table.Tbody>
               <Table.Tr>
-                <Table.Td c="yellow.5">{totalMight.low}</Table.Td>
-                <Table.Td c="yellow.3">{totalMight.high}</Table.Td>
+                <Table.Td c="yellow.7" ff="mono">
+                  <Text size="lg">{totalMight.low}</Text>
+                </Table.Td>
+                <Table.Td c="yellow.5" ff="mono">
+                  <Text size="lg">{totalMight.high}</Text>
+                </Table.Td>
               </Table.Tr>
             </Table.Tbody>
             <Table.Tfoot>
               <Table.Tr>
-                <Table.Td colspan={2}>* Dependent on warden status</Table.Td>
+                <Table.Td colSpan={2}>* Dependent on warden status</Table.Td>
               </Table.Tr>
             </Table.Tfoot>
           </>
@@ -90,7 +145,7 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
             </Table.Thead>
             <Table.Tbody>
               <Table.Tr>
-                <Table.Td c="yellow.4">{totalMight.high}</Table.Td>
+                <Table.Td c="yellow.7">{totalMight.high}</Table.Td>
               </Table.Tr>
             </Table.Tbody>
           </>
@@ -105,17 +160,17 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
         <Table.Tbody>
           <Table.Tr>
             <Table.Td>
-              <Group gap={8}>
+              <Group gap={8} ts="lg">
                 {!tagCloud.length && <Text>None</Text>}
                 {tagCloud.map(({ tag, count }) => (
                   <Flex gap={2} key={tag}>
-                    <Text span c="gold">
+                    <Text span c="yellow.4">
                       {count}
                     </Text>
-                    <Text span c="yellow.5">
+                    <Text span c="yellow.6">
                       x
                     </Text>
-                    <Text span c="gold" fs="italic">
+                    <Text span c="yellow.4" fs="italic">
                       {tag}
                     </Text>
                   </Flex>

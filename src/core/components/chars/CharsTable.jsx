@@ -12,7 +12,7 @@ import { CharTagsPopover } from "./CharTagsPopover.jsx";
 
 export const CharsTableEmptyRow = ({ children }) => (
   <Table.Tr>
-    <Table.Td colspan={8} p="3xl">
+    <Table.Td colSpan={8} p="3xl">
       <Box ta="center">{children}</Box>
     </Table.Td>
   </Table.Tr>
@@ -51,22 +51,18 @@ export const CharsTableRow = ({
         <Text style={{ opacity: char.active ? 1 : 0.5 }}>{char.class}</Text>
       </Group>
     </Table.Td>
-    <Table.Td>
-      {isRoster ? (
+    <Table.Td ta="center">
+      {isRoster && char.warden > 0 && (
         <>
-          <Text c="yellow.5" span>
+          <Text c="yellow.7" span title="Unwardened" ff="mono">
             {getCharMight(char, 0)}
           </Text>{" "}
           -{" "}
-          <Text c="yellow.3" span>
-            {getCharMight(char)}
-          </Text>
         </>
-      ) : (
-        <Text c="yellow.3" span>
-          {getCharMight(char)}
-        </Text>
       )}
+      <Text c="yellow.5" span title={`Warden ${char.warden}`} ff="mono">
+        {getCharMight(char)}
+      </Text>
     </Table.Td>
     <Table.Td>
       <IncrementButtons
@@ -123,10 +119,16 @@ export const CharsTable = ({
         <Table.Tr>
           <Table.Th width={65}>Active</Table.Th>
           <Table.Th>Name</Table.Th>
-          <Table.Th>Class</Table.Th>
-          <Table.Th>Might</Table.Th>
-          <Table.Th width={72}>Level</Table.Th>
-          <Table.Th width={72}>Warden</Table.Th>
+          <Table.Th w={70}>Class</Table.Th>
+          <Table.Th ta="center" w={120}>
+            Might
+          </Table.Th>
+          <Table.Th ta="center" width={72}>
+            Level
+          </Table.Th>
+          <Table.Th ta="center" width={72}>
+            Warden
+          </Table.Th>
           <Table.Th width={50}>Tags</Table.Th>
           <Table.Th width={70} ta="right">
             Actions

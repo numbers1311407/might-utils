@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { CloseButton, Button, Modal, TextInput, Group } from "@mantine/core";
 import { useTagRulesStoreApi } from "@/core/store";
+import { tagRulesetSchema } from "@/core/schemas";
 
 const { nameAvailable } = useTagRulesStoreApi;
 
+const formSchema = tagRulesetSchema.refine(
+  (ruleset) => nameAvailable(ruleset),
+  {
+    message: "Name already taken",
+    path: ["name"],
+  },
+);
+
 export const TagRulesNameModal = ({ ruleset, onClose, onCommit }) => {
-  const [name, setName] = useState(ruleset?.name || "");
+  const [name, setName] = useState(ruleset.name || "");
   const [error, setError] = useState(false);
   const [dirty, setDirty] = useState(false);
 
@@ -16,15 +25,9 @@ export const TagRulesNameModal = ({ ruleset, onClose, onCommit }) => {
   };
 
   const validate = () => {
-    if (!name.trim()) {
-      handleError("Cannot be blank");
-      return false;
-    } else if (ruleset?.name !== name && !nameAvailable(name)) {
-      handleError("Name is taken");
-      return false;
-    }
-    setError(false);
-    return true;
+    const result = formSchema.safeParse({ ...ruleset, name });
+    setError(result.success ? false : result.error.issues[0].message);
+    return result.success;
   };
 
   const handleError = (msg) => {

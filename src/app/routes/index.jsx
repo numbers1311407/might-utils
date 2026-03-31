@@ -18,7 +18,7 @@ export const Routes = () => {
       <Route path="/instance-calculator">
         <InstanceCalculator />
       </Route>
-      <Route path="/filter-rulesets">
+      <Route path="/filter-rulesets/:id?">
         <TagRules />
       </Route>
       <Route path="/class-tags">
