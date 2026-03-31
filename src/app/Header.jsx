@@ -12,11 +12,16 @@ import {
 import { ColorSchemeButton } from "@/core/components";
 import { Link } from "wouter";
 import classes from "./Header.module.css";
+import { CONTAINER_WIDTH, HEADER_HEIGHT } from "./constants.js";
 
 export const Header = ({ burgerOpened, onBurgerClick }) => (
   <AppShell.Header className={classes.header}>
-    <Container size={1600}>
-      <Flex h="50px" wrap={{ base: "wrap", sm: "nowrap" }} align="center">
+    <Container size={CONTAINER_WIDTH}>
+      <Flex
+        h={HEADER_HEIGHT}
+        wrap={{ base: "wrap", sm: "nowrap" }}
+        align="center"
+      >
         <Burger
           opened={burgerOpened}
           onClick={onBurgerClick}

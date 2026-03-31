@@ -3,16 +3,17 @@ import { Link } from "wouter";
 import { useTagRulesList, useTagRulesStore } from "@/core/store";
 import { IconChevronLeft, IconStarFilled } from "@tabler/icons-react";
 
-export const TagRulesNav = ({ current, ...props }) => {
+export const TagRulesNav = ({ current, children, ...props }) => {
   const list = useTagRulesList("filters");
   const { filters: activeFilters } = useTagRulesStore((store) => store.active);
 
   return (
     <Box {...props}>
-      <Text size="lg" my="sm">
-        Rulesets
+      <Text size="lg" py={8} px={14}>
+        All Rulesets
       </Text>
-      <Stack gap={4}>
+      <Stack gap={4} component="nav">
+        {children}
         {list.map((ruleset) => {
           const active = activeFilters.includes(ruleset.id);
 

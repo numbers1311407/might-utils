@@ -20,8 +20,8 @@ export const useTagRulesManager = (type, initialId) => {
   const currentDefaultDirty = useTagRulesStore((store) =>
     store.dirtyDefaults.includes(currentId),
   );
-  const currentDefault = defaultIds.includes(current.id);
-  const currentActive = active.includes(current.id);
+  const currentDefault = defaultIds.includes(currentId);
+  const currentActive = active.includes(currentId);
 
   const setCurrent = useCallback(
     (set) => {
@@ -37,18 +37,10 @@ export const useTagRulesManager = (type, initialId) => {
       while (!api.nameAvailable(name)) {
         name = `${baseName} (${i++})`;
       }
-      api.addSet(
-        {
-          name,
-          type: current.type,
-          rules: current.rules,
-        },
-        (set) => {
-          setCurrentId(set.id);
-        },
-      );
+      const { id: _, ...rest } = current;
+      return { ...rest, name };
     },
-    [current, setCurrentId],
+    [current],
   );
 
   const removeCurrent = useCallback(() => {
@@ -97,12 +89,17 @@ export const useTagRulesManager = (type, initialId) => {
     return current?.rules && prepareTagRules(current.rules);
   }, [current]);
 
+  const currentSorted = useMemo(() => {
+    return api.isRulesetSorted(currentId);
+  }, [currentId]);
+
   return [
     current,
     setCurrent,
     {
       currentPrepared,
       currentDefault,
+      currentSorted,
       currentDefaultDirty,
       currentActive,
       activateCurrent,

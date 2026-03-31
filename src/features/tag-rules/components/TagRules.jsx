@@ -30,7 +30,7 @@ import {
   Switch,
 } from "@mantine/core";
 import classes from "./TagRules.module.css";
-import { useRoute } from "wouter";
+import { useRoute, Redirect, useLocation } from "wouter";
 import { Aside, TagRulesetSelect, PageTitle } from "@/core/components";
 import {
   useTagRulesManager,
@@ -91,13 +91,43 @@ const LintAlert = ({ count, ...props }) => {
   );
 };
 
+const ActiveToggle = ({ api }) => (
+  <InputLabel
+    display="flex"
+    style={{ alignItems: "center", gap: 12, cursor: "pointer" }}
+  >
+    {api.currentActive && (
+      <Text span c="bright" size="lg" flex="1">
+        This is the active ruleset
+      </Text>
+    )}
+    {!api.currentActive && (
+      <Text span c="neutral" size="lg" flex="1">
+        Click to activate
+      </Text>
+    )}
+    <Switch
+      mt={4}
+      checked={api.currentActive}
+      onChange={(e) => {
+        if (e.currentTarget.checked) {
+          api.activateCurrent();
+        } else {
+          api.deactivateCurrent();
+        }
+      }}
+    />
+  </InputLabel>
+);
+
 export const TagRules = ({ type = "filters" }) => {
   const { getConfirmation } = useConfirmationStore();
   const [match, { id }] = useRoute("/filter-rulesets/:id?");
-  const [ruleset = {}, setRuleset, api] = useTagRulesManager(type, id);
+  const [ruleset = {}, _setRuleset, api] = useTagRulesManager(type, id);
   const [draftRuleset, setDraftRuleset] = useState(null);
   const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
   const [newRule, setNewRule] = useState(null);
+  const [location, setLocation] = useLocation();
 
   const lintResult = useMemo(() => {
     return lintTagRuleset(ruleset);
@@ -128,139 +158,120 @@ export const TagRules = ({ type = "filters" }) => {
     },
   );
 
+  const buttonsSize = "sm";
+  const buttons = (
+    <Group gap="xs">
+      <Button
+        aria-label="Add a rule"
+        size={buttonsSize}
+        leftSection={<IconPlus size={12} />}
+        onClick={() => {
+          setDraftTagRuleProps({});
+        }}
+      >
+        Add a Rule
+      </Button>
+
+      <Tooltip
+        openDelay={600}
+        label="Create a copy of this ruleset and edit it immediately."
+      >
+        <Button
+          leftSection={<IconCopy size={12} />}
+          size={buttonsSize}
+          onClick={() => setDraftRuleset(api.duplicateCurrent())}
+        >
+          Duplicate
+        </Button>
+      </Tooltip>
+
+      <Button
+        aria-label="Rename ruleset"
+        leftSection={<IconEdit size={12} />}
+        size={buttonsSize}
+        variant="light"
+        onClick={() => {
+          setDraftRuleset(ruleset);
+        }}
+      >
+        Rename
+      </Button>
+
+      {!api.currentDefault && (
+        <>
+          <Button
+            aria-label="Remove ruleset"
+            size={buttonsSize}
+            variant="outline"
+            leftSection={<IconTrash size={12} />}
+            disabled={api.currentDefault}
+            onClick={removeCurrent}
+          >
+            Remove
+          </Button>
+        </>
+      )}
+
+      {api.currentDefault && (
+        <Tooltip
+          openDelay={600}
+          label="Restore this ruleset to its original default state"
+        >
+          <Button
+            aria-label="Reset to defaults"
+            disabled={!api.currentDefaultDirty}
+            leftSection={<IconRestore size={12} />}
+            onClick={restoreCurrent}
+            size={buttonsSize}
+            variant="outline"
+          >
+            Reset
+          </Button>
+        </Tooltip>
+      )}
+    </Group>
+  );
+
+  if (!ruleset?.id) {
+    return <Redirect to="/filter-rulesets" />;
+  }
+
   return (
     <Box>
       <PageTitle
         title="Filter Rulesets"
         subtitle="Define how the party finder will compose your party"
+        size="h1"
+      ></PageTitle>
+
+      <Text c="dark" size="sm">
+        Editing Ruleset:
+      </Text>
+
+      <PageTitle
+        divider={false}
+        title={ruleset.name}
+        order={3}
+        size="h2"
+        mb={8}
+        mt={8}
       >
-        <InputLabel
-          display="flex"
-          style={{ alignItems: "center", gap: 12, cursor: "pointer" }}
-        >
-          {api.currentActive && (
-            <Text span c="bright" size="lg" flex="1">
-              This is the active ruleset
-            </Text>
-          )}
-          {!api.currentActive && (
-            <Text span c="neutral" size="lg" flex="1">
-              Click to activate
-            </Text>
-          )}
-          <Switch
-            mt={4}
-            checked={api.currentActive}
-            onChange={(e) => {
-              if (e.currentTarget.checked) {
-                api.activateCurrent();
-              } else {
-                api.deactivateCurrent();
-              }
-            }}
-          />
-        </InputLabel>
+        <ActiveToggle api={api} />
       </PageTitle>
 
-      <PageTitle title={`Ruleset: ${ruleset.name}`} order={3} size="h3">
-        {!api.currentDefault && (
-          <>
-            <Button
-              aria-label="Remove ruleset"
-              size="xs"
-              variant="outline"
-              leftSection={<IconTrash size={12} />}
-              disabled={api.currentDefault}
-              onClick={removeCurrent}
-            >
-              Remove
-            </Button>
-          </>
-        )}
-
-        {api.currentDefault && (
-          <Tooltip
-            openDelay={600}
-            label="Restore this ruleset to its original default state"
-          >
-            <Button
-              aria-label="Reset to defaults"
-              disabled={!api.currentDefaultDirty}
-              leftSection={<IconRestore size={12} />}
-              onClick={restoreCurrent}
-              size="xs"
-              variant="outline"
-            >
-              Reset
-            </Button>
-          </Tooltip>
-        )}
-
-        <Button
-          aria-label="Rename ruleset"
-          leftSection={<IconEdit size={12} />}
-          size="xs"
-          variant="light"
-          onClick={() => {
-            setDraftRuleset(ruleset);
-          }}
-        >
-          Rename
-        </Button>
-
-        <Tooltip
-          openDelay={600}
-          label="Create a copy of this ruleset and edit it immediately."
-        >
-          <Button
-            leftSection={<IconCopy size={12} />}
-            size="xs"
-            onClick={() => api.duplicateCurrent()}
-            variant="light"
-          >
-            Copy
-          </Button>
-        </Tooltip>
-
-        {/* <Tooltip
-          openDelay={600}
-          label="Resorts rules by asceding size. For organization only, does not affect behavior."
-        >
-          <Button
-            aria-label="Resort rules by ascending size"
-            leftSection={<IconSortAscendingNumbers size={12} />}
-            size="xs"
-            variant="light"
-            onClick={() => {
-              api.sortCurrent();
-            }}
-          >
-            Resort
-          </Button>
-        </Tooltip>*/}
-
-        <Button
-          aria-label="Add a rule"
-          size="xs"
-          leftSection={<IconPlus size={12} />}
-          onClick={() => {
-            setDraftTagRuleProps({});
-          }}
-        >
-          Add Rule
-        </Button>
-      </PageTitle>
+      {buttons}
 
       <Aside>
-        <Stack mt="md" gap={6}>
+        <Stack gap="sm">
           <Button
             size="sm"
-            leftSection={<IconPlus size={16} />}
+            leftSection={<IconPlus size={18} />}
             onClick={() => setDraftRuleset({ type })}
+            fullWidth
           >
-            New Ruleset
+            Create New Ruleset
           </Button>
-          <TagRulesNav current={ruleset.id} />
+          <TagRulesNav current={ruleset.id}></TagRulesNav>
         </Stack>
       </Aside>
 
@@ -272,6 +283,25 @@ export const TagRules = ({ type = "filters" }) => {
             <Text span size="lg">
               Party Sizes
             </Text>
+          }
+          right={
+            <Box ta="right">
+              <Tooltip
+                openDelay={600}
+                label="Resort rules by ascending size. For organization only, this does not affect behavior."
+              >
+                <ActionIcon
+                  aria-label="Resort rules by ascending size"
+                  size="md"
+                  disabled={api.currentSorted}
+                  onClick={() => {
+                    api.sortCurrent();
+                  }}
+                >
+                  <IconSortAscendingNumbers />
+                </ActionIcon>
+              </Tooltip>
+            </Box>
           }
           style={{
             borderBottom: "1px dashed var(--mantine-color-default-border)",
@@ -368,7 +398,10 @@ export const TagRules = ({ type = "filters" }) => {
           }}
           onCommit={(ruleset) => {
             setDraftRuleset(null);
-            tagRulesApi.addSet(ruleset, (set) => setRuleset(set));
+
+            tagRulesApi.addSet(ruleset, (set) => {
+              setLocation(`/filter-rulesets/${set.id}`);
+            });
           }}
         />
       )}

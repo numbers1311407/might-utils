@@ -49,7 +49,7 @@ export const TagRulesNameModal = ({ ruleset, onClose, onCommit }) => {
       <TextInput
         value={name}
         label="Ruleset Name"
-        placeholder="I make the rules"
+        placeholder="Enter a name for your new ruleset"
         error={error}
         rightSection={<CloseButton onClick={clear} />}
         onChange={(e) => {

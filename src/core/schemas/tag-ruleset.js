@@ -15,7 +15,7 @@ export const lintTagRuleset = (ruleset) => {
 
   // loop over and track all the unique type/val/warden combos there are
   // for each size, tracking the ID of the originating rule
-  ruleset.rules.forEach((rule) => {
+  ruleset.rules?.forEach((rule) => {
     const k = key(rule);
     for (let size = rule.size[0]; size <= rule.size[1]; size++) {
       sizes[k] ||= {};

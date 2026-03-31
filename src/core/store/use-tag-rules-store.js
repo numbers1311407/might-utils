@@ -192,6 +192,16 @@ export const api = {
     });
   },
 
+  isRulesetSorted: (id) => {
+    const ruleset = api.getSet(id);
+
+    if (!ruleset) return false;
+
+    const { rules } = ruleset;
+    const { success, data } = tagRulesetSchema.safeParse(ruleset);
+    return success && data.rules.every((rule, i) => rule.id === rules[i].id);
+  },
+
   sortRuleset: (id) => {
     set((state) => {
       const ruleset = state.sets[id];

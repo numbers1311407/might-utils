@@ -26,7 +26,7 @@ export const Navbar = (props) => {
   return (
     <Box {...props}>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs">
+        <Text fw="bold" size="md" p="xs" pt={0} c="gold">
           Party Utils
         </Text>
         <NavbarLink label="Party Finder" href="/" />
@@ -34,7 +34,7 @@ export const Navbar = (props) => {
         <NavbarLink label="Instance Calculator" href="/instance-calculator" />
       </Stack>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs">
+        <Text fw="bold" size="md" p="xs" c="gold">
           Setup
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />

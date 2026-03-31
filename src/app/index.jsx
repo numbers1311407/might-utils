@@ -4,6 +4,7 @@ import {
   Box,
   Group,
   Container,
+  rem,
   MantineProvider,
 } from "@mantine/core";
 import { Router } from "wouter";
@@ -14,23 +15,22 @@ import { Navbar } from "./Navbar.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { ScrollToTop } from "./ScrollToTop.jsx";
 import { GlobalConfirmationModal } from "./GlobalConfirmationModal.jsx";
+import {
+  CONTAINER_WIDTH,
+  HEADER_HEIGHT,
+  NAVBAR_WIDTH,
+  ASIDE_WIDTH,
+} from "./constants.js";
 
 import { theme } from "./theme.js";
 import { cssVariablesResolver } from "./css-variables-resolver.js";
 import "./style.css";
-
-const CONTAINER_WIDTH = 1600;
-const HEADER_HEIGHT = 50;
-const HEADER_CONTENT_OFFSET = HEADER_HEIGHT + 12;
-const NAVBAR_WIDTH = 200;
-const ASIDE_WIDTH = 260;
 
 const Shell = () => {
   const { hasAside, toggleMobileNav, mobileNavOpened } = useAppContext();
 
   return (
     <AppShell
-      p="sm"
       header={{ height: HEADER_HEIGHT }}
       navbar={{
         width: NAVBAR_WIDTH,
@@ -46,9 +46,10 @@ const Shell = () => {
         <Group align="flex-start" wrap="nowrap" gap="lg">
           <Navbar
             pos="sticky"
-            top={HEADER_CONTENT_OFFSET}
+            top={HEADER_HEIGHT}
             visibleFrom="md"
-            w={NAVBAR_WIDTH}
+            py="lg"
+            style={{ flex: `0 0 ${rem(NAVBAR_WIDTH)}` }}
           />
           <AppShell.Main flex="1">
             <ErrorBoundary fallback={<ErrorPage />}>
@@ -58,12 +59,13 @@ const Shell = () => {
           <ErrorBoundary fallback="Error loading sidebar content">
             <Box
               component="aside"
-              pos="sticky"
-              top={HEADER_CONTENT_OFFSET}
-              right={0}
-              w={ASIDE_WIDTH}
               display={hasAside ? "block" : "none"}
               id="aside-slot"
+              pos="sticky"
+              py="lg"
+              right={0}
+              top={HEADER_HEIGHT}
+              style={{ flex: `0 0 ${rem(ASIDE_WIDTH)}` }}
             />
           </ErrorBoundary>
         </Group>
