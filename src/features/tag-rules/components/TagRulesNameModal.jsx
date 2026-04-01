@@ -27,12 +27,10 @@ export const TagRulesNameModal = ({ ruleset, onClose, onCommit }) => {
   const validate = () => {
     const result = formSchema.safeParse({ ...ruleset, name });
     setError(result.success ? false : result.error.issues[0].message);
+    if (!result.success) {
+      setDirty(true);
+    }
     return result.success;
-  };
-
-  const handleError = (msg) => {
-    setDirty(true);
-    setError(msg);
   };
 
   const clear = () => {

@@ -43,7 +43,7 @@ const Shell = () => {
         <Navbar />
       </AppShell.Navbar>
       <Container size={CONTAINER_WIDTH} px="sm">
-        <Group align="flex-start" wrap="nowrap" gap="lg">
+        <Group align="flex-start" wrap="nowrap" gap="xl">
           <Navbar
             pos="sticky"
             top={HEADER_HEIGHT}

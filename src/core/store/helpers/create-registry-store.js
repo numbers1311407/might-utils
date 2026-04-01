@@ -53,6 +53,15 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       const id = typeof record === "string" ? record : record?.id;
       return api.isDefault(record) && !deepEqual(defaults[id], record);
     },
+
+    resetDefault: (record) => {
+      const id = typeof record === "string" ? record : record?.id;
+      const origDefault = defaults[id];
+
+      if (origDefault) {
+        api.add(origDefault);
+      }
+    },
   };
 
   const { getState: get, setState: set } = useStore;
@@ -75,20 +84,11 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
     },
 
     isRemovable: (record) => {
-      return !api.isDefault(record);
+      return !api.isDefault?.(record);
     },
 
     isNew: (record) => {
       return !record?.id || !(record.id in get().registry);
-    },
-
-    resetDefault: (record) => {
-      const id = typeof record === "string" ? record : record?.id;
-      const origDefault = defaults[id];
-
-      if (origDefault) {
-        api.add(origDefault);
-      }
     },
 
     get: (id) => {
@@ -99,8 +99,9 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       return api.add(api.getCopy(record), done);
     },
 
-    getCopy: (record) => {
-      let { id: _, ...copy } = record;
+    getCopy: (record, keepId = false) => {
+      let { id: _id, ...copy } = record;
+      if (keepId) copy.id = _id;
       let i = 1;
       let name = record.name;
       while (name && !api.nameAvailable(name)) {
@@ -112,7 +113,7 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
     add: (record, done) => {
       set((state) => {
         const clone = api.isNew(record)
-          ? api.getCopy(record)
+          ? api.getCopy(record, true)
           : recordSchema.parse(record);
 
         state.registry[clone.id] = clone;
@@ -121,7 +122,7 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
           handleDirtyDefaults(clone, state);
         }
       });
-      done?.(api.get(id));
+      done?.(api.get(clone.id));
     },
 
     remove: (record) => {
@@ -135,6 +136,10 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       });
     },
   };
+
+  if (options.extendApi) {
+    Object.assign(api, options.extendApi(set, get, api));
+  }
 
   return { useStore, api };
 };

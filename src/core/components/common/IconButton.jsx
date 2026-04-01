@@ -4,6 +4,7 @@ import {
   IconMinus,
   IconEdit,
   IconTag,
+  IconRestore,
   IconX,
   IconTrash,
 } from "@tabler/icons-react";
@@ -29,3 +30,6 @@ export const TrashButton = (props) => (
 );
 
 export const XButton = (props) => <IconButton Icon={IconX} {...props} />;
+export const RestoreButton = (props) => (
+  <IconButton Icon={IconRestore} {...props} />
+);

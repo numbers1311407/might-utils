@@ -22,11 +22,12 @@ export const PageTitle = ({
         <Title order={order} size={size} my={0}>
           {title}
         </Title>
-        {subtitle && (
-          <Text pl={2} color="dark">
+        {typeof subtitle === "string" && (
+          <Text pl={2} c="dark">
             {subtitle}
           </Text>
         )}
+        {subtitle && typeof subtitle !== "string" && subtitle}
       </Box>
       {children}
     </Group>

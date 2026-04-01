@@ -39,13 +39,12 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
             inherit
             display="box"
           >
-            <Flex align="center" gap={6}>
-              <Text size="xl" pt={4} fw="bold" c="primary.4" fs="italic">
-                Suggested
-              </Text>{" "}
-              <Text size="2xl" fw="bold" tt="uppercase">
+            <Flex align="baseline" gap={2}>
+              <Text size="2xl">eq</Text>
+              <Text c="gold" size="4xl" fw="bold">
                 Might
               </Text>
+              <Text size="2xl">utils</Text>
             </Flex>
           </Anchor>
         </Title>

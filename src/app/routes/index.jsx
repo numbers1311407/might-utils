@@ -4,7 +4,7 @@ import { ClassTags } from "@/features/class-tags";
 import { TagGroups } from "@/features/tag-groups";
 import { InstanceCalculator } from "@/features/instance-calculator";
 import { TagRules } from "@/features/tag-rules";
-import { Roster } from "@/features/chars";
+import { Roster, Parties } from "@/features/chars";
 
 export const Routes = () => {
   return (
@@ -27,7 +27,9 @@ export const Routes = () => {
       <Route path="/tag-groups">
         <TagGroups />
       </Route>
-      <Route path="/parties"></Route>
+      <Route path="/parties/:id?">
+        <Parties />
+      </Route>
     </>
   );
 };

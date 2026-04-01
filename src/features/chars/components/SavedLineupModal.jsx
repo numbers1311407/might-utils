@@ -5,12 +5,13 @@ import { useSavedLineupsStoreApi as storeApi } from "@/core/store";
 import { lineupSchema } from "@/core/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
-const formSchema = lineupSchema
-  .safeExtend({})
-  .refine((record) => storeApi.nameAvailable(record), {
+const formSchema = lineupSchema.refine(
+  (record) => storeApi.nameAvailable(record),
+  {
     message: "Name is already taken",
     path: ["name"],
-  });
+  },
+);
 
 export const SavedLineupForm = ({ record, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
@@ -37,6 +38,9 @@ export const SavedLineupForm = ({ record, onSubmit }) => {
           description="Name to describe your party"
           placeholder="Enter name"
           key={form.key("name")}
+          onKeyUp={() => {
+            if (submitted) form.validate();
+          }}
           {...form.getInputProps("name")}
         />
         <Group justify="flex-end">
@@ -47,7 +51,7 @@ export const SavedLineupForm = ({ record, onSubmit }) => {
   );
 };
 
-export const SavedLineupModal = ({ record, onClose, onCommit }) => {
+export const SavedLineupModal = ({ record, onClose, onSubmit }) => {
   return (
     <Modal
       opened={!!record}
@@ -61,7 +65,7 @@ export const SavedLineupModal = ({ record, onClose, onCommit }) => {
           key={!!record ? "opened" : "closed"}
           record={record}
           onSubmit={(record) => {
-            onCommit?.(record);
+            onSubmit?.(record);
             onClose?.();
           }}
         />

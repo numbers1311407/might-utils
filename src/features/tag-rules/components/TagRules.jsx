@@ -245,7 +245,7 @@ export const TagRules = ({ type = "filters" }) => {
       ></PageTitle>
 
       <Text c="dark" size="sm">
-        Editing Ruleset:
+        Current Ruleset:
       </Text>
 
       <PageTitle
@@ -311,7 +311,7 @@ export const TagRules = ({ type = "filters" }) => {
         />
         {!ruleset.rules.length && (
           <Grid.Col span={12} ta="center" p="3xl">
-            <Text size="lg" mb="md">
+            <Text size="lg" mb="md" c="gold">
               You have no rules defined in this ruleset.
             </Text>
             <Button size="md" onClick={() => setDraftTagRuleProps({})}>

@@ -2,9 +2,19 @@ import { useMemo } from "react";
 import { createStore } from "./helpers";
 import { defaultRoster } from "@/core/config/defaults";
 import { rosterSchema, charSchema } from "@/core/schemas";
+import { useClassTagsStore } from "./use-class-tags-store.js";
+
+const getClassTags = (cls) => useClassTagsStore.getState().getClassTags(cls);
 
 const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
+};
+
+const prepareCharTags = (char) => {
+  const classTags = getClassTags(char.class);
+  const tags = [...new Set([...char.tags, ...classTags])];
+  const result = charSchema.safeParse({ ...char, tags });
+  return result.data;
 };
 
 export const useRosterStore = createStore("might-utils-roster", () => ({
@@ -47,8 +57,14 @@ const api = {
     });
   },
 
-  getChar: (id) => {
-    return get().roster.find((char) => char.id === id);
+  getChar: (id, withClassTags = false) => {
+    const char = get().roster.find((char) => char.id === id);
+
+    if (!char || !withClassTags) {
+      return char;
+    } else {
+      return prepareCharTags(char);
+    }
   },
 
   updateChar: (id, update, done) => {

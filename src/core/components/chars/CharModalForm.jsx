@@ -1,5 +1,7 @@
 import {
+  Anchor,
   Button,
+  Box,
   Checkbox,
   Group,
   Modal,
@@ -31,7 +33,7 @@ const formCharSchema = charSchema
     },
   );
 
-export const CharModalForm = ({ char, onClose, onSubmit }) => {
+export const CharModalForm = ({ char, isParty = false, onClose, onSubmit }) => {
   return (
     <Modal
       opened={!!char}
@@ -45,13 +47,15 @@ export const CharModalForm = ({ char, onClose, onSubmit }) => {
           key={!!char ? "opened" : "closed"}
           char={char}
           onSubmit={onSubmit}
+          onClose={onClose}
+          isParty={isParty}
         />
       )}
     </Modal>
   );
 };
 
-const CharForm = ({ char, onSubmit }) => {
+const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
   const roster = useRosterStore((store) => store.roster);
   const classTags = useClassTagsStore((store) => store.tags);
   const [tagsError, setTagsError] = useState(null);
@@ -67,7 +71,7 @@ const CharForm = ({ char, onSubmit }) => {
       active: char.active ?? true,
       class: charClass,
       warden: String(char.warden || 0),
-      tags: char.tags || [],
+      tags: char.tags,
       siblings: roster
         .map(({ name }) => name)
         .filter((name) => !char || char.name !== name),
@@ -86,16 +90,19 @@ const CharForm = ({ char, onSubmit }) => {
   // are unnecessary to add to characters separately. In the form these tags appear in
   // the field but aren't editable, and will prevent duplicates being added. On class
   // change we reset the class tags and strip any duplicates, which shouldn't be a big deal?
-  const [lockedTags, setLockedTags] = useState(charClassTags);
-  form.watch("class", ({ value }) => {
-    const newClassTags = classTags[value];
-    const tags = form.getValues()?.tags || [];
-    setLockedTags(newClassTags);
-    form.setFieldValue(
-      "tags",
-      tags.filter((tag) => !newClassTags.includes(tag)),
-    );
-  });
+  const [lockedTags, setLockedTags] = useState(isParty ? [] : charClassTags);
+
+  if (!isParty) {
+    form.watch("class", ({ value }) => {
+      const newClassTags = classTags[value];
+      const tags = form.getValues()?.tags || [];
+      setLockedTags(newClassTags);
+      form.setFieldValue(
+        "tags",
+        tags.filter((tag) => !newClassTags.includes(tag)),
+      );
+    });
+  }
 
   const addTag = (tag) => {
     tag = tag.toLowerCase();
@@ -128,6 +135,10 @@ const CharForm = ({ char, onSubmit }) => {
     onSubmit(char);
   };
 
+  const setClassTags = () => {
+    form.setFieldValue("tags", charClassTags.sort());
+  };
+
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
       <Stack gap={6}>
@@ -135,13 +146,29 @@ const CharForm = ({ char, onSubmit }) => {
           withAsterisk
           label="Character Name"
           placeholder="Character name"
+          disabled={isParty}
+          display={isParty ? "none" : "block"}
           description={
-            char.id
-              ? 'Note name edits will not auto-update "name" rules for this character'
-              : undefined
+            isParty
+              ? "Party characters cannot edit name"
+              : char.id
+                ? 'Note name edits will not auto-update "name" rules for this character'
+                : undefined
           }
           key={form.key("name")}
           {...form.getInputProps("name")}
+        />
+        <Select
+          withAsterisk
+          label="Class"
+          description={isParty ? "Party characters cannot edit class" : ""}
+          placeholder="Select class"
+          disabled={isParty}
+          display={isParty ? "none" : "block"}
+          searchable
+          data={charSchema.shape.class.options}
+          key={form.key("class")}
+          {...form.getInputProps("class")}
         />
         <NumberInput
           withAsterisk
@@ -154,18 +181,11 @@ const CharForm = ({ char, onSubmit }) => {
         />
         <Select
           withAsterisk
-          label="Class"
-          placeholder="Select class"
-          searchable
-          data={charSchema.shape.class.options}
-          key={form.key("class")}
-          {...form.getInputProps("class")}
-        />
-        <Select
-          withAsterisk
-          label="Warden Rank"
-          placeholder="Max warden rank"
-          description="Max attained, do not account for deleveling"
+          label={isParty ? "Current Warden Rank" : "Max Warden Rank"}
+          placeholder={isParty ? "Current warden rank" : "Max warden rank"}
+          description={
+            !isParty ? "Max attained, do not account for deleveling" : ""
+          }
           data={[
             { label: "Rank 0 (Not Warden)", value: "0" },
             { label: "Rank 1", value: "1" },
@@ -190,12 +210,24 @@ const CharForm = ({ char, onSubmit }) => {
           }}
           error={tagsError || form.errors.tags}
         />
-        <Checkbox
-          label="Active (eligible for party finder)"
-          key={form.key("active")}
-          {...form.getInputProps("active", { type: "checkbox" })}
-        />
+        {isParty && (
+          <Group justify="flex-end">
+            <Anchor size="xs" onClick={setClassTags} px="sm" mt={-4}>
+              Re-sync class tags
+            </Anchor>
+          </Group>
+        )}
+        <Box my="sm">
+          <Checkbox
+            label="Active (eligible for party finder)"
+            key={form.key("active")}
+            {...form.getInputProps("active", { type: "checkbox" })}
+          />
+        </Box>
         <Group justify="flex-end">
+          <Button variant="light" onClick={onClose}>
+            Cancel
+          </Button>
           <Button type="submit">Submit</Button>
         </Group>
       </Stack>

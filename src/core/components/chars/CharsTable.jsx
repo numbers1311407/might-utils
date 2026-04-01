@@ -1,4 +1,4 @@
-import { Box, Group, Switch, Table, Text } from "@mantine/core";
+import { Box, Group, Switch, Table, Text, Tooltip } from "@mantine/core";
 import { getCharMight } from "@/core/chars";
 import { charLevelSchema } from "@/core/schemas";
 import {
@@ -6,6 +6,7 @@ import {
   EditButton,
   IncrementButtons,
   TrashButton,
+  RestoreButton,
 } from "@/core/components/common";
 import { useClassTagsStore } from "@/core/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
@@ -21,9 +22,11 @@ export const CharsTableEmptyRow = ({ children }) => (
 export const CharsTableRow = ({
   char,
   classTags,
+  dirtyChars,
   edit,
   isRoster,
   remove,
+  reset,
   update,
 }) => (
   <Table.Tr>
@@ -60,7 +63,7 @@ export const CharsTableRow = ({
           -{" "}
         </>
       )}
-      <Text c="yellow.5" span title={`Warden ${char.warden}`} ff="mono">
+      <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
         {getCharMight(char)}
       </Text>
     </Table.Td>
@@ -86,16 +89,25 @@ export const CharsTableRow = ({
       <CharTagsPopover tags={char.tags} classTags={classTags[char.class]} />
     </Table.Td>
     <Table.Td>
-      <Group gap={4} justify="flex-end">
-        <EditButton
-          aria-label="Edit character"
-          title="Edit"
-          onClick={() => edit(char)}
-        />
-        <TrashButton
-          aria-label="Remove character"
-          onClick={() => remove(char)}
-        />
+      <Group gap={6} justify="flex-end">
+        {!isRoster && dirtyChars && (
+          <Tooltip openDelay={500} label="Reset character to roster version">
+            <RestoreButton
+              aria-label="Reset character to roster version"
+              onClick={() => reset(char)}
+              disabled={!dirtyChars[char.id]}
+            />
+          </Tooltip>
+        )}
+        <Tooltip openDelay={500} label="Edit character">
+          <EditButton aria-label="Edit character" onClick={() => edit(char)} />
+        </Tooltip>
+        <Tooltip openDelay={500} label="Remove character">
+          <TrashButton
+            aria-label="Remove character"
+            onClick={() => remove(char)}
+          />
+        </Tooltip>
       </Group>
     </Table.Td>
   </Table.Tr>
@@ -103,18 +115,21 @@ export const CharsTableRow = ({
 
 export const CharsTable = ({
   chars,
+  dirtyChars,
   onEdit,
   onUpdate,
   onRemove,
+  onReset,
   isRoster,
   emptyContent = null,
   Row = CharsTableRow,
   EmptyRow = CharsTableEmptyRow,
+  ...props
 }) => {
   const classTags = useClassTagsStore((store) => store.tags);
 
   return (
-    <Table stickyHeader stickyHeaderOffset={50}>
+    <Table stickyHeader stickyHeaderOffset={66} {...props}>
       <Table.Thead>
         <Table.Tr>
           <Table.Th width={65}>Active</Table.Th>
@@ -130,7 +145,7 @@ export const CharsTable = ({
             Warden
           </Table.Th>
           <Table.Th width={50}>Tags</Table.Th>
-          <Table.Th width={70} ta="right">
+          <Table.Th width={isRoster ? 70 : 120} ta="right">
             Actions
           </Table.Th>
         </Table.Tr>
@@ -144,8 +159,10 @@ export const CharsTable = ({
             key={char.id}
             char={char}
             classTags={classTags}
+            dirtyChars={dirtyChars}
             edit={onEdit}
             remove={onRemove}
+            reset={onReset}
             isRoster={isRoster}
             update={(update) => onUpdate(char.id, update)}
           />

@@ -53,6 +53,7 @@ export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
         key={opened ? "opened" : "closed"}
         rule={rule}
         ruleset={ruleset}
+        onClose={onClose}
         onSubmit={(rule) => {
           onSubmit(rule);
         }}
@@ -83,7 +84,7 @@ export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
   );
 };
 
-const TagRuleForm = ({ rule = {}, onSubmit }) => {
+const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const parsed = tagRuleSchema.safeParse(rule);
   const initialValues = parsed.success
     ? parsed.data
@@ -152,6 +153,9 @@ const TagRuleForm = ({ rule = {}, onSubmit }) => {
           {...form.getInputProps("warden")}
         />
         <Group justify="flex-end">
+          <Button variant="light" onClick={onClose}>
+            Cancel
+          </Button>
           <Button type="submit">Submit</Button>
         </Group>
       </Stack>

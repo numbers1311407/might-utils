@@ -90,8 +90,8 @@ export const useTagRulesManager = (type, initialId) => {
   }, [current]);
 
   const currentSorted = useMemo(() => {
-    return api.isRulesetSorted(currentId);
-  }, [currentId]);
+    return api.isRulesetSorted(current.id);
+  }, [current]);
 
   return [
     current,

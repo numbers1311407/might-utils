@@ -54,6 +54,9 @@ export const charSchema = z.object({
   class: charClassSchema,
   level: charLevelSchema,
   name: charNameSchema,
-  tags: z.array(tagSchema).default([]),
+  tags: z
+    .array(tagSchema)
+    .default([])
+    .transform((tags) => [...tags].sort()),
   warden: z.coerce.number().min(0).max(3).default(0),
 });
