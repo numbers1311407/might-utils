@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Pill, Button, Title } from "@mantine/core";
+import { Box, Pill, Button } from "@mantine/core";
 import { useTagGroupsStore, useTagGroupsStoreApi as tgapi } from "@/core/store";
 import { PageTitle } from "@/core/components";
 import { TagGroupModal } from "./TagGroupModal.jsx";
@@ -46,7 +46,10 @@ export const TagGroups = () => {
 
   return (
     <Box>
-      <PageTitle title="Tag Groups">
+      <PageTitle
+        title="Tag Groups"
+        subtitle="Collections of related tags used to group party finder results in custom ways"
+      >
         <Button size="sm" onClick={() => setCurrentGroup({})}>
           Create a New Tag Group
         </Button>
