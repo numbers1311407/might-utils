@@ -9,7 +9,7 @@ import {
 import { charClassSchema } from "@/core/schemas";
 import { getNumberedArray } from "@/utils";
 
-const MaxFindLineupsRecursions = 5_000_000;
+const MAX_RECURSIONS = 5_000_000;
 
 const groupingTags = {
   level: getNumberedArray(MightMinLevel, MightMaxLevel).map((level) =>
@@ -21,13 +21,13 @@ const groupingTags = {
   ),
 };
 
-const sortLineups = (lineups) =>
-  lineups.slice().sort((a, b) => {
+const sortParties = (parties) =>
+  parties.slice().sort((a, b) => {
     return a.size === b.size ? b.score - a.score : b.size - a.size;
   });
 
-const sortLineup = (lineup) =>
-  lineup.slice().sort((a, b) => a.name.localeCompare(b.name));
+const sortParty = (party) =>
+  party.slice().sort((a, b) => a.name.localeCompare(b.name));
 
 export const defaultOptions = {
   targetScore: 1250,
@@ -40,7 +40,7 @@ export const defaultOptions = {
   distinctTagGroups: false,
 };
 
-export const findLineups = (roster, targetScore, options = {}) => {
+export const findParties = (roster, targetScore, options = {}) => {
   const {
     classTags = {},
     tagGroups,
@@ -75,19 +75,12 @@ export const findLineups = (roster, targetScore, options = {}) => {
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
   const useTagGroups = !!tagGroups?.length;
+  const maxPoolScores = new Map();
 
   const pool = roster
     // filter out of bounds levels
     .filter(({ level, active }) => {
       return active && level >= minLevel && level <= maxLevel;
-    })
-    // transform characters to "slots" which may represent the same character
-    // repeatedly through warden options (and later multi tags)
-    .filter((char) => {
-      if (!char.class) {
-        throw new Error("all roster characters must have a class property");
-      }
-      return true;
     })
     .reduce((acc, char) => {
       const level = char.level;
@@ -172,11 +165,16 @@ export const findLineups = (roster, targetScore, options = {}) => {
       }
       return acc;
     }, [])
-    // do one last pass here generating full tags for each slot
+    // do one last pass here generating full tags for each slot (and grabbing max scores for pruning later)
     .map((slot) => {
       const derivedTagGroups = isCustomTagGroups
         ? tagGroups.map(tags.t)
         : groupingTags[tagGroups];
+
+      maxPoolScores.set(
+        slot.id,
+        Math.max(maxPoolScores.get(slot.id) || 0, slot.score),
+      );
 
       return {
         ...slot,
@@ -188,8 +186,6 @@ export const findLineups = (roster, targetScore, options = {}) => {
     })
     .sort((a, b) => a.score - b.score);
 
-  // TODO consider more prechecks that could be done up front to exit early if the search is impossible,
-  // i.e. impossible tag filter configurations.
   if (!pool.length) {
     throw new Error("no eligible roster members found");
   }
@@ -200,40 +196,54 @@ export const findLineups = (roster, targetScore, options = {}) => {
     );
   }
 
-  const rulesByLineupSize = tags.prepareTagRules(rules);
-  const lineups = [];
-  const usedNames = new Set();
+  const rulesByPartySize = tags.prepareTagRules(rules);
+  const parties = [];
+  const partyIds = new Set();
+
+  // Optimization helper that adds up the highest score slots remaining to test
+  // if there's even enough points left in the pool to hit the min score.
+  const getMaxPoolScore = (slotsLeft, startIndex) => {
+    let score = 0;
+    // start at the end as it's presorted by score
+    for (let i = pool.length - 1; i >= startIndex; i--) {
+      // skip out slots for chars already in the party
+      if (partyIds.has(pool[i].id)) continue;
+      // and add up the rest for count of slots left
+      score += pool[i].score;
+      if (--slotsLeft === 0) break;
+    }
+    return score;
+  };
 
   let recursionCount = 0;
 
-  const recurse = (remainingScore, lineup, startIndex) => {
-    if (recursionCount++ >= MaxFindLineupsRecursions) {
+  const recurse = (remainingScore, party, startIndex) => {
+    if (recursionCount++ >= MAX_RECURSIONS) {
       throw new Error("max recursions reached, try increasing specificity");
     }
 
-    // TODO prune by checking early whether the sum of the highest possible score for each roster
     // member remaining even adds up to the desired score.
-    const lineupSize = lineup.length;
-    const rules = rulesByLineupSize[lineupSize];
+    const partySize = party.length;
+    const rules = rulesByPartySize[partySize];
 
     if (remainingScore >= 0 && remainingScore <= margin) {
-      // and the lineup size is not too short or too long
-      if (lineupSize >= minSize && lineupSize <= maxSize) {
-        const tagCounts = tags.generateTagCounts(lineup);
+      // and the party size is not too short or too long
+      if (partySize >= minSize && partySize <= maxSize) {
+        const tagCounts = tags.generateTagCounts(party);
 
-        // and the lineups is valid re: tags
+        // and the parties is valid re: tags
         if (
           rules &&
           checkTags &&
-          !tags.validateTagCounts(tagCounts, rules, lineupSize)
+          !tags.validateTagCounts(tagCounts, rules, partySize)
         ) {
           return;
         }
 
         const lu = {
-          lineup: sortLineup(lineup),
+          party: sortParty(party),
           score: targetScore - remainingScore,
-          size: lineupSize,
+          size: partySize,
           tags: tagCounts,
         };
 
@@ -242,44 +252,51 @@ export const findLineups = (roster, targetScore, options = {}) => {
         }
 
         // push the completed linup and end this branch
-        lineups.push(lu);
+        parties.push(lu);
       }
 
       return;
     }
 
-    if (lineupSize >= maxSize || remainingScore < 0) {
+    if (partySize >= maxSize || remainingScore <= 0) {
+      return;
+    }
+
+    const maxPoolScore = getMaxPoolScore(maxSize - party.length, startIndex);
+    if (maxPoolScore < remainingScore - margin) {
       return;
     }
 
     for (let i = startIndex; i < pool.length; i++) {
       const slot = pool[i];
 
+      // if we're over the score break out of this loop entirely as this party is full.
       if (slot.score > remainingScore) {
         break;
       }
 
-      if (usedNames.has(slot.name)) {
+      // but if this slot's char is already in the party, continue to the next slot
+      if (partyIds.has(slot.id)) {
         continue;
       }
 
-      usedNames.add(slot.name);
-      lineup.push(slot);
-      recurse(remainingScore - slot.score, lineup, i + 1);
-      lineup.pop();
-      usedNames.delete(slot.name);
+      partyIds.add(slot.id);
+      party.push(slot);
+      recurse(remainingScore - slot.score, party, i + 1);
+      party.pop();
+      partyIds.delete(slot.id);
     }
   };
 
   recurse(targetScore, [], 0);
 
   return {
-    lineups: sortLineups(lineups),
+    parties: sortParties(parties),
     params: { roster, targetScore, options },
     pool,
     recursionCount,
-    rules: rulesByLineupSize,
-    size: lineups.length,
+    rules: rulesByPartySize,
+    size: parties.length,
     grouped: useTagGroups,
   };
 };

@@ -1,10 +1,10 @@
 import { Box, NavLink, Stack, Text } from "@mantine/core";
 import { Link } from "wouter";
-import { useSavedLineupsList } from "@/core/store";
+import { usePartiesList } from "@/core/store";
 import { IconChevronLeft } from "@tabler/icons-react";
 
 export const PartiesNav = ({ current, ...props }) => {
-  const list = useSavedLineupsList();
+  const list = usePartiesList();
 
   return (
     <Box {...props}>

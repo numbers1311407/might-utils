@@ -5,7 +5,7 @@ import { charSchema } from "./char.js";
 const sortChars = (chars) =>
   [...chars].sort((a, b) => a.name.localeCompare(b.name));
 
-export const lineupSchema = z.object({
+export const partySchema = z.object({
   id: z.nanoid().default(() => nanoid()),
   name: z
     .string()

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useSavedLineupsStoreApi as storeApi } from "@/core/store";
-import { lineupSchema } from "@/core/schemas";
+import { usePartiesStoreApi as storeApi } from "@/core/store";
+import { partySchema } from "@/core/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
-const formSchema = lineupSchema.refine(
+const formSchema = partySchema.refine(
   (record) => storeApi.nameAvailable(record),
   {
     message: "Name is already taken",
@@ -13,12 +13,12 @@ const formSchema = lineupSchema.refine(
   },
 );
 
-export const SavedLineupForm = ({ record, onSubmit }) => {
+export const PartyForm = ({ record, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: lineupSchema.partial().parse(record),
+    initialValues: partySchema.partial().parse(record),
     validate: zod4Resolver(formSchema),
   });
 
@@ -51,7 +51,7 @@ export const SavedLineupForm = ({ record, onSubmit }) => {
   );
 };
 
-export const SavedLineupModal = ({ record, onClose, onSubmit }) => {
+export const PartyModal = ({ record, onClose, onSubmit }) => {
   return (
     <Modal
       opened={!!record}
@@ -60,7 +60,7 @@ export const SavedLineupModal = ({ record, onClose, onSubmit }) => {
       title={record?.id ? `Edit Party: ${record.name}` : "New Party"}
     >
       {record && (
-        <SavedLineupForm
+        <PartyForm
           // note this key hack is to get around mantine's aggressive form caching
           key={!!record ? "opened" : "closed"}
           record={record}

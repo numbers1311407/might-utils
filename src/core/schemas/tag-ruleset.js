@@ -60,7 +60,7 @@ export const tagRulesetSchema = z.object({
     z.literal("default-filters"),
   ]),
   // NOTE there's room in place for different rule types that could be used
-  // to categorize lineups for something other than filtering, for example one
+  // to categorize parties for something other than filtering, for example one
   // idea was group-level tagging which could add color to group results without
   // filtering, e.g. designating a group as a "pet group" or "port capable"
   type: z.enum(["filters"]).default("filters"),

@@ -12,9 +12,9 @@ const NavbarLink = ({ href, ...props }) => {
 
   return (
     <NavLink
+      px="xs"
       py={4}
-      p="xs"
-      bdrs="md"
+      bdrs="xs"
       href={href}
       component={Link}
       active={active}
@@ -26,24 +26,33 @@ const NavbarLink = ({ href, ...props }) => {
 
 export const Navbar = (props) => {
   return (
-    <Box {...props}>
+    <Stack gap={0} {...props}>
+      <Stack gap={2} mb="lg">
+        <Text fw="bold" size="md" p="xs" c="gold">
+          Calculators
+        </Text>
+        <NavbarLink
+          label="Might Range by Difficulty"
+          href="/instance-calculator"
+        />
+        <NavbarLink label="Instance NPC Sim" href="/instance-calculator" />
+      </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" pt={0} c="gold">
-          Party Utils
+          Might Party Finder
         </Text>
-        <NavbarLink label="Party Finder" href="/" />
-        <NavbarLink label="Saved Parties" href="/parties" />
-        <NavbarLink label="Instance Calculator" href="/instance-calculator" />
+        <NavbarLink label="Find Your Party" href="/" />
+        <NavbarLink label="Rulesets" href="/rulesets" />
+        <NavbarLink label="Result Groups" href="/tag-groups" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" c="gold">
-          Setup
+          Manage Your Team
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />
-        <NavbarLink label="Tag Rulesets" href="/tag-rulesets" />
-        <NavbarLink label="Tag Groups" href="/tag-groups" />
+        <NavbarLink label="Saved Parties" href="/parties" />
         <NavbarLink label="Class Tags" href="/class-tags" />
       </Stack>
-    </Box>
+    </Stack>
   );
 };

@@ -8,7 +8,7 @@ import {
 import { PageTitle } from "@/core/components";
 
 export const InstanceCalculator = () => {
-  const m = 1690;
+  const m = 700;
 
   const simulateCalls = [
     ["group", 200, m],

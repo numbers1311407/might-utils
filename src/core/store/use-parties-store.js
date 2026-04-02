@@ -1,6 +1,6 @@
 import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
-import { lineupSchema } from "@/core/schemas";
+import { partySchema } from "@/core/schemas";
 import { deepEqual } from "fast-equals";
 
 // super overloaded for little good reason
@@ -112,11 +112,11 @@ const extendApi = (_set, _get, api) => ({
 });
 
 const { useStore, api } = createRegistryStore(
-  "might-utils-saved-lineups",
-  lineupSchema,
+  "might-utils-parties",
+  partySchema,
   {
     extendApi,
   },
 );
 
-export { useStore as useSavedLineupsStore, api as useSavedLineupsStoreApi };
+export { useStore as usePartiesStore, api as usePartiesStoreApi };

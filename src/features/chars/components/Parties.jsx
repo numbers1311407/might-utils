@@ -2,8 +2,8 @@ import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import {
   useConfirmationStore,
-  useSavedLineupsStoreApi as lineupsApi,
-  useSavedLineupsList,
+  usePartiesStoreApi as partiesApi,
+  usePartiesList,
 } from "@/core/store";
 import {
   AppLink,
@@ -18,7 +18,7 @@ import { IconPlus } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
 
 import { PartiesNav } from "./PartiesNav.jsx";
-import { SavedLineupModal } from "./SavedLineupModal.jsx";
+import { PartyModal } from "./PartyModal.jsx";
 
 const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
   const exclude = useMemo(() => party.chars?.map((char) => char.id), [party]);
@@ -56,7 +56,7 @@ const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
           size="md"
           exclude={exclude}
           onChange={(char) => {
-            lineupsApi.addChar(party.id, char.id);
+            partiesApi.addChar(party.id, char.id);
           }}
         />
       </Group>
@@ -68,7 +68,7 @@ const useDirtyChars = (party) => {
   return useMemo(() => {
     const acc = { dirty: {}, count: 0 };
     return (party?.chars || []).reduce((acc, char) => {
-      const dirty = lineupsApi.isCharDirty(party.id, char.id);
+      const dirty = partiesApi.isCharDirty(party.id, char.id);
       acc.dirty[char.id] = dirty;
       acc.count += dirty ? 1 : 0;
       return acc;
@@ -77,7 +77,7 @@ const useDirtyChars = (party) => {
 };
 
 export const Parties = () => {
-  const parties = useSavedLineupsList();
+  const parties = usePartiesList();
   const { getConfirmation } = useConfirmationStore();
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
@@ -93,7 +93,7 @@ export const Parties = () => {
 
   const removeParty = getConfirmation(
     () => {
-      lineupsApi.remove(partyId);
+      partiesApi.remove(partyId);
       setLocation(`/parties`);
     },
     {
@@ -108,7 +108,7 @@ export const Parties = () => {
 
   const saveParty = useStableCallback((record) => {
     editParty(null);
-    lineupsApi.add(record);
+    partiesApi.add(record);
     if (partyId !== record.id) {
       setLocation(`/parties/${record.id}`);
     }
@@ -116,15 +116,15 @@ export const Parties = () => {
 
   const saveChar = useStableCallback((char) => {
     editChar(null);
-    lineupsApi.updateChar(partyId, char.id, char);
+    partiesApi.updateChar(partyId, char.id, char);
   });
 
   const updateChar = useStableCallback((charId, update) => {
-    lineupsApi.updateChar(partyId, charId, update);
+    partiesApi.updateChar(partyId, charId, update);
   });
 
   const resetChar = getConfirmation(
-    (char) => lineupsApi.resetChar(partyId, char.id),
+    (char) => partiesApi.resetChar(partyId, char.id),
     {
       message:
         "This will resync this character with their roster version, " +
@@ -133,7 +133,7 @@ export const Parties = () => {
   );
 
   const resetPartyChars = getConfirmation(
-    () => lineupsApi.resetChars(partyId),
+    () => partiesApi.resetChars(partyId),
     {
       message:
         "This will resync all characters with their roster versions, " +
@@ -143,7 +143,7 @@ export const Parties = () => {
 
   const removeChar = getConfirmation(
     (char) => {
-      lineupsApi.removeChar(partyId, char);
+      partiesApi.removeChar(partyId, char);
     },
     {
       title: "Are you sure you want to remove this character from the party?",
@@ -229,7 +229,7 @@ export const Parties = () => {
         isParty
       />
 
-      <SavedLineupModal
+      <PartyModal
         onClose={() => editParty(null)}
         onSubmit={saveParty}
         record={draftParty}

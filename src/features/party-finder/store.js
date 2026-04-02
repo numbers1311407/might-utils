@@ -1,8 +1,8 @@
 import { createStore } from "@/core/store/helpers";
-import { defaultOptions } from "./find-lineups";
+import { defaultOptions } from "./find-parties";
 
-export const useLineupsStore = createStore(
-  "might-utils-lineups",
+export const usePartyFinderStore = createStore(
+  "might-utils-parties",
   (set, get) => ({
     options: { ...defaultOptions },
     setOption: (name, value) => {

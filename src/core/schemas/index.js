@@ -1,5 +1,5 @@
 export * from "./char.js";
-export * from "./lineup.js";
+export * from "./party.js";
 export * from "./roster.js";
 export * from "./range-string.js";
 export * from "./tag.js";

@@ -10,7 +10,7 @@ export const TagRulesNav = ({ current, children, ...props }) => {
   return (
     <Box {...props}>
       <Text size="lg" py={8} px={14}>
-        Your Tag Rulesets
+        Your Rulesets
       </Text>
       <Stack gap={4} component="nav">
         {children}
@@ -35,7 +35,7 @@ export const TagRulesNav = ({ current, children, ...props }) => {
                 </Box>
               }
               label={ruleset.name}
-              href={`/tag-rulesets/${ruleset.id}`}
+              href={`/rulesets/${ruleset.id}`}
             />
           );
         })}

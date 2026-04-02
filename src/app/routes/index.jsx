@@ -1,5 +1,5 @@
 import { Route } from "wouter";
-import { Lineups } from "@/features/lineups";
+import { PartyFinder } from "@/features/party-finder";
 import { ClassTags } from "@/features/class-tags";
 import { TagGroups } from "@/features/tag-groups";
 import { InstanceCalculator } from "@/features/instance-calculator";
@@ -10,7 +10,7 @@ export const Routes = () => {
   return (
     <>
       <Route path="/">
-        <Lineups />
+        <PartyFinder />
       </Route>
       <Route path="/roster">
         <Roster />
@@ -18,7 +18,7 @@ export const Routes = () => {
       <Route path="/instance-calculator">
         <InstanceCalculator />
       </Route>
-      <Route path="/tag-rulesets/:id?">
+      <Route path="/rulesets/:id?">
         <TagRules />
       </Route>
       <Route path="/class-tags">

@@ -60,7 +60,7 @@ export const prepareTagRules = (rules) => {
 
 export const validateTagCounts = (counts, rules, size) => {
   for (const tag in rules) {
-    // The special * rule transforms into the exact size of the lineup. This
+    // The special * rule transforms into the exact size of the party. This
     // is intended for setups like tagging based on keys/flags where you want
     // to ensure each character is eligible to do the instance.
     const range = rules[tag] === ALL_RANGE_LITERAL ? [size, size] : rules[tag];
@@ -73,9 +73,9 @@ export const validateTagCounts = (counts, rules, size) => {
   return true;
 };
 
-export const generateTagCounts = (lineup) => {
+export const generateTagCounts = (party) => {
   const counts = {};
-  for (const slot of lineup) {
+  for (const slot of party) {
     countKeys(slot.tags, counts);
   }
   return counts;

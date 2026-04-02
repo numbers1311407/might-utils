@@ -119,7 +119,7 @@ const ActiveToggle = ({ api }) => (
 
 export const TagRules = ({ type = "filters" }) => {
   const { getConfirmation } = useConfirmationStore();
-  const [match, { id }] = useRoute("/tag-rulesets/:id?");
+  const [match, { id }] = useRoute("/rulesets/:id?");
   const [ruleset = {}, _setRuleset, api] = useTagRulesManager(type, id);
   const [draftRuleset, setDraftRuleset] = useState(null);
   const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
@@ -230,14 +230,14 @@ export const TagRules = ({ type = "filters" }) => {
   );
 
   if (!ruleset?.id) {
-    return <Redirect to="/tag-rulesets" />;
+    return <Redirect to="/rulesets" />;
   }
 
   return (
     <Box>
       <PageTitle
-        title="Tag Rulesets"
-        subtitle="Define how the party finder will compose your party"
+        title="Party Finder Rulesets"
+        subtitle="Tag and attribute based rules that define how the party finder will compose your parties"
         size="h1"
       ></PageTitle>
 
@@ -284,8 +284,10 @@ export const TagRules = ({ type = "filters" }) => {
           right={
             <Box ta="right">
               <Tooltip
-                openDelay={600}
-                label="Resort rules by ascending size. For organization only, this does not affect behavior."
+                openDelay={500}
+                multiline
+                w={220}
+                label="Re-sort rules by ascending group size. This is for visual aid only and has no effect on behavior."
               >
                 <ActionIcon
                   aria-label="Resort rules by ascending size"
@@ -397,7 +399,7 @@ export const TagRules = ({ type = "filters" }) => {
             setDraftRuleset(null);
 
             tagRulesApi.addSet(ruleset, (set) => {
-              setLocation(`/tag-rulesets/${set.id}`);
+              setLocation(`/rulesets/${set.id}`);
             });
           }}
         />

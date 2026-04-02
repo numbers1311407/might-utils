@@ -39,18 +39,6 @@ export const CharSelect = ({ exclude = [], onChange, ...props }) => {
       placeholder={placeholder}
       {...props}
       data={data}
-      styles={{
-        option: {
-          "&[data-combobox-active]": {
-            backgroundColor: "red",
-            color: "blue",
-          },
-          "&[data-combobox-selected]": {
-            backgroundColor: "hotpink",
-            color: "green",
-          },
-        },
-      }}
       onSearchChange={setSearch}
       disabled={!data.length}
       ref={ref}
