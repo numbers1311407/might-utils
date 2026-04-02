@@ -820,3 +820,9 @@ html {
 .mantine-Table-tfoot {
   border-top: 1px solid var(--mantine-color-default-border);
 }
+
+.mantine-Select-option {
+  &[data-combobox-selected] {
+    background-color: var(--mantine-color-orange-9) !important;
+  }
+}

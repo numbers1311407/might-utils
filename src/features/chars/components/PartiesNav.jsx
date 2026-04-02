@@ -9,7 +9,7 @@ export const PartiesNav = ({ current, ...props }) => {
   return (
     <Box {...props}>
       <Text size="lg" py={8} px={14}>
-        All Parties
+        Your Saved Parties
       </Text>
       <Stack gap={4} component="nav">
         {!list.length && (

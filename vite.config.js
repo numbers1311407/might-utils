@@ -3,7 +3,7 @@
 import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react";
-import dsv from "@rollup/plugin-dsv";
+import { parseInstanceData } from "./scripts/parse-instance-data.js";
 
 export default defineConfig({
   plugins: [
@@ -12,7 +12,7 @@ export default defineConfig({
         plugins: [["babel-plugin-react-compiler", { target: "19" }]],
       },
     }),
-    dsv(),
+    parseInstanceData(),
   ],
   base: "/might-utils/",
   resolve: {

@@ -10,7 +10,7 @@ export const TagRulesNav = ({ current, children, ...props }) => {
   return (
     <Box {...props}>
       <Text size="lg" py={8} px={14}>
-        All Rulesets
+        Your Filter Rulesets
       </Text>
       <Stack gap={4} component="nav">
         {children}

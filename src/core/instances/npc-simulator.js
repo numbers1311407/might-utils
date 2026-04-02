@@ -3,8 +3,11 @@ import {
   DIFFICULTY_NAME_MAP,
   AURA_NAME_MAP,
 } from "./constants.js";
-import { capitalize, toRomanNumeral } from "@/utils";
-import data from "./instance-data";
+import data from "@/assets/instance-data.csv";
+
+console.log({ data });
+
+import { capitalize, toRomanNumeral, initDict } from "@/utils";
 
 export const humanizeDifficulty = (difficulty = "") => {
   const [dchar, plusminus] = difficulty.split("");
@@ -13,9 +16,13 @@ export const humanizeDifficulty = (difficulty = "") => {
 };
 
 export const humanizeAura = (aura = "") => {
-  const [achar, level] = aura.split("");
-  const aname = AURA_NAME_MAP.get(achar);
-  return aname ? `${aname} ${toRomanNumeral(level)}` : "Unknown";
+  let aname = AURA_NAME_MAP.get(aura);
+  if (aname) return aname;
+
+  const [achar, level] = [aura[0], aura.slice(1)];
+  aname = AURA_NAME_MAP.get(achar);
+
+  return aname && level ? `${aname} ${toRomanNumeral(level)}` : "Unknown";
 };
 
 export const humanizeOffering = ({ medal, difficulty, aura }) => {
@@ -30,16 +37,12 @@ export const humanizeOffering = ({ medal, difficulty, aura }) => {
 
 export const getInstanceOfferings = (type, suggestedMight, partyMight) => {
   const ratio = partyMight / suggestedMight;
-  const medals = [...INSTANCE_MEDALS];
-  const offerings = medals.reduce(
-    (acc, medal) => ({ ...acc, [medal]: null }),
-    {},
-  );
+  const offerings = initDict(INSTANCE_MEDALS, null);
 
-  medals.forEach((medal) => {
+  INSTANCE_MEDALS.forEach((medal) => {
     if (!data[type]?.[medal]) return;
 
-    // Search every difficulty in this lane
+    // Search every difficulty in this medal
     for (const diff in data[type][medal]) {
       const auras = data[type][medal][diff];
 
@@ -67,52 +70,42 @@ export const getInstanceOfferings = (type, suggestedMight, partyMight) => {
 };
 
 export const simulateInstanceNPC = (type, suggestedMight, partyMight) => {
-  return getInstanceOfferings(type, suggestedMight, partyMight).map(
-    humanizeOffering,
-  );
+  const offerings = getInstanceOfferings(type, suggestedMight, partyMight);
+  return offerings.map(humanizeOffering);
 };
 
-// const getTargetMightRange = (
-//   suggestedMight,
-//   isRaid,
-//   desiredDifficulty,
-//   desiredAura = null,
-//   smallGroupModifier = 1.0,
-//   laneDictionary = RATIO_BRACKETS,
-// ) => {
-//   const raidModifier = isRaid ? 0.75 : 1.0;
-//   const effectiveSuggested = suggestedMight * raidModifier * smallGroupModifier;
+export const getTargetMightRanges = (
+  type,
+  suggestedMight,
+  desiredDiff,
+  desiredAura = null,
+) => {
+  const ranges = [];
 
-//   const validWindows = [];
-//   const lanes = ["Platinum", "Gold", "Silver", "Bronze"];
+  INSTANCE_MEDALS.forEach((medal) => {
+    if (data[type]?.[medal]?.[desiredDiff]) {
+      const medalAuras = data[type][medal][desiredDiff];
 
-//   lanes.forEach((lane) => {
-//     // 1. Check if this lane even contains the desired difficulty
-//     if (laneDictionary[lane] && laneDictionary[lane][desiredDifficulty]) {
-//       const aurasInLane = laneDictionary[lane][desiredDifficulty];
+      const checkedAuras = desiredAura
+        ? [desiredAura]
+        : Object.keys(medalAuras);
 
-//       // 2. If the user specified an aura, check only that one. Otherwise, check all of them!
-//       const aurasToCheck = desiredAura
-//         ? [desiredAura]
-//         : Object.keys(aurasInLane);
+      checkedAuras.forEach((aura) => {
+        if (medalAuras[aura]) {
+          const bounds = medalAuras[aura];
+          const minMight = Math.ceil(bounds.min * suggestedMight);
+          const maxMight = Math.floor(bounds.max * suggestedMight);
 
-//       aurasToCheck.forEach((aura) => {
-//         // 3. Make sure the specific aura exists in this lane
-//         if (aurasInLane[aura]) {
-//           const bounds = aurasInLane[aura];
-//           const minTarget = Math.floor(bounds.min * effectiveSuggested);
-//           const maxTarget = Math.ceil(bounds.max * effectiveSuggested);
+          ranges.push({
+            medal,
+            aura,
+            minMight,
+            maxMight,
+          });
+        }
+      });
+    }
+  });
 
-//           validWindows.push({
-//             lane: lane,
-//             aura: aura, // We now include the Aura in the return object!
-//             minMight: minTarget,
-//             maxMight: maxTarget,
-//           });
-//         }
-//       });
-//     }
-//   });
-
-//   return validWindows;
-// };
+  return ranges;
+};

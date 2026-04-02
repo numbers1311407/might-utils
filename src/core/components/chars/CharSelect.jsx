@@ -30,30 +30,33 @@ export const CharSelect = ({ exclude = [], onChange, ...props }) => {
   }, [roster, exclude]);
 
   const placeholder = !data.length
-    ? "Nobody left to add!"
-    : "Choose your fighter...";
+    ? "Nobody left to add"
+    : "Select party member...";
 
   return (
     <Select
       size="md"
-      label="Add a Character"
       placeholder={placeholder}
       {...props}
       data={data}
       styles={{
-        label: {
-          color: "gold",
-        },
-        root: {
-          display: "flex",
-          gap: 12,
-          alignItems: "center",
+        option: {
+          "&[data-combobox-active]": {
+            backgroundColor: "red",
+            color: "blue",
+          },
+          "&[data-combobox-selected]": {
+            backgroundColor: "hotpink",
+            color: "green",
+          },
         },
       }}
       onSearchChange={setSearch}
       disabled={!data.length}
       ref={ref}
       searchValue={search}
+      searchable
+      selectFirstOptionOnChange
       value=""
       onFocus={() => {
         setSearch("");

@@ -98,3 +98,37 @@ export const toRomanNumeral = (num) => {
     return acc;
   }, "");
 };
+
+export const isPrimitive = (val) => val !== Object(val);
+
+export const isCloneable = (val) => {
+  try {
+    structuredClone(val);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const initDict = (keys, value) => {
+  const isFn = typeof value === "function";
+
+  if (!isFn && !isPrimitive(value) && !isCloneable(value)) {
+    throw new TypeError(
+      "Value must be a primitive, structured-cloneable, or a function returning a value.",
+    );
+  }
+
+  const dict = {};
+  const getValue = isFn
+    ? value
+    : typeof value === "object" && value !== null
+      ? () => structuredClone(value)
+      : () => value;
+
+  keys.forEach((key, i) => {
+    dict[key] = getValue(key, i);
+  });
+
+  return dict;
+};

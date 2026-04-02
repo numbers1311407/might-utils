@@ -93,12 +93,12 @@ export const ClassTags = () => {
           <Title order={4} c="gold">
             Quick Help
           </Title>
-          <Text size="md">
+          <Text>
             Class tags are a convenient way to manage tags common to all
             characters of the same class. E.g. in most cases every warrior is a
             "tank" and every cleric is a "healer".
           </Text>
-          <Text size="md">
+          <Text>
             When creating a <AppLink href="/parties">saved party</AppLink>, the
             class tags are snapshotted on creation, making them editable
             independent of this list.
