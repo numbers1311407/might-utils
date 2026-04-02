@@ -40,7 +40,7 @@ export const Navbar = (props) => {
           Setup
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />
-        <NavbarLink label="Filter Rulesets" href="/filter-rulesets" />
+        <NavbarLink label="Tag Rulesets" href="/tag-rulesets" />
         <NavbarLink label="Tag Groups" href="/tag-groups" />
         <NavbarLink label="Class Tags" href="/class-tags" />
       </Stack>

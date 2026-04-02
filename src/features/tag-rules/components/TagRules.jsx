@@ -3,7 +3,6 @@ import {
   IconCopy,
   IconX,
   IconAlertCircle,
-  IconArrowRight,
   IconRestore,
   IconSortAscendingNumbers,
   IconPlus,
@@ -12,12 +11,10 @@ import {
 } from "@tabler/icons-react";
 import {
   ActionIcon,
-  Accordion,
   Alert,
   Button,
   Box,
   Divider,
-  Flex,
   InputLabel,
   Paper,
   Group,
@@ -31,7 +28,7 @@ import {
 } from "@mantine/core";
 import classes from "./TagRules.module.css";
 import { useRoute, Redirect, useLocation } from "wouter";
-import { Aside, TagRulesetSelect, PageTitle } from "@/core/components";
+import { Aside, PageTitle } from "@/core/components";
 import {
   useTagRulesManager,
   useTagRulesStoreApi as tagRulesApi,
@@ -122,7 +119,7 @@ const ActiveToggle = ({ api }) => (
 
 export const TagRules = ({ type = "filters" }) => {
   const { getConfirmation } = useConfirmationStore();
-  const [match, { id }] = useRoute("/filter-rulesets/:id?");
+  const [match, { id }] = useRoute("/tag-rulesets/:id?");
   const [ruleset = {}, _setRuleset, api] = useTagRulesManager(type, id);
   const [draftRuleset, setDraftRuleset] = useState(null);
   const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
@@ -233,13 +230,13 @@ export const TagRules = ({ type = "filters" }) => {
   );
 
   if (!ruleset?.id) {
-    return <Redirect to="/filter-rulesets" />;
+    return <Redirect to="/tag-rulesets" />;
   }
 
   return (
     <Box>
       <PageTitle
-        title="Filter Rulesets"
+        title="Tag Rulesets"
         subtitle="Define how the party finder will compose your party"
         size="h1"
       ></PageTitle>
@@ -400,7 +397,7 @@ export const TagRules = ({ type = "filters" }) => {
             setDraftRuleset(null);
 
             tagRulesApi.addSet(ruleset, (set) => {
-              setLocation(`/filter-rulesets/${set.id}`);
+              setLocation(`/tag-rulesets/${set.id}`);
             });
           }}
         />

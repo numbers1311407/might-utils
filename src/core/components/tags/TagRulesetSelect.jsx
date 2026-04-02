@@ -11,7 +11,7 @@ export const TagRulesetSelect = ({
   onChange,
   value,
   clearable,
-  label = "Filter Ruleset",
+  label = "Tag Ruleset",
   labelActive = true,
   includeNone = false,
   ...props
