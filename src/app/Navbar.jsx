@@ -32,10 +32,10 @@ export const Navbar = (props) => {
           Calculators
         </Text>
         <NavbarLink
-          label="Might Range by Difficulty"
+          label="Calculate Might Ranges"
           href="/instance-calculator"
         />
-        <NavbarLink label="Instance NPC Sim" href="/instance-calculator" />
+        <NavbarLink label="Instance NPC Simu" href="/npc-simulator" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" pt={0} c="gold">

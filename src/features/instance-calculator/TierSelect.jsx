@@ -1,5 +1,4 @@
 import { Select } from "@mantine/core";
-import { useRef, useState } from "react";
 import { capitalize } from "@/utils";
 import csvData from "@/assets/instance-data.csv?tiers";
 
@@ -18,29 +17,14 @@ const TIER_DATA = Object.entries(csvData).reduce(
 );
 
 export const TierSelect = ({ onChange, ...props }) => {
-  const [search, setSearch] = useState("");
-  const ref = useRef();
-
   return (
     <Select
       size="md"
       {...props}
       data={TIER_DATA}
-      onSearchChange={setSearch}
-      ref={ref}
-      searchValue={search}
-      searchable
-      selectFirstOptionOnChange
-      onFocus={() => {
-        setSearch("");
-      }}
-      onDropdownClose={() => {
-        ref.current?.blur();
-      }}
-      onChange={(value, option) => {
+      onChange={(value) => {
         const [tier, type, might] = value.split(":");
-        (onChange?.({ tier, type, might: Number(might) }), setSearch(""));
-        ref.current?.blur();
+        onChange?.({ tier, type, might: Number(might) });
       }}
     />
   );
@@ -64,29 +48,13 @@ const DIFF_OPTIONS = [
 }));
 
 export const DifficultySelect = ({ onChange, ...props }) => {
-  const [search, setSearch] = useState("");
-  const ref = useRef();
-
   return (
     <Select
       size="md"
       {...props}
       data={DIFF_OPTIONS}
-      onSearchChange={setSearch}
-      ref={ref}
-      searchValue={search}
-      searchable
-      selectFirstOptionOnChange
-      onFocus={() => {
-        setSearch("");
-      }}
-      onDropdownClose={() => {
-        ref.current?.blur();
-      }}
       onChange={(value, option) => {
         onChange?.(value, option);
-        setSearch("");
-        ref.current?.blur();
       }}
     />
   );
