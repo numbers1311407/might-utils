@@ -1,8 +1,6 @@
 import { nanoid } from "nanoid";
 import * as z from "zod";
-import { tagSchema } from "./tag.js";
 import { rangeStringSchema } from "./range-string.js";
-import { charClassSchema, charNameSchema, charLevelSchema } from "./char.js";
 
 const WARDEN_ANY_OPTION = "Any";
 
@@ -30,34 +28,48 @@ export const parseTagRuleWarden = (warden) =>
   })[warden] ?? "";
 
 const sizeBound = z.number().min(1).max(20);
-const size = z
+
+const sizeSchema = z
   .tuple([sizeBound, sizeBound])
   .default([sizeBound.minValue, sizeBound.maxValue])
   .refine(([a, b]) => b >= a, {
     message: "Upper bound must be equal or higher to lower bound",
   });
 
+const rangeSchema = z
+  .array(z.number().min(0).max(20))
+  .min(1, "Contains at least 1 number: [min]")
+  .max(2, "Contains at most 2 numbers: [min, max]")
+  .refine(
+    ([a, b]) => {
+      return b === undefined || b >= a;
+    },
+    {
+      message: "Upper bound must be equal or higher to lower bound",
+      path: [1],
+    },
+  );
+
+const defaultRules = [];
+const defaultQuery = { combinator: "and", rules: defaultRules };
+
 const base = z.object({
   id: z.nanoid().default(() => nanoid()),
-  size,
-  warden: z.enum(["Any", "0", "1", "1+", "2", "3"]).default("Any"),
-  range: rangeStringSchema,
+  size: sizeSchema,
+  query: z
+    .object({
+      id: z.string().optional(),
+      not: z.boolean().optional(),
+      combinator: z.enum(["and", "or"]).default("and"),
+      rules: z.array(z.any()).default(defaultRules),
+    })
+    .default(defaultQuery),
 });
 
 const variance = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("name"), value: charNameSchema }),
-  z.object({ type: z.literal("level"), value: charLevelSchema }),
-  z.object({ type: z.literal("class"), value: charClassSchema }),
-  z.object({ type: z.literal("tag"), value: tagSchema }),
-  z.object({ type: z.literal("warden"), value: z.literal("warden") }),
+  z.object({ type: z.literal("char"), value: z.nanoid() }),
+  z.object({ type: z.literal("range"), value: rangeSchema }),
+  z.object({ type: z.literal("all"), value: z.literal("all") }),
 ]);
 
-export const tagRuleSchema = base.and(variance).superRefine((data, ctx) => {
-  if (data.type === "warden" && data.warden === WARDEN_ANY_OPTION) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["warden"],
-      message: "Warden type rules must set warden status",
-    });
-  }
-});
+export const tagRuleSchema = base.and(variance);

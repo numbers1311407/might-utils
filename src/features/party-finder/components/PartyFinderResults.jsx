@@ -16,36 +16,40 @@ const GroupedParties = ({ groups }) => {
   );
 };
 
-const PartiesTable = ({ parties }) => (
-  <Table>
-    <Table.Thead>
-      <Table.Tr>
-        <Table.Th>Score</Table.Th>
-        <Table.Th>Size</Table.Th>
-        <Table.Th>Party</Table.Th>
-      </Table.Tr>
-    </Table.Thead>
-    <Table.Tbody>
-      {parties.map((party, index) => (
-        <Table.Tr key={index}>
-          <Table.Td>{party.score}</Table.Td>
-          <Table.Td>{party.size}</Table.Td>
-          <Table.Td>
-            {party.party
-              .map(
-                (slot) =>
-                  `${slot.name}@${slot.level}${slot.warden ? `rk${slot.warden}` : ""}`,
-              )
-              .join(", ")}
-          </Table.Td>
+const PartiesTable = ({ parties }) => {
+  const { pool } = useFindPartiesResults();
+
+  return (
+    <Table>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>Score</Table.Th>
+          <Table.Th>Size</Table.Th>
+          <Table.Th>Party</Table.Th>
         </Table.Tr>
-      ))}
-    </Table.Tbody>
-  </Table>
-);
+      </Table.Thead>
+      <Table.Tbody>
+        {parties.map((party, index) => (
+          <Table.Tr key={index}>
+            <Table.Td>{party.score}</Table.Td>
+            <Table.Td>{party.party.length}</Table.Td>
+            <Table.Td>
+              {Array.from(party.party)
+                .map(
+                  (idx) =>
+                    `${pool[idx].name}@${pool[idx].level}${pool[idx].warden ? `rk${pool[idx].warden}` : ""}`,
+                )
+                .join(", ")}
+            </Table.Td>
+          </Table.Tr>
+        ))}
+      </Table.Tbody>
+    </Table>
+  );
+};
 
 export const PartyFinderResults = () => {
-  const { size, parties, grouped } = useFindPartiesResults();
+  const { size, parties, pool, grouped } = useFindPartiesResults();
 
   const groups = useMemo(() => {
     return (

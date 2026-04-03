@@ -1,22 +1,22 @@
 import {
   Button,
   Group,
+  InputWrapper,
   Modal,
-  NumberInput,
   Select,
   Stack,
   TextInput,
 } from "@mantine/core";
-import * as z from "zod";
-import { useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
+import { useCallback } from "react";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
+import { useState } from "react";
 
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { HelpLabel } from "@/core/components";
-import { charSchema, tagRuleSchema } from "@/core/schemas";
+import { tagRuleSchema } from "@/core/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
+import { QueryBuilder } from "./QueryBuilder.jsx";
 
 const typeHelp =
   "Rules work by counting character tags or attributes like level & class, and requiring that the " +
@@ -28,21 +28,10 @@ const sizeHelp =
   "rule per combination of type, value, and warden requirement. If a conflict is found, the rule with " +
   "the higher size range will take precedence.";
 
-const rangeHelp =
-  "A single number (e.g. 2) represents an exact count. Appending +/- (2+ or 2-) would mean at least 2 " +
-  "or at most 2, respectively. A range is expressed with a hyphen, e.g. 1-3 would mean between 1 and 3. " +
-  "and finally asterisk (*) means everyone in the group.";
-
-const wardenHelp =
-  "Note that specifying warden rank on non-warden rules increases the specificity of the rule. " +
-  'For instance you can specify exactly 1 "tank" with rk. 2, but that will not affect inclusion of ' +
-  "tanks with different ranks. This is by design for flexibility. If you want to require exactly " +
-  "1 tank with a specific warden rank, you need two rules: one requiring a tank with warden rk. X, and " +
-  'one requiring 1 tank of "Any" warden status.';
-
 export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
     <Modal
+      size="xl"
       opened={opened}
       onClose={onClose}
       closeOnClickOutside={false}
@@ -62,28 +51,6 @@ export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   );
 };
 
-export const TagRuleModalButton = ({ rule, children, onSubmit, ...props }) => {
-  const [opened, { open, close }] = useDisclosure(false);
-
-  return (
-    <>
-      <TagRuleModal
-        opened={opened}
-        onClose={() => close()}
-        onSubmit={(rule) => {
-          close();
-          onSubmit(rule);
-        }}
-        rule={rule}
-        {...props}
-      />
-      <Button variant="default" onClick={open}>
-        {children || (rule ? "Edit" : "Add Rule")}
-      </Button>
-    </>
-  );
-};
-
 const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const parsed = tagRuleSchema.safeParse(rule);
   const initialValues = parsed.success
@@ -97,12 +64,14 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   });
 
   const onFormSubmit = (values) => {
-    onSubmit(values);
+    console.log({ values });
+    return;
+    // onSubmit(values);
   };
 
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
-      <Stack gap={6}>
+      <Stack gap="md">
         <Stack mb="lg" gap="xs">
           <HelpLabel label="Size" help={sizeHelp} />
           <TagRuleSizeSlider
@@ -111,48 +80,9 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
             value={form.values.size}
           />
         </Stack>
-        <Select
-          withAsterisk
-          label={<HelpLabel label="Type" help={typeHelp} />}
-          placeholder="What are we counting?"
-          description={
-            {
-              tag: "This rule will filter characters tagged with this tag.",
-              name: "This rule will filter the character with this name.",
-              level: "This rule will filter characters of this level.",
-              class: "This rule will filter characters of this class.",
-              warden: "This rule will filter characters by warden status.",
-            }[form.values.type] ||
-            "Type defines what this rule counts to determine pass/fail."
-          }
-          data={[
-            { label: "Tag", value: "tag" },
-            { label: "Name", value: "name" },
-            { label: "Level", value: "level" },
-            { label: "Class", value: "class" },
-            { label: "Warden Rk.", value: "warden" },
-          ]}
-          key={form.key("type")}
-          {...form.getInputProps("type")}
-        />
-        <ValueField form={form} />
-        <RangeField form={form} />
-        <Select
-          key={form.key("warden")}
-          label={<HelpLabel label="Warden Rk." help={wardenHelp} />}
-          placeholder="Got warden?"
-          description="Should this rule require warden or a specific warden rank?"
-          data={[
-            { label: "Any", value: "Any" },
-            { label: "Rank 0", value: "0" },
-            { label: "Rank 1+", value: "1+" },
-            { label: "Rank 1", value: "1" },
-            { label: "Rank 2", value: "2" },
-            { label: "Rank 3", value: "3" },
-          ]}
-          {...form.getInputProps("warden")}
-        />
-        <Group justify="flex-end">
+        <TypeField form={form} />
+        <QueryField form={form} />
+        <Group justify="flex-end" gap={6}>
           <Button variant="light" onClick={onClose}>
             Cancel
           </Button>
@@ -160,6 +90,53 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
         </Group>
       </Stack>
     </form>
+  );
+};
+
+const TypeField = ({ form }) => (
+  <Select
+    withAsterisk
+    label={<HelpLabel label="Type" help={typeHelp} />}
+    placeholder="What type of rule is this?"
+    allowDeselect={false}
+    description={
+      {
+        all: "This rule will apply to all party members",
+        count: "This rule will apply to a numeric range of characters",
+        char: "This rule will apply to a specific character",
+      }[form.values.type] ||
+      "Type defines what party members the rule applies to"
+    }
+    data={[
+      { label: "Character", value: "char" },
+      { label: "Range", value: "range" },
+      { label: "All", value: "all" },
+    ]}
+    key={form.key("type")}
+    {...form.getInputProps("type")}
+  />
+);
+
+const QueryField = ({ form }) => {
+  const onQueryChange = useCallback(
+    (query) => {
+      form.setFieldValue("query", query);
+    },
+    [form],
+  );
+
+  return (
+    <InputWrapper
+      description="Add individual or grouped rules with and/or logic"
+      label="Query"
+      withAsterisk
+    >
+      <QueryBuilder
+        my={4}
+        query={form.values.query}
+        onQueryChange={onQueryChange}
+      />
+    </InputWrapper>
   );
 };
 
@@ -229,33 +206,4 @@ const ValueField = ({ form }) => {
   }
 
   return null;
-};
-
-const RangeField = ({ form }) => {
-  const type = form.getValues().type;
-  const [disabled, setDisabled] = useState(type === "name");
-  const [cache, setCache] = useState(form.getValues().range);
-
-  form.watch("type", ({ value: type }) => {
-    const isName = type === "name";
-    setDisabled(isName);
-
-    if (isName) {
-      setCache(form.getValues().range);
-      form.setFieldValue("range", "1");
-    } else {
-      form.setFieldValue("range", cache);
-    }
-  });
-
-  return (
-    <TextInput
-      key={form.key("range")}
-      withAsterisk
-      disabled={disabled}
-      description="Count or range of characters who must fulfill this rule."
-      label={<HelpLabel label="Count" help={rangeHelp} />}
-      {...form.getInputProps("range")}
-    />
-  );
 };

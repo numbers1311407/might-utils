@@ -26,7 +26,6 @@ import {
   SimpleGrid,
   Switch,
 } from "@mantine/core";
-import classes from "./TagRules.module.css";
 import { useRoute, Redirect, useLocation } from "wouter";
 import { Aside, PageTitle } from "@/core/components";
 import {
@@ -35,13 +34,15 @@ import {
   useConfirmationStore,
 } from "@/core/store";
 import { getNumberedArray } from "@/utils";
+import { lintTagRuleset } from "@/core/schemas";
+
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
 import { TagRuleModal } from "./TagRuleModal.jsx";
 import { TagRule } from "./TagRule.jsx";
 import { TagRulesNav } from "./TagRulesNav.jsx";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { TagRulesetPreview } from "./TagRulesetPreview.jsx";
-import { lintTagRuleset } from "@/core/schemas";
+import classes from "./TagRules.module.css";
 
 const SIZE_NUMBERS = getNumberedArray(1, 20);
 
@@ -119,12 +120,12 @@ const ActiveToggle = ({ api }) => (
 
 export const TagRules = ({ type = "filters" }) => {
   const { getConfirmation } = useConfirmationStore();
-  const [match, { id }] = useRoute("/rulesets/:id?");
+  const [_match, { id }] = useRoute("/rulesets/:id?");
   const [ruleset = {}, _setRuleset, api] = useTagRulesManager(type, id);
   const [draftRuleset, setDraftRuleset] = useState(null);
   const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
   const [newRule, setNewRule] = useState(null);
-  const [location, setLocation] = useLocation();
+  const [_location, setLocation] = useLocation();
 
   const lintResult = useMemo(() => {
     return lintTagRuleset(ruleset);
@@ -236,16 +237,20 @@ export const TagRules = ({ type = "filters" }) => {
   return (
     <Box>
       <PageTitle
-        title="Party Finder Rulesets"
+        section="Might Party Finder"
+        title="Rulesets"
         subtitle="Tag and attribute based rules that define how the party finder will compose your parties"
         size="h1"
       ></PageTitle>
 
-      <Text c="dark" size="sm">
-        Current Ruleset:
-      </Text>
+      <Text c="dark" size="sm"></Text>
 
       <PageTitle
+        section={
+          <Text color="dark" size="sm">
+            Current Ruleset:
+          </Text>
+        }
         divider={false}
         title={ruleset.name}
         order={3}
@@ -380,10 +385,7 @@ export const TagRules = ({ type = "filters" }) => {
             </Text>
             <Box>
               <Text size="md">A party of {size} needs:</Text>
-              <TagRulesetPreview.RulesList
-                key={size}
-                rules={api.currentPrepared[size]}
-              />
+              <TagRulesetPreview.RulesList key={size} rules={[]} />
             </Box>
           </Paper>
         ))}

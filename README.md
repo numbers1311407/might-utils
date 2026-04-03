@@ -43,3 +43,7 @@ This seems like a big win for both UX and performance.
 
   May or may not be worthwhile as the queries are so configuration heavy, but at a minimum it
   would debounce rapid finds triggered by extra renders for free
+  
+  There's also a consideration for "streaming" the response in chunks for infinite (but unsorted)
+  scroll, though that does mean rethinking groups (it could still work, with the most common groups
+  bubbling up to the top)

@@ -589,6 +589,9 @@ export const theme = createTheme({
       },
     }),
     Button: Button.extend({
+      defaultProps: {
+        size: "sm",
+      },
       vars: (theme, props) => {
         const colorKey =
           props.color && Object.keys(theme.colors).includes(props.color)

@@ -26,14 +26,14 @@ const getGroupTagsOption = (groupBy) => {
 };
 
 export const PartyFinderContextProvider = ({ children }) => {
-  const PartyFinderOptions = usePartyFinderStore((store) => store.options);
+  const finderOptions = usePartyFinderStore((store) => store.options);
   const classTags = useClassTagsStore((store) => store.tags);
   const activeRuleSet = useTagRulesActiveFilters();
   const roster = useRosterStore((store) => store.roster);
   const rules = activeRuleSet?.rules;
 
   const [targetScore, options] = useMemo(() => {
-    const { targetScore, groupBy, ...restOptions } = PartyFinderOptions;
+    const { targetScore, groupBy, ...restOptions } = finderOptions;
 
     return [
       targetScore,
@@ -44,7 +44,7 @@ export const PartyFinderContextProvider = ({ children }) => {
         classTags,
       },
     ];
-  }, [classTags, PartyFinderOptions, rules]);
+  }, [classTags, finderOptions, rules]);
 
   const resultsPromise = useMemo(
     () => findPartiesAsync(roster, targetScore, options),

@@ -5,8 +5,6 @@ import {
 } from "./constants.js";
 import data from "@/assets/instance-data.csv";
 
-console.log({ data });
-
 import { capitalize, toRomanNumeral, initDict } from "@/utils";
 
 export const humanizeDifficulty = (difficulty = "") => {

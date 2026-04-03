@@ -21,14 +21,6 @@ const groupingTags = {
   ),
 };
 
-const sortParties = (parties) =>
-  parties.slice().sort((a, b) => {
-    return a.size === b.size ? b.score - a.score : b.size - a.size;
-  });
-
-const sortParty = (party) =>
-  party.slice().sort((a, b) => a.name.localeCompare(b.name));
-
 export const defaultOptions = {
   targetScore: 1250,
   minLevel: MightMinLevel,
@@ -86,6 +78,11 @@ export const findParties = (roster, targetScore, options = {}) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
 
+      // merge class tags in early so we'll have them in the tag grouping
+      // step as unprocessed tags, making them easier to handle there
+      // (the params tags are unprocessed so this makes them easier to compare)
+      const tags = [...(classTags?.[char.class] || []), ...(char.tags || [])];
+
       for (const rank of Warden.Ranks) {
         const { rank: warden, requiredLevel, mightMultiplier } = rank;
         if (char.warden >= warden && level >= requiredLevel) {
@@ -93,13 +90,7 @@ export const findParties = (roster, targetScore, options = {}) => {
             ...char,
             score: score * mightMultiplier,
             warden,
-            tags: [
-              // note merging of class tags still happens in tag generation if the
-              // classTags option is passed, but it was moved to be done ahead of time
-              // here to solve some order issues in generating group tags.
-              ...(classTags?.[char.class] || []),
-              ...(char.tags || []),
-            ],
+            tags,
           });
         }
       }
@@ -166,7 +157,7 @@ export const findParties = (roster, targetScore, options = {}) => {
       return acc;
     }, [])
     // do one last pass here generating full tags for each slot (and grabbing max scores for pruning later)
-    .map((slot) => {
+    .map((slot, idx) => {
       const derivedTagGroups = isCustomTagGroups
         ? tagGroups.map(tags.t)
         : groupingTags[tagGroups];
@@ -178,12 +169,14 @@ export const findParties = (roster, targetScore, options = {}) => {
 
       return {
         ...slot,
+        idx,
         tags: tags.generateCharacterTags(slot, {
           warden: slot.warden,
           tagGroups: derivedTagGroups,
         }),
       };
     })
+    // NOTE it's critical to note the pool is sorted by ascending score
     .sort((a, b) => a.score - b.score);
 
   if (!pool.length) {
@@ -195,6 +188,18 @@ export const findParties = (roster, targetScore, options = {}) => {
       `Margin must be less than minimum individual score: (${pool[0].score}), got: ${margin}`,
     );
   }
+
+  const sortParties = (parties) =>
+    parties.sort((a, b) => {
+      return a.size === b.size ? b.score - a.score : b.size - a.size;
+    });
+
+  const sortParty = (idxs) => {
+    return idxs.sort((a, b) => pool[a].name.localeCompare(pool[b].name));
+  };
+
+  const generateTagCounts = (idxs) =>
+    tags.generateTagCounts(idxs.map((idx) => pool[idx]));
 
   const rulesByPartySize = tags.prepareTagRules(rules);
   const parties = [];
@@ -217,19 +222,19 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   let recursionCount = 0;
 
-  const recurse = (remainingScore, party, startIndex) => {
+  const recurse = (remainingScore, partyIdxs, startIndex) => {
     if (recursionCount++ >= MAX_RECURSIONS) {
       throw new Error("max recursions reached, try increasing specificity");
     }
 
     // member remaining even adds up to the desired score.
-    const partySize = party.length;
-    const rules = rulesByPartySize[partySize];
+    const partySize = partyIdxs.length;
 
     if (remainingScore >= 0 && remainingScore <= margin) {
       // and the party size is not too short or too long
       if (partySize >= minSize && partySize <= maxSize) {
-        const tagCounts = tags.generateTagCounts(party);
+        const tagCounts = generateTagCounts(partyIdxs);
+        const rules = rulesByPartySize[partySize];
 
         // and the parties is valid re: tags
         if (
@@ -240,19 +245,17 @@ export const findParties = (roster, targetScore, options = {}) => {
           return;
         }
 
-        const lu = {
-          party: sortParty(party),
+        const newParty = {
+          party: sortParty(new Uint8Array(partyIdxs)),
           score: targetScore - remainingScore,
-          size: partySize,
-          tags: tagCounts,
         };
 
         if (useTagGroups) {
-          lu.group = tags.getTagGroupKey(tagCounts);
+          newParty.group = tags.getTagGroupKey(tagCounts);
         }
 
         // push the completed linup and end this branch
-        parties.push(lu);
+        parties.push(newParty);
       }
 
       return;
@@ -262,7 +265,7 @@ export const findParties = (roster, targetScore, options = {}) => {
       return;
     }
 
-    const maxPoolScore = getMaxPoolScore(maxSize - party.length, startIndex);
+    const maxPoolScore = getMaxPoolScore(maxSize - partySize, startIndex);
     if (maxPoolScore < remainingScore - margin) {
       return;
     }
@@ -281,15 +284,26 @@ export const findParties = (roster, targetScore, options = {}) => {
       }
 
       partyIds.add(slot.id);
-      party.push(slot);
-      recurse(remainingScore - slot.score, party, i + 1);
-      party.pop();
+      partyIdxs.push(slot.idx);
+      recurse(remainingScore - slot.score, partyIdxs, i + 1);
+      partyIdxs.pop();
       partyIds.delete(slot.id);
     }
   };
 
   recurse(targetScore, [], 0);
 
+  // TODO possibly figure out flattening of response after we figure out tags, i.e.
+  //
+  // {
+  //   pool,
+  //   poolPartyIndices: new UintArray8([p0_0, p0_1, p1_0, p1_1, p1_2, p3_0, ...]),
+  //   partySlices: new UintArray8([0, 2, 5]), // => [0, 2], [2, 5], [5]
+  // }
+  //
+  // the question of this approach is that parties carry slightly more data than
+  // who's in them, namely the group key, but that could also be found on the
+  // other side. Is there anything calculable here that's not calculable in the UI.
   return {
     parties: sortParties(parties),
     params: { roster, targetScore, options },

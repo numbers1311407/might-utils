@@ -42,6 +42,9 @@ export const charNameSchema = z
   .transform(capitalize);
 
 const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
+export const charActiveSchema = z.boolean().default(true);
+
+export const charWardenSchema = z.coerce.number().min(0).max(3).default(0);
 
 export const charLevelSchema = z.coerce
   .number({ message: invalidLevelMessage })
@@ -50,7 +53,7 @@ export const charLevelSchema = z.coerce
 
 export const charSchema = z.object({
   id: z.nanoid().default(() => nanoid()),
-  active: z.boolean().default(true),
+  active: charActiveSchema,
   class: charClassSchema,
   level: charLevelSchema,
   name: charNameSchema,
@@ -58,5 +61,5 @@ export const charSchema = z.object({
     .array(tagSchema)
     .default([])
     .transform((tags) => [...tags].sort()),
-  warden: z.coerce.number().min(0).max(3).default(0),
+  warden: charWardenSchema,
 });

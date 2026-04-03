@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useDraftState } from "@/core/hooks";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
-import { prepareTagRules, humanizeTag } from "@/core/tags";
+import { prepareTagRules } from "@/core/tags";
 
 const defaultIdMap = {
   filters: [defaultFiltersTagRules.id],
@@ -85,10 +85,6 @@ export const useTagRulesManager = (type, initialId) => {
     api.sortRuleset(currentId);
   }, [currentId]);
 
-  const currentPrepared = useMemo(() => {
-    return current?.rules && prepareTagRules(current.rules);
-  }, [current]);
-
   const currentSorted = useMemo(() => {
     return api.isRulesetSorted(current.id);
   }, [current]);
@@ -97,7 +93,6 @@ export const useTagRulesManager = (type, initialId) => {
     current,
     setCurrent,
     {
-      currentPrepared,
       currentDefault,
       currentSorted,
       currentDefaultDirty,

@@ -47,7 +47,8 @@ export const TagGroups = () => {
   return (
     <Box>
       <PageTitle
-        title="Tag Groups"
+        section="Might Party Finder"
+        title="Result Groups"
         subtitle="Collections of related tags used to group party finder results in custom ways"
       >
         <Button size="sm" onClick={() => setCurrentGroup({})}>
