@@ -1,18 +1,11 @@
-import {
-  Box,
-  NumberInput,
-  Divider,
-  Stack,
-  Group,
-  Text,
-  List,
-} from "@mantine/core";
+import { Box, NumberInput, Stack, Group, Text, List } from "@mantine/core";
 import {
   simulateInstanceNPC,
   getTargetMightRanges,
   humanizeOffering,
 } from "@/core/instances";
 
+import { useRoute } from "wouter";
 import { capitalize } from "@/utils";
 import { TierSelect, DifficultySelect } from "./TierSelect.jsx";
 import { PageTitle } from "@/core/components";
@@ -81,11 +74,26 @@ export const InstanceCalculator = () => {
   });
   const [might, setMight] = useState(1600);
   const [diff, setDiff] = useState("N");
+  const [isSimulator] = useRoute("/npc-simulator");
   const intense = (instance.type === "raid" ? 0.48 : 0.64) * instance.might;
+
+  console.log({ isSimulator });
 
   return (
     <Stack>
-      <PageTitle title="Instance Calculator" subtitle="Predict what Suki has to say before you're in hail distance" />
+      {isSimulator ? (
+        <PageTitle
+          section="calculators"
+          title="Instance NPC Simulator"
+          subtitle="Know what Suki has to say before you're in hail distance"
+        />
+      ) : (
+        <PageTitle
+          section="calculators"
+          title="Calculate Might Ranges"
+          subtitle="Look up might ranges by tier and desired difficulty"
+        />
+      )}
       <Stack>
         <TierSelect
           value={Object.values(instance).join(":")}
@@ -93,7 +101,7 @@ export const InstanceCalculator = () => {
           w={400}
         />
       </Stack>
-      <Group gap="lg" align="flex-start">
+      {isSimulator && (
         <Stack flex="1">
           <NumberInput
             value={might}
@@ -101,8 +109,8 @@ export const InstanceCalculator = () => {
             placeholder="Enter Might"
             step={10}
             size="md"
+            w={400}
           />
-
           {might && instance.might && (
             <Box
               bg="slate.8"
@@ -111,7 +119,7 @@ export const InstanceCalculator = () => {
               size="xs"
               component={Stack}
               gap={0}
-              style={{ fontFamily: "Arial, Sans" }}
+              style={{ fontFamily: "Arial, Sans", maxWidth: 700 }}
             >
               {sayings[instance.tier] && (
                 <>
@@ -154,8 +162,10 @@ export const InstanceCalculator = () => {
             </Box>
           )}
         </Stack>
+      )}
+      {!isSimulator && (
         <Stack flex="1">
-          <DifficultySelect value={diff} onChange={setDiff} />
+          <DifficultySelect value={diff} onChange={setDiff} w={400} />
           {diff && instance.might && (
             <Stack>
               <Text size="sm">Chosen Difficulty: {diff}</Text>
@@ -172,7 +182,7 @@ export const InstanceCalculator = () => {
             </Stack>
           )}
         </Stack>
-      </Group>
+      )}
     </Stack>
   );
 };

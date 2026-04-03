@@ -18,6 +18,9 @@ export const Routes = () => {
       <Route path="/instance-calculator">
         <InstanceCalculator />
       </Route>
+      <Route path="/npc-simulator">
+        <InstanceCalculator />
+      </Route>
       <Route path="/rulesets/:id?">
         <TagRules />
       </Route>
