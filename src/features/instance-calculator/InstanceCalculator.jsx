@@ -83,13 +83,13 @@ export const InstanceCalculator = () => {
     <Stack>
       {isSimulator ? (
         <PageTitle
-          section="calculators"
+          section="Calculators"
           title="Instance NPC Simulator"
           subtitle="Know what Suki has to say before you're in hail distance"
         />
       ) : (
         <PageTitle
-          section="calculators"
+          section="Calculators"
           title="Calculate Might Ranges"
           subtitle="Look up might ranges by tier and desired difficulty"
         />
