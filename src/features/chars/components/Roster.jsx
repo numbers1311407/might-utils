@@ -55,8 +55,9 @@ export const Roster = () => {
   return (
     <Box>
       <PageTitle
+        section="Team Management"
         title="Character Roster"
-        subtitle="All your characters live here"
+        subtitle="The list of all your characters, the reference for party generation and saved parties"
       >
         <Button variant="outline" size="xs" onClick={onResetRoster}>
           Reset

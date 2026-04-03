@@ -237,9 +237,9 @@ export const TagRules = ({ type = "filters" }) => {
   return (
     <Box>
       <PageTitle
-        section="Might Party Finder"
-        title="Rulesets"
-        subtitle="Tag and attribute based rules that define how the party finder will compose your parties"
+        section="Configuration"
+        title="Generator Rulesets"
+        subtitle="Tag and attribute based rules that define your generated parties are composed"
         size="h1"
       ></PageTitle>
 

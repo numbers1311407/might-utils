@@ -8,9 +8,9 @@ export const PartyFinderMain = () => {
   return (
     <Box>
       <PageTitle
-        section="Might Party Finder"
-        title="Find Your Party"
-        subtitle="Add your roster and group preferences, plug in your target might, and find your party!"
+        section="Planning & Calc"
+        title="Party Generator"
+        subtitle="Add your roster and group preferences, plug in your target might, and generate your party!"
       />
       <ErrorBoundary fallback="o.o">
         <Suspense fallback={<LoadingPage />}>

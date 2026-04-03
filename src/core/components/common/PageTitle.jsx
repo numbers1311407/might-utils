@@ -29,15 +29,19 @@ export const PageTitle = ({
         <Title order={order} size={size} my={0} fw="bold">
           {title}
         </Title>
+      </Box>
+      {children}
+    </Group>
+    {subtitle && (
+      <Stack mt={-12}>
         {typeof subtitle === "string" && (
           <Text pl={2} c="dark">
             {subtitle}
           </Text>
         )}
         {subtitle && typeof subtitle !== "string" && subtitle}
-      </Box>
-      {children}
-    </Group>
+      </Stack>
+    )}
     {divider && <Divider />}
   </Stack>
 );

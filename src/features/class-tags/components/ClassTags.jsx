@@ -59,8 +59,9 @@ export const ClassTags = () => {
   return (
     <Box my="md">
       <PageTitle
-        title="Class Tags"
-        subtitle="Default tags added to each class for the purpose of the party finder."
+        section="Configuration"
+        title="Generator Class Tags"
+        subtitle="Default tags added to each class for the targeting during party generation"
       >
         <Button
           onClick={getConfirmation(() => resetAllClassTags(), {

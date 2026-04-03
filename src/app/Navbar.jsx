@@ -28,30 +28,27 @@ export const Navbar = (props) => {
   return (
     <Stack gap={0} {...props}>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" c="gold">
-          Calculators
-        </Text>
-        <NavbarLink
-          label="Calculate Might Ranges"
-          href="/instance-calculator"
-        />
-        <NavbarLink label="Instance NPC Simu" href="/npc-simulator" />
-      </Stack>
-      <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" pt={0} c="gold">
-          Might Party Finder
+          Planning & Calc
         </Text>
-        <NavbarLink label="Find Your Party" href="/" />
-        <NavbarLink label="Rulesets" href="/rulesets" />
-        <NavbarLink label="Result Groups" href="/tag-groups" />
+        <NavbarLink label="Party Generator" href="/" />
+        <NavbarLink label="Instance NPC Sim" href="/npc-simulator" />
+        <NavbarLink label="Might Range Calc" href="/instance-calculator" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" c="gold">
-          Manage Your Team
+          Team Management
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />
         <NavbarLink label="Saved Parties" href="/parties" />
-        <NavbarLink label="Class Tags" href="/class-tags" />
+      </Stack>
+      <Stack gap={2} mb="lg">
+        <Text fw="bold" size="md" p="xs" c="gold">
+          Configuration
+        </Text>
+        <NavbarLink label="Generator Rulesets" href="/rulesets" />
+        <NavbarLink label="Generator Result Groups" href="/tag-groups" />
+        <NavbarLink label="Generator Class Tags" href="/class-tags" />
       </Stack>
     </Stack>
   );

@@ -160,10 +160,10 @@ export const Parties = () => {
   return (
     <Box>
       <PageTitle
+        section="Team Management"
         title="Saved Parties"
         subtitle={
-          "Party snapshots assembled from your roster with editable tags, levels, and " +
-          "other attributes."
+          "Assemble parties from your roster to track their might and target specific instance tiers"
         }
       />
 

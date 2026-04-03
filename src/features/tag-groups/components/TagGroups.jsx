@@ -47,9 +47,9 @@ export const TagGroups = () => {
   return (
     <Box>
       <PageTitle
-        section="Might Party Finder"
-        title="Result Groups"
-        subtitle="Collections of related tags used to group party finder results in custom ways"
+        section="Configuration"
+        title="Generator Result Groups"
+        subtitle="Collections of related tags used to group generated parties in a flexible way"
       >
         <Button size="sm" onClick={() => setCurrentGroup({})}>
           Create a New Tag Group
