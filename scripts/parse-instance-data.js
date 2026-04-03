@@ -8,21 +8,51 @@ import {
 export const parseInstanceData = () => ({
   name: "parse-instance-data",
   transform(code, id) {
-    if (!id.endsWith("instance-data.csv")) return;
-
-    const csv = parse(code, { columns: true });
-    const data = {};
-
-    for (const type of INSTANCE_TYPES) {
-      data[type] = parseType(csv, type);
+    if (
+      !id.endsWith(".csv") &&
+      !id.endsWith(".csv?tiers") &&
+      !id.endsWith(".csv?csv")
+    ) {
+      return;
     }
 
+    let parser;
+
+    if (id.endsWith(".csv")) {
+      parser = parseTypes;
+    } else if (id.endsWith("?tiers")) {
+      parser = parseTierData;
+    } else {
+      parser = (csv) => csv;
+    }
+
+    const csv = parse(code, { columns: true });
+
     return {
-      code: `export default ${JSON.stringify(data)}`,
+      code: `export default ${JSON.stringify(parser(csv))}`,
       map: null,
     };
   },
 });
+
+const parseTierData = (csv) => {
+  const data = {};
+
+  csv.forEach((row) => {
+    data[row.type] ||= {};
+    data[row.type][row.tier] = row.suggestedMight;
+  });
+
+  return data;
+};
+
+const parseTypes = (csv) => {
+  const data = {};
+  for (const type of INSTANCE_TYPES) {
+    data[type] = parseType(csv, type);
+  }
+  return data;
+};
 
 const parseType = (data, type) => {
   // step 1: collect raw bounds for each medal

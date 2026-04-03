@@ -5,8 +5,6 @@ import {
 } from "./constants.js";
 import data from "@/assets/instance-data.csv";
 
-console.log({ data });
-
 import { capitalize, toRomanNumeral, initDict } from "@/utils";
 
 export const humanizeDifficulty = (difficulty = "") => {
@@ -69,9 +67,11 @@ export const getInstanceOfferings = (type, suggestedMight, partyMight) => {
     }));
 };
 
-export const simulateInstanceNPC = (type, suggestedMight, partyMight) => {
+export const simulateInstanceNPC = (type, suggestedMight, partyMight, tier) => {
   const offerings = getInstanceOfferings(type, suggestedMight, partyMight);
-  return offerings.map(humanizeOffering);
+  return offerings.map((offering) => {
+    return `[${tier} ${capitalize(type)} ${humanizeOffering(offering).replace(":", "]")}`;
+  });
 };
 
 export const getTargetMightRanges = (
