@@ -85,7 +85,7 @@ export const InstanceCalculator = () => {
 
   return (
     <Stack>
-      <PageTitle title="Instance Calculator" subtitle="Thanks Gemini" />
+      <PageTitle title="Instance Calculator" subtitle="Predict what Suki has to say before you're in hail distance" />
       <Stack>
         <TierSelect
           value={Object.values(instance).join(":")}
