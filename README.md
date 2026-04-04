@@ -8,6 +8,36 @@ Going through a bit of a pivot, updating soon.
   small set of roster characters in memory which could just be referencded by sorted arrays of ids,
   instead of copying them many thousands of times.
   
+- tag rules
+  - validate empty rules in tag rule modal (everying else we let them do and warn later)
+  - show human rule summary in tag rule modal
+  - add numbers across the top to show only rules that are for a specific size, or [show all]
+- search
+  - fix search
+  - improve search error messaging and add early errors for bad rules
+  - this of course means finally catching errors thrown out of the finder
+  - add roster swap dropdown
+  - add snapshot saving
+  - style the whole damn UI
+  - search will need url vars and I wonder if that means we should rethink state a little and make
+    that page URL driven.
+- ui fixup for class tag groups
+- parties
+  - strip the tags and edit function entirely, making the table into a small toggle for level/warden
+  - extract and add the npc simulator
+    - a nice simulator might be a sliding UI that centers on the instance tier where your party is
+      normal, and shows the instances to the left and right, all the time. could be nice if there's
+      room. Otherwise could just be a tier dropdown just like the calculator, but powered by the
+      team might.
+  - figure out a nice ui for might score
+- roster
+  - need to fix the store to allow for more than one, probably easiest to just add another store.
+  - add a sub-form on the roster form for alternate rosters and complete that ui
+  - I expect this will be very similar to how parties are now. they almost use the same UI already,
+    so it'll just be a matter of reclaiming that right real estate for the side nav
+- might range calculator needs some slight UI work to offer links to the main search
+- help modals, probably last task as I want some screenshots
+  
 ### Tag rules and functionality rework
 
 1. Rules become set of "and" and/or "or" tag sets, we can use react query builder. Most rules will

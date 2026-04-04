@@ -98,8 +98,8 @@ const FIELDS = [
     label: "Tags",
     inputType: "text",
     operators: [
-      { name: "tag", label: "includes" },
-      { name: "notag", label: "do not include" },
+      { name: "has", label: "includes" },
+      { name: "lacks", label: "do not include" },
     ],
     validator: (r) => schemaValidator(tagSchema),
   },

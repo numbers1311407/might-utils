@@ -1,29 +1,54 @@
-import { Badge, Box, Flex, Text, Tooltip, UnstyledButton } from "@mantine/core";
+import { forwardRef } from "react";
+import {
+  Badge,
+  Box,
+  Group,
+  Text,
+  Tooltip,
+  UnstyledButton,
+} from "@mantine/core";
+import { formatQuery } from "react-querybuilder";
+import { ClassIcon } from "@/core/components";
 import { useStableCallback } from "@/core/hooks";
-import { TagRuleBadge } from "./TagRuleBadge.jsx";
-import { WardenBadge } from "./WardenBadge.jsx";
-import { capitalize, formatSortedNumbers } from "@/utils";
-import css from "./TagRule.module.css";
+import { formatSortedNumbers } from "@/utils";
+import { useRosterChar } from "@/core/store";
 
-const TagRuleTextTag = ({ value }) => `"${value}"`;
-const TagRuleTextLevel = ({ value }) => `Level ${value}`;
-const TagRuleTextClass = ({ value }) => `${value}`;
-const TagRuleTextName = ({ value }) => `${capitalize(value)}`;
-const TagRuleTextWarden = () => `Warden`;
+const TagRuleContentAll = ({ rule, ...props }) => {
+  return <Text {...props}>Everyone must pass</Text>;
+};
+const TagRuleContentChar = ({ rule, ...props }) => {
+  const char = useRosterChar(rule.value);
+  return (
+    <Group gap={8}>
+      <ClassIcon {...props} size={32} cls={char.class} />
+      <Text>{char.name} must pass</Text>
+    </Group>
+  );
+};
+const TagRuleContentRange = ({ rule, ...props }) => {
+  const [min, max] = rule.value;
+  const ruleText =
+    max === undefined
+      ? `At least ${min}`
+      : min === 0
+        ? `At most ${max}`
+        : min === max
+          ? `Exactly ${min}`
+          : `${min} to ${max}`;
+
+  return <Text {...props}>{ruleText} must pass</Text>;
+};
 
 const comps = {
-  tag: TagRuleTextTag,
-  level: TagRuleTextLevel,
-  class: TagRuleTextClass,
-  name: TagRuleTextName,
-  warden: TagRuleTextWarden,
-  default: TagRuleTextTag,
+  all: TagRuleContentAll,
+  char: TagRuleContentChar,
+  range: TagRuleContentRange,
 };
 
-const TagRuleText = ({ rule }) => {
-  const Component = comps[rule.type] || comps.default;
-  return <Component value={rule.value} />;
-};
+const TagRuleContent = forwardRef(({ rule }, ref) => {
+  const Component = comps[rule.type];
+  return <Component ref={ref} rule={rule} />;
+});
 
 const ConflictedAlert = ({ conflicts }) => {
   if (!conflicts) {
@@ -42,33 +67,20 @@ const ConflictedAlert = ({ conflicts }) => {
   );
 };
 
-export const TagRule = ({
-  conflicts,
-  rule,
-  onClick: propsOnClick,
-  ...props
-}) => {
-  const onClick = useStableCallback((e) => {
-    e.preventDefault();
-    propsOnClick?.(rule);
+export const getQueryDescription = (query) => {
+  const value = formatQuery(query, {
+    format: "SQL",
+    fields: true,
   });
+  return value === "(1 = 1)" ? "No rules are applied" : value;
+};
 
+export const TagRule = ({ conflicts, rule, ...props }) => {
   return (
-    <UnstyledButton className={css.root} onClick={onClick} {...props}>
-      <Box className={css.header}>
-        <TagRuleBadge rule={rule} />
-        <WardenBadge rule={rule} hideAny />
-        <Box flex="1"></Box>
-        <ConflictedAlert conflicts={conflicts} />
-      </Box>
-      <Flex width="100%" className={css.body}>
-        <Text title={rule.value} className={css.value}>
-          <TagRuleText rule={rule} />
-        </Text>
-        <Text title="Required rule count" className={css.count}>
-          {rule.range}
-        </Text>
-      </Flex>
-    </UnstyledButton>
+    <Group {...props} gap={8}>
+      <ConflictedAlert conflicts={conflicts} />
+      <TagRuleContent rule={rule} />:
+      <Text>{getQueryDescription(rule.query)}</Text>
+    </Group>
   );
 };

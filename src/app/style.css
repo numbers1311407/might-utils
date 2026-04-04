@@ -521,10 +521,8 @@ html {
 
 /* Tooltip */
 .mantine-Tooltip-tooltip {
-  font-size: var(--mantine-font-size-xs);
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: 1.7;
+  font-size: var(--mantine-font-size-md);
+  line-height: 1.2;
 }
 
 /* Accordion */

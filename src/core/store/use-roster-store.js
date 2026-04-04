@@ -107,3 +107,7 @@ export const useRoster = () => {
     setActiveOnly: api.setActiveOnly,
   };
 };
+
+export const useRosterChar = (id, withTags = false) => {
+  return useMemo(() => api.getChar(id, withTags), [id, withTags]);
+};

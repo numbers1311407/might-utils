@@ -25,11 +25,13 @@ import {
   Stack,
   SimpleGrid,
   Switch,
+  SegmentedControl,
 } from "@mantine/core";
 import { useRoute, Redirect, useLocation } from "wouter";
-import { Aside, PageTitle } from "@/core/components";
+import { Aside, HelpIconTooltip, PageTitle } from "@/core/components";
 import {
   useTagRulesManager,
+  useTagRulesStore,
   useTagRulesStoreApi as tagRulesApi,
   useConfirmationStore,
 } from "@/core/store";
@@ -38,7 +40,7 @@ import { lintTagRuleset } from "@/core/schemas";
 
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
 import { TagRuleModal } from "./TagRuleModal.jsx";
-import { TagRule } from "./TagRule.jsx";
+import { TagRule, getQueryDescription } from "./TagRule.jsx";
 import { TagRulesNav } from "./TagRulesNav.jsx";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { TagRulesetPreview } from "./TagRulesetPreview.jsx";
@@ -61,13 +63,13 @@ const DeleteButton = (props) => (
 const GridRow = ({ left, right, main, ...props }) => {
   return (
     <>
-      <Grid.Col span={{ base: 12, md: 3, lg: 2 }} {...props}>
+      <Grid.Col pb={0} span={{ base: 12 }} {...props}>
         {left}
       </Grid.Col>
-      <Grid.Col span={{ base: 11, md: 8, lg: 9 }} {...props}>
+      <Grid.Col span={{ base: 11, lg: 11 }} {...props}>
         {main}
       </Grid.Col>
-      <Grid.Col span={{ base: 1, md: 1, lg: 1 }} {...props}>
+      <Grid.Col span={{ base: 1, md: 1 }} {...props}>
         {right}
       </Grid.Col>
     </>
@@ -117,6 +119,31 @@ const ActiveToggle = ({ api }) => (
     />
   </InputLabel>
 );
+
+const ToggleGroupSizeTwenty = () => {
+  const isTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
+
+  return (
+    <InputLabel
+      display="flex"
+      style={{ alignItems: "center", gap: 10, cursor: "pointer" }}
+    >
+      <Group gap={4}>
+        <Text c="dark" span size="md" flex="1">
+          Group Size Max
+        </Text>
+        <HelpIconTooltip tooltip="The number of targetable group sizes shown in the rules controls. Just here to declutter the UI if you don't need 20" />
+      </Group>
+      <SegmentedControl
+        value={isTwenty ? "20" : "12"}
+        data={["12", "20"]}
+        onChange={(value) => {
+          tagRulesApi.setGroupSizeTwenty(value === "20");
+        }}
+      />
+    </InputLabel>
+  );
+};
 
 export const TagRules = ({ type = "filters" }) => {
   const { getConfirmation } = useConfirmationStore();
@@ -238,10 +265,12 @@ export const TagRules = ({ type = "filters" }) => {
     <Box>
       <PageTitle
         section="Configuration"
-        title="Generator Rulesets"
+        title="Generator Rules"
         subtitle="Tag and attribute based rules that define your generated parties are composed"
         size="h1"
-      ></PageTitle>
+      >
+        <ToggleGroupSizeTwenty />
+      </PageTitle>
 
       <Text c="dark" size="sm"></Text>
 
@@ -280,12 +309,6 @@ export const TagRules = ({ type = "filters" }) => {
       <Grid gutter="lg" align="stretch" my="lg">
         <GridRow
           display={{ base: "none", md: "block" }}
-          left={<Text size="lg">Rules</Text>}
-          main={
-            <Text span size="lg">
-              Party Sizes
-            </Text>
-          }
           right={
             <Box ta="right">
               <Tooltip
@@ -371,6 +394,7 @@ export const TagRules = ({ type = "filters" }) => {
       <Title order={4} size="h4" my="lg">
         Rule summaries by size
       </Title>
+
       <SimpleGrid cols={4} spacing="lg" mb={72}>
         {SIZE_NUMBERS.map((size) => (
           <Paper

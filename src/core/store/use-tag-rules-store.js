@@ -36,11 +36,15 @@ const handleDirtyDefaults = (ruleset, state) => {
   }
 };
 
+// TODO originally there were to be multiple types of these rules but I don't
+// even remember what the original concept was. Since there's only "filters"
+// a lot if this could be simplified.
 export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   active: {
     filters: [defaultFilters.id],
   },
   dirtyDefaults: [],
+  groupSizeTwenty: false,
   sets: {
     [defaultFilters.id]: defaultFilters,
   },
@@ -211,6 +215,12 @@ export const api = {
         state.sets[id] = clone;
         handleDirtyDefaults(clone, state);
       }
+    });
+  },
+
+  setGroupSizeTwenty: (bool) => {
+    set((state) => {
+      state.groupSizeTwenty = bool;
     });
   },
 };

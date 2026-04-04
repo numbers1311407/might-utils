@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import {
-  Box,
   Flex,
   Group,
-  Paper,
   Stack,
   SegmentedControl,
   Table,
@@ -72,7 +70,6 @@ export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
     <Aside component={Stack} {...asideProps}>
       {isRoster && (
         <SegmentedControl
-          mt="xs"
           value={activeOnly}
           size="sm"
           fullWidth
