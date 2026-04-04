@@ -4,21 +4,31 @@ import { useRoster } from "@/core/store";
 import { ClassIcon } from "@/core/components";
 import { getClassName } from "@/core/chars";
 
-const renderOption = ({ option: { char } }) => (
-  <Group align="flex-end" gap="sm">
-    <ClassIcon cls={char.class} size={42} />
-    <Stack gap={2}>
-      <Text size="md" c="gold" lh={1.2}>
-        {char.name}
-      </Text>
-      <Text size="xs" c="dark">
-        Level {char.level} {getClassName(char.class)}
-      </Text>
-    </Stack>
-  </Group>
-);
+// TODO handle checked state better for selected characters in stateful
+// mode. (initially this was a stateless button, which is fine, but in
+// stateful mode there's no indication on the option of it being selected)
+const renderOption = ({ option: { char }, checked }) => {
+  return (
+    <Group align="flex-end" gap="sm">
+      <ClassIcon cls={char.class} size={42} />
+      <Stack gap={2}>
+        <Text size="md" c="gold" lh={1.2}>
+          {char.name}
+        </Text>
+        <Text size="xs" c="dark">
+          Level {char.level} {getClassName(char.class)}
+        </Text>
+      </Stack>
+    </Group>
+  );
+};
 
-export const CharSelect = ({ exclude = [], onChange, ...props }) => {
+export const CharSelect = ({
+  emits = "id",
+  exclude = [],
+  onChange,
+  ...props
+}) => {
   const { roster } = useRoster();
   const [search, setSearch] = useState("");
   const ref = useRef();
@@ -37,15 +47,15 @@ export const CharSelect = ({ exclude = [], onChange, ...props }) => {
     <Select
       size="md"
       placeholder={placeholder}
+      value=""
       {...props}
       data={data}
       onSearchChange={setSearch}
-      disabled={!data.length}
+      disabled={props.disabled || !data.length}
       ref={ref}
       searchValue={search}
       searchable
-      selectFirstOptionOnChange
-      value=""
+      selectFirstOptionOnChange={props.value === undefined}
       onFocus={() => {
         setSearch("");
       }}
@@ -53,8 +63,9 @@ export const CharSelect = ({ exclude = [], onChange, ...props }) => {
         ref.current?.blur();
       }}
       renderOption={renderOption}
-      onChange={(_value, { char }) => {
-        onChange?.(char);
+      onChange={(id, option) => {
+        const { char = null } = option || {};
+        onChange?.(emits === "char" ? char : id);
         setSearch("");
         ref.current?.blur();
       }}

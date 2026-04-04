@@ -5,18 +5,20 @@ import {
   Modal,
   Select,
   Stack,
-  TextInput,
+  Text,
 } from "@mantine/core";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useState } from "react";
 
-import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
-import { HelpLabel } from "@/core/components";
+import { useStableCallback } from "@/core/hooks";
+import { CharSelect } from "@/core/components/chars";
+import { HelpLabel } from "@/core/components/common/HelpLabel";
 import { tagRuleSchema } from "@/core/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
+import { ModalRangeInput } from "./ModalRangeInput.jsx";
 
 const typeHelp =
   "Rules work by counting character tags or attributes like level & class, and requiring that the " +
@@ -28,10 +30,16 @@ const sizeHelp =
   "rule per combination of type, value, and warden requirement. If a conflict is found, the rule with " +
   "the higher size range will take precedence.";
 
+const queryHelp =
+  "Click +Rule to add a rule and begin. If the UI is unclear, consider the top level to be Group 1, " +
+  "and each Group a wrapped set of Rules in parentheses, nesting further as you add more groups; Any " +
+  "is essenitally OR for a group, while All is AND. E.g. a rule might be (\"tags includes 'tank' AND " +
+  '(level >= 68 OR (level >= 66 AND warden > 1)))"';
+
 export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
     <Modal
-      size="xl"
+      size="lg"
       opened={opened}
       onClose={onClose}
       closeOnClickOutside={false}
@@ -55,7 +63,7 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const parsed = tagRuleSchema.safeParse(rule);
   const initialValues = parsed.success
     ? parsed.data
-    : { type: "tag", value: "", size: [1, 20] };
+    : { type: "all", value: "all", size: [1, 20] };
 
   const form = useForm({
     mode: "uncontrolled",
@@ -64,24 +72,34 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   });
 
   const onFormSubmit = (values) => {
-    console.log({ values });
-    return;
-    // onSubmit(values);
+    onSubmit(values);
   };
 
+  const onFormSubmitFailure = (...args) => {};
+
   return (
-    <form onSubmit={form.onSubmit(onFormSubmit)}>
+    <form onSubmit={form.onSubmit(onFormSubmit, onFormSubmitFailure)}>
       <Stack gap="md">
-        <Stack mb="lg" gap="xs">
-          <HelpLabel label="Size" help={sizeHelp} />
-          <TagRuleSizeSlider
-            key={form.key("size")}
-            onChange={(value) => form.setFieldValue("size", value)}
-            value={form.values.size}
-          />
-        </Stack>
-        <TypeField form={form} />
-        <QueryField form={form} />
+        <SizeField
+          form={form}
+          key={form.key("size")}
+          {...form.getInputProps("size")}
+        />
+        <TypeField
+          form={form}
+          key={form.key("type")}
+          {...form.getInputProps("type")}
+        />
+        <ValueField
+          form={form}
+          key={form.key("value")}
+          {...form.getInputProps("value")}
+        />
+        <QueryField
+          form={form}
+          key={form.key("query")}
+          {...form.getInputProps("query")}
+        />
         <Group justify="flex-end" gap={6}>
           <Button variant="light" onClick={onClose}>
             Cancel
@@ -93,27 +111,61 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   );
 };
 
-const TypeField = ({ form }) => (
+const SizeField = ({ error, onChange, defaultValue }) => {
+  const [size, setSize] = useState(defaultValue);
+
+  const sizeMessage = useMemo(() => {
+    return size === undefined
+      ? ""
+      : size[0] === size[1]
+        ? `Applies to parties of size ${size[0]}`
+        : `Applies to parties of size ${size[0]} to ${size[1]}`;
+  }, [size]);
+
+  return (
+    <Stack mb="lg" gap="xs">
+      <Group>
+        <HelpLabel error={error} label="Size" help={sizeHelp} />
+        <Text ta="right" flex="1" size="sm" c="dark">
+          {sizeMessage}
+        </Text>
+      </Group>
+      <TagRuleSizeSlider
+        onChange={(value) => {
+          setSize(value);
+          onChange(value);
+        }}
+        value={defaultValue}
+      />
+      {error && (
+        <Text c="error" size="sm" mt="md">
+          {error}
+        </Text>
+      )}
+    </Stack>
+  );
+};
+
+const TypeField = ({ form, ...props }) => (
   <Select
+    {...props}
     withAsterisk
-    label={<HelpLabel label="Type" help={typeHelp} />}
+    label={<HelpLabel error={props.error} label="Type" help={typeHelp} />}
     placeholder="What type of rule is this?"
     allowDeselect={false}
     description={
       {
-        all: "This rule will apply to all party members",
-        count: "This rule will apply to a numeric range of characters",
+        all: "All party members must satisfy this rule",
+        range: "This rule will apply to a count of characters",
         char: "This rule will apply to a specific character",
       }[form.values.type] ||
       "Type defines what party members the rule applies to"
     }
     data={[
-      { label: "Character", value: "char" },
-      { label: "Range", value: "range" },
-      { label: "All", value: "all" },
+      { label: "Specific Character", value: "char" },
+      { label: "Character Count", value: "range" },
+      { label: "All Characters", value: "all" },
     ]}
-    key={form.key("type")}
-    {...form.getInputProps("type")}
   />
 );
 
@@ -128,7 +180,7 @@ const QueryField = ({ form }) => {
   return (
     <InputWrapper
       description="Add individual or grouped rules with and/or logic"
-      label="Query"
+      label={<HelpLabel help={queryHelp} label="Query" />}
       withAsterisk
     >
       <QueryBuilder
@@ -140,69 +192,59 @@ const QueryField = ({ form }) => {
   );
 };
 
-const ValueField = ({ form }) => {
-  const initialType = form.getValues().type || "tag";
-  const [state, setState] = useState(initialType);
+const ValueField = ({
+  form,
+  error,
+  onChange: propsOnChange,
+  defaultValue,
+  ...rest
+}) => {
+  const { type: initialType } = form.getValues();
+  const [value, setValue] = useState(defaultValue);
+  const [type, setType] = useState(initialType);
 
-  form.watch("type", ({ value: type }) => {
-    setState(type);
-    const defaultValue = {
-      class: "BER",
-      level: 65,
-      name: "",
-      tag: "",
-      warden: "warden",
-    }[type];
-    form.setFieldValue("value", defaultValue);
+  const onChange = useStableCallback((value) => {
+    if (value[0] === "") {
+      value = [undefined, undefined];
+    }
+    setValue(value);
+    propsOnChange?.(value);
   });
 
-  const props = {
-    withAsterisk: true,
-    ...form.getInputProps("value"),
-  };
+  form.watch("type", ({ value: type }) => {
+    setType(type);
+    const defaultValue = {
+      all: "all",
+      range: [1, 1],
+      char: "",
+    }[type];
+    onChange(defaultValue);
+  });
 
-  if (state === "tag") {
+  if (type === "range") {
     return (
-      <TextInput
-        key={form.key("value")}
-        description="Personal or class tag assigned to characters for this rule."
-        label="Tag"
-        {...props}
-      />
+      <InputWrapper
+        label="Count"
+        description="How many characters does this rule target?"
+        error={error}
+        {...form.getInputProps("value.0")}
+        {...form.getInputProps("value.1")}
+      >
+        <ModalRangeInput value={value} onChange={onChange} />
+      </InputWrapper>
     );
-  } else if (state === "class") {
+  }
+  if (type === "char") {
     return (
-      <Select
-        key={form.key("value")}
-        label="Class"
-        description="Class of the characters required by this rule."
-        searchable
-        data={charSchema.shape.class.options}
-        {...props}
-      />
+      <InputWrapper
+        label="Character"
+        description="Which character does this rule target?"
+        error={error}
+        {...form.getInputProps("value")}
+      >
+        <CharSelect mb={3} value={value} onChange={onChange} />
+      </InputWrapper>
     );
-  } else if (state === "level") {
-    return (
-      <NumberInput
-        key={form.key("value")}
-        label="Level"
-        description="Level of the characters required by this rule."
-        max={MightMaxLevel}
-        min={MightMinLevel}
-        {...props}
-      />
-    );
-  } else if (state === "name") {
-    return (
-      <TextInput
-        key={form.key("value")}
-        description="Name of the character this rule requires to be in the group"
-        label="Character Name"
-        {...props}
-      />
-    );
-  } else if (state === "warden") {
-    return null;
   }
 
   return null;

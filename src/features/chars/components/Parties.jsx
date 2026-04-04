@@ -53,6 +53,7 @@ const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
         </Button>
         <Box flex="1"></Box>
         <CharSelect
+          emits="char"
           size="md"
           exclude={exclude}
           onChange={(char) => {

@@ -6,12 +6,13 @@ export const HelpIconTooltip = ({
   size = "xs",
   multiline = true,
   w = 220,
+  ...iconProps
 }) => {
   if (!tooltip) return null;
 
   return (
     <Tooltip withArrow multiline={multiline} w={w} label={tooltip}>
-      <ActionIcon variant="transparent" size={size}>
+      <ActionIcon variant="transparent" size={size} {...iconProps}>
         <IconHelp size="100%" />
       </ActionIcon>
     </Tooltip>

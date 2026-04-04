@@ -67,7 +67,10 @@ const base = z.object({
 });
 
 const variance = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("char"), value: z.nanoid() }),
+  z.object({
+    type: z.literal("char"),
+    value: z.nanoid().min(1, "You must select a character"),
+  }),
   z.object({ type: z.literal("range"), value: rangeSchema }),
   z.object({ type: z.literal("all"), value: z.literal("all") }),
 ]);
