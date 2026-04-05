@@ -15,7 +15,7 @@ export const Routes = () => {
       <Route path="/roster">
         <Roster />
       </Route>
-      <Route path="/instance-calculator">
+      <Route path="/might-range-finder">
         <InstanceCalculator />
       </Route>
       <Route path="/npc-simulator">

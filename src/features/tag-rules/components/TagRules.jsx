@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   IconCopy,
   IconX,
@@ -16,17 +16,15 @@ import {
   Box,
   Divider,
   InputLabel,
-  Paper,
   Group,
-  Grid,
+  Paper,
   Text,
-  Title,
   Tooltip,
   Stack,
-  SimpleGrid,
   Switch,
   SegmentedControl,
 } from "@mantine/core";
+import { getNumberedArray } from "@/utils";
 import { useRoute, Redirect, useLocation } from "wouter";
 import { Aside, HelpIconTooltip, PageTitle } from "@/core/components";
 import {
@@ -35,18 +33,14 @@ import {
   useTagRulesStoreApi as tagRulesApi,
   useConfirmationStore,
 } from "@/core/store";
-import { getNumberedArray } from "@/utils";
-import { lintTagRuleset } from "@/core/schemas";
-
+import { useTagRulesContext } from "../context.js";
+import { TagRulesContextProvider } from "./TagRulesContextProvider.jsx";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
 import { TagRuleModal } from "./TagRuleModal.jsx";
-import { TagRule, getQueryDescription } from "./TagRule.jsx";
+import { TagRule } from "./TagRule.jsx";
 import { TagRulesNav } from "./TagRulesNav.jsx";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
-import { TagRulesetPreview } from "./TagRulesetPreview.jsx";
 import classes from "./TagRules.module.css";
-
-const SIZE_NUMBERS = getNumberedArray(1, 20);
 
 const EditButton = (props) => (
   <ActionIcon aria-label="Edit" size="sm" {...props}>
@@ -60,49 +54,18 @@ const DeleteButton = (props) => (
   </ActionIcon>
 );
 
-const GridRow = ({ left, right, main, ...props }) => {
-  return (
-    <>
-      <Grid.Col pb={0} span={{ base: 12 }} {...props}>
-        {left}
-      </Grid.Col>
-      <Grid.Col span={{ base: 11, lg: 11 }} {...props}>
-        {main}
-      </Grid.Col>
-      <Grid.Col span={{ base: 1, md: 1 }} {...props}>
-        {right}
-      </Grid.Col>
-    </>
-  );
-};
-
-const LintAlert = ({ count, ...props }) => {
-  return (
-    <Alert
-      variant="light"
-      title="Warning: Overlapping Rules"
-      icon={<IconAlertCircle />}
-      {...props}
-    >
-      You have {count} rule(s) which have conflicting sizes. Rules that apply to
-      the same group size must have unique type, value, and warden requirement.
-      When there is a conflict, the rule with the higher size range wins.
-    </Alert>
-  );
-};
-
 const ActiveToggle = ({ api }) => (
   <InputLabel
     display="flex"
     style={{ alignItems: "center", gap: 12, cursor: "pointer" }}
   >
     {api.currentActive && (
-      <Text span c="bright" size="lg" flex="1">
-        This is the active ruleset
+      <Text span c="bright" size="md" flex="1">
+        Active in the party generator
       </Text>
     )}
     {!api.currentActive && (
-      <Text span c="neutral" size="lg" flex="1">
+      <Text span c="neutral" size="md" flex="1">
         Click to activate
       </Text>
     )}
@@ -119,6 +82,42 @@ const ActiveToggle = ({ api }) => (
     />
   </InputLabel>
 );
+
+const RuleSizeFilterButtons = () => {
+  const isTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
+  const { ruleSizeFilter: active, setRuleSizeFilter } = useTagRulesContext();
+
+  useEffect(() => {
+    setRuleSizeFilter();
+  }, []);
+
+  const numbers = useMemo(
+    () => getNumberedArray(isTwenty ? 20 : 12),
+    [isTwenty],
+  );
+
+  const btnProps = (value) => ({
+    size: "compact-sm",
+    variant: active === value ? "filled" : "light",
+    onClick: () => setRuleSizeFilter(value),
+  });
+
+  return (
+    <Stack gap={4}>
+      <Text size="sm" c="dark">
+        Filter by group size to inspect the rules that will be applied
+      </Text>
+      <Group gap={6}>
+        <Button {...btnProps()}>Show All</Button>
+        {numbers.map((n) => (
+          <Button w={36} key={n} {...btnProps(n)}>
+            {n}
+          </Button>
+        ))}
+      </Group>
+    </Stack>
+  );
+};
 
 const ToggleGroupSizeTwenty = () => {
   const isTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
@@ -145,18 +144,23 @@ const ToggleGroupSizeTwenty = () => {
   );
 };
 
-export const TagRules = ({ type = "filters" }) => {
+const TagRulesMain = () => {
   const { getConfirmation } = useConfirmationStore();
   const [_match, { id }] = useRoute("/rulesets/:id?");
-  const [ruleset = {}, _setRuleset, api] = useTagRulesManager(type, id);
+  const [ruleset = {}, _setRuleset, api] = useTagRulesManager("filters", id);
   const [draftRuleset, setDraftRuleset] = useState(null);
   const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
   const [newRule, setNewRule] = useState(null);
   const [_location, setLocation] = useLocation();
+  const { ruleSizeFilter: activeSize } = useTagRulesContext();
 
-  const lintResult = useMemo(() => {
-    return lintTagRuleset(ruleset);
-  }, [ruleset]);
+  const activeRules = useMemo(() => {
+    return ruleset.rules.filter(
+      (rule) =>
+        activeSize === undefined ||
+        (rule.size[0] <= activeSize && rule.size[1] >= activeSize),
+    );
+  }, [ruleset.rules, activeSize]);
 
   const flashRuleRow = (rule) => {
     setNewRule(rule);
@@ -183,7 +187,7 @@ export const TagRules = ({ type = "filters" }) => {
     },
   );
 
-  const buttonsSize = "sm";
+  const buttonsSize = "compact-sm";
   const buttons = (
     <Group gap="xs">
       <Button
@@ -297,7 +301,7 @@ export const TagRules = ({ type = "filters" }) => {
           <Button
             size="sm"
             leftSection={<IconPlus size={18} />}
-            onClick={() => setDraftRuleset({ type })}
+            onClick={() => setDraftRuleset({ type: "filters" })}
             fullWidth
           >
             Create New Ruleset
@@ -306,68 +310,65 @@ export const TagRules = ({ type = "filters" }) => {
         </Stack>
       </Aside>
 
-      <Grid gutter="lg" align="stretch" my="lg">
-        <GridRow
-          display={{ base: "none", md: "block" }}
-          right={
-            <Box ta="right">
-              <Tooltip
-                openDelay={500}
-                multiline
-                w={220}
-                label="Re-sort rules by ascending group size. This is for visual aid only and has no effect on behavior."
-              >
-                <ActionIcon
-                  aria-label="Resort rules by ascending size"
-                  size="md"
-                  disabled={api.currentSorted}
-                  onClick={() => {
-                    api.sortCurrent();
-                  }}
-                >
-                  <IconSortAscendingNumbers />
-                </ActionIcon>
-              </Tooltip>
-            </Box>
-          }
-          style={{
-            borderBottom: "1px dashed var(--mantine-color-default-border)",
-            marginTop: 12,
-            marginBottom: 12,
-          }}
-        />
-        {!ruleset.rules.length && (
-          <Grid.Col span={12} ta="center" p="3xl">
+      <Stack my="lg">
+        <Group align="flex-end">
+          <Box flex="1">
+            <RuleSizeFilterButtons />
+          </Box>
+          <Tooltip
+            openDelay={500}
+            multiline
+            w={220}
+            label="Re-sort rules by ascending group size. This is for visual aid only and has no effect on behavior."
+          >
+            <ActionIcon
+              aria-label="Resort rules by ascending size"
+              size="md"
+              disabled={api.currentSorted}
+              onClick={() => {
+                api.sortCurrent();
+              }}
+            >
+              <IconSortAscendingNumbers />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+
+        <Divider />
+
+        {!activeRules.length && (
+          <Box p="2xl" ta="center">
             <Text size="lg" mb="md" c="gold">
-              You have no rules defined in this ruleset.
+              {activeSize === undefined ? (
+                "You have no rules defined in this ruleset."
+              ) : (
+                <>
+                  You have no rules defined for a group of size {activeSize}.
+                  <br />
+                  You can adjust your sliders to cover this size, or create a
+                  new rule.
+                </>
+              )}
             </Text>
             <Button size="md" onClick={() => setDraftTagRuleProps({})}>
               Add a rule now?
             </Button>
-          </Grid.Col>
+          </Box>
         )}
-        {ruleset.rules.map((rule) => (
-          <GridRow
-            key={rule.id}
-            className={newRule?.id === rule.id ? classes.highlightRow : ""}
-            left={
-              <TagRule
-                rule={rule}
-                conflicts={lintResult.errors[rule.id]}
-                onClick={(rule) => setDraftTagRuleProps({ rule })}
-              />
-            }
-            main={
-              <TagRuleSizeSlider
-                value={rule.size}
-                mb={20}
-                onChange={(size) => {
-                  api.addCurrentRule({ ...rule, size });
-                }}
-              />
-            }
-            right={
-              <Group gap={4} justify="flex-end">
+
+        {activeRules.map((rule) => (
+          <Paper bdrs="sm" shadow="md" variant="dark" p={8} key={rule.id}>
+            <Stack
+              key={rule.id}
+              className={newRule?.id === rule.id ? classes.highlightRow : ""}
+              gap={8}
+            >
+              <Group gap={4} align="flex-start">
+                <TagRule
+                  rule={rule}
+                  flex="1"
+                  onClick={(rule) => setDraftTagRuleProps({ rule })}
+                />
                 <EditButton
                   size="md"
                   onClick={() => setDraftTagRuleProps({ rule })}
@@ -379,41 +380,20 @@ export const TagRules = ({ type = "filters" }) => {
                   })}
                 />
               </Group>
-            }
-          />
-        ))}
-        {!lintResult.ok && (
-          <GridRow
-            main={<LintAlert count={Object.keys(lintResult.errors).length} />}
-          />
-        )}
-      </Grid>
-
-      <Divider my="lg" />
-
-      <Title order={4} size="h4" my="lg">
-        Rule summaries by size
-      </Title>
-
-      <SimpleGrid cols={4} spacing="lg" mb={72}>
-        {SIZE_NUMBERS.map((size) => (
-          <Paper
-            key={size}
-            display="flex"
-            py="xl"
-            px="md"
-            style={{ alignItems: "flex-start" }}
-          >
-            <Text size="4xl" pr="sm" c="gold" mt={6}>
-              {size}
-            </Text>
-            <Box>
-              <Text size="md">A party of {size} needs:</Text>
-              <TagRulesetPreview.RulesList key={size} rules={[]} />
-            </Box>
+              <TagRuleSizeSlider
+                flex="1"
+                value={rule.size}
+                mb={20}
+                onChange={(size) => {
+                  api.addCurrentRule({ ...rule, size });
+                }}
+              />
+            </Stack>
           </Paper>
         ))}
-      </SimpleGrid>
+      </Stack>
+
+      <Divider my="lg" />
 
       {draftRuleset && (
         <TagRulesNameModal
@@ -449,3 +429,9 @@ export const TagRules = ({ type = "filters" }) => {
     </Box>
   );
 };
+
+export const TagRules = () => (
+  <TagRulesContextProvider>
+    <TagRulesMain />
+  </TagRulesContextProvider>
+);

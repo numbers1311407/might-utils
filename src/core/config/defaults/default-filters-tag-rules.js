@@ -1,13 +1,13 @@
 const tagRule = (tag) => ({
   combinator: "and",
   not: false,
-  rules: [{ field: "tags", operator: "has", value: tag }],
+  rules: [{ field: "tags", operator: "contains", value: tag }],
 });
 
 export const defaultFiltersTagRules = {
-  name: "Default",
+  name: "Standard Rules",
   type: "filters",
-  id: "default-filters",
+  id: "standard-rules",
   rules: [
     { size: [2, 8], type: "range", query: tagRule("tank"), value: [1, 1] },
     { size: [2, 6], type: "range", query: tagRule("healer"), value: [1, 1] },

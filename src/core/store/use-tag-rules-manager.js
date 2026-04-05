@@ -11,11 +11,8 @@ const defaultIds = Object.values(defaultIdMap).flat();
 
 export const useTagRulesManager = (type, initialId) => {
   const active = useTagRulesStore((store) => store.active[type] || []);
-  const firstActiveId = active[0];
   const defaultId = defaultIdMap[type]?.[0];
-  const [currentId, setCurrentId] = useDraftState(
-    initialId || firstActiveId || defaultId,
-  );
+  const [currentId, setCurrentId] = useDraftState(initialId || defaultId);
   const current = useTagRulesStore((store) => store.sets[currentId]);
   const currentDefaultDirty = useTagRulesStore((store) =>
     store.dirtyDefaults.includes(currentId),

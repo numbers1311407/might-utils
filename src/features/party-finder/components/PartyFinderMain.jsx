@@ -8,7 +8,7 @@ export const PartyFinderMain = () => {
   return (
     <Box>
       <PageTitle
-        section="Planning & Calc"
+        section="Planning & Data"
         title="Party Generator"
         subtitle="Add your roster and group preferences, plug in your target might, and generate your party!"
       />

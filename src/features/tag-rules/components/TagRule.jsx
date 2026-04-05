@@ -1,47 +1,57 @@
 import { forwardRef } from "react";
-import {
-  Badge,
-  Box,
-  Group,
-  Text,
-  Tooltip,
-  UnstyledButton,
-} from "@mantine/core";
+import { Badge, Kbd, Group, Text, Tooltip } from "@mantine/core";
 import { formatQuery } from "react-querybuilder";
-import { ClassIcon } from "@/core/components";
-import { useStableCallback } from "@/core/hooks";
 import { formatSortedNumbers } from "@/utils";
-import { useRosterChar } from "@/core/store";
 
-const TagRuleContentAll = ({ rule, ...props }) => {
-  return <Text {...props}>Everyone must pass</Text>;
-};
-const TagRuleContentChar = ({ rule, ...props }) => {
-  const char = useRosterChar(rule.value);
-  return (
-    <Group gap={8}>
-      <ClassIcon {...props} size={32} cls={char.class} />
-      <Text>{char.name} must pass</Text>
+const TagRuleContentAll = ({ rule, ...props }) => (
+  <Tooltip
+    withArrow
+    multiline
+    w={180}
+    label="All characters in group must satisfy this rule"
+  >
+    <Group gap={8} {...props}>
+      <Kbd size="lg">All</Kbd>
     </Group>
-  );
-};
-const TagRuleContentRange = ({ rule, ...props }) => {
-  const [min, max] = rule.value;
-  const ruleText =
-    max === undefined
-      ? `At least ${min}`
-      : min === 0
-        ? `At most ${max}`
-        : min === max
-          ? `Exactly ${min}`
-          : `${min} to ${max}`;
+  </Tooltip>
+);
 
-  return <Text {...props}>{ruleText} must pass</Text>;
+const getRangeRuleText = (min, max) => {
+  return max === undefined
+    ? `>= ${min}`
+    : min === 0
+      ? `<= ${max}`
+      : min === max
+        ? `= ${min}`
+        : `${min} - ${max}`;
 };
+
+const getRangeRuleTooltip = (min, max) => {
+  const s = (val) => (val !== 1 ? "s" : "");
+  return max === undefined
+    ? `At least ${min} character${s(min)} must satisfy this rule`
+    : min === 0
+      ? `At most ${max} character${s(min)} must satisfy this rule`
+      : min === max
+        ? `Exactly ${min} character${s(min)} must satisfy this rule`
+        : `Beteen ${min} and ${max} characters must satisfy this rule`;
+};
+
+const TagRuleContentRange = ({ rule, ...props }) => (
+  <Tooltip
+    withArrow
+    multiline
+    w={180}
+    label={getRangeRuleTooltip(...rule.value)}
+  >
+    <Group gap={8} {...props}>
+      <Kbd size="lg">{getRangeRuleText(...rule.value)}</Kbd>
+    </Group>
+  </Tooltip>
+);
 
 const comps = {
   all: TagRuleContentAll,
-  char: TagRuleContentChar,
   range: TagRuleContentRange,
 };
 
@@ -69,18 +79,29 @@ const ConflictedAlert = ({ conflicts }) => {
 
 export const getQueryDescription = (query) => {
   const value = formatQuery(query, {
-    format: "SQL",
-    fields: true,
+    format: "natural_language",
+    translations: {
+      groupSuffix: "",
+      groupSuffix_not: "",
+    },
+    fields: [{ value: "warden", label: "warden rank" }],
+    parseNumbers: true,
+    operatorMap: {
+      ">=": "is at least",
+      "<=": "is at most",
+    },
   });
-  return value === "(1 = 1)" ? "No rules are applied" : value;
+  return value === "1 is 1"
+    ? "No rules are applied (might want to check your query)"
+    : `Character ${value}`;
 };
 
 export const TagRule = ({ conflicts, rule, ...props }) => {
   return (
-    <Group {...props} gap={8}>
+    <Group {...props} gap={8} align="center">
       <ConflictedAlert conflicts={conflicts} />
-      <TagRuleContent rule={rule} />:
-      <Text>{getQueryDescription(rule.query)}</Text>
+      <TagRuleContent rule={rule} />
+      <Text size="md">{getQueryDescription(rule.query)}</Text>
     </Group>
   );
 };

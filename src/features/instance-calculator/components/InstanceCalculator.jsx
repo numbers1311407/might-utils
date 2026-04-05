@@ -21,7 +21,7 @@ export const NpcSimulator = ({ children }) => {
   return (
     <Stack>
       <PageTitle
-        section="Planning & Calc"
+        section="Planning & Data"
         title="Instance NPC Simulator"
         subtitle="Know what Suki has to say before you're in hail distance"
       />
@@ -66,8 +66,8 @@ export const MightRangeCalculator = ({ children }) => {
   return (
     <Stack>
       <PageTitle
-        section="Planning & Calc"
-        title="Might Range Calculator"
+        section="Planning & Data"
+        title="Might Range Finder"
         subtitle="Look up might ranges by tier and desired difficulty"
       />
       {children}

@@ -1,24 +1,19 @@
 import * as tags from "@/core/tags";
-// TODO the logic around warden should just live in warden.js
 import {
   Warden,
   MightScoreByLevel,
   MightMaxLevel,
   MightMinLevel,
 } from "@/core/config";
-import { charClassSchema } from "@/core/schemas";
-import { getNumberedArray } from "@/utils";
+import { createPartyValidator } from "@/core/finder-rules";
+import { log } from "@/utils";
 
 const MAX_RECURSIONS = 5_000_000;
 
 const groupingTags = {
-  level: getNumberedArray(MightMinLevel, MightMaxLevel).map((level) =>
-    tags.t(level, { type: "level" }),
-  ),
-  class: charClassSchema.options.map((cls) => tags.t(cls, { type: "class" })),
-  warden: ["0", "1", "2", "3", "1+"].map((warden) =>
-    tags.t("", { type: "warden", warden }),
-  ),
+  level: tags.levelTags,
+  class: tags.classTags,
+  warden: tags.wardenTags,
 };
 
 export const defaultOptions = {
@@ -28,7 +23,6 @@ export const defaultOptions = {
   minSize: 6,
   maxSize: 12,
   margin: 0,
-  checkTags: true,
   distinctTagGroups: false,
 };
 
@@ -40,7 +34,6 @@ export const findParties = (roster, targetScore, options = {}) => {
     maxLevel,
     minLevel,
     rules = [],
-    checkTags,
     ...restOptions
   } = {
     ...defaultOptions,
@@ -170,14 +163,18 @@ export const findParties = (roster, targetScore, options = {}) => {
       return {
         ...slot,
         idx,
-        tags: tags.generateCharacterTags(slot, {
-          warden: slot.warden,
-          tagGroups: derivedTagGroups,
-        }),
+        tags: slot.tags.concat(
+          derivedTagGroups
+            ? // TODO this tagging is broken!
+              tags.getGroupTag(derivedTagGroups, slot, slot.tags)
+            : [],
+        ),
       };
     })
     // NOTE it's critical to note the pool is sorted by ascending score
     .sort((a, b) => a.score - b.score);
+
+  const validator = createPartyValidator(rules, pool);
 
   if (!pool.length) {
     throw new Error("no eligible roster members found");
@@ -199,10 +196,16 @@ export const findParties = (roster, targetScore, options = {}) => {
   };
 
   const generateTagCounts = (idxs) =>
-    tags.generateTagCounts(idxs.map((idx) => pool[idx]));
+    tags.generateTagCounts(Array.from(idxs).map((idx) => pool[idx]));
 
-  const rulesByPartySize = tags.prepareTagRules(rules);
+  // NOTE this is the parties array in the response
   const parties = [];
+
+  // individual responsese don't repeat data, they return arrays containing indexes of
+  // the pool array
+  const partyPoolIdxs = new Set();
+  // the party ids need to be tracked during recursion as well to skip repeat slots for
+  // roster chars already in the party
   const partyIds = new Set();
 
   // Optimization helper that adds up the highest score slots remaining to test
@@ -212,7 +215,7 @@ export const findParties = (roster, targetScore, options = {}) => {
     // start at the end as it's presorted by score
     for (let i = pool.length - 1; i >= startIndex; i--) {
       // skip out slots for chars already in the party
-      if (partyIds.has(pool[i].id)) continue;
+      if (partyPoolIdxs.has(pool[i].idx)) continue;
       // and add up the rest for count of slots left
       score += pool[i].score;
       if (--slotsLeft === 0) break;
@@ -222,33 +225,28 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   let recursionCount = 0;
 
-  const recurse = (remainingScore, partyIdxs, startIndex) => {
+  const recurse = (remainingScore, partyPoolIdxs, startIndex) => {
     if (recursionCount++ >= MAX_RECURSIONS) {
       throw new Error("max recursions reached, try increasing specificity");
     }
 
     // member remaining even adds up to the desired score.
-    const partySize = partyIdxs.length;
+    const partySize = partyPoolIdxs.size;
 
     if (remainingScore >= 0 && remainingScore <= margin) {
       // and the party size is not too short or too long
       if (partySize >= minSize && partySize <= maxSize) {
-        const tagCounts = generateTagCounts(partyIdxs);
-        const rules = rulesByPartySize[partySize];
-
         // and the parties is valid re: tags
-        if (
-          rules &&
-          checkTags &&
-          !tags.validateTagCounts(tagCounts, rules, partySize)
-        ) {
+        if (!validator.test(partyPoolIdxs)) {
           return;
         }
 
         const newParty = {
-          party: sortParty(new Uint8Array(partyIdxs)),
+          party: sortParty(new Uint8Array(partyPoolIdxs)),
           score: targetScore - remainingScore,
         };
+
+        const tagCounts = generateTagCounts(partyPoolIdxs);
 
         if (useTagGroups) {
           newParty.group = tags.getTagGroupKey(tagCounts);
@@ -284,14 +282,14 @@ export const findParties = (roster, targetScore, options = {}) => {
       }
 
       partyIds.add(slot.id);
-      partyIdxs.push(slot.idx);
-      recurse(remainingScore - slot.score, partyIdxs, i + 1);
-      partyIdxs.pop();
+      partyPoolIdxs.add(slot.idx);
+      recurse(remainingScore - slot.score, partyPoolIdxs, i + 1);
+      partyPoolIdxs.delete(slot.idx);
       partyIds.delete(slot.id);
     }
   };
 
-  recurse(targetScore, [], 0);
+  recurse(targetScore, partyPoolIdxs, 0);
 
   // TODO possibly figure out flattening of response after we figure out tags, i.e.
   //
@@ -309,7 +307,6 @@ export const findParties = (roster, targetScore, options = {}) => {
     params: { roster, targetScore, options },
     pool,
     recursionCount,
-    rules: rulesByPartySize,
     size: parties.length,
     grouped: useTagGroups,
   };

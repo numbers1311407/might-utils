@@ -13,17 +13,11 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useState } from "react";
 
 import { useStableCallback } from "@/core/hooks";
-import { CharSelect } from "@/core/components/chars";
 import { HelpLabel } from "@/core/components/common/HelpLabel";
 import { tagRuleSchema } from "@/core/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
 import { ModalRangeInput } from "./ModalRangeInput.jsx";
-
-const typeHelp =
-  "Rules work by counting character tags or attributes like level & class, and requiring that the " +
-  "count falls within the defined range to qualify the party as valid. For a name type rule, the " +
-  "range is always 1.";
 
 const sizeHelp =
   "The size range defines each group size for which this rule applies. Each size can only have one " +
@@ -33,8 +27,8 @@ const sizeHelp =
 const queryHelp =
   "Click +Rule to add a rule and begin. If the UI is unclear, consider the top level to be Group 1, " +
   "and each Group a wrapped set of Rules in parentheses, nesting further as you add more groups; Any " +
-  "is essenitally OR for a group, while All is AND. E.g. a rule might be (\"tags includes 'tank' AND " +
-  '(level >= 68 OR (level >= 66 AND warden > 1)))"';
+  "is like OR for a group, while All is AND. E.g. a rule might be (\"tags includes 'tank' AND " +
+  '(level >= 68 OR (level >= 66 AND warden >= 1)))"';
 
 export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
@@ -150,19 +144,11 @@ const TypeField = ({ form, ...props }) => (
   <Select
     {...props}
     withAsterisk
-    label={<HelpLabel error={props.error} label="Type" help={typeHelp} />}
-    placeholder="What type of rule is this?"
+    label="Applies To"
     allowDeselect={false}
-    description={
-      {
-        all: "All party members must satisfy this rule",
-        range: "This rule will apply to a count of characters",
-        char: "This rule will apply to a specific character",
-      }[form.values.type] ||
-      "Type defines what party members the rule applies to"
-    }
+    placeholder="Select type"
+    description="Rules may apply to the whole party or specific characters"
     data={[
-      { label: "Specific Character", value: "char" },
       { label: "Character Count", value: "range" },
       { label: "All Characters", value: "all" },
     ]}
@@ -179,7 +165,7 @@ const QueryField = ({ form }) => {
 
   return (
     <InputWrapper
-      description="Add individual or grouped rules with and/or logic"
+      description="Combine rules with and/or logic to create your generator rule query"
       label={<HelpLabel help={queryHelp} label="Query" />}
       withAsterisk
     >
@@ -216,7 +202,6 @@ const ValueField = ({
     const defaultValue = {
       all: "all",
       range: [1, 1],
-      char: "",
     }[type];
     onChange(defaultValue);
   });
@@ -225,24 +210,13 @@ const ValueField = ({
     return (
       <InputWrapper
         label="Count"
-        description="How many characters does this rule target?"
+        description="How many characters should satisfy this rule?"
+        withAsterisk
         error={error}
         {...form.getInputProps("value.0")}
         {...form.getInputProps("value.1")}
       >
         <ModalRangeInput value={value} onChange={onChange} />
-      </InputWrapper>
-    );
-  }
-  if (type === "char") {
-    return (
-      <InputWrapper
-        label="Character"
-        description="Which character does this rule target?"
-        error={error}
-        {...form.getInputProps("value")}
-      >
-        <CharSelect mb={3} value={value} onChange={onChange} />
       </InputWrapper>
     );
   }

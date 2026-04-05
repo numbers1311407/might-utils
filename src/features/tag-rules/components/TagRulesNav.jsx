@@ -29,7 +29,11 @@ export const TagRulesNav = ({ current, children, ...props }) => {
                   style={{ visibility: active ? "visible" : "hidden" }}
                   display="flex"
                 >
-                  <Tooltip label="The active ruleset">
+                  <Tooltip
+                    multiline
+                    w={180}
+                    label="This ruleset is active in the party generator"
+                  >
                     <IconStarFilled size={20} />
                   </Tooltip>
                 </Box>

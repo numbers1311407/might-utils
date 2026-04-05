@@ -1,31 +1,6 @@
 import { nanoid } from "nanoid";
 import * as z from "zod";
 
-const WARDEN_ANY_OPTION = "Any";
-
-export const abbreviateTagRuleType = (type) => {
-  return (
-    {
-      name: "NAM",
-      type: "TYP",
-      level: "LVL",
-      class: "CLS",
-      tag: "TAG",
-      warden: "WRD",
-    }[type] || type
-  );
-};
-
-export const parseTagRuleWarden = (warden) =>
-  ({
-    [WARDEN_ANY_OPTION]: "",
-    0: 0,
-    1: 1,
-    "1+": true,
-    2: 2,
-    3: 3,
-  })[warden] ?? "";
-
 const sizeBound = z.number().min(1).max(20);
 
 const sizeSchema = z
@@ -51,6 +26,10 @@ const rangeSchema = z
 
 const defaultRules = [];
 const defaultQuery = { combinator: "and", rules: defaultRules };
+const types = Object.freeze({
+  RANGE: "range",
+  ALL: "all",
+});
 
 const base = z.object({
   id: z.nanoid().default(() => nanoid()),
@@ -66,12 +45,9 @@ const base = z.object({
 });
 
 const variance = z.discriminatedUnion("type", [
-  z.object({
-    type: z.literal("char"),
-    value: z.nanoid().min(1, "You must select a character"),
-  }),
-  z.object({ type: z.literal("range"), value: rangeSchema }),
-  z.object({ type: z.literal("all"), value: z.literal("all") }),
+  z.object({ type: z.literal(types.RANGE), value: rangeSchema }),
+  z.object({ type: z.literal(types.ALL), value: z.literal(types.ALL) }),
 ]);
 
 export const tagRuleSchema = base.and(variance);
+export const TagRuleTypes = types;

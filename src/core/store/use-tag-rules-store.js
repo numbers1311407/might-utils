@@ -3,6 +3,11 @@ import { defaultFiltersTagRules } from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
 import { createStore } from "./helpers";
 
+const TYPES = {
+  Unique: "unique",
+  Multi: "multi",
+};
+
 const findRuleIndex = (rules, { id }) => {
   return rules.findIndex((r) => r.id === id);
 };
@@ -14,7 +19,7 @@ const addUniquely = (array, value) => {
 const defaultFilters = tagRulesetSchema.parse(defaultFiltersTagRules);
 
 const defaultTypeStorage = {
-  filters: "unique",
+  filters: TYPES.Multi,
 };
 const defaultsMap = {
   filters: [defaultFilters],
@@ -81,7 +86,7 @@ export const api = {
       if (type in defaultTypeStorage) {
         const storage = defaultTypeStorage[type];
 
-        if (storage === "unique") {
+        if (storage === TYPES.Unique) {
           state.active[type] = [ruleset.id];
         } else {
           state.active[type] = addUniquely(state.active[type], ruleset.id);

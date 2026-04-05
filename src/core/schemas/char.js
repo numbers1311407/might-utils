@@ -3,30 +3,11 @@ import { nanoid } from "nanoid";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
 import { capitalize } from "@/utils";
 import { tagSchema } from "./tag.js";
+import { CLASS_SHORTNAMES } from "@/core/config";
 
-export const charClassSchema = z.enum(
-  [
-    "BER",
-    "BRD",
-    "BST",
-    "CLR",
-    "DRU",
-    "ENC",
-    "MAG",
-    "MNK",
-    "NEC",
-    "PAL",
-    "RNG",
-    "ROG",
-    "SHD",
-    "SHM",
-    "WAR",
-    "WIZ",
-  ],
-  {
-    message: 'Expected a 3-letter class abbreviation, e.g. "WAR"',
-  },
-);
+export const charClassSchema = z.enum(CLASS_SHORTNAMES, {
+  message: 'Expected a 3-letter class shortname, e.g. "WAR"',
+});
 
 export const charNameSchema = z
   .string()

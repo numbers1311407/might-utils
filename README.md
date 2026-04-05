@@ -4,16 +4,28 @@ Going through a bit of a pivot, updating soon.
 
 ### Todos
 
-- rethink the party finder result format and memory usage during recursion. There are a relatively
+- (this is wip, halfway there) rethink the party finder result format and memory usage during recursion. There are a relatively
   small set of roster characters in memory which could just be referencded by sorted arrays of ids,
   instead of copying them many thousands of times.
   
-- tag rules
-  - validate empty rules in tag rule modal (everying else we let them do and warn later)
-  - show human rule summary in tag rule modal
-  - add numbers across the top to show only rules that are for a specific size, or [show all]
+- the saved parties UI is the roster variations UI, it's literally already built, just needs finishing up
+- the alternate roster db is literally already saved parties, we just need to add a join field to the parties. a roster is literally different party type.
+- bigger increment buttons for the might inputs +100/-100, etc
+- a toggle on the range finder to show "and up" from the dificulty to show the full range.
+- show matching saved parties for ranges in might finder
+- the chat links to the generator through a popover that also shows that might range
+
+- interlinking
+  - the might party finder links
+  - - might ranges to the generator
+    - might ranges to matched saved parties
+- - the npc gen links
+    - to the generator with the current might
+    - to the generator through popover links in the chat that show might, or perhaps separate links that could come up to the right, showing the might ranges wthout hovering
+    
 - search
   - fix search
+  - use draggable window for roster editor
   - improve search error messaging and add early errors for bad rules
   - this of course means finally catching errors thrown out of the finder
   - add roster swap dropdown
@@ -31,10 +43,7 @@ Going through a bit of a pivot, updating soon.
       team might.
   - figure out a nice ui for might score
 - roster
-  - need to fix the store to allow for more than one, probably easiest to just add another store.
-  - add a sub-form on the roster form for alternate rosters and complete that ui
-  - I expect this will be very similar to how parties are now. they almost use the same UI already,
-    so it'll just be a matter of reclaiming that right real estate for the side nav
+  - relocate the parties UI to be roster variations
 - might range calculator needs some slight UI work to offer links to the main search
 - help modals, probably last task as I want some screenshots
   

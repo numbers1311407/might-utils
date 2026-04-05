@@ -110,7 +110,7 @@ export const isCloneable = (val) => {
   }
 };
 
-export const initDict = (keys, value) => {
+export const initDict = (keys, value, keyFn) => {
   const isFn = typeof value === "function";
 
   if (!isFn && !isPrimitive(value) && !isCloneable(value)) {
@@ -120,6 +120,7 @@ export const initDict = (keys, value) => {
   }
 
   const dict = {};
+  const getKey = typeof keyFn === "function" ? keyFn : (key) => key;
   const getValue = isFn
     ? value
     : typeof value === "object" && value !== null
@@ -127,7 +128,7 @@ export const initDict = (keys, value) => {
       : () => value;
 
   keys.forEach((key, i) => {
-    dict[key] = getValue(key, i);
+    dict[getKey(key)] = getValue(key, i);
   });
 
   return dict;

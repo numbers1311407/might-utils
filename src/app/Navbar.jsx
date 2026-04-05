@@ -29,11 +29,11 @@ export const Navbar = (props) => {
     <Stack gap={0} {...props}>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" pt={0} c="gold">
-          Planning & Calc
+          Planning & Data
         </Text>
         <NavbarLink label="Party Generator" href="/" />
-        <NavbarLink label="Instance NPC Sim" href="/npc-simulator" />
-        <NavbarLink label="Might Range Calc" href="/instance-calculator" />
+        <NavbarLink label="Instance NPC Simulator" href="/npc-simulator" />
+        <NavbarLink label="Might Range Finder" href="/might-range-finder" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" c="gold">
@@ -46,7 +46,7 @@ export const Navbar = (props) => {
         <Text fw="bold" size="md" p="xs" c="gold">
           Configuration
         </Text>
-        <NavbarLink label="Generator Rulesets" href="/rulesets" />
+        <NavbarLink label="Generator Rules" href="/rulesets" />
         <NavbarLink label="Generator Result Groups" href="/tag-groups" />
         <NavbarLink label="Generator Class Tags" href="/class-tags" />
       </Stack>
