@@ -1,3 +1,3 @@
 export * from "./ActiveTagFiltersSelect.jsx";
-export * from "./TagRulesetSelect.jsx";
+export * from "./tag-ruleset-select";
 export * from "./TagsInput.jsx";

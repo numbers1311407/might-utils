@@ -1,10 +1,10 @@
-import { Anchor, Box, Button, Group, Title, Text } from "@mantine/core";
+import { Box, Button, Text } from "@mantine/core";
 import { useState } from "react";
 import {
   useConfirmationStore,
-  useRoster,
   useRosterStoreApi as rosterApi,
 } from "@/core/store";
+import { useRoster } from "@/core/hooks";
 import {
   CharsTable,
   CharsAside,
@@ -13,7 +13,7 @@ import {
 } from "@/core/components";
 
 export const Roster = () => {
-  const { roster } = useRoster();
+  const roster = useRoster();
   const { getConfirmation } = useConfirmationStore();
   const [char, setChar] = useState(null);
 

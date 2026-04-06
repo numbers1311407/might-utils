@@ -1,15 +1,11 @@
 import { useMemo } from "react";
-import {
-  useRosterStore,
-  useClassTagsStore,
-  useTagRulesActiveFilters,
-  useTagGroupsStoreApi as tgapi,
-} from "@/core/store";
+import { useTagGroupsStoreApi as tgapi } from "@/core/store";
+import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
 import { findPartiesAsync } from "../find-parties";
 import { usePartyFinderStore } from "../store.js";
 import { PartyFinderContext } from "../context.js";
 
-const groupTagsOptions = {
+const groupByOptions = {
   none: undefined,
   level: "level",
   class: "class",
@@ -17,19 +13,16 @@ const groupTagsOptions = {
   tag: (id) => tgapi.get(id)?.tags,
 };
 
-const getGroupTagsOption = (groupBy) => {
+const getGroupByParam = (groupBy) => {
   const [group, ...groupArgs] = groupBy?.split(":") || ["none"];
-
-  return typeof groupTagsOptions[group] === "function"
-    ? groupTagsOptions[group](...groupArgs)
-    : groupTagsOptions[group];
+  const option = groupByOptions[group];
+  return typeof option === "function" ? option(...groupArgs) : option;
 };
 
 export const PartyFinderContextProvider = ({ children }) => {
   const finderOptions = usePartyFinderStore((store) => store.options);
-  const classTags = useClassTagsStore((store) => store.tags);
   const activeRuleSet = useTagRulesActiveFilters();
-  const roster = useRosterStore((store) => store.roster);
+  const roster = useRoster({ classTags: true });
   const rules = activeRuleSet?.rules;
 
   const [targetScore, options] = useMemo(() => {
@@ -39,12 +32,11 @@ export const PartyFinderContextProvider = ({ children }) => {
       targetScore,
       {
         ...restOptions,
-        tagGroups: getGroupTagsOption(groupBy),
+        groupBy: getGroupByParam(groupBy),
         rules,
-        classTags,
       },
     ];
-  }, [classTags, finderOptions, rules]);
+  }, [finderOptions, rules]);
 
   const resultsPromise = useMemo(
     () => findPartiesAsync(roster, targetScore, options),

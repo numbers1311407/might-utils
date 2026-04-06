@@ -1,4 +1,4 @@
-import { TagRulesetSelect } from "./TagRulesetSelect.jsx";
+import { TagRulesetSelect } from "./tag-ruleset-select";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
 
 export const ActiveTagFiltersSelect = (props) => {

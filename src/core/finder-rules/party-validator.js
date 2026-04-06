@@ -7,15 +7,9 @@ for (const [op, func] of Object.entries(jsonLogicAdditionalOperators)) {
   add_operation(op, func);
 }
 
-let i = 0;
-const o = [];
-
 const applyRule = (rule, char) => {
   const query = formatQuery(rule.query, "jsonlogic");
-  const result = jsonLogicApply(query, char);
-  o.push({ rule, char, result });
-  // if (i++ === 28) throw o;
-  return result;
+  return jsonLogicApply(query, char);
 };
 
 export const createPartyValidator = (rules, pool) => {
@@ -51,16 +45,21 @@ export const createPartyValidator = (rules, pool) => {
     test: (partyIdxs) => {
       // get the ruleset for this party size.
       const appliedRules = rulesBySize.get(partyIdxs.size);
+
       // if no rules for this party size, pass
       if (!appliedRules) return true;
+
       // otherwise every rule must pass
       return appliedRules.every((rule) => {
         // get size of intersection between pool indexes of the party, and
         // those of slots that passed this rule
         const validIdxs = validIdxsByRule.get(rule.id);
         const validCount = validIdxs.intersection(partyIdxs).size;
+
         // the ALL type means every slot in the party must pass
-        if (rule.type === TagRuleTypes.ALL) return validIdxs === validCount;
+        if (rule.type === TagRuleTypes.ALL)
+          return partyIdxs.size === validCount;
+
         // the other type is RANGE, which is stored in value as min and
         // optional max required passes, test that
         const [min, max] = rule.value;

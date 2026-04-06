@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef } from "react";
 import { Select, Group, Stack, Text } from "@mantine/core";
-import { useRoster } from "@/core/store";
+import { useRoster } from "@/core/hooks";
 import { ClassIcon } from "@/core/components";
 import { getClassName } from "@/core/chars";
 
@@ -29,7 +29,7 @@ export const CharSelect = ({
   onChange,
   ...props
 }) => {
-  const { roster } = useRoster();
+  const roster = useRoster();
   const [search, setSearch] = useState("");
   const ref = useRef();
 

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconCopy,
   IconX,
-  IconAlertCircle,
   IconRestore,
   IconSortAscendingNumbers,
   IconPlus,
@@ -11,7 +10,6 @@ import {
 } from "@tabler/icons-react";
 import {
   ActionIcon,
-  Alert,
   Button,
   Box,
   Divider,
@@ -28,11 +26,11 @@ import { getNumberedArray } from "@/utils";
 import { useRoute, Redirect, useLocation } from "wouter";
 import { Aside, HelpIconTooltip, PageTitle } from "@/core/components";
 import {
-  useTagRulesManager,
   useTagRulesStore,
   useTagRulesStoreApi as tagRulesApi,
   useConfirmationStore,
 } from "@/core/store";
+import { useTagRulesManager } from "@/core/hooks";
 import { useTagRulesContext } from "../context.js";
 import { TagRulesContextProvider } from "./TagRulesContextProvider.jsx";
 import { TagRulesNameModal } from "./TagRulesNameModal.jsx";

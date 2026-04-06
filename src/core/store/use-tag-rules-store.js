@@ -56,7 +56,7 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
 }));
 
 const { getState: get, setState: set } = useTagRulesStore;
-export const api = {
+const api = {
   nameAvailable: (name, record) => {
     if (typeof name === "object") {
       record = name;

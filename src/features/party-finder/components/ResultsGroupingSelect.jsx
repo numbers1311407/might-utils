@@ -26,10 +26,16 @@ const staticOptions = {
     label: "By Level",
     value: "level",
   },
-  class: {
-    label: "By Class",
-    value: "class",
-  },
+  // NOTE group by class was originally an option and isn't... totally insane,
+  // but unless your team has a lot of class duplicates this will lead to
+  // many groups. If that seems unintuitive this is because warden and level
+  // are *always* considered when generating group slots, so if you have 16
+  // chars with different classes, your group count will always equal the
+  // result count.
+  // class: {
+  //   label: "By Class",
+  //   value: "class",
+  // },
   warden: {
     label: "By Warden Rank",
     value: "warden",

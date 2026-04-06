@@ -1,8 +1,7 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useDraftState } from "@/core/hooks";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
 import { defaultFiltersTagRules } from "@/core/config/defaults";
-import { prepareTagRules } from "@/core/tags";
 
 const defaultIdMap = {
   filters: [defaultFiltersTagRules.id],

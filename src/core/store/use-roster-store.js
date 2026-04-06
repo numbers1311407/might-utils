@@ -1,20 +1,11 @@
-import { useMemo } from "react";
 import { createStore } from "./helpers";
 import { defaultRoster } from "@/core/config/defaults";
+import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
 import { rosterSchema, charSchema } from "@/core/schemas";
-import { useClassTagsStore } from "./use-class-tags-store.js";
-
-const getClassTags = (cls) => useClassTagsStore.getState().getClassTags(cls);
+import { deepEqual } from "fast-equals";
 
 const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
-};
-
-const prepareCharTags = (char) => {
-  const classTags = getClassTags(char.class);
-  const tags = [...new Set([...char.tags, ...classTags])];
-  const result = charSchema.safeParse({ ...char, tags });
-  return result.data;
 };
 
 export const useRosterStore = createStore("might-utils-roster", () => ({
@@ -25,6 +16,11 @@ export const useRosterStore = createStore("might-utils-roster", () => ({
 const { getState: get, setState: set } = useRosterStore;
 
 const api = {
+  isCharDirty: (char, options = { classTags: false }) => {
+    const rosterChar = api.getChar(char.id, options);
+    return deepEqual(char, rosterChar);
+  },
+
   setActiveOnly: (value) => {
     set((state) => {
       state.activeOnly = value;
@@ -57,14 +53,18 @@ const api = {
     });
   },
 
-  getChar: (id, withClassTags = false) => {
+  getChar: (id, options = {}) => {
+    const { classTags = true } = options;
     const char = get().roster.find((char) => char.id === id);
 
-    if (!char || !withClassTags) {
-      return char;
-    } else {
-      return prepareCharTags(char);
-    }
+    if (!classTags) return char;
+
+    return {
+      ...char,
+      tags: [
+        ...new Set([...classTagsApi.getClassTags(char.class), ...char.tags]),
+      ],
+    };
   },
 
   updateChar: (id, update, done) => {
@@ -92,22 +92,3 @@ const api = {
 };
 
 export const useRosterStoreApi = api;
-
-export const useRoster = () => {
-  const roster = useRosterStore((store) => store.roster);
-  const activeOnly = useRosterStore((store) => store.activeOnly);
-
-  const filteredRoster = useMemo(() => {
-    return roster.filter((char) => (activeOnly ? char.active : true));
-  }, [roster, activeOnly]);
-
-  return {
-    roster: filteredRoster,
-    activeOnly,
-    setActiveOnly: api.setActiveOnly,
-  };
-};
-
-export const useRosterChar = (id, withTags = false) => {
-  return useMemo(() => api.getChar(id, withTags), [id, withTags]);
-};

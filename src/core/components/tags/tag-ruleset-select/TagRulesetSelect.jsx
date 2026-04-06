@@ -1,10 +1,7 @@
 import { useRef } from "react";
 import { Select } from "@mantine/core";
-import {
-  useTagRulesSelectOptions,
-  useTagRulesStoreApi as api,
-} from "@/core/store";
 import { useDraftState } from "@/core/hooks";
+import { useTagRulesSelectOptions } from "./use-tag-rules-select-options.js";
 
 export const TagRulesetSelect = ({
   type,

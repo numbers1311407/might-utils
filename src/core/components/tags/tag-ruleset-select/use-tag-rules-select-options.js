@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useTagRulesList } from "./use-tag-rules-list.js";
-import { useTagRulesStore } from "./use-tag-rules-store.js";
+import { useTagRulesStore } from "@/core/store";
+import { useTagRulesList } from "@/core/hooks";
 
 export const useTagRulesSelectOptions = (type, options = {}) => {
   const { labelActive = true, includeNone } = options;

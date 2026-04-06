@@ -7,12 +7,13 @@ import {
   Table,
   Text,
 } from "@mantine/core";
+import { useRosterControls } from "@/core/hooks";
 import { getCharMight } from "@/core/chars";
-import { useClassTagsStore, useRoster } from "@/core/store";
+import { useClassTagsStore } from "@/core/store";
 import { AppLink, Aside } from "@/core/components/common";
 
 export const CharsAside = ({ chars, isRoster, ...asideProps }) => {
-  const { activeOnly, setActiveOnly } = useRoster();
+  const { activeOnly, setActiveOnly } = useRosterControls();
   const classTags = useClassTagsStore((store) => store.tags);
   const tagCloud = useMemo(() => {
     const counts = {};

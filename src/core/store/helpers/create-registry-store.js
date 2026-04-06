@@ -116,6 +116,7 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
           ? api.getCopy(record, true)
           : recordSchema.parse(record);
 
+        console.log("yep", clone);
         state.registry[clone.id] = clone;
 
         if (defaults) {

@@ -1,6 +1,6 @@
 import { Box, NavLink, Stack, Text } from "@mantine/core";
 import { Link } from "wouter";
-import { usePartiesList } from "@/core/store";
+import { usePartiesList } from "@/core/hooks";
 import { IconChevronLeft } from "@tabler/icons-react";
 
 export const PartiesNav = ({ current, ...props }) => {

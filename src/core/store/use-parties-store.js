@@ -17,7 +17,7 @@ const _addOrUpdateChar = (partyId, value, api) => {
   [value].flat().forEach((char) => {
     const isId = typeof char === "string";
     const charId = isId ? char : char?.id;
-    const rosterChar = rosterApi.getChar(charId, true);
+    const rosterChar = rosterApi.getChar(charId, { classTags: true });
     const charToAdd = structuredClone(isId ? rosterChar : char);
 
     if (
@@ -46,17 +46,34 @@ const _addOrUpdateChar = (partyId, value, api) => {
 };
 
 const extendApi = (_set, _get, api) => ({
-  isCharDirty: (partyId, charId) => {
-    const char = api.getChar(partyId, charId);
-    const rosterChar = rosterApi.getChar(charId, true);
-    return !deepEqual(char, rosterChar);
-  },
-
   hasChar: (partyId, charId) => {
     const party = api.get(partyId);
     return (
       !!party && !!charId && party.chars.find((char) => char.id === charId)
     );
+  },
+
+  isCharDirty: (partyId, charId) => {
+    const a = api.getChar(partyId, charId);
+    const b = rosterApi.getChar(charId, { classTags: true });
+
+    console.log({ a, b });
+
+    return !deepEqual(
+      api.getChar(partyId, charId),
+      rosterApi.getChar(charId, { classTags: true }),
+    );
+  },
+
+  getDirtyStatus: (partyId) => {
+    const party = api.get(partyId);
+
+    console.log({ partyId, party });
+
+    return (party?.chars || []).reduce((acc, char) => {
+      if (api.isCharDirty(party.id, char.id)) acc.add(char.id);
+      return acc;
+    }, new Set());
   },
 
   getChar: (partyId, charId) => {

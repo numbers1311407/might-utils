@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import {
   useConfirmationStore,
   usePartiesStoreApi as partiesApi,
-  usePartiesList,
 } from "@/core/store";
 import {
   AppLink,
@@ -13,7 +12,7 @@ import {
   CharsTable,
   PageTitle,
 } from "@/core/components";
-import { useStableCallback } from "@/core/hooks";
+import { usePartiesList, useStableCallback } from "@/core/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
 
@@ -65,18 +64,10 @@ const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
   );
 };
 
-const useDirtyChars = (party) => {
-  return useMemo(() => {
-    const acc = { dirty: {}, count: 0 };
-    return (party?.chars || []).reduce((acc, char) => {
-      const dirty = partiesApi.isCharDirty(party.id, char.id);
-      acc.dirty[char.id] = dirty;
-      acc.count += dirty ? 1 : 0;
-      return acc;
-    }, acc);
-  }, [party]);
-};
-
+// TODO most of this data could be moved to a `useParties` hook, which is
+// probably a pattern that should be established: components probably shouldn't
+// generally access low level stores but instead should use higher level stores
+// that bake in view logic
 export const Parties = () => {
   const parties = usePartiesList();
   const { getConfirmation } = useConfirmationStore();
@@ -88,9 +79,12 @@ export const Parties = () => {
   const party = useMemo(() => {
     return parties.find((party) => party.id === routeId) || parties[0];
   }, [parties, routeId]);
+
   const partyId = party?.id;
 
-  const dirtyChars = useDirtyChars(party);
+  const dirtyChars = useMemo(() => {
+    return party?.id ? partiesApi.getDirtyStatus(party.id) : new Set();
+  }, [party]);
 
   const removeParty = getConfirmation(
     () => {
@@ -186,7 +180,7 @@ export const Parties = () => {
           party={party}
           onRemove={removeParty}
           onRename={renameParty}
-          onReset={dirtyChars.count ? resetPartyChars : null}
+          onReset={dirtyChars.size ? resetPartyChars : null}
         />
       )}
 
@@ -198,7 +192,7 @@ export const Parties = () => {
           onUpdate={updateChar}
           onRemove={removeChar}
           onReset={resetChar}
-          dirtyChars={dirtyChars.dirty}
+          dirtyChars={dirtyChars}
           emptyContent={
             <>
               <Text>This party has no characters!</Text>

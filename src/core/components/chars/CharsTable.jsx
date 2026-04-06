@@ -95,7 +95,7 @@ export const CharsTableRow = ({
             <RestoreButton
               aria-label="Reset character to roster version"
               onClick={() => reset(char)}
-              disabled={!dirtyChars[char.id]}
+              disabled={!dirtyChars.has(char.id)}
             />
           </Tooltip>
         )}
