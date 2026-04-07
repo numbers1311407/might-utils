@@ -4,85 +4,89 @@ Going through a bit of a pivot, updating soon.
 
 ### Todos
 
-- (this is wip, halfway there) rethink the party finder result format and memory usage during recursion. There are a relatively
-  small set of roster characters in memory which could just be referencded by sorted arrays of ids,
-  instead of copying them many thousands of times.
-  
-- the saved parties UI is the roster variations UI, it's literally already built, just needs finishing up
-- the alternate roster db is literally already saved parties, we just need to add a join field to the parties. a roster is literally different party type.
-- bigger increment buttons for the might inputs +100/-100, etc
-- a toggle on the range finder to show "and up" from the dificulty to show the full range.
-- show matching saved parties for ranges in might finder
-- the chat links to the generator through a popover that also shows that might range
-
-- interlinking
-  - the might party finder links
-  - - might ranges to the generator
-    - might ranges to matched saved parties
-- - the npc gen links
-    - to the generator with the current might
-    - to the generator through popover links in the chat that show might, or perhaps separate links that could come up to the right, showing the might ranges wthout hovering
+- Features
+  - Finder
+    - UI for results and other UI cleanup.
+        - two key new features:
+          - grouped results should clearly show who fulfills each of the grouped properties.
+          - rules should clearly show who matched them
+    - Needs to accept search params, and consider how that will affect saved
+      finder options. 
+    - Roster Variations select when that's ready
+    - Potentially roster quick edit
+    - Multiselect for rulesets
+    - Toggle for distinct vs merged group tags mode
+    - Helper link on the right to tag rules, just for clarity and since they can't
+      be edited inline
+    - Tracking when rules *cannot* be passed or can only be passed by a few chars,
+      to warn players of rules that may be problematic.
+  - Group Tags
+    - Needs UI
+  - Saved parties
+    - Replace the current "saved parties" with a simpler UI that's more Read
+      than Update, with a smaller roster editor, no tags editing (but a tag
+      cloud probably), and baked in might calculator tied to might score
+  - Might Range Finder
+    - complete UI
+    - include links from the might ranges to the finder, and possibly listings
+      of "saved parties" that match the might level or are close?
+  - NPC Sim
+    - Should add a 2nd window with metadata, namely links to the finder for the
+      actual numeric ranges in the NPC response that you don't see in game.
+  - Misc
+    - Put together a character roster that isn't my team
+    - Create a default tag rule set for plane of time key as an example of an all
+    - A global help modal store in the vein of the confirmations store where pages
+      can jam some stuff into a help modal that will disappear on close until the
+      (TBD) help button in the top right is clicked.
     
-- search
-  - fix search
-  - use draggable window for roster editor
-  - improve search error messaging and add early errors for bad rules
-  - this of course means finally catching errors thrown out of the finder
-  - add roster swap dropdown
-  - add snapshot saving
-  - style the whole damn UI
-  - search will need url vars and I wonder if that means we should rethink state a little and make
-    that page URL driven.
-- ui fixup for class tag groups
-- parties
-  - strip the tags and edit function entirely, making the table into a small toggle for level/warden
-  - extract and add the npc simulator
-    - a nice simulator might be a sliding UI that centers on the instance tier where your party is
-      normal, and shows the instances to the left and right, all the time. could be nice if there's
-      room. Otherwise could just be a tier dropdown just like the calculator, but powered by the
-      team might.
-  - figure out a nice ui for might score
-- roster
-  - relocate the parties UI to be roster variations
-- might range calculator needs some slight UI work to offer links to the main search
-- help modals, probably last task as I want some screenshots
-  
-### Tag rules and functionality rework
-
-1. Rules become set of "and" and/or "or" tag sets, we can use react query builder. Most rules will
-be simple but this will allow for arbtrary complexity. some examples (users can go as convoluted
-as they desire, and the UI should be intuitive enough for them to understand implicitly)
-
-((char=geese) and (warden=1 or warden=2)) or (char=snarf and warden=2))
-(tagged=dps and tagged=petclass)
-(level=67 and warden=2) or level=68 or level=69
-
-2. Each of these rules also has a range. We may minimally validate that rules are impossible with
-   certain counts, or we may not. This would detect itself for us in searches without having to
-   analyze the combination, as we would just warn up front if no characters pass a given rule, to
-   make it easier to identify why results are limited.
-
-3. In the finder, we optimize by going through every rule in the whole set gainst every character
-   in the pool, and track in a map of refs to each character. So essentially each rule knows which
-   roster characters pass before the recursion even starts. Some preoptimization might be done here,
-   and importantly we should probably report here on rules zero or perhaps very few characters
-   pass, to help users understand rules that might be problematic.
-   
-4. Finally when we get to checking parties, each rule at that size range counts every slot that
-   has passed their test to ensure it's in it's range.  This is just O(n) partyIds.has(slotId) til
-   the count reaches min range (and stays in it, if there's a max).  This is far less counting and
-   should be a lot faster. 1 pass over each rule with 1 likely shot circuited pass over their passed
-   slots.
-   
-This seems like a big win for both UX and performance.
+- Bug fixes
+  - Tag Rule form *cannot* have the ALL rule as default.
+  - Tag Rule form"type" description is wrong.
+  - Github pages doesn't work with path routing so it needs to be changed to hash
+  - Deleting roster chars must scrub all references to itself in parties, or things
+    can get broken.
+  - The generator number editors can get aggressive with preventing clearing, making
+    it painful to edit them. The search should simply not execute until the form is
+    valid, and invalid fields should be cleared. Trying to prevent an invalid state
+    makes input too finicky.
+  - The query builder in rules loses focus on keydown/up in the tags form and probably
+    others, making entering text a 1 key at a time task between refocusing the input
+  - Errors in the finder crash the page and can't be navigated away from without
+    a reload. The finder app at least needs to catch errors and show beter error UI,
+ 
+### Nice to haves
+  **Roster Variations*
+    - This is a key feature but it could technically be cut from mvp
+    - Refactor current "saved parties" into roster variations
+    - Allow choosing roster in generator
+    - Bulk tag editing with the same exacty UI as class tags
+- Roster import
+  - A csv roster import would be very easy and probably a great help to people
+    with large teams.
+- Tag Rules
+  - decorate the rules human output with JSX to colorize keywords and so on.
+  - RQB has NO validation. it should at least test for blank fields and no rules.
+- Quick roster editing
+  - add a mantine "floating window" modal to the generator which contains a mini roster
+    editor (as currently selected), likely similar to the saved partie pages.
+- Multiple: Tags
+  - Introduce the concept of "negative tags" which could be used to couner class tags.
+    The problem is there may be edge cases where a character doesn't want class tags,
+    and it feels like overkill to create some kind of clone situation or other complicated
+    change to fix that. Negative tags are never seen in the UI, they're processed out
+    to "remove" class tags from arrays before being rendered or sent to the finder.
+    In tag input, they're consumed and rendered as toggleable class tag pills.
+    One consideration here is that if someone deletes a class tag the -tag may live
+    on in tags forever, but that's probably not a real issue. If concerned we could
+    scrub tags for the class tag on deletion.
+- Multiple: Might Button QoL
+  - bigger increment buttons for the might inputs +100/-100, etc, this will be
+    particularly useful on the calculator pages where people are fishing and wanting
+    to just click buttons.
+- Range Finder
+  - A toggle to show "and up" from the dificulty to show the full range.
 
 ### Potential Feature Roadmap
 
 - react-query for a caching layer for results
-
-  May or may not be worthwhile as the queries are so configuration heavy, but at a minimum it
-  would debounce rapid finds triggered by extra renders for free
-  
-  There's also a consideration for "streaming" the response in chunks for infinite (but unsorted)
-  scroll, though that does mean rethinking groups (it could still work, with the most common groups
-  bubbling up to the top)
