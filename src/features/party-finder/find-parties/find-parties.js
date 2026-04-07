@@ -7,9 +7,9 @@ import {
 } from "@/core/config";
 import { createPartyValidator } from "@/core/finder-rules";
 import { getGroupingOverrides, getTagGroupKey } from "./grouping.js";
-import { instrument } from "@/utils";
+import { instrument, sum } from "@/utils";
 
-const MAX_RECURSIONS = 5_000_000;
+const MAX_RECURSIONS = 10_000_000;
 
 export const defaultOptions = {
   targetScore: 1250,
@@ -38,24 +38,14 @@ export const findParties = (roster, targetScore, options = {}) => {
     ...options,
   };
 
-  // TODO only checking these 2 args here as the options are assumed to be backed
-  // by defaults but technically we should be determining whwat baseline args
-  // we really want to require and validating everything here up front.
-  //
-  // TODO one validation that's probably necessary is that group size based tag rules never
-  // require fewer tags total or smaller counts of those tags as the group size grows.
-  // This will allow early determination of whether the remaining roster can possibly
-  // satisfy tag rules.
-  if (roster === undefined || targetScore === undefined) {
-    throw new Error("Invalid call: Roster and targetScore required");
-  }
-
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
   const maxPoolScores = new Map();
 
+  let slotIdx = 0;
+
   instr.start("setupPool");
-  const pool = roster
+  const buckets = roster
     // filter out of bounds levels
     .filter(({ level, active }) => {
       return active && level >= minLevel && level <= maxLevel;
@@ -63,6 +53,8 @@ export const findParties = (roster, targetScore, options = {}) => {
     .reduce((acc, char) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
+      const charBucket = [];
+      acc.push(charBucket);
 
       for (const rank of Warden.Ranks) {
         const { rank: warden, requiredLevel, mightMultiplier } = rank;
@@ -76,34 +68,59 @@ export const findParties = (roster, targetScore, options = {}) => {
               distinctGroupingTags,
             );
             for (const ovr of overrides) {
-              acc.push({ ...slot, ...ovr });
+              charBucket.push({ ...slot, ...ovr });
             }
           } else {
-            acc.push(slot);
+            charBucket.push(slot);
           }
         }
       }
 
+      charBucket
+        .sort((a, b) => a.score - b.score)
+        .forEach((slot) => {
+          slot.idx = slotIdx++;
+        });
+
       return acc;
-    }, [])
-    // NOTE it's critical to note the pool is sorted by ascending score
-    .sort((a, b) => a.score - b.score);
+    }, []);
 
-  for (let i = 0; i < pool.length; i++) {
-    const slot = pool[i];
-    slot.idx = i;
+  const pool = buckets.flat();
 
-    maxPoolScores.set(
-      slot.id,
-      Math.max(maxPoolScores.get(slot.id) || 0, slot.score),
-    );
+  // minSumLookup and maxSumLookup will contain calculated possible
+  // min and max values for the remaining buckets in the list, taking
+  // into account how many more slots are available. this is done here
+  // so later during recursion we can quickly check to see if the
+  // sum of the scores left in the buckets can possible land in the
+  // target range.
+  const minSumLookup = [];
+  const maxSumLookup = [];
+
+  for (let i = 0; i < buckets.length; i++) {
+    const remainingMins = [];
+    const remainingMaxs = [];
+
+    for (let b = i; b < buckets.length; b++) {
+      remainingMins.push(buckets[b][0].score);
+      remainingMaxs.push(buckets[b][buckets[b].length - 1].score);
+    }
+
+    remainingMins.sort((a, b) => a - b);
+    remainingMaxs.sort((a, b) => b - a);
+
+    const minSums = [0];
+    const maxSums = [0];
+
+    for (let j = 1; j <= maxSize; j++) {
+      minSums[j] = minSums[j - 1] + (remainingMins[j - 1] || 0);
+      maxSums[j] = maxSums[j - 1] + (remainingMaxs[j - 1] || 0);
+    }
+
+    minSumLookup[i] = minSums;
+    maxSumLookup[i] = maxSums;
   }
 
   instr.end("setupPool");
-
-  instr.start("setupValidator");
-  const validator = createPartyValidator(rules, pool);
-  instr.end("setupValidator");
 
   if (!pool.length) {
     throw new Error("no eligible roster members found");
@@ -124,8 +141,9 @@ export const findParties = (roster, targetScore, options = {}) => {
     return idxs.sort((a, b) => pool[a].name.localeCompare(pool[b].name));
   };
 
-  const generateTagCounts = (idxs) =>
-    tags.generateTagCounts(Array.from(idxs).map((idx) => pool[idx]));
+  instr.start("setupValidator");
+  const validator = createPartyValidator(rules, pool);
+  instr.end("setupValidator");
 
   // NOTE this is the parties array in the response
   const parties = [];
@@ -133,96 +151,81 @@ export const findParties = (roster, targetScore, options = {}) => {
   // individual responsese don't repeat data, they return arrays containing indexes of
   // the pool array
   const partyPoolIdxs = new Set();
-  // the party ids need to be tracked during recursion as well to skip repeat slots for
-  // roster chars already in the party
-  const partyIds = new Set();
-
-  // Optimization helper that adds up the highest score slots remaining to test
-  // if there's even enough points left in the pool to hit the min score.
-  const getMaxPoolScore = (slotsLeft, startIndex) => {
-    let score = 0;
-    // start at the end as it's presorted by score
-    for (let i = pool.length - 1; i >= startIndex; i--) {
-      // skip out slots for chars already in the party
-      if (partyPoolIdxs.has(pool[i].idx)) continue;
-      // and add up the rest for count of slots left
-      score += pool[i].score;
-      if (--slotsLeft === 0) break;
-    }
-
-    return score;
-  };
 
   let recursionCount = 0;
 
-  const recurse = (remainingScore, partyPoolIdxs, startIndex) => {
+  const recurse = (remainingScore, bucketIndex) => {
     if (recursionCount++ >= MAX_RECURSIONS) {
+      throw parties.length;
       throw new Error("max recursions reached, try increasing specificity");
     }
 
-    // member remaining even adds up to the desired score.
     const partySize = partyPoolIdxs.size;
 
-    if (remainingScore >= 0 && remainingScore <= margin) {
-      // and the party size is not too short or too long
-      if (partySize >= minSize && partySize <= maxSize) {
-        // and the parties is valid re: tags
-        if (!validator.test(partyPoolIdxs)) {
-          return;
-        }
-
-        const newParty = {
-          party: sortParty(new Uint8Array(partyPoolIdxs)),
-          score: targetScore - remainingScore,
-        };
-
-        if (groupBy) {
-          newParty.groupKey = getTagGroupKey(
-            groupBy,
-            Array.from(partyPoolIdxs),
-            pool,
-          );
-        }
-
-        // push the completed linup and end this branch
-        parties.push(newParty);
+    if (
+      remainingScore >= 0 &&
+      remainingScore <= margin &&
+      partySize >= minSize &&
+      partySize <= maxSize
+    ) {
+      if (!validator.test(partyPoolIdxs)) {
+        return;
       }
 
+      const newParty = {
+        party: sortParty(new Uint8Array(partyPoolIdxs)),
+        score: targetScore - remainingScore,
+      };
+
+      if (groupBy) {
+        newParty.groupKey = getTagGroupKey(
+          groupBy,
+          Array.from(partyPoolIdxs),
+          pool,
+        );
+      }
+
+      parties.push(newParty);
+    }
+
+    if (
+      bucketIndex >= buckets.length ||
+      partyPoolIdxs.size >= maxSize ||
+      remainingScore <= 0
+    ) {
       return;
     }
 
-    if (partySize >= maxSize || remainingScore <= 0) {
+    // look up the possible min and max scores for the remaining slots within
+    // the party size bounds and if the minimum possible score from the slots
+    // left is over the target score, or the maximum possible score for the
+    // slots left is under the target score minus margin, we can prune the branch
+    const minSlotsLeft = Math.max(0, minSize - partySize);
+    const maxSlotsLeft = Math.max(0, maxSize - partySize);
+    const remainingMin = minSumLookup[bucketIndex][minSlotsLeft];
+    const remainingMax = maxSumLookup[bucketIndex][maxSlotsLeft];
+    const minRemainingScore = remainingScore - margin;
+    if (remainingMin > remainingScore || remainingMax < minRemainingScore) {
       return;
     }
 
-    const maxPoolScore = getMaxPoolScore(maxSize - partySize, startIndex);
-    if (maxPoolScore < remainingScore - margin) {
-      return;
-    }
+    const charBucket = buckets[bucketIndex];
 
-    for (let i = startIndex; i < pool.length; i++) {
-      const slot = pool[i];
+    for (let i = 0; i < charBucket.length; i++) {
+      const slot = charBucket[i];
 
-      // if we're over the score break out of this loop entirely as this party is full.
-      if (slot.score > remainingScore) {
-        break;
-      }
+      if (slot.score > remainingScore) break;
 
-      // but if this slot's char is already in the party, continue to the next slot
-      if (partyIds.has(slot.id)) {
-        continue;
-      }
-
-      partyIds.add(slot.id);
       partyPoolIdxs.add(slot.idx);
-      recurse(remainingScore - slot.score, partyPoolIdxs, i + 1);
+      recurse(remainingScore - slot.score, bucketIndex + 1);
       partyPoolIdxs.delete(slot.idx);
-      partyIds.delete(slot.id);
     }
+
+    recurse(remainingScore, bucketIndex + 1);
   };
 
   instr.wrap("findParty", () => {
-    recurse(targetScore, partyPoolIdxs, 0);
+    recurse(targetScore, 0);
   });
 
   // TODO possibly figure out flattening of response after we figure out tags, i.e.

@@ -68,8 +68,6 @@ const extendApi = (_set, _get, api) => ({
   getDirtyStatus: (partyId) => {
     const party = api.get(partyId);
 
-    console.log({ partyId, party });
-
     return (party?.chars || []).reduce((acc, char) => {
       if (api.isCharDirty(party.id, char.id)) acc.add(char.id);
       return acc;

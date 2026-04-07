@@ -133,3 +133,5 @@ export const initDict = (keys, value, keyFn) => {
 
   return dict;
 };
+
+export const sum = (arr) => arr.reduce((sum, k) => k + sum, 0);
