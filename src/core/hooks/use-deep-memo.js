@@ -5,7 +5,7 @@ export const useDeepMemo = (value) => {
   const ref = useRef();
 
   if (!deepEqual(value, ref.current)) {
-    ref.current = value;
+    ref.current = structuredClone(value);
   }
 
   return ref.current;

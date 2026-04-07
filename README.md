@@ -41,8 +41,6 @@ Going through a bit of a pivot, updating soon.
       (TBD) help button in the top right is clicked.
     
 - Bug fixes
-  - The query builder in rules loses focus on keydown/up in the tags form and probably
-    others, making entering text a 1 key at a time task between refocusing the input
   - Errors in the finder crash the page and can't be navigated away from without
     a reload. The finder app at least needs to catch errors and show beter error UI,
  

@@ -7,7 +7,6 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useCallback, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useState } from "react";
@@ -93,11 +92,7 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
           key={form.key("value")}
           {...form.getInputProps("value")}
         />
-        <QueryField
-          form={form}
-          key={form.key("query")}
-          {...form.getInputProps("query")}
-        />
+        <QueryField form={form} error={form.errors.query} />
         <Group justify="flex-end" gap={6}>
           <Button variant="light" onClick={onClose}>
             Cancel
@@ -172,12 +167,18 @@ const TypeField = ({ form, ...props }) => (
 );
 
 const QueryField = ({ form }) => {
-  const onQueryChange = useCallback(
-    (query) => {
-      form.setFieldValue("query", query);
-    },
-    [form],
-  );
+  // Note the great lengths gone to here to prevent RQB from going haywire and crashing
+  // the page. It may be a good query builder, but calling it "react" anything is laughable
+  // given how it breaks nearly every react idiom in wild fashion.  It will directly modify
+  // the query prop given to it even if it's in "uncontrolled" mode. Similarly it will
+  // render infinitely and crash if the default query its given is static! I expect some of
+  // the double memoization and other oddities here are overkill, but it was a long battle
+  // getting this thing to not crash the app regularly even for a textbook implementation.
+  const onQueryChange = useStableCallback((query) => {
+    form.setFieldValue("query", query);
+  });
+
+  const [stableQuery] = useState(form.values.query);
 
   return (
     <InputWrapper
@@ -185,22 +186,12 @@ const QueryField = ({ form }) => {
       label={<HelpLabel help={queryHelp} label="Query" />}
       withAsterisk
     >
-      <QueryBuilder
-        my={4}
-        query={form.values.query}
-        onQueryChange={onQueryChange}
-      />
+      <QueryBuilder my={4} query={stableQuery} onQueryChange={onQueryChange} />
     </InputWrapper>
   );
 };
 
-const ValueField = ({
-  form,
-  error,
-  onChange: propsOnChange,
-  defaultValue,
-  ...rest
-}) => {
+const ValueField = ({ form, error, onChange: propsOnChange, defaultValue }) => {
   const { type: initialType } = form.getValues();
   const [value, setValue] = useState(defaultValue);
   const [type, setType] = useState(initialType);

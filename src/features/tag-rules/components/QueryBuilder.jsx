@@ -8,26 +8,28 @@ import {
 import { deepEqual } from "fast-equals";
 import { FIELDS } from "@/core/finder-rules";
 
-const CustomMantineEditor = (props) => {
+// may be missing something but this seems to be a required workaround
+// to get unsupported (yes that includes min, max, and step) props to
+// underlying number inputs.
+function CustomMantineEditor(props) {
   if (props.inputType !== "number") {
     return <MantineValueEditor {...props} />;
   }
 
-  // Extract your custom properties from the field definition
-  const { min, max } = props.fieldData;
+  const { min, max, step } = props.fieldData;
 
-  // Render the official Mantine wrapper, injecting extraProps
   return (
     <MantineValueEditor
       {...props}
       extraProps={{
         min,
         max,
+        step,
         ...props.extraProps,
       }}
     />
   );
-};
+}
 
 const controlElements = {
   valueEditor: CustomMantineEditor,
