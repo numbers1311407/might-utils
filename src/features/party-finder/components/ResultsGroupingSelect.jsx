@@ -68,7 +68,7 @@ export const ResultsGroupingSelect = (props) => {
         items: Object.values(staticOptions),
       },
       {
-        group: "Tag Groups",
+        group: "Grouping Tags",
         items: activeGroupOptions,
       },
     ];

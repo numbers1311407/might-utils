@@ -35,6 +35,7 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
       }
       rightSection={
         <ActionIcon
+          size="sm"
           aria-label="Reset to default tags"
           title="Reset to default tags"
           onClick={() => resetTags()}
@@ -100,14 +101,13 @@ export const ClassTags = () => {
             "tank" and every cleric is a "healer".
           </Text>
           <Text>
-            When creating a <AppLink href="/parties">saved party</AppLink>, the
-            class tags are snapshotted on creation, making them editable
-            independent of this list.
-          </Text>
-          <Text>
-            Roster characters always draw from these tags. Party characters can
-            reset to a fresh snapshot of their roster character tags at any
-            time.
+            Characters of the respective classes are always assigned these tags
+            during party generation. If you{" "}
+            <Text span fs="italic" fw="bold">
+              don't
+            </Text>{" "}
+            want a character to have certain tags, you will need to delete the
+            tags you don't want assigned here.
           </Text>
         </Stack>
       </Aside>

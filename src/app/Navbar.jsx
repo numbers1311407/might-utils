@@ -47,7 +47,7 @@ export const Navbar = (props) => {
           Configuration
         </Text>
         <NavbarLink label="Generator Rules" href="/rulesets" />
-        <NavbarLink label="Generator Result Groups" href="/tag-groups" />
+        <NavbarLink label="Generator Grouping Tags" href="/tag-groups" />
         <NavbarLink label="Generator Class Tags" href="/class-tags" />
       </Stack>
     </Stack>

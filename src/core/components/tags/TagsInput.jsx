@@ -42,6 +42,7 @@ export const TagsInput = ({
       if (e instanceof ZodError) {
         setError(e.issues?.[0]?.message || "The entered tag is invalid");
       } else {
+        console.error(e);
         setError("An unknown error has occurred");
       }
     }
