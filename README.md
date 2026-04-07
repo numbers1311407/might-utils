@@ -39,10 +39,8 @@ Going through a bit of a pivot, updating soon.
     - A global help modal store in the vein of the confirmations store where pages
       can jam some stuff into a help modal that will disappear on close until the
       (TBD) help button in the top right is clicked.
-    
-- Bug fixes
-  - Errors in the finder crash the page and can't be navigated away from without
-    a reload. The finder app at least needs to catch errors and show beter error UI,
+- Bugs
+  - TBD!
  
 ### Nice to haves
   **Roster Variations*

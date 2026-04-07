@@ -1,4 +1,5 @@
 import PartiesWorker from "./find-parties.worker.js?worker";
+import { FindPartiesError } from "./find-parties-error.js";
 
 export const findPartiesAsync = async (roster, targetScore, options) => {
   const partiesWorker = new PartiesWorker();
@@ -10,7 +11,18 @@ export const findPartiesAsync = async (roster, targetScore, options) => {
         return;
       }
       if (data.error) {
-        reject(data.error);
+        console.error("worker error", data.error);
+
+        if (data.error.__type === "FindPartiesError") {
+          const error = new FindPartiesError(
+            data.error.message,
+            data.error.code,
+          );
+          error.stack = data.error.stack;
+          reject(error);
+        } else {
+          reject(data.error);
+        }
       } else {
         console.log("worker message", data);
         resolve(data);

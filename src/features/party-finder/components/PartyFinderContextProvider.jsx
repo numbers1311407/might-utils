@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef, Suspense } from "react";
 import { useTagGroupsStoreApi as tgapi } from "@/core/store";
 import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
 import { findPartiesAsync } from "../find-parties";
@@ -43,15 +43,22 @@ export const PartyFinderContextProvider = ({ children }) => {
     [options, roster, targetScore],
   );
 
-  const value = useMemo(
-    () => ({
+  const valueRef = useRef(0);
+  const value = useMemo(() => {
+    valueRef.current += 1;
+    return {
       options,
       resultsPromise,
+      key: `context-key-${valueRef.current}`,
       roster,
+      valueRef,
       targetScore,
-    }),
-    [options, resultsPromise, roster, targetScore],
-  );
+    };
+  }, [options, resultsPromise, roster, targetScore]);
 
-  return <PartyFinderContext value={value}>{children}</PartyFinderContext>;
+  return (
+    <Suspense>
+      <PartyFinderContext value={value}>{children}</PartyFinderContext>
+    </Suspense>
+  );
 };

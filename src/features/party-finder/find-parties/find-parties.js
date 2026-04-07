@@ -1,4 +1,3 @@
-import * as tags from "@/core/tags";
 import {
   Warden,
   MightScoreByLevel,
@@ -6,8 +5,9 @@ import {
   MightMinLevel,
 } from "@/core/config";
 import { createPartyValidator } from "@/core/finder-rules";
+import { FindPartiesError } from "./find-parties-error.js";
 import { getGroupingOverrides, getTagGroupKey } from "./grouping.js";
-import { instrument, sum } from "@/utils";
+import { instrument } from "@/utils";
 
 const MAX_RECURSIONS = 10_000_000;
 
@@ -123,12 +123,16 @@ export const findParties = (roster, targetScore, options = {}) => {
   instr.end("setupPool");
 
   if (!pool.length) {
-    throw new Error("no eligible roster members found");
+    throw new FindPartiesError(
+      "No eligible roster members found, check your min/max character levels and roster.",
+      "EMPTY_ROSTER",
+    );
   }
 
   if (pool[0].score <= margin) {
-    throw new Error(
-      `Margin must be less than minimum individual score: (${pool[0].score}), got: ${margin}`,
+    throw new FindPartiesError(
+      `Margin must be less than minimum individual score of ${pool[0].score}, received ${margin}.`,
+      "MARGIN_TOO_SMALL",
     );
   }
 
@@ -156,8 +160,11 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   const recurse = (remainingScore, bucketIndex) => {
     if (recursionCount++ >= MAX_RECURSIONS) {
-      throw parties.length;
-      throw new Error("max recursions reached, try increasing specificity");
+      throw new FindPartiesError(
+        `Max recursions reached (${MAX_RECURSIONS.toLocaleString()}) trying to assemble the parties. Try adding ` +
+          `more rules or reducing your roster size.`,
+        "MAX_RECURSIONS",
+      );
     }
 
     const partySize = partyPoolIdxs.size;
