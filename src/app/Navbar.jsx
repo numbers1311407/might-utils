@@ -1,5 +1,5 @@
 import { Link, useRoute } from "wouter";
-import { Box, Stack, NavLink, Text } from "@mantine/core";
+import { Stack, NavLink, Text } from "@mantine/core";
 import { useAppContext } from "@/core/context";
 
 const NavbarLink = ({ href, ...props }) => {

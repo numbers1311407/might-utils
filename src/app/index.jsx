@@ -8,6 +8,7 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { Router } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import { AppContextProvider, useAppContext } from "@/core/context";
 import { Routes } from "./routes";
 import { Header } from "./Header.jsx";
@@ -83,7 +84,7 @@ function App() {
       defaultColorScheme="dark"
     >
       <AppContextProvider>
-        <Router base="/might-utils">
+        <Router hook={useHashLocation}>
           <Shell />
           <ScrollToTop />
           <GlobalConfirmationModal />
