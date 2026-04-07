@@ -19,6 +19,10 @@ import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
 import { ModalRangeInput } from "./ModalRangeInput.jsx";
 
+const typeHelp =
+  'Use caution with "All" type rules. They are intended for niche cases like possession of flag/keys, or full ' +
+  "parties of beastlords, and can easily prevent all results if a single character doesn't pass.";
+
 const sizeHelp =
   "The size range defines each group size for which this rule applies. Each size can only have one " +
   "rule per combination of type, value, and warden requirement. If a conflict is found, the rule with " +
@@ -144,13 +148,25 @@ const TypeField = ({ form, ...props }) => (
   <Select
     {...props}
     withAsterisk
-    label="Applies To"
+    label={<HelpLabel label="Who is required to pass?" help={typeHelp} />}
     allowDeselect={false}
     placeholder="Select type"
-    description="Rules may apply to the whole party or specific characters"
+    description={
+      <>
+        A{" "}
+        <Text span size="xs" fw="bold" c="warning">
+          specific count
+        </Text>{" "}
+        of characters, or{" "}
+        <Text span size="xs" fw="bold" c="warning">
+          ALL
+        </Text>{" "}
+        characters (most rules will be a count)
+      </>
+    }
     data={[
-      { label: "Character Count", value: "range" },
-      { label: "All Characters", value: "all" },
+      { label: "A specific count of characters", value: "range" },
+      { label: "All characters", value: "all" },
     ]}
   />
 );

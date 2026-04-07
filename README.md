@@ -41,7 +41,6 @@ Going through a bit of a pivot, updating soon.
       (TBD) help button in the top right is clicked.
     
 - Bug fixes
-  - Tag Rule form"type" description is wrong.
   - Github pages doesn't work with path routing so it needs to be changed to hash
   - Deleting roster chars must scrub all references to itself in parties, or things
     can get broken.
