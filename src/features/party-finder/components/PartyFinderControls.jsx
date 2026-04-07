@@ -62,7 +62,7 @@ const MinSizeInput = (props) => (
 const MarginInput = (props) => (
   <PartyOptionInput
     option="margin"
-    label="Tolerance"
+    label="Target Tolerance"
     help="Acceptable deviation under your target score. Must be higher than the lowest might score on your roster."
     placeholder="Close enough?"
     min={0}
@@ -74,9 +74,9 @@ const MarginInput = (props) => (
 const TargetScoreInput = (props) => (
   <PartyOptionInput
     option="targetScore"
-    label="Tight Might"
-    help="The required score for the instance & difficulty you're trying to hit."
-    placeholder="How mighty?"
+    label="Targe Might Score"
+    description="What might score are you trying to hit?"
+    placeholder="Enter Target Might"
     type="number"
     min={0}
     step={10}

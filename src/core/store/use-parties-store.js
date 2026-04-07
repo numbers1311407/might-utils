@@ -54,11 +54,6 @@ const extendApi = (_set, _get, api) => ({
   },
 
   isCharDirty: (partyId, charId) => {
-    const a = api.getChar(partyId, charId);
-    const b = rosterApi.getChar(charId, { classTags: true });
-
-    console.log({ a, b });
-
     return !deepEqual(
       api.getChar(partyId, charId),
       rosterApi.getChar(charId, { classTags: true }),
