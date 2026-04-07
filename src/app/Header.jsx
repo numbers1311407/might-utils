@@ -1,6 +1,6 @@
 import {
   Anchor,
-  Box,
+  Badge,
   Burger,
   Container,
   AppShell,
@@ -45,6 +45,14 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
                 Might
               </Text>
               <Text size="2xl">utils</Text>
+              <Badge
+                ml={0}
+                mt={-2}
+                size="xs"
+                style={{ alignSelf: "flex-start" }}
+              >
+                beta!
+              </Badge>
             </Flex>
           </Anchor>
         </Title>
