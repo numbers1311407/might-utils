@@ -57,7 +57,7 @@ const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const parsed = tagRuleSchema.safeParse(rule);
   const initialValues = parsed.success
     ? parsed.data
-    : { type: "all", value: "all", size: [1, 20] };
+    : { type: "range", value: [1], size: [1, 20] };
 
   const form = useForm({
     mode: "uncontrolled",
