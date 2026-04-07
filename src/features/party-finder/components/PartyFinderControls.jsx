@@ -73,7 +73,6 @@ const MarginInput = (props) => (
 
 const TargetScoreInput = (props) => (
   <PartyOptionInput
-    withAsterisk
     option="targetScore"
     label="Tight Might"
     help="The required score for the instance & difficulty you're trying to hit."
@@ -89,13 +88,12 @@ export const PartyFinderControls = () => {
   return (
     <>
       <Stack gap={8}>
+        <TargetScoreInput />
+        <MarginInput />
+        <Divider m="md" />
         <ResultsGroupingSelect />
         <ActiveTagFiltersSelect />
         <Divider m="md" />
-        <Group wrap="nowrap">
-          <TargetScoreInput />
-          <MarginInput />
-        </Group>
         <Group wrap="nowrap">
           <MinLevelInput />
           <MaxLevelInput />

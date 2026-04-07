@@ -41,10 +41,6 @@ Going through a bit of a pivot, updating soon.
       (TBD) help button in the top right is clicked.
     
 - Bug fixes
-  - The generator number editors can get aggressive with preventing clearing, making
-    it painful to edit them. The search should simply not execute until the form is
-    valid, and invalid fields should be cleared. Trying to prevent an invalid state
-    makes input too finicky.
   - The query builder in rules loses focus on keydown/up in the tags form and probably
     others, making entering text a 1 key at a time task between refocusing the input
   - Errors in the finder crash the page and can't be navigated away from without

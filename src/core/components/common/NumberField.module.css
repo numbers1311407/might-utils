@@ -1,0 +1,21 @@
+.root {
+  --warning-color: var(--mantine-color-warning-4);
+}
+
+.input {
+  &[data-error] {
+    border-color: var(--warning-color);
+  }
+
+  /* Targets placeholder specifically when input has an error */
+  &[data-error]::placeholder {
+    color: var(--warning-color);
+  }
+}
+
+.control {
+  [data-error] & {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+  }
+}
