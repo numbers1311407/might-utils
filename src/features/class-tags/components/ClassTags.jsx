@@ -1,12 +1,4 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Flex,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import { useConfirmationStore, useClassTagsStore } from "@/core/store";
 import {
@@ -15,6 +7,7 @@ import {
   ClassIcon,
   TagsInput,
   PageTitle,
+  ReloadSmallButton,
 } from "@/core/components";
 import { getClassName } from "@/core/chars";
 
@@ -64,16 +57,14 @@ export const ClassTags = () => {
         title="Generator Class Tags"
         subtitle="Default tags added to each class for the targeting during party generation"
       >
-        <Button
+        <ReloadSmallButton
           onClick={getConfirmation(() => resetAllClassTags(), {
             message:
               "This will revert ALL classes to the default class tags, discarding any changes.",
           })}
-          rightSection={<IconReload />}
-          size="xs"
         >
           Reset All to Defaults
-        </Button>
+        </ReloadSmallButton>
       </PageTitle>
       <Stack gap="lg">
         {Object.entries(classTags).map(([cls, tags]) => (

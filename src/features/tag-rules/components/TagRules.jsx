@@ -24,7 +24,18 @@ import {
 } from "@mantine/core";
 import { getNumberedArray } from "@/utils";
 import { useRoute, Redirect, useLocation } from "wouter";
-import { Aside, HelpIconTooltip, PageTitle } from "@/core/components";
+import {
+  AddSmallButton,
+  Aside,
+  CopySmallButton,
+  EditButton,
+  EditSmallButton,
+  HelpIconTooltip,
+  PageTitle,
+  TrashButton,
+  RemoveSmallButton,
+  RestoreSmallButton,
+} from "@/core/components";
 import {
   useTagRulesStore,
   useTagRulesStoreApi as tagRulesApi,
@@ -39,18 +50,6 @@ import { TagRule } from "./TagRule.jsx";
 import { TagRulesNav } from "./TagRulesNav.jsx";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import classes from "./TagRules.module.css";
-
-const EditButton = (props) => (
-  <ActionIcon aria-label="Edit" size="sm" {...props}>
-    <IconEdit />
-  </ActionIcon>
-);
-
-const DeleteButton = (props) => (
-  <ActionIcon aria-label="Remove" size="sm" {...props}>
-    <IconX />
-  </ActionIcon>
-);
 
 const ActiveToggle = ({ api }) => (
   <InputLabel
@@ -188,54 +187,44 @@ const TagRulesMain = () => {
   const buttonsSize = "compact-sm";
   const buttons = (
     <Group gap="xs">
-      <Button
+      <AddSmallButton
         aria-label="Add a rule"
-        size={buttonsSize}
-        leftSection={<IconPlus size={12} />}
         onClick={() => {
           setDraftTagRuleProps({});
         }}
       >
         Add a Rule
-      </Button>
+      </AddSmallButton>
 
       <Tooltip
         openDelay={600}
         label="Create a copy of this ruleset and edit it immediately."
       >
-        <Button
-          leftSection={<IconCopy size={12} />}
-          size={buttonsSize}
+        <CopySmallButton
           onClick={() => setDraftRuleset(api.duplicateCurrent())}
         >
           Duplicate
-        </Button>
+        </CopySmallButton>
       </Tooltip>
 
-      <Button
+      <EditSmallButton
         aria-label="Rename ruleset"
-        leftSection={<IconEdit size={12} />}
-        size={buttonsSize}
-        variant="light"
         onClick={() => {
           setDraftRuleset(ruleset);
         }}
       >
         Rename
-      </Button>
+      </EditSmallButton>
 
       {!api.currentDefault && (
         <>
-          <Button
+          <RemoveSmallButton
             aria-label="Remove ruleset"
-            size={buttonsSize}
-            variant="outline"
-            leftSection={<IconTrash size={12} />}
             disabled={api.currentDefault}
             onClick={removeCurrent}
           >
             Remove
-          </Button>
+          </RemoveSmallButton>
         </>
       )}
 
@@ -244,16 +233,13 @@ const TagRulesMain = () => {
           openDelay={600}
           label="Restore this ruleset to its original default state"
         >
-          <Button
+          <RestoreSmallButton
             aria-label="Reset to defaults"
             disabled={!api.currentDefaultDirty}
-            leftSection={<IconRestore size={12} />}
             onClick={restoreCurrent}
-            size={buttonsSize}
-            variant="outline"
           >
             Reset
-          </Button>
+          </RestoreSmallButton>
         </Tooltip>
       )}
     </Group>
@@ -361,18 +347,14 @@ const TagRulesMain = () => {
               className={newRule?.id === rule.id ? classes.highlightRow : ""}
               gap={8}
             >
-              <Group gap={4} align="flex-start">
+              <Group gap={4} align="center">
                 <TagRule
                   rule={rule}
                   flex="1"
                   onClick={(rule) => setDraftTagRuleProps({ rule })}
                 />
-                <EditButton
-                  size="md"
-                  onClick={() => setDraftTagRuleProps({ rule })}
-                />
-                <DeleteButton
-                  size="md"
+                <EditButton onClick={() => setDraftTagRuleProps({ rule })} />
+                <TrashButton
                   onClick={getConfirmation(() => api.removeCurrentRule(rule), {
                     title: "Are you sure you want to remove this rule?",
                   })}

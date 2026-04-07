@@ -71,7 +71,7 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
       active: char.active ?? true,
       class: charClass,
       warden: String(char.warden || 0),
-      tags: char.tags,
+      tags: char.tags || [],
       siblings: roster
         .map(({ name }) => name)
         .filter((name) => !char || char.name !== name),

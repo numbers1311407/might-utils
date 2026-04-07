@@ -14,7 +14,15 @@ import {
   useTagGroupsStore,
   useTagGroupsStoreApi as tgapi,
 } from "@/core/store";
-import { Aside, PageTitle, TagsInput } from "@/core/components";
+import {
+  Aside,
+  PageTitle,
+  TagsInput,
+  AddSmallButton,
+  EditSmallButton,
+  CopySmallButton,
+  RemoveSmallButton,
+} from "@/core/components";
 import { tagSchema } from "@/core/schemas";
 import { TagGroupModal } from "./TagGroupModal.jsx";
 
@@ -40,20 +48,12 @@ export const TagGroup = ({
           <Text size="lg">{group.name}</Text>
         </Box>
         <Group gap={4}>
-          <Button size="compact-sm" onClick={onEdit}>
-            Edit
-          </Button>
-          <Button size="compact-sm" onClick={onCopy}>
-            Duplicate
-          </Button>
+          <EditSmallButton onClick={onEdit}>Edit</EditSmallButton>
+          <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
           {onRemove && (
-            <Button
-              variant="outline"
-              size="compact-sm"
-              onClick={confirmedOnRemove}
-            >
+            <RemoveSmallButton onClick={confirmedOnRemove}>
               Remove
-            </Button>
+            </RemoveSmallButton>
           )}
         </Group>
       </Group>
@@ -111,9 +111,9 @@ export const TagGroups = () => {
         title="Generator Grouping Tags"
         subtitle="Collections of related tags used to group generated parties in a flexible way"
       >
-        <Button size="sm" onClick={() => setCurrentGroup({})}>
+        <AddSmallButton onClick={() => setCurrentGroup({})}>
           Create a New Tag Group
-        </Button>
+        </AddSmallButton>
       </PageTitle>
       <Box>
         {Object.values(groups).map((group) => (

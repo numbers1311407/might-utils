@@ -72,22 +72,24 @@ const api = {
   },
 
   addChar: (char, done) => {
-    const id = char.id;
+    let clone;
 
     set((state) => {
       const { roster } = state;
       const idx = roster.findIndex(({ id }) => char.id === id);
 
       if (idx !== -1) {
-        roster[idx] = charSchema.parse({ ...roster[idx], ...char });
+        clone = charSchema.parse({ ...roster[idx], ...char });
+        roster[idx] = clone;
       } else {
-        roster.push(charSchema.parse(char));
+        clone = charSchema.parse(char);
+        roster.push(clone);
       }
 
       state.roster = [...roster].sort(rosterSort);
     });
 
-    done?.(api.getChar(id));
+    done?.(api.getChar(clone.id));
   },
 };
 

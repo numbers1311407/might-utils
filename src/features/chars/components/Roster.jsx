@@ -8,6 +8,9 @@ import { useRoster } from "@/core/hooks";
 import {
   CharsTable,
   CharsAside,
+  AddSmallButton,
+  RestoreSmallButton,
+  RemoveSmallButton,
   CharModalForm,
   PageTitle,
 } from "@/core/components";
@@ -33,7 +36,7 @@ export const Roster = () => {
       rosterApi.clearRoster();
     },
     {
-      message: "This will clear all characters from the roster!",
+      message: "This will delete all characters from the roster!",
     },
   );
 
@@ -59,20 +62,13 @@ export const Roster = () => {
         title="Character Roster"
         subtitle="The list of all your characters, the reference for party generation and saved parties"
       >
-        <Button variant="outline" size="xs" onClick={onResetRoster}>
-          Reset
-        </Button>
-        <Button
-          size="xs"
-          disabled={!roster?.length}
-          onClick={onClearRoster}
-          variant="outline"
-        >
-          Clear
-        </Button>
-        <Button size="xs" onClick={() => setChar({})}>
+        <RestoreSmallButton onClick={onResetRoster}>Reset</RestoreSmallButton>
+        <RemoveSmallButton disabled={!roster?.length} onClick={onClearRoster}>
+          Remove All
+        </RemoveSmallButton>
+        <AddSmallButton onClick={() => setChar({})}>
           New Character
-        </Button>
+        </AddSmallButton>
       </PageTitle>
 
       <CharsTable
