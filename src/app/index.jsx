@@ -16,6 +16,7 @@ import { Navbar } from "./Navbar.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { ScrollToTop } from "./ScrollToTop.jsx";
 import { GlobalConfirmationModal } from "./GlobalConfirmationModal.jsx";
+import { ModalStore } from "@/core/components";
 import {
   CONTAINER_WIDTH,
   HEADER_HEIGHT,
@@ -88,6 +89,7 @@ function App() {
           <Shell />
           <ScrollToTop />
           <GlobalConfirmationModal />
+          <ModalStore />
         </Router>
       </AppContextProvider>
     </MantineProvider>
