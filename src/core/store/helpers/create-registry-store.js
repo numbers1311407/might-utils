@@ -111,8 +111,10 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
     },
 
     add: (record, done) => {
+      let clone;
+
       set((state) => {
-        const clone = api.isNew(record)
+        clone = api.isNew(record)
           ? api.getCopy(record, true)
           : recordSchema.parse(record);
 
@@ -122,6 +124,7 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
           handleDirtyDefaults(clone, state);
         }
       });
+
       done?.(api.get(clone.id));
     },
 

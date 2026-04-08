@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@mantine/core";
+import { Box, Button, Paper, Text } from "@mantine/core";
 import { useState } from "react";
 import {
   useConfirmationStore,
@@ -71,23 +71,25 @@ export const Roster = () => {
         </AddSmallButton>
       </PageTitle>
 
-      <CharsTable
-        chars={roster}
-        onEdit={(char) => setChar(char)}
-        isRoster={true}
-        onUpdate={onUpdate}
-        onRemove={onRemove}
-        emptyContent={
-          <>
-            <Text size="lg" mb="md">
-              You have no characters on your roster.
-            </Text>
-            <Button size="md" onClick={() => setChar({})}>
-              Create a character?
-            </Button>
-          </>
-        }
-      />
+      <Paper p="md" shadow="md">
+        <CharsTable
+          chars={roster}
+          onEdit={(char) => setChar(char)}
+          isRoster={true}
+          onUpdate={onUpdate}
+          onRemove={onRemove}
+          emptyContent={
+            <>
+              <Text size="lg" mb="md">
+                You have no characters on your roster.
+              </Text>
+              <Button size="md" onClick={() => setChar({})}>
+                Create a character?
+              </Button>
+            </>
+          }
+        />
+      </Paper>
 
       <CharsAside visibleFrom="lg" chars={roster} isRoster />
 

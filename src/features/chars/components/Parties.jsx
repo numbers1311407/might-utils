@@ -1,5 +1,14 @@
-import { Box, Button, Group, Stack, Text } from "@mantine/core";
-import { useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  Grid,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
 import {
   useConfirmationStore,
   usePartiesStoreApi as partiesApi,
@@ -11,6 +20,14 @@ import {
   CharSelect,
   CharsTable,
   PageTitle,
+  NpcSimulator,
+  useCalculatorContext,
+  EditSmallButton,
+  RemoveSmallButton,
+  RestoreSmallButton,
+  CopySmallButton,
+  TierSelect,
+  CalculatorContextProvider,
 } from "@/core/components";
 import { usePartiesList, useStableCallback } from "@/core/hooks";
 import { IconPlus } from "@tabler/icons-react";
@@ -19,46 +36,44 @@ import { useLocation, useRoute, Redirect } from "wouter";
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyModal } from "./PartyModal.jsx";
 
-const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
+const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
   const exclude = useMemo(() => party.chars?.map((char) => char.id), [party]);
 
   return (
     <>
-      <Text c="dark" size="sm">
-        Current Party:
-      </Text>
       <PageTitle
+        section={<Text c="var(--mantine-color-white)">Current Party</Text>}
         divider={false}
         title={party.name}
         order={3}
         size="h2"
         mb={8}
         mt={8}
-      />
-      <Group gap={8}>
-        <Button size="sm" variant="light" onClick={onRename}>
-          Rename
-        </Button>
-        <Button size="sm" variant="outline" onClick={onRemove}>
-          Remove
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={!onReset}
-          onClick={onReset}
-        >
-          Reset
-        </Button>
-        <Box flex="1"></Box>
+      >
         <CharSelect
+          label={<Box>Add a Character</Box>}
           emits="char"
           size="md"
+          styles={{
+            root: {
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            },
+          }}
           exclude={exclude}
           onChange={(char) => {
             partiesApi.addChar(party.id, char.id);
           }}
         />
+      </PageTitle>
+      <Group gap={8} my="sm">
+        <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
+        <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
+        <RestoreSmallButton disabled={!onReset} onClick={onReset}>
+          Reset
+        </RestoreSmallButton>
+        <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
       </Group>
     </>
   );
@@ -68,13 +83,14 @@ const PartyHeader = ({ party, onRemove, onReset, onRename }) => {
 // probably a pattern that should be established: components probably shouldn't
 // generally access low level stores but instead should use higher level stores
 // that bake in view logic
-export const Parties = () => {
+export const PartiesMain = () => {
   const parties = usePartiesList();
   const { getConfirmation } = useConfirmationStore();
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
   const [_match, { id: routeId }] = useRoute("/parties/:id?");
   const [_location, setLocation] = useLocation();
+  const { might, setMight } = useCalculatorContext();
 
   const party = useMemo(() => {
     return parties.find((party) => party.id === routeId) || parties[0];
@@ -85,6 +101,14 @@ export const Parties = () => {
   const dirtyChars = useMemo(() => {
     return party?.id ? partiesApi.getDirtyStatus(party.id) : new Set();
   }, [party]);
+
+  useEffect(() => {
+    setMight(party ? partiesApi.getMight(party.id) : 0);
+  }, [setMight, party]);
+
+  const copyParty = useStableCallback(() => {
+    partiesApi.copy(party, (p) => setLocation(`/parties/${p.id}`));
+  });
 
   const removeParty = getConfirmation(
     () => {
@@ -178,31 +202,48 @@ export const Parties = () => {
       {party && (
         <PartyHeader
           party={party}
+          onCopy={copyParty}
           onRemove={removeParty}
           onRename={renameParty}
           onReset={dirtyChars.size ? resetPartyChars : null}
         />
       )}
 
-      {party && (
-        <CharsTable
-          my="xl"
-          chars={party ? party.chars : []}
-          onEdit={editChar}
-          onUpdate={updateChar}
-          onRemove={removeChar}
-          onReset={resetChar}
-          dirtyChars={dirtyChars}
-          emptyContent={
-            <>
-              <Text>This party has no characters!</Text>
-              <Text>
-                Use the dropdown above to add characters from the roster.
+      <Grid my="lg" align="flex-start" gutter="xl">
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Paper p="lg" shadow="md">
+            <Title order={4} mb="xs">
+              Party Instances at Might{" "}
+              <Text span c="gold" fz="inherit">
+                {might}
               </Text>
-            </>
-          }
-        />
-      )}
+            </Title>
+            <Simulator />
+          </Paper>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          {party && (
+            <Paper shadow="md" p="md">
+              <CharsTable
+                chars={party ? party.chars : []}
+                onEdit={editChar}
+                onUpdate={updateChar}
+                onRemove={removeChar}
+                onReset={resetChar}
+                dirtyChars={dirtyChars}
+                emptyContent={
+                  <>
+                    <Text>This party has no characters!</Text>
+                    <Text>
+                      Use the dropdown above to add characters from the roster.
+                    </Text>
+                  </>
+                }
+              />
+            </Paper>
+          )}
+        </Grid.Col>
+      </Grid>
 
       <Aside>
         <Stack gap="sm">
@@ -230,5 +271,23 @@ export const Parties = () => {
         record={draftParty}
       />
     </Box>
+  );
+};
+
+const Simulator = () => {
+  const { setMight, instance, setInstance, ...ctx } = useCalculatorContext();
+  return (
+    <Stack>
+      <TierSelect value={instance} onChange={setInstance} />
+      <NpcSimulator instance={instance} {...ctx} />
+    </Stack>
+  );
+};
+
+export const Parties = () => {
+  return (
+    <CalculatorContextProvider>
+      <PartiesMain />
+    </CalculatorContextProvider>
   );
 };

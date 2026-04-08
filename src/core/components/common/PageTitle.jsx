@@ -19,7 +19,7 @@ export const PageTitle = ({
 }) => (
   <Stack mt={margins[size] || "md"} mb="lg" {...props}>
     <Group gap={6} align="flex-start">
-      <Box flex="1 0" mt={-4} c="gold">
+      <Box flex="1 0" c="gold">
         {typeof section === "string" && (
           <Text c="brown" pl={2} fw="bold">
             {section}

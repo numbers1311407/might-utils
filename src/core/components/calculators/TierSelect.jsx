@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Select } from "@mantine/core";
 import { capitalize } from "@/utils";
 import csvData from "@/assets/instance-data.csv?tiers";
@@ -16,10 +17,15 @@ const TIER_DATA = Object.entries(csvData).reduce(
   [],
 );
 
-export const TierSelect = ({ onChange, ...props }) => {
+export const TierSelect = ({ onChange, value: propsValue, ...props }) => {
+  const value = useMemo(() => {
+    return propsValue ? Object.values(propsValue).join(":") : "";
+  }, [propsValue]);
+
   return (
     <Select
       size="md"
+      value={value}
       {...props}
       data={TIER_DATA}
       onChange={(value) => {

@@ -20,8 +20,6 @@ Going through a bit of a pivot, updating soon.
       be edited inline
     - Tracking when rules *cannot* be passed or can only be passed by a few chars,
       to warn players of rules that may be problematic.
-  - Group Tags
-    - Needs UI
   - Saved parties
     - Replace the current "saved parties" with a simpler UI that's more Read
       than Update, with a smaller roster editor, no tags editing (but a tag

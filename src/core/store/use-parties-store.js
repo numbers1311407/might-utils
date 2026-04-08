@@ -1,7 +1,9 @@
 import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
 import { partySchema } from "@/core/schemas";
+import { getCharMight } from "@/core/chars";
 import { deepEqual } from "fast-equals";
+import { sum } from "@/utils";
 
 // super overloaded for little good reason
 // ---
@@ -118,6 +120,13 @@ const extendApi = (_set, _get, api) => ({
     const party = api.get(partyId);
     const ids = party.chars.map((char) => char.id);
     _addOrUpdateChar(partyId, ids, api);
+  },
+
+  getMight: (partyId) => {
+    const party = api.get(partyId);
+    return party?.chars
+      ? sum(party.chars.map((char) => getCharMight(char)))
+      : 0;
   },
 });
 

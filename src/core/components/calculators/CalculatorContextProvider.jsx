@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalculatorContext } from "../calculator-context.js";
+import { CalculatorContext } from "./calculator-context.js";
 
 export const CALCULATOR_DEFAULT_INSTANCE = {
   tier: "T9",

@@ -1,19 +1,14 @@
 import { NumberInput, Stack, Text, List } from "@mantine/core";
 import { useRoute } from "wouter";
-
-import {
-  simulateInstanceNPC,
-  getTargetMightRanges,
-  humanizeOffering,
-} from "@/core/instances";
-import { capitalize } from "@/utils";
+import { getTargetMightRanges, humanizeOffering } from "@/core/instances";
 import { PageTitle } from "@/core/components";
-
-import { TierSelect, DifficultySelect } from "./TierSelect.jsx";
-import { ChatWindow } from "./ChatWindow";
-import { useCalculatorContext } from "../calculator-context.js";
-import { CalculatorContextProvider } from "./CalculatorContextProvider.jsx";
-import { ChatNpcGreetingInteraction } from "./ChatNpcGreetingInteraction.jsx";
+import {
+  TierSelect,
+  DifficultySelect,
+  useCalculatorContext,
+  CalculatorContextProvider,
+  NpcSimulator as NpcSimulatorMain,
+} from "@/core/components/calculators";
 
 export const NpcSimulator = ({ children }) => {
   const { might, setMight, instance, maxIntense } = useCalculatorContext();
@@ -35,26 +30,11 @@ export const NpcSimulator = ({ children }) => {
           size="md"
           w={400}
         />
-        {might && instance.might && (
-          <ChatWindow>
-            <ChatNpcGreetingInteraction tier={instance.tier} />
-            <ChatWindow.Line>Your party's Might: {might}.</ChatWindow.Line>
-            <ChatWindow.Divider />
-            <ChatWindow.Line>
-              Your options for {capitalize(instance.type)} instances (Suggested
-              Might: {instance.might}, Maximum for Intense: {maxIntense}):
-            </ChatWindow.Line>
-            {simulateInstanceNPC(
-              instance.type,
-              instance.might,
-              might,
-              instance.tier,
-            ).map((line) => (
-              <ChatWindow.Line key={line}>{line}</ChatWindow.Line>
-            ))}
-            <ChatWindow.Divider />
-          </ChatWindow>
-        )}
+        <NpcSimulatorMain
+          instance={instance}
+          might={might}
+          maxIntense={maxIntense}
+        />
       </Stack>
     </Stack>
   );
@@ -100,11 +80,7 @@ export const InstanceCalculatorMain = () => {
 
   return (
     <Page>
-      <TierSelect
-        value={Object.values(instance).join(":")}
-        onChange={setInstance}
-        w={400}
-      />
+      <TierSelect value={instance} onChange={setInstance} w={400} />
     </Page>
   );
 };

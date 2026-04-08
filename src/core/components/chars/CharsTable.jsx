@@ -24,26 +24,31 @@ export const CharsTableRow = ({
   classTags,
   dirtyChars,
   edit,
+  hideControls,
   isRoster,
   remove,
   reset,
   update,
 }) => (
   <Table.Tr>
-    <Table.Td>
-      <Switch
-        aria-label="Toggle Active Status"
-        checked={char.active}
-        onChange={(e) => {
-          update({ active: e.currentTarget.checked });
-        }}
-      />
-    </Table.Td>
-    <Table.Td>
-      <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
-        {char.name}
-      </Text>
-    </Table.Td>
+    {isRoster && (
+      <>
+        <Table.Td>
+          <Switch
+            aria-label="Toggle Active Status"
+            checked={char.active}
+            onChange={(e) => {
+              update({ active: e.currentTarget.checked });
+            }}
+          />
+        </Table.Td>
+        <Table.Td>
+          <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
+            {char.name}
+          </Text>
+        </Table.Td>
+      </>
+    )}
     <Table.Td>
       <Group gap={8} wrap="nowrap">
         <ClassIcon
@@ -51,7 +56,9 @@ export const CharsTableRow = ({
           cls={char.class}
           style={{ opacity: char.active ? 1 : 0.25 }}
         />
-        <Text style={{ opacity: char.active ? 1 : 0.5 }}>{char.class}</Text>
+        <Text style={{ opacity: char.active ? 1 : 0.5 }}>
+          {isRoster ? char.class : char.name}
+        </Text>
       </Group>
     </Table.Td>
     <Table.Td ta="center">
@@ -67,7 +74,7 @@ export const CharsTableRow = ({
         {getCharMight(char)}
       </Text>
     </Table.Td>
-    <Table.Td>
+    <Table.Td ta="center">
       <IncrementButtons
         value={char.level}
         label="char level"
@@ -76,7 +83,7 @@ export const CharsTableRow = ({
         onChange={(level) => update({ level })}
       />
     </Table.Td>
-    <Table.Td>
+    <Table.Td ta="center">
       <IncrementButtons
         value={char.warden}
         label="char level"
@@ -85,31 +92,40 @@ export const CharsTableRow = ({
         onChange={(warden) => update({ warden })}
       />
     </Table.Td>
-    <Table.Td align="center">
-      <CharTagsPopover tags={char.tags} classTags={classTags[char.class]} />
-    </Table.Td>
-    <Table.Td>
-      <Group gap={6} justify="flex-end">
-        {!isRoster && dirtyChars && (
-          <Tooltip openDelay={500} label="Reset character to roster version">
-            <RestoreButton
-              aria-label="Reset character to roster version"
-              onClick={() => reset(char)}
-              disabled={!dirtyChars.has(char.id)}
+    {isRoster && (
+      <Table.Td align="center">
+        <CharTagsPopover tags={char.tags} classTags={classTags[char.class]} />
+      </Table.Td>
+    )}
+    {!hideControls && (
+      <Table.Td>
+        <Group gap={6} justify="flex-end">
+          {!isRoster && dirtyChars && (
+            <Tooltip openDelay={500} label="Reset character to roster version">
+              <RestoreButton
+                aria-label="Reset character to roster version"
+                onClick={() => reset(char)}
+                disabled={!dirtyChars.has(char.id)}
+              />
+            </Tooltip>
+          )}
+          {isRoster && (
+            <Tooltip openDelay={500} label="Edit character">
+              <EditButton
+                aria-label="Edit character"
+                onClick={() => edit(char)}
+              />
+            </Tooltip>
+          )}
+          <Tooltip openDelay={500} label="Remove character">
+            <TrashButton
+              aria-label="Remove character"
+              onClick={() => remove(char)}
             />
           </Tooltip>
-        )}
-        <Tooltip openDelay={500} label="Edit character">
-          <EditButton aria-label="Edit character" onClick={() => edit(char)} />
-        </Tooltip>
-        <Tooltip openDelay={500} label="Remove character">
-          <TrashButton
-            aria-label="Remove character"
-            onClick={() => remove(char)}
-          />
-        </Tooltip>
-      </Group>
-    </Table.Td>
+        </Group>
+      </Table.Td>
+    )}
   </Table.Tr>
 );
 
@@ -121,6 +137,7 @@ export const CharsTable = ({
   onRemove,
   onReset,
   isRoster,
+  hideControls = false,
   emptyContent = null,
   Row = CharsTableRow,
   EmptyRow = CharsTableEmptyRow,
@@ -132,9 +149,9 @@ export const CharsTable = ({
     <Table stickyHeader stickyHeaderOffset={66} {...props}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th width={65}>Active</Table.Th>
-          <Table.Th>Name</Table.Th>
-          <Table.Th w={70}>Class</Table.Th>
+          {isRoster && <Table.Th width={65}>Active</Table.Th>}
+          {isRoster && <Table.Th>Name</Table.Th>}
+          <Table.Th w={70}>{isRoster ? "Class" : "Name"}</Table.Th>
           <Table.Th ta="center" w={120}>
             Might
           </Table.Th>
@@ -144,10 +161,10 @@ export const CharsTable = ({
           <Table.Th ta="center" width={72}>
             Warden
           </Table.Th>
-          <Table.Th width={50}>Tags</Table.Th>
-          <Table.Th width={isRoster ? 70 : 120} ta="right">
-            Actions
-          </Table.Th>
+          {isRoster && <Table.Th width={50}>Tags</Table.Th>}
+          {(isRoster || !hideControls) && (
+            <Table.Th width={80} ta="right"></Table.Th>
+          )}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
@@ -161,6 +178,7 @@ export const CharsTable = ({
             classTags={classTags}
             dirtyChars={dirtyChars}
             edit={onEdit}
+            hideControls={hideControls}
             remove={onRemove}
             reset={onReset}
             isRoster={isRoster}
