@@ -181,7 +181,7 @@ export const PartiesMain = () => {
               </Paper>
               <Paper p="md" shadow="md">
                 <Title order={5} mb="xs">
-                  Stats
+                  Party Stats
                 </Title>
                 <StatsTable stats={stats} />
               </Paper>
@@ -190,7 +190,7 @@ export const PartiesMain = () => {
           <Grid.Col span={{ base: 12, lg: 6 }}>
             <Paper shadow="md" p="md">
               <Title order={5} mb="xs">
-                Characters
+                The Party
               </Title>
               <CharsTable
                 chars={party ? party.chars : []}
