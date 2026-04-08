@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IconPlus } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
 import {
-  useConfirmationStore,
+  getConfirmation,
   usePartiesStoreApi as partiesApi,
 } from "@/core/store";
 import {
@@ -87,7 +87,6 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
 // that bake in view logic
 export const PartiesMain = () => {
   const [_match, { id: routeId }] = useRoute("/parties/:id?");
-  const { getConfirmation } = useConfirmationStore();
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
   const [_location, setLocation] = useLocation();

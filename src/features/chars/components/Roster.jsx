@@ -1,9 +1,6 @@
 import { Box, Button, Paper, Text } from "@mantine/core";
 import { useState } from "react";
-import {
-  useConfirmationStore,
-  useRosterStoreApi as rosterApi,
-} from "@/core/store";
+import { getConfirmation, useRosterStoreApi as rosterApi } from "@/core/store";
 import { useRoster } from "@/core/hooks";
 import {
   CharsTable,
@@ -17,7 +14,6 @@ import {
 
 export const Roster = () => {
   const roster = useRoster();
-  const { getConfirmation } = useConfirmationStore();
   const [char, setChar] = useState(null);
 
   const onResetRoster = getConfirmation(

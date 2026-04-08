@@ -5,7 +5,11 @@ export const useConfirmationStore = create((set, get) => ({
   cancelCallback: null,
   isOpen: false,
   props: null,
+}));
 
+const { getState: get, setState: set } = useConfirmationStore;
+
+const api = {
   getConfirmation: (callback, options = {}) => {
     const { onCancel: cancelCallback, ...props } = options;
 
@@ -31,22 +35,25 @@ export const useConfirmationStore = create((set, get) => ({
   },
 
   onCancel: async () => {
-    const { cancelCallback, reset } = get();
+    const { cancelCallback } = get();
 
     try {
       await cancelCallback();
     } finally {
-      reset();
+      api.reset();
     }
   },
 
   onConfirm: async () => {
-    const { confirmCallback, reset } = get();
+    const { confirmCallback } = get();
 
     try {
       await confirmCallback();
     } finally {
-      reset();
+      api.reset();
     }
   },
-}));
+};
+
+export const useConfirmationStoreApi = api;
+export const getConfirmation = api.getConfirmation;

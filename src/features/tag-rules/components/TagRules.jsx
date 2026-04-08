@@ -1,13 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  IconCopy,
-  IconX,
-  IconRestore,
-  IconSortAscendingNumbers,
-  IconPlus,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconSortAscendingNumbers, IconPlus } from "@tabler/icons-react";
 import {
   ActionIcon,
   Button,
@@ -39,7 +31,7 @@ import {
 import {
   useTagRulesStore,
   useTagRulesStoreApi as tagRulesApi,
-  useConfirmationStore,
+  getConfirmation,
 } from "@/core/store";
 import { useTagRulesManager } from "@/core/hooks";
 import { useTagRulesContext } from "../context.js";
@@ -142,7 +134,6 @@ const ToggleGroupSizeTwenty = () => {
 };
 
 const TagRulesMain = () => {
-  const { getConfirmation } = useConfirmationStore();
   const [_match, { id }] = useRoute("/rulesets/:id?");
   const [ruleset = {}, _setRuleset, api] = useTagRulesManager("filters", id);
   const [draftRuleset, setDraftRuleset] = useState(null);

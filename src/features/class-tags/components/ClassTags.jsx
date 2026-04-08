@@ -1,8 +1,7 @@
 import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
-import { useConfirmationStore, useClassTagsStore } from "@/core/store";
+import { getConfirmation, useClassTagsStore } from "@/core/store";
 import {
-  AppLink,
   Aside,
   ClassIcon,
   TagsInput,
@@ -41,7 +40,6 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
 };
 
 export const ClassTags = () => {
-  const { getConfirmation } = useConfirmationStore();
   const classTags = useClassTagsStore((store) => store.tags);
   const addClassTag = useClassTagsStore((store) => store.addClassTag);
   const removeClassTag = useClassTagsStore((store) => store.removeClassTag);

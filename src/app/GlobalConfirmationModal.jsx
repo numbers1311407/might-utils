@@ -1,8 +1,11 @@
-import { useConfirmationStore } from "@/core/store";
+import {
+  useConfirmationStore,
+  useConfirmationStoreApi as api,
+} from "@/core/store";
 import { ConfirmationModal } from "@/core/components";
 
 export const GlobalConfirmationModal = () => {
-  const { onConfirm, onCancel, props, isOpen } = useConfirmationStore();
+  const { props, isOpen } = useConfirmationStore();
 
   if (!isOpen) {
     return null;
@@ -12,8 +15,8 @@ export const GlobalConfirmationModal = () => {
     <ConfirmationModal
       {...props}
       opened
-      onConfirm={onConfirm}
-      onCancel={onCancel}
+      onConfirm={api.onConfirm}
+      onCancel={api.onCancel}
     />
   );
 };

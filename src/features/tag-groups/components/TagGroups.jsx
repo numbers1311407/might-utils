@@ -1,16 +1,8 @@
 import { useState } from "react";
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import {
-  useConfirmationStore,
+  getConfirmation,
   useTagGroupsStore,
   useTagGroupsStoreApi as tgapi,
 } from "@/core/store";
@@ -34,7 +26,6 @@ export const TagGroup = ({
   isCleanDefault,
   onReset,
 }) => {
-  const { getConfirmation } = useConfirmationStore();
   const [error, setError] = useState();
 
   const confirmedOnRemove = getConfirmation(onRemove, {

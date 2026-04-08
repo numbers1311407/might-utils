@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import {
-  useConfirmationStore,
+  getConfirmation,
   usePartiesStore,
   usePartiesStoreApi as partiesApi,
 } from "@/core/store";
@@ -10,7 +10,6 @@ import {
 // like confirmations. The hook+modal combo would take care of everything
 // related to editing the party and just make callbacks on completion.
 export const useParty = (partyId, options = {}) => {
-  const { getConfirmation } = useConfirmationStore();
   const { defaultToFirst } = options;
   const partyRegistry = usePartiesStore((store) => store.registry);
 
