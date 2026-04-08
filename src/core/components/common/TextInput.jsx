@@ -4,9 +4,9 @@ import { useDraftState } from "@/core/hooks";
 
 export const TextInput = ({
   clearable = true,
+  defaultValue,
   value,
   size = "md",
-  defaultValue,
   onChange,
   onKeyDown,
   ...props
@@ -19,7 +19,6 @@ export const TextInput = ({
       ref={ref}
       size={size}
       value={localValue}
-      defaultValue={defaultValue}
       {...props}
       onChange={(e) => {
         setLocalValue(e.target.value);

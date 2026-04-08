@@ -1,5 +1,6 @@
 import { deepEqual } from "fast-equals";
 import { createStore } from "./create-store.js";
+import { identity } from "@/utils";
 
 /**
  * Store helper which expects a schema with id and default id generation,
@@ -12,6 +13,8 @@ import { createStore } from "./create-store.js";
  * duplicate names until unique.
  */
 export const createRegistryStore = (name, recordSchema, options = {}) => {
+  const { recordName = "record", getConfirmation = identity } = options;
+
   const defaults = options.defaults?.reduce((acc, record) => {
     const parsed = recordSchema.parse(record);
     return {
@@ -54,14 +57,19 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       return api.isDefault(record) && !deepEqual(defaults[id], record);
     },
 
-    resetDefault: (record) => {
-      const id = typeof record === "string" ? record : record?.id;
-      const origDefault = defaults[id];
+    resetDefault: getConfirmation(
+      (record) => {
+        const id = typeof record === "string" ? record : record?.id;
+        const origDefault = defaults[id];
 
-      if (origDefault) {
-        api.add(origDefault);
-      }
-    },
+        if (origDefault) {
+          api.add(origDefault);
+        }
+      },
+      {
+        message: `This ${recordName} will be restored to its original defaults.`,
+      },
+    ),
   };
 
   const { getState: get, setState: set } = useStore;
@@ -128,16 +136,24 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       done?.(api.get(clone.id));
     },
 
-    remove: (record) => {
-      const id = typeof record === "string" ? record : record?.id;
+    remove: getConfirmation(
+      (record, cb) => {
+        const id = typeof record === "string" ? record : record?.id;
 
-      if (!!defaults && id in defaults) return;
+        if (!!defaults && id in defaults) return;
 
-      set((state) => {
-        const { [id]: _, ...registry } = state.registry;
-        state.registry = registry;
-      });
-    },
+        set((state) => {
+          const { [id]: _, ...registry } = state.registry;
+          state.registry = registry;
+        });
+
+        cb?.();
+      },
+      {
+        title: `Are you sure you want to remove this ${recordName}?`,
+        message: "This cannot be undone!",
+      },
+    ),
   };
 
   if (options.extendApi) {

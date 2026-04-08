@@ -104,7 +104,7 @@ export const CharsTableRow = ({
             <Tooltip openDelay={500} label="Reset character to roster version">
               <RestoreButton
                 aria-label="Reset character to roster version"
-                onClick={() => reset(char)}
+                onClick={() => reset(char.id)}
                 disabled={!dirtyChars.has(char.id)}
               />
             </Tooltip>

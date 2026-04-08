@@ -1,5 +1,6 @@
 import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
+import { getConfirmation } from "./use-confirmation-store.js";
 import { partySchema } from "@/core/schemas";
 import { getCharMight } from "@/core/chars";
 import { deepEqual } from "fast-equals";
@@ -88,18 +89,26 @@ const extendApi = (_set, get, api) => ({
     }
   },
 
-  removeChar: (partyId, char) => {
-    const charId = typeof char === "string" ? char : char?.id;
-    const party = api.get(partyId);
-    const hasChar = party.chars.some((char) => char.id === charId);
+  removeChar: getConfirmation(
+    (partyId, char, done) => {
+      const charId = typeof char === "string" ? char : char?.id;
+      const party = api.get(partyId);
+      const hasChar = party.chars.some((char) => char.id === charId);
 
-    if (!party || !hasChar) return;
+      if (!party || !hasChar) return;
 
-    api.add({
-      ...party,
-      chars: party.chars.filter((char) => char.id !== charId),
-    });
-  },
+      api.add({
+        ...party,
+        chars: party.chars.filter((char) => char.id !== charId),
+      });
+
+      done?.();
+    },
+    {
+      title: "Are you sure you want to remove this character from the party?",
+      message: "They will still be avaiable to re-add from the roster.",
+    },
+  ),
 
   updateChar: (partyId, charId, update) => {
     const char = api.getChar(partyId, charId);
@@ -117,16 +126,30 @@ const extendApi = (_set, get, api) => ({
     }
   },
 
-  resetChar: (partyId, char) => {
-    const charId = typeof char === "string" ? char : char?.id;
-    api.addChar(partyId, charId);
-  },
+  resetChar: getConfirmation(
+    (partyId, char) => {
+      const charId = typeof char === "string" ? char : char?.id;
+      api.addChar(partyId, charId);
+    },
+    {
+      message:
+        "This will resync this character with their roster version, " +
+        "reverting any changes to level, warden, and tags.",
+    },
+  ),
 
-  resetChars: (partyId) => {
-    const party = api.get(partyId);
-    const ids = party.chars.map((char) => char.id);
-    _addOrUpdateChar(partyId, ids, api);
-  },
+  resetChars: getConfirmation(
+    (partyId) => {
+      const party = api.get(partyId);
+      const ids = party.chars.map((char) => char.id);
+      _addOrUpdateChar(partyId, ids, api);
+    },
+    {
+      message:
+        "This will resync all characters with their roster versions, " +
+        "reverting any changes to level, warden, and tags.",
+    },
+  ),
 
   getMight: (partyId) => {
     const party = api.get(partyId);
@@ -212,6 +235,8 @@ const { useStore, api } = createRegistryStore(
   "might-utils-parties",
   partySchema,
   {
+    getConfirmation,
+    recordName: "party",
     extendApi,
   },
 );

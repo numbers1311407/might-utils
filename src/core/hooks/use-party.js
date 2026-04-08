@@ -9,7 +9,7 @@ import {
 // to the modal editor for hte party. It would require a global modal service
 // like confirmations. The hook+modal combo would take care of everything
 // related to editing the party and just make callbacks on completion.
-export const useParty = (partyId, options = {}) => {
+export const useParty = (paramPartyId, options = {}) => {
   const { defaultToFirst } = options;
   const partyRegistry = usePartiesStore((store) => store.registry);
 
@@ -19,10 +19,12 @@ export const useParty = (partyId, options = {}) => {
     if (!keys.length) return;
 
     return (
-      (partyId && partyRegistry[partyId]) ||
+      (paramPartyId && partyRegistry[paramPartyId]) ||
       (defaultToFirst && partyRegistry[keys[0]])
     );
-  }, [partyId, partyRegistry, defaultToFirst]);
+  }, [paramPartyId, partyRegistry, defaultToFirst]);
+
+  const partyId = party?.id;
 
   const dirtyChars = useMemo(() => {
     return partiesApi.getDirtyStatus(party?.id);
@@ -34,11 +36,11 @@ export const useParty = (partyId, options = {}) => {
 
   const addChar = useCallback(
     (charId) => {
-      if (party?.id) {
-        partiesApi.addChar(party.id, charId);
+      if (partyId) {
+        partiesApi.addChar(partyId, charId);
       }
     },
-    [party],
+    [partyId],
   );
 
   const isCharDirty = useCallback(
@@ -50,63 +52,59 @@ export const useParty = (partyId, options = {}) => {
     [party],
   );
 
+  const copyParty = useCallback(
+    (done) => {
+      if (party) partiesApi.copy(party, done);
+    },
+    [party],
+  );
+
+  const removeParty = useCallback(
+    (done) => {
+      if (partyId) partiesApi.remove(partyId, done);
+    },
+    [partyId],
+  );
+
   const hasChar = useCallback(() => {
-    if (party?.id) {
-      return partiesApi.hasChar(party.id, charId);
-    }
+    if (party?.id) return partiesApi.hasChar(party.id, charId);
   }, [party]);
 
   const updateChar = useCallback(
     (charId, update) => {
-      if (party?.id) {
-        partiesApi.updateChar(party.id, charId, update);
-      }
+      if (partyId) partiesApi.updateChar(partyId, charId, update);
     },
-    [party],
+    [partyId],
   );
 
   const resetChar = useCallback(
     (charId) => {
-      if (party?.id) {
-        partiesApi.reseChar(party?.id, charId);
-      }
+      if (partyId) partiesApi.resetChar(partyId, charId);
     },
-    [party],
+    [partyId],
   );
 
   const resetChars = useCallback(() => {
-    if (party?.id) {
-      partiesApi.resetChars(party?.id);
-    }
-  }, [party]);
+    if (partyId) partiesApi.resetChars(partyId);
+  }, [partyId]);
 
   const getChar = useCallback(
     (charId) => {
-      if (party?.id) {
-        partiesApi.getChar(party?.id, charId);
-      }
+      if (partyId) partiesApi.getChar(partyId, charId);
+    },
+    [partyId],
+  );
+
+  const removeChar = useCallback(
+    (charId, done) => {
+      if (partyId) partiesApi.removeChar(partyId, charId, done);
     },
     [party],
   );
 
-  const removeChar = useMemo(() => {
-    return (charId) => {
-      if (party?.id) {
-        const char = partiesApi.getChar(party.id, charId);
-        const title = `Are you sure you want to remove the ${char.name} from the party?`;
-
-        return getConfirmation(
-          () => {
-            partiesApi.removeChar(party.id, charId);
-          },
-          { title },
-        );
-      }
-    };
-  }, [party]);
-
   return {
     addChar,
+    copyParty,
     dirtyChars,
     getChar,
     hasChar,
@@ -114,6 +112,7 @@ export const useParty = (partyId, options = {}) => {
     party,
     partyId: party?.id,
     removeChar,
+    removeParty,
     resetChar,
     resetChars,
     stats,

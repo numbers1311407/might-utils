@@ -41,6 +41,14 @@ export const CharCounts = ({
   renderCount,
 }) => {
   return useMemo(() => {
+    if (!chars.length) {
+      return (
+        <Text c="dark" size="sm">
+          No Entries
+        </Text>
+      );
+    }
+
     return Object.entries(chars)
       .sort((a, b) => {
         return b[1].length === a[1].length

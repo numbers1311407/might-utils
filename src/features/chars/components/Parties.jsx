@@ -92,7 +92,7 @@ export const PartiesMain = () => {
   const [_location, setLocation] = useLocation();
   const { setMight } = useCalculatorContext();
 
-  const { dirtyChars, party, partyId, stats } = useParty(routeId, {
+  const { dirtyChars, party, partyId, stats, ...partyApi } = useParty(routeId, {
     defaultToFirst: true,
   });
 
@@ -101,19 +101,12 @@ export const PartiesMain = () => {
   }, [stats]);
 
   const copyParty = useStableCallback(() => {
-    partiesApi.copy(party, (p) => setLocation(`/parties/${p.id}`));
+    partyApi.copyParty((copy) => setLocation(`/parties/${copy.id}`));
   });
 
-  const removeParty = getConfirmation(
-    () => {
-      partiesApi.remove(partyId);
-      setLocation(`/parties`);
-    },
-    {
-      title: "Are you sure you want to remove this party?",
-      message: "This can't be undone.",
-    },
-  );
+  const removeParty = useStableCallback(() => {
+    partyApi.removeParty(() => setLocation(`/parties`));
+  });
 
   const renameParty = useStableCallback(() => {
     editParty(party);
@@ -131,38 +124,6 @@ export const PartiesMain = () => {
     editChar(null);
     partiesApi.updateChar(partyId, char.id, char);
   });
-
-  const updateChar = useStableCallback((charId, update) => {
-    partiesApi.updateChar(partyId, charId, update);
-  });
-
-  const resetChar = getConfirmation(
-    (char) => partiesApi.resetChar(partyId, char.id),
-    {
-      message:
-        "This will resync this character with their roster version, " +
-        "reverting any changes to level, warden, and tags.",
-    },
-  );
-
-  const resetPartyChars = getConfirmation(
-    () => partiesApi.resetChars(partyId),
-    {
-      message:
-        "This will resync all characters with their roster versions, " +
-        "reverting any changes to level, warden, and tags.",
-    },
-  );
-
-  const removeChar = getConfirmation(
-    (char) => {
-      partiesApi.removeChar(partyId, char);
-    },
-    {
-      title: "Are you sure you want to remove this character from the party?",
-      message: "They will still be avaiable to re-add from the roster.",
-    },
-  );
 
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
@@ -199,13 +160,14 @@ export const PartiesMain = () => {
           onCopy={copyParty}
           onRemove={removeParty}
           onRename={renameParty}
-          onReset={dirtyChars.size ? resetPartyChars : null}
+          onReset={dirtyChars.size ? partyApi.resetChars : null}
         />
       )}
 
       <Divider my="md" />
-      <Grid align="flex-start" gutter="xl">
-        {stats && (
+
+      {party && (
+        <Grid align="flex-start" gutter="xl">
           <Grid.Col span={{ base: 12, lg: 6 }}>
             <Stack>
               <Paper p="md" shadow="md">
@@ -225,9 +187,7 @@ export const PartiesMain = () => {
               </Paper>
             </Stack>
           </Grid.Col>
-        )}
-        <Grid.Col span={{ base: 12, lg: 6 }}>
-          {party && (
+          <Grid.Col span={{ base: 12, lg: 6 }}>
             <Paper shadow="md" p="md">
               <Title order={5} mb="xs">
                 Characters
@@ -235,23 +195,23 @@ export const PartiesMain = () => {
               <CharsTable
                 chars={party ? party.chars : []}
                 onEdit={editChar}
-                onUpdate={updateChar}
-                onRemove={removeChar}
-                onReset={resetChar}
+                onUpdate={partyApi.updateChar}
+                onRemove={partyApi.removeChar}
+                onReset={partyApi.resetChar}
                 dirtyChars={dirtyChars}
                 emptyContent={
-                  <>
+                  <Stack>
                     <Text>This party has no characters!</Text>
                     <Text>
                       Use the dropdown above to add characters from the roster.
                     </Text>
-                  </>
+                  </Stack>
                 }
               />
             </Paper>
-          )}
-        </Grid.Col>
-      </Grid>
+          </Grid.Col>
+        </Grid>
+      )}
 
       <Aside>
         <Stack gap="sm">
