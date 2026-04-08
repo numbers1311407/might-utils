@@ -17,7 +17,7 @@ const Ranks = [
   {
     rank: 3,
     mightMultiplier: 2.0,
-    requiredLevel: 70,
+    requiredLevel: 68,
   },
 ];
 

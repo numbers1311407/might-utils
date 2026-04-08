@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { deepEqual } from "fast-equals";
 
-export const useDeepMemo = (value) => {
+export const useStructuredClone = (value) => {
   const ref = useRef();
 
   if (!deepEqual(value, ref.current)) {

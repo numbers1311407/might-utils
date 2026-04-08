@@ -54,9 +54,9 @@ export const CharsTableRow = ({
         <ClassIcon
           size={24}
           cls={char.class}
-          style={{ opacity: char.active ? 1 : 0.25 }}
+          style={{ opacity: !isRoster || char.active ? 1 : 0.25 }}
         />
-        <Text style={{ opacity: char.active ? 1 : 0.5 }}>
+        <Text style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}>
           {isRoster ? char.class : char.name}
         </Text>
       </Group>

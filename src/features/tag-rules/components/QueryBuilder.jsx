@@ -1,6 +1,6 @@
 import { Stack } from "@mantine/core";
 import { QueryBuilder as ReactQueryBuilder } from "react-querybuilder";
-import { useDeepMemo, useStableCallback } from "@/core/hooks";
+import { useStructuredClone, useStableCallback } from "@/core/hooks";
 import {
   QueryBuilderMantine,
   MantineValueEditor,
@@ -49,7 +49,7 @@ export const QueryBuilder = ({
   onQueryChange: propsOnQueryChange,
   ...rootProps
 }) => {
-  const query = useDeepMemo(propsQuery);
+  const query = useStructuredClone(propsQuery);
   const onQueryChange = useStableCallback((changedQuery) => {
     if (
       typeof propsOnQueryChange === "function" &&

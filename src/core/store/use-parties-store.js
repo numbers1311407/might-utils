@@ -3,7 +3,7 @@ import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
 import { partySchema } from "@/core/schemas";
 import { getCharMight } from "@/core/chars";
 import { deepEqual } from "fast-equals";
-import { sum } from "@/utils";
+import { sum, round } from "@/utils";
 
 // super overloaded for little good reason
 // ---
@@ -47,7 +47,13 @@ const _addOrUpdateChar = (partyId, value, api) => {
   }
 };
 
-const extendApi = (_set, _get, api) => ({
+const extendApi = (_set, get, api) => ({
+  getFirst: () => {
+    const { registry } = get();
+    const ids = Object.keys(registry);
+    return ids.length ? registry[ids[0]] : undefined;
+  },
+
   hasChar: (partyId, charId) => {
     const party = api.get(partyId);
     return (
@@ -127,6 +133,78 @@ const extendApi = (_set, _get, api) => ({
     return party?.chars
       ? sum(party.chars.map((char) => getCharMight(char)))
       : 0;
+  },
+
+  getStats: (partyId) => {
+    const party = api.get(partyId);
+    const acc = {
+      size: party?.chars.length,
+      might: { avg: 0, min: 0, max: 0, total: 0, chars: {}, counts: {} },
+      level: { avg: 0, min: 0, max: 0, total: 0, chars: {}, counts: {} },
+      warden: { avg: 0, min: 0, max: 0, total: 0, chars: {}, counts: {} },
+      class: { chars: {}, counts: {} },
+      tags: { count: 0, chars: {}, counts: {} },
+    };
+
+    const t = (char) => ({ id: char.id, name: char.name });
+    const counts = (chars) =>
+      Object.entries(chars).reduce(
+        (counts, [v, t]) => (counts[v] = t.length) && counts,
+        {},
+      );
+
+    return (party?.chars || []).reduce((acc, char, i) => {
+      const rchar = rosterApi.getChar(char.id, { classTags: true });
+      const rtags = rchar?.tags || [];
+
+      // level
+      acc.level.total += char.level;
+      acc.level.min = Math.min(char.level, acc.level.min || char.level);
+      acc.level.max = Math.max(char.level, acc.level.max);
+      acc.level.chars[char.level] ||= [];
+      acc.level.chars[char.level].push(t(char));
+
+      // warden
+      acc.warden.total += char.warden;
+      acc.warden.min = Math.min(char.warden, acc.warden.min);
+      acc.warden.max = Math.max(char.warden, acc.warden.max);
+      acc.warden.chars[char.warden] ||= [];
+      acc.warden.chars[char.warden].push(t(char));
+
+      // might
+      const might = getCharMight(char);
+      acc.might.total += might;
+      acc.might.min = Math.min(might, acc.might.min || might);
+      acc.might.max = Math.max(might, acc.might.max);
+      acc.might.chars[might] ||= [];
+      acc.might.chars[might].push(t(char));
+
+      // class
+      acc.class.chars[char.class] ||= [];
+      acc.class.chars[char.class].push(t(char));
+
+      // tags
+      acc.tags.count += rtags.length;
+      for (const tag of rtags) {
+        acc.tags.chars[tag] ||= [];
+        acc.tags.chars[tag].push(t(char));
+      }
+
+      if (i < party.chars.length - 1) {
+        return acc;
+      }
+
+      acc.might.avg = round(acc.might.total / acc.size, 2);
+      acc.level.avg = round(acc.level.total / acc.size, 2);
+      acc.warden.avg = round(acc.warden.total / acc.size, 2);
+      acc.class.counts = counts(acc.class.chars);
+      acc.level.counts = counts(acc.level.chars);
+      acc.warden.counts = counts(acc.warden.chars);
+      acc.might.counts = counts(acc.might.chars);
+      acc.tags.counts = counts(acc.tags.chars);
+
+      return acc;
+    }, acc);
   },
 });
 

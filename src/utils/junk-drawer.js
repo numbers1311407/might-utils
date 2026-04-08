@@ -135,3 +135,10 @@ export const initDict = (keys, value, keyFn) => {
 };
 
 export const sum = (arr) => arr.reduce((sum, k) => k + sum, 0);
+
+export const round = (n, place = 2) => {
+  const nths = Math.pow(10, place);
+  return Math.round(n * nths) / nths;
+};
+
+export const identity = (v) => v;

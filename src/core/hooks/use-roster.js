@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import { useRosterStore, useRosterStoreApi as api } from "@/core/store";
 
 export const useRoster = (options = {}) => {
-  const { classTags = false } = options;
+  const { classTags = false, activeOnly: optActiveOnly } = options;
 
   const rawRoster = useRosterStore((store) => store.roster);
-  const activeOnly = useRosterStore((store) => store.activeOnly);
+  const storeActiveOnly = useRosterStore((store) => store.activeOnly);
+  const activeOnly = optActiveOnly ?? storeActiveOnly;
 
   const roster = useMemo(() => {
     return !classTags

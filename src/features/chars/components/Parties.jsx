@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Grid,
   Group,
   Paper,
@@ -9,6 +10,8 @@ import {
   Title,
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
+import { IconPlus } from "@tabler/icons-react";
+import { useLocation, useRoute, Redirect } from "wouter";
 import {
   useConfirmationStore,
   usePartiesStoreApi as partiesApi,
@@ -29,12 +32,11 @@ import {
   TierSelect,
   CalculatorContextProvider,
 } from "@/core/components";
-import { usePartiesList, useStableCallback } from "@/core/hooks";
-import { IconPlus } from "@tabler/icons-react";
-import { useLocation, useRoute, Redirect } from "wouter";
+import { useParty, useStableCallback } from "@/core/hooks";
 
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyModal } from "./PartyModal.jsx";
+import { StatsTable } from "./StatsTable.jsx";
 
 const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
   const exclude = useMemo(() => party.chars?.map((char) => char.id), [party]);
@@ -84,27 +86,20 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
 // generally access low level stores but instead should use higher level stores
 // that bake in view logic
 export const PartiesMain = () => {
-  const parties = usePartiesList();
+  const [_match, { id: routeId }] = useRoute("/parties/:id?");
   const { getConfirmation } = useConfirmationStore();
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
-  const [_match, { id: routeId }] = useRoute("/parties/:id?");
   const [_location, setLocation] = useLocation();
-  const { might, setMight } = useCalculatorContext();
+  const { setMight } = useCalculatorContext();
 
-  const party = useMemo(() => {
-    return parties.find((party) => party.id === routeId) || parties[0];
-  }, [parties, routeId]);
-
-  const partyId = party?.id;
-
-  const dirtyChars = useMemo(() => {
-    return party?.id ? partiesApi.getDirtyStatus(party.id) : new Set();
-  }, [party]);
+  const { dirtyChars, party, partyId, stats } = useParty(routeId, {
+    defaultToFirst: true,
+  });
 
   useEffect(() => {
-    setMight(party ? partiesApi.getMight(party.id) : 0);
-  }, [setMight, party]);
+    setMight(stats?.might?.total || 0);
+  }, [stats]);
 
   const copyParty = useStableCallback(() => {
     partiesApi.copy(party, (p) => setLocation(`/parties/${p.id}`));
@@ -172,7 +167,7 @@ export const PartiesMain = () => {
 
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
-  if (routeId && (!partyId || partyId === parties[0]?.id)) {
+  if (routeId && partyId !== routeId) {
     return <Redirect to="/parties" />;
   }
 
@@ -188,7 +183,7 @@ export const PartiesMain = () => {
 
       {!party && (
         <Stack align="center" ta="center" p="3xl">
-          <Text size="lg" c="gold">
+          <Text size="lg" c="primary">
             You have no saved parties.
           </Text>
           <Text size="md" style={{ maxWidth: 580 }} ta="center">
@@ -209,21 +204,35 @@ export const PartiesMain = () => {
         />
       )}
 
-      <Grid my="lg" align="flex-start" gutter="xl">
-        <Grid.Col span={{ base: 12, lg: 6 }}>
-          <Paper p="lg" shadow="md">
-            <Title order={4} mb="xs">
-              Party Instances at Might{" "}
-              <Text span c="gold" fz="inherit">
-                {might}
-              </Text>
-            </Title>
-            <Simulator />
-          </Paper>
-        </Grid.Col>
+      <Divider my="md" />
+      <Grid align="flex-start" gutter="xl">
+        {stats && (
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack>
+              <Paper p="md" shadow="md">
+                <Title order={5} mb="xs">
+                  Instance Offerings for Might{" "}
+                  <Text span c="primary">
+                    {stats.might.total}
+                  </Text>
+                </Title>
+                <Simulator />
+              </Paper>
+              <Paper p="md" shadow="md">
+                <Title order={5} mb="xs">
+                  Stats
+                </Title>
+                <StatsTable stats={stats} />
+              </Paper>
+            </Stack>
+          </Grid.Col>
+        )}
         <Grid.Col span={{ base: 12, lg: 6 }}>
           {party && (
             <Paper shadow="md" p="md">
+              <Title order={5} mb="xs">
+                Characters
+              </Title>
               <CharsTable
                 chars={party ? party.chars : []}
                 onEdit={editChar}

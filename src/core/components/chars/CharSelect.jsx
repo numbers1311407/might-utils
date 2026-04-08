@@ -29,7 +29,7 @@ export const CharSelect = ({
   onChange,
   ...props
 }) => {
-  const roster = useRoster();
+  const roster = useRoster({ activeOnly: false });
   const [search, setSearch] = useState("");
   const ref = useRef();
 

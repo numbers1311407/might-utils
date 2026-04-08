@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { Button, Group, Modal, Stack } from "@mantine/core";
+import { TextInput } from "@/core/components";
 import { useForm } from "@mantine/form";
 import { usePartiesStoreApi as storeApi } from "@/core/store";
 import { partySchema } from "@/core/schemas";

@@ -10,6 +10,10 @@ Going through a bit of a pivot, updating soon.
         - two key new features:
           - grouped results should clearly show who fulfills each of the grouped properties.
           - rules should clearly show who matched them
+    - We shouldn't return all results. It should:
+      - stop after finding a flat count of results.
+      - return what it's found if instances do go over
+      - if there are many results it should advise to add filters or reduce options
     - Needs to accept search params, and consider how that will affect saved
       finder options. 
     - Roster Variations select when that's ready
@@ -21,9 +25,15 @@ Going through a bit of a pivot, updating soon.
     - Tracking when rules *cannot* be passed or can only be passed by a few chars,
       to warn players of rules that may be problematic.
   - Saved parties
-    - Replace the current "saved parties" with a simpler UI that's more Read
-      than Update, with a smaller roster editor, no tags editing (but a tag
-      cloud probably), and baked in might calculator tied to might score
+    - The might score calculator should track min/max and current might, which
+      is a little tricky with static warden and probably means...
+    - You should probably be asked to name the party on copy
+  - Multiple: Warden shouldn't toggle
+    - Character warden options shouldn't be a toggle, it should be possible to
+      toggle any warden level.
+    - This will require thinking about "max" level if that happens in regards to
+      the idea of a "max level" reading for the calculator. This is already a problem
+      for parties.
   - Might Range Finder
     - complete UI
     - include links from the might ranges to the finder, and possibly listings
@@ -38,7 +48,7 @@ Going through a bit of a pivot, updating soon.
       can jam some stuff into a help modal that will disappear on close until the
       (TBD) help button in the top right is clicked.
 - Bugs
-  - TBD!
+  - The char select hides inactive
  
 ### Nice to haves
   **Roster Variations*
