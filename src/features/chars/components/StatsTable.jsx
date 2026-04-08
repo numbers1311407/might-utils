@@ -59,7 +59,7 @@ export const StatsTable = ({ stats }) => {
   }, [stats]);
 
   return (
-    <Table align="top" withTableBorder mb="md">
+    <Table align="top" mb="md" withColumnBorders>
       <Table.Tbody>
         {rows.map((row) => (
           <Table.Tr key={row[0]} style={{ verticalAlign: "top" }}>
