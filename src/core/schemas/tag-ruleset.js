@@ -19,7 +19,7 @@ export const tagRulesetSchema = z.object({
     }),
   id: z.union([
     z.nanoid().default(() => nanoid()),
-    z.literal("standard-rules"),
+    z.enum(["standard-rules", "time-flagged"]),
   ]),
   // NOTE there's room in place for different rule types that could be used
   // to categorize parties for something other than filtering, for example one

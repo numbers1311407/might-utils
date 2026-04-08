@@ -21,9 +21,8 @@ const getGroupByParam = (groupBy) => {
 
 export const PartyFinderContextProvider = ({ children }) => {
   const finderOptions = usePartyFinderStore((store) => store.options);
-  const activeRuleSet = useTagRulesActiveFilters();
+  const rules = useTagRulesActiveFilters();
   const roster = useRoster({ classTags: true });
-  const rules = activeRuleSet?.rules;
 
   const [targetScore, options] = useMemo(() => {
     const { targetScore, groupBy, ...restOptions } = finderOptions;

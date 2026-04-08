@@ -1,5 +1,8 @@
 import { deepEqual } from "fast-equals";
-import { defaultFiltersTagRules } from "@/core/config/defaults";
+import {
+  defaultFiltersTagRules,
+  defaultTimeFlagTagRules,
+} from "@/core/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
 import { createStore } from "./helpers";
 
@@ -17,12 +20,13 @@ const addUniquely = (array, value) => {
 };
 
 const defaultFilters = tagRulesetSchema.parse(defaultFiltersTagRules);
+const defaultTimeFlag = tagRulesetSchema.parse(defaultTimeFlagTagRules);
 
 const defaultTypeStorage = {
   filters: TYPES.Multi,
 };
 const defaultsMap = {
-  filters: [defaultFilters],
+  filters: [defaultFilters, defaultTimeFlag],
 };
 const defaults = Object.values(defaultsMap).flat();
 const defaultIds = defaults.map((set) => set.id);
@@ -46,12 +50,13 @@ const handleDirtyDefaults = (ruleset, state) => {
 // a lot if this could be simplified.
 export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   active: {
-    filters: [defaultFilters.id],
+    filters: [defaultFilters.id, defaultTimeFlag.id],
   },
   dirtyDefaults: [],
   groupSizeTwenty: false,
   sets: {
     [defaultFilters.id]: defaultFilters,
+    [defaultTimeFlag.id]: defaultTimeFlag,
   },
 }));
 

@@ -41,12 +41,8 @@ export const CharCounts = ({
   renderCount,
 }) => {
   return useMemo(() => {
-    if (!chars.length) {
-      return (
-        <Text c="dark" size="sm">
-          No Entries
-        </Text>
-      );
+    if (!Object.keys(chars).length) {
+      return "No Entries";
     }
 
     return Object.entries(chars)

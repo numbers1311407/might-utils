@@ -15,7 +15,8 @@ Going through a bit of a pivot, updating soon.
       - return what it's found if instances do go over
       - if there are many results it should advise to add filters or reduce options
     - Needs to accept search params, and consider how that will affect saved
-      finder options. 
+      finder options. Thinking it will consume them immediately on load and then there
+      can be a "share" button to copy the link. 
     - Roster Variations select when that's ready
     - Potentially roster quick edit
     - Multiselect for rulesets
@@ -24,16 +25,6 @@ Going through a bit of a pivot, updating soon.
       be edited inline
     - Tracking when rules *cannot* be passed or can only be passed by a few chars,
       to warn players of rules that may be problematic.
-  - Saved parties
-    - The might score calculator should track min/max and current might, which
-      is a little tricky with static warden and probably means...
-    - You should probably be asked to name the party on copy
-  - Multiple: Warden shouldn't toggle
-    - Character warden options shouldn't be a toggle, it should be possible to
-      toggle any warden level.
-    - This will require thinking about "max" level if that happens in regards to
-      the idea of a "max level" reading for the calculator. This is already a problem
-      for parties.
   - Might Range Finder
     - complete UI
     - include links from the might ranges to the finder, and possibly listings
@@ -43,22 +34,34 @@ Going through a bit of a pivot, updating soon.
       actual numeric ranges in the NPC response that you don't see in game.
   - Misc
     - Put together a character roster that isn't my team
-    - Create a default tag rule set for plane of time key as an example of an all
-    - A global help modal store in the vein of the confirmations store where pages
-      can jam some stuff into a help modal that will disappear on close until the
-      (TBD) help button in the top right is clicked.
-- Bugs
-  - The char select hides inactive
+  - Saved parties
+    - The might score calculator should track min/max and current might, which
+      is a little tricky with static warden. Depending on the solution this may
+      be post MVP. The whole idea for parties is that they have a static might
+      level not a range.
+- Known Bugs
+  - Clear for now
  
 ### Nice to haves
-  **Roster Variations*
+  **More calculator data**
+    - This is critical but I'm also waiting to see if post release either 1. we're asked not to
+      do this or 2. a dev might offer us real data.
+  **Roster Variations**:
     - This is a key feature but it could technically be cut from mvp
     - Refactor current "saved parties" into roster variations
     - Allow choosing roster in generator
     - Bulk tag editing with the same exacty UI as class tags
+  **Global**: Help modals and/or guided tours
+  - Multiple: Warden shouldn't toggle
+    - Character warden options shouldn't be a toggle, it should be possible to
+      toggle any warden level.
+    - This will require thinking about "max" level if that happens in regards to
+      the idea of a "max level" reading for the calculator. This is already a problem
+      for parties.
 - Roster import
-  - A csv roster import would be very easy and probably a great help to people
-    with large teams.
+  - A csv-like roster import would be very easy and probably a great help to people
+    with even semi large teams. I think realistically this could be a textarea with a
+    simple example backed by a schema for validation.
 - Tag Rules
   - decorate the rules human output with JSX to colorize keywords and so on.
   - RQB has NO validation. it should at least test for blank fields and no rules.
