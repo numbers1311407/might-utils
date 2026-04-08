@@ -10,7 +10,11 @@ const emptyState = {
 
 export const useModalStore = create((set, get) => ({
   ...emptyState,
+}));
 
+const { getState: get, setState: set } = useModalStore;
+
+const api = {
   createModal: (Component, options = {}) => {
     const {
       onClose: propsOnClose,
@@ -20,9 +24,9 @@ export const useModalStore = create((set, get) => ({
     } = options;
 
     return () => {
-      const { isOpen, done, onClose } = get();
+      if (get().isOpen) return;
 
-      if (isOpen) return;
+      const { onClose, close, done } = api;
 
       set({
         closeCallback: () => propsOnClose?.(),
@@ -40,22 +44,25 @@ export const useModalStore = create((set, get) => ({
   },
 
   done: async (...args) => {
-    const { doneCallback, close } = get();
+    const { doneCallback } = get();
 
     try {
       await doneCallback(...args);
     } finally {
-      close();
+      api.close();
     }
   },
 
   onClose: async () => {
-    const { closeCallback, close } = get();
+    const { closeCallback } = get();
 
     try {
       await closeCallback();
     } finally {
-      close();
+      api.close();
     }
   },
-}));
+};
+
+export const useModalStoreApi = api;
+export const createModal = api.createModal;
