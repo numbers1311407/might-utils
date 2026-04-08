@@ -59,6 +59,7 @@ export const TagGroup = ({
       </Group>
       <TagsInput
         value={group.tags}
+        size="md"
         removeTag={(tag) => {
           tgapi.add({ ...group, tags: group.tags.filter((t) => t !== tag) });
         }}
