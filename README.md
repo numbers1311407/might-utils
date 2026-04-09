@@ -6,6 +6,16 @@ Going through a bit of a pivot, updating soon.
 
 - Features
   - Finder
+    - I think it's going to be critical to test rules and other common sense failure
+      points to error early in search. it's too easy to accidentally set your level 1-off,
+      etc, and end up scratching your head for a minute trying to figure out why you got no results
+        - if min/max options mean you don't have enough to meet min group size
+        - if roster score doesn't add up to target score
+        - if rules at all ranges exclude everyone
+        - others?
+      If results are low, we could also warn on the above if they're ALMOST true, like if your
+      party only just meets the score, or if there's only a brief window where enough chars
+      pass.
     - UI for results and other UI cleanup.
         - two key new features:
           - grouped results should clearly show who fulfills each of the grouped properties.
@@ -39,6 +49,14 @@ Going through a bit of a pivot, updating soon.
       is a little tricky with static warden. Depending on the solution this may
       be post MVP. The whole idea for parties is that they have a static might
       level not a range.
+  - Tag rules
+    - Name rule should probably be back on the menu. It made less sense when one ruleset was the
+      tech but if you have multiple rulesets I could see having "core team" or "tank 1" "tank 2"
+      rulesets which you could mix into other sets. Does this remove the need for toggleable
+      warden ranks? probably not... since it's still clunky and the rule would require the char,
+      vs jsut restricting hte rank.
+    Global: 404 page
+    - an actual in app 404 page for bad paths
 - Known Bugs
   - Clear for now
  
