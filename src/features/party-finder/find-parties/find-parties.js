@@ -10,6 +10,7 @@ import { getGroupingOverrides, getTagGroupKey } from "./grouping.js";
 import { instrument } from "@/utils";
 
 const MAX_RECURSIONS = 10_000_000;
+const MAX_RESPONSE_LENGTH = 2500;
 
 export const defaultOptions = {
   targetScore: 1250,
@@ -19,7 +20,6 @@ export const defaultOptions = {
   maxSize: 12,
   margin: 0,
   distinctGroupingTags: true,
-  // distinctGroupingTags: false,
 };
 
 export const findParties = (roster, targetScore, options = {}) => {
@@ -159,6 +159,10 @@ export const findParties = (roster, targetScore, options = {}) => {
   let recursionCount = 0;
 
   const recurse = (remainingScore, bucketIndex) => {
+    if (parties.length >= MAX_RESPONSE_LENGTH) {
+      return;
+    }
+
     if (recursionCount++ >= MAX_RECURSIONS) {
       throw new FindPartiesError(
         `Max recursions reached (${MAX_RECURSIONS.toLocaleString()}) trying to assemble the parties. Try adding ` +

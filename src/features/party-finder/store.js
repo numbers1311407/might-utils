@@ -1,13 +1,26 @@
 import { createStore } from "@/core/store/helpers";
+import { finderOptionsSchema } from "@/core/schemas";
 import { defaultOptions } from "./find-parties";
 
 export const usePartyFinderStore = createStore(
   "might-utils-parties",
   (set, get) => ({
-    options: { ...defaultOptions },
+    options: finderOptionsSchema.parse(defaultOptions),
     setOption: (name, value) => {
       set(({ options }) => {
         options[name] = value ?? defaultOptions[name];
+        finderOptionsSchema.parse(options);
+      });
+    },
+    mergeOptions: (update) => {
+      set((state) => {
+        const result = finderOptionsSchema.safeParse({
+          ...state.options,
+          ...update,
+        });
+        if (result.success) {
+          state.options = result.data;
+        }
       });
     },
     resetOption: (name) => {

@@ -58,6 +58,10 @@ Going through a bit of a pivot, updating soon.
     - This will require thinking about "max" level if that happens in regards to
       the idea of a "max level" reading for the calculator. This is already a problem
       for parties.
+- Character portraits
+  - baldur's gate style 2 portrait options to use in small UI besides the class icons and
+    distinguish between members of the same class.
+  
 - Roster import
   - A csv-like roster import would be very easy and probably a great help to people
     with even semi large teams. I think realistically this could be a textarea with a

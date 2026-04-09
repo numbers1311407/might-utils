@@ -23,7 +23,7 @@ const staticOptions = {
     value: "",
   },
   level: {
-    label: "By Level",
+    label: "By Level & Warden",
     value: "level",
   },
   // NOTE group by class was originally an option and isn't... totally insane,
@@ -36,10 +36,6 @@ const staticOptions = {
   //   label: "By Class",
   //   value: "class",
   // },
-  warden: {
-    label: "By Warden Rank",
-    value: "warden",
-  },
 };
 
 export const ResultsGroupingSelect = (props) => {

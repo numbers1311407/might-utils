@@ -31,7 +31,7 @@ export const Navbar = (props) => {
         <Text fw="bold" size="md" p="xs" pt={0} c="gold">
           Planning & Data
         </Text>
-        <NavbarLink label="Party Generator" href="/" />
+        <NavbarLink label="Party Generator" href="/party-generator" />
         <NavbarLink label="Instance NPC Simulator" href="/npc-simulator" />
         <NavbarLink label="Might Range Finder" href="/might-range-finder" />
       </Stack>

@@ -2,8 +2,9 @@ import { useMemo, useRef, Suspense } from "react";
 import { useTagGroupsStoreApi as tgapi } from "@/core/store";
 import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
 import { findPartiesAsync } from "../find-parties";
-import { usePartyFinderStore } from "../store.js";
 import { PartyFinderContext } from "../context.js";
+import { useFindPartiesOptionsUrlHydration } from "../hooks.js";
+import { usePartyFinderStore } from "../store.js";
 
 const groupByOptions = {
   none: undefined,
@@ -20,6 +21,8 @@ const getGroupByParam = (groupBy) => {
 };
 
 export const PartyFinderContextProvider = ({ children }) => {
+  useFindPartiesOptionsUrlHydration();
+
   const finderOptions = usePartyFinderStore((store) => store.options);
   const rules = useTagRulesActiveFilters();
   const roster = useRoster({ classTags: true });
