@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Select } from "@mantine/core";
+import { useMemo, useState } from "react";
+import { Select, RemoveScroll } from "@mantine/core";
 import { capitalize } from "@/utils";
 import csvData from "@/assets/instance-data.csv?tiers";
 
@@ -17,25 +17,49 @@ const TIER_DATA = Object.entries(csvData).reduce(
   [],
 );
 
-export const TierSelect = ({ onChange, value: propsValue, ...props }) => {
+const instanceToValue = (instance) =>
+  ["tier", "type", "might"].map((k) => instance[k]).join(":");
+const valueToInstance = (value) => {
+  const [tier, type, might] = value.split(":");
+  return { tier, type, might: Number(might) };
+};
+
+export const TierSelect = ({
+  onChange,
+  value: propsValue,
+  zIndex = 500,
+  ...props
+}) => {
+  const [open, setOpen] = useState(false);
   const value = useMemo(() => {
-    return propsValue ? Object.values(propsValue).join(":") : "";
+    return propsValue ? instanceToValue(propsValue) : "";
   }, [propsValue]);
 
   return (
-    <Select
-      size="md"
-      value={value}
-      {...props}
-      data={TIER_DATA}
-      onChange={(value) => {
-        const [tier, type, might] = value.split(":");
-        onChange?.({ tier, type, might: Number(might) });
-      }}
-    />
+    <RemoveScroll enabled={open}>
+      <Select
+        size="md"
+        value={value}
+        {...props}
+        data={TIER_DATA}
+        maxDropdownHeight={500}
+        comboboxProps={{ zIndex }}
+        onDropdownOpen={() => setOpen(true)}
+        onDropdownClose={() => setOpen(false)}
+        onChange={(value) => {
+          onChange?.(valueToInstance(value));
+        }}
+      />
+    </RemoveScroll>
   );
 };
 
+const humanDifficulties = {
+  H: "Hard",
+  N: "Normal",
+  E: "Easy",
+  I: "Intense",
+};
 const DIFF_OPTIONS = [
   "E-",
   "E",
@@ -48,20 +72,31 @@ const DIFF_OPTIONS = [
   "H+",
   "I",
   "I+",
-].map((value) => ({
-  label: `Difficulty ${value}`,
-  value,
-}));
+].map((value) => {
+  const [initial, diff] = value.split("");
+  return {
+    label: `Difficulty: ${humanDifficulties[initial]}${diff ?? ""}`,
+    value,
+  };
+});
 
-export const DifficultySelect = ({ onChange, ...props }) => {
+export const DifficultySelect = ({ onChange, zIndex = 500, ...props }) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Select
-      size="md"
-      {...props}
-      data={DIFF_OPTIONS}
-      onChange={(value, option) => {
-        onChange?.(value, option);
-      }}
-    />
+    <RemoveScroll enabled={open}>
+      <Select
+        size="md"
+        {...props}
+        data={DIFF_OPTIONS}
+        comboboxProps={{ zIndex }}
+        maxDropdownHeight={400}
+        onDropdownOpen={() => setOpen(true)}
+        onDropdownClose={() => setOpen(false)}
+        onChange={(value, option) => {
+          onChange?.(value, option);
+        }}
+      />
+    </RemoveScroll>
   );
 };

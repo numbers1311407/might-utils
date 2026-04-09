@@ -142,3 +142,17 @@ export const round = (n, place = 2) => {
 };
 
 export const identity = (v) => v;
+
+export const debounce = (func, wait = 250) => {
+  let timeout;
+
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};

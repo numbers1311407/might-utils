@@ -3,15 +3,21 @@ import { IconHelp } from "@tabler/icons-react";
 
 export const HelpIconTooltip = ({
   tooltip,
-  size = "xs",
+  size = "sm",
   multiline = true,
-  w = 220,
+  w = 200,
   ...iconProps
 }) => {
   if (!tooltip) return null;
 
   return (
-    <Tooltip withArrow multiline={multiline} w={w} label={tooltip}>
+    <Tooltip
+      withArrow
+      multiline={multiline}
+      w={w}
+      label={tooltip}
+      zIndex={1000}
+    >
       <ActionIcon
         variant="transparent"
         size={size}

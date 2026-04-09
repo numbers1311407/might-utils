@@ -3,6 +3,7 @@ export * from "./Aside.jsx";
 export * from "./ClassIcon.jsx";
 export * from "./ColorSchemeButton.jsx";
 export * from "./ConfirmationModal.jsx";
+export * from "./FloatingWindow.jsx";
 export * from "./HelpIconTooltip.jsx";
 export * from "./HelpLabel.jsx";
 export * from "./IconButton.jsx";

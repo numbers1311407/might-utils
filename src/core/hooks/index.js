@@ -1,6 +1,7 @@
 export * from "./use-draft-state.js";
 export * from "./use-parties-list.js";
 export * from "./use-party.js";
+export * from "./use-persisted-floating-window.js";
 export * from "./use-roster.js";
 export * from "./use-roster-controls.js";
 export * from "./use-stable-callback.js";

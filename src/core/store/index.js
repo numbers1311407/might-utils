@@ -1,4 +1,5 @@
 export * from "./use-class-tags-store.js";
+export * from "./use-floating-window-store.js";
 export * from "./use-confirmation-store.js";
 export * from "./use-modal-store.js";
 export * from "./use-roster-store.js";

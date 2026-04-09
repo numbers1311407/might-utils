@@ -3,7 +3,7 @@ import { IconTag } from "@tabler/icons-react";
 
 export const CharTagsPopover = ({ tags, classTags, isParty }) => {
   return (
-    <Popover width={220} withArrow shadow="lg">
+    <Popover width={220} withArrow shadow="lg" zIndex={900}>
       <Popover.Target>
         <UnstyledButton>
           <IconTag display="block" size={20} />

@@ -15,7 +15,8 @@ import { Navbar } from "./Navbar.jsx";
 import { ErrorPage } from "./ErrorPage.jsx";
 import { ScrollToTop } from "./ScrollToTop.jsx";
 import { GlobalConfirmationModal } from "./GlobalConfirmationModal.jsx";
-import { ModalStore } from "@/core/components";
+import { ModalStore, CalculatorContextProvider } from "@/core/components";
+import { FloatingWindowDrawer } from "./FloatingWindowDrawer.jsx";
 import {
   CONTAINER_WIDTH,
   HEADER_HEIGHT,
@@ -85,10 +86,13 @@ function App() {
     >
       <AppContextProvider>
         <Router base="/might-utils">
-          <Shell />
-          <ScrollToTop />
-          <GlobalConfirmationModal />
-          <ModalStore />
+          <CalculatorContextProvider>
+            <Shell />
+            <ScrollToTop />
+            <GlobalConfirmationModal />
+            <ModalStore />
+            <FloatingWindowDrawer />
+          </CalculatorContextProvider>
         </Router>
       </AppContextProvider>
     </MantineProvider>

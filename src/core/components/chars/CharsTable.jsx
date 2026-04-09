@@ -32,22 +32,22 @@ export const CharsTableRow = ({
 }) => (
   <Table.Tr>
     {isRoster && (
-      <>
-        <Table.Td>
-          <Switch
-            aria-label="Toggle Active Status"
-            checked={char.active}
-            onChange={(e) => {
-              update({ active: e.currentTarget.checked });
-            }}
-          />
-        </Table.Td>
-        <Table.Td>
-          <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
-            {char.name}
-          </Text>
-        </Table.Td>
-      </>
+      <Table.Td>
+        <Switch
+          aria-label="Toggle Active Status"
+          checked={char.active}
+          onChange={(e) => {
+            update({ active: e.currentTarget.checked });
+          }}
+        />
+      </Table.Td>
+    )}
+    {isRoster && !hideControls && (
+      <Table.Td>
+        <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
+          {char.name}
+        </Text>
+      </Table.Td>
     )}
     <Table.Td>
       <Group gap={8} wrap="nowrap">
@@ -57,23 +57,25 @@ export const CharsTableRow = ({
           style={{ opacity: !isRoster || char.active ? 1 : 0.25 }}
         />
         <Text style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}>
-          {isRoster ? char.class : char.name}
+          {isRoster && !hideControls ? char.class : char.name}
         </Text>
       </Group>
     </Table.Td>
-    <Table.Td ta="center">
-      {isRoster && char.warden > 0 && (
-        <>
-          <Text c="yellow.7" span title="Unwardened" ff="mono">
-            {getCharMight(char, 0)}
-          </Text>{" "}
-          -{" "}
-        </>
-      )}
-      <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
-        {getCharMight(char)}
-      </Text>
-    </Table.Td>
+    {!hideControls && (
+      <Table.Td ta="center">
+        {isRoster && char.warden > 0 && (
+          <>
+            <Text c="yellow.7" span title="Unwardened" ff="mono">
+              {getCharMight(char, 0)}
+            </Text>{" "}
+            -{" "}
+          </>
+        )}
+        <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
+          {getCharMight(char)}
+        </Text>
+      </Table.Td>
+    )}
     <Table.Td ta="center">
       <IncrementButtons
         value={char.level}
@@ -109,7 +111,7 @@ export const CharsTableRow = ({
               />
             </Tooltip>
           )}
-          {isRoster && (
+          {isRoster && edit && (
             <Tooltip openDelay={500} label="Edit character">
               <EditButton
                 aria-label="Edit character"
@@ -117,18 +119,22 @@ export const CharsTableRow = ({
               />
             </Tooltip>
           )}
-          <Tooltip openDelay={500} label="Remove character">
-            <TrashButton
-              aria-label="Remove character"
-              onClick={() => remove(char)}
-            />
-          </Tooltip>
+          {remove && (
+            <Tooltip openDelay={500} label="Remove character">
+              <TrashButton
+                aria-label="Remove character"
+                onClick={() => remove(char)}
+              />
+            </Tooltip>
+          )}
         </Group>
       </Table.Td>
     )}
   </Table.Tr>
 );
 
+// TODO this thing started off as the main roster index and is now
+// pulling some serious double duty. It should probably be refactored.
 export const CharsTable = ({
   chars,
   dirtyChars,
@@ -150,11 +156,15 @@ export const CharsTable = ({
       <Table.Thead>
         <Table.Tr>
           {isRoster && <Table.Th width={65}>Active</Table.Th>}
-          {isRoster && <Table.Th>Name</Table.Th>}
-          <Table.Th w={70}>{isRoster ? "Class" : "Name"}</Table.Th>
-          <Table.Th ta="center" w={120}>
-            Might
+          {isRoster && !hideControls && <Table.Th>Name</Table.Th>}
+          <Table.Th w={70}>
+            {isRoster && !hideControls ? "Class" : "Name"}
           </Table.Th>
+          {!hideControls && (
+            <Table.Th ta="center" w={120}>
+              Might
+            </Table.Th>
+          )}
           <Table.Th ta="center" width={72}>
             Level
           </Table.Th>

@@ -3,13 +3,11 @@ import { PageTitle } from "@/core/components";
 import {
   TierSelect,
   useCalculatorContext,
-  CalculatorContextProvider,
   NpcSimulator as NpcSimulatorComponent,
 } from "@/core/components/calculators";
 
-export const NpcSimulatorMain = () => {
-  const { might, setMight, instance, setInstance, maxIntense } =
-    useCalculatorContext();
+export const NpcSimulator = () => {
+  const { might, setMight, instance, setInstance } = useCalculatorContext();
 
   return (
     <Stack>
@@ -28,18 +26,8 @@ export const NpcSimulatorMain = () => {
           size="md"
           w={400}
         />
-        <NpcSimulatorComponent
-          instance={instance}
-          might={might}
-          maxIntense={maxIntense}
-        />
+        <NpcSimulatorComponent instance={instance} might={might} />
       </Stack>
     </Stack>
   );
 };
-
-export const NpcSimulator = () => (
-  <CalculatorContextProvider>
-    <NpcSimulatorMain />
-  </CalculatorContextProvider>
-);

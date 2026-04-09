@@ -87,7 +87,12 @@ const TargetScoreInput = (props) => (
 export const PartyFinderControls = () => {
   return (
     <>
-      <Stack gap={8}>
+      <Stack
+        gap={8}
+        bg="light-dark(var(--mantine-color-blue-3), var(--mantine-color-red-8))"
+        p="sm"
+        bdrs="sm"
+      >
         <TargetScoreInput />
         <MarginInput />
         <Divider m="md" />
