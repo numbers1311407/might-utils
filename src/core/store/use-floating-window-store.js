@@ -7,7 +7,7 @@ const AUTO_INITIAL_POSITION = {
   left: 30,
 };
 const AUTO_POSITION_OFFSET = 30;
-const INITIAL_Z_INDEX = 800;
+const INITIAL_Z_INDEX = 400;
 
 const positionSchema = z
   .object({

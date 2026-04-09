@@ -48,7 +48,9 @@ export const FloatingWindow = ({
               style={{ cursor: "move" }}
             >
               <IconGripVertical />
-              <Text flex="1">{title}</Text>
+              <Text fw="bold" flex="1">
+                {title}
+              </Text>
               <Group gap={4}>
                 {help && <HelpIconTooltip tooltip={help} />}
                 <CloseButton

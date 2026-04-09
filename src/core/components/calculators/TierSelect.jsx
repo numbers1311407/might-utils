@@ -27,7 +27,7 @@ const valueToInstance = (value) => {
 export const TierSelect = ({
   onChange,
   value: propsValue,
-  zIndex = 500,
+  zIndex = 800,
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -80,7 +80,7 @@ const DIFF_OPTIONS = [
   };
 });
 
-export const DifficultySelect = ({ onChange, zIndex = 500, ...props }) => {
+export const DifficultySelect = ({ onChange, zIndex = 800, ...props }) => {
   const [open, setOpen] = useState(false);
 
   return (
