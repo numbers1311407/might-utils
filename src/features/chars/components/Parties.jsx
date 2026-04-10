@@ -21,14 +21,12 @@ import {
   CharSelect,
   CharsTable,
   PageTitle,
-  NpcSimulator,
   useCalculatorContext,
   useFloatingNpcSimulator,
   EditSmallButton,
   RemoveSmallButton,
   RestoreSmallButton,
   CopySmallButton,
-  TierSelect,
 } from "@/core/components";
 import { useParty, useStableCallback } from "@/core/hooks";
 
@@ -76,7 +74,7 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
           </RestoreSmallButton>
           <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
         </Group>
-        <Flex justify={{ base: "flex-start", xl: "flex-end" }} flex="1">
+        <Flex justify={{ base: "flex-start", lg: "flex-end" }} flex="1">
           <ToggleNpcSimButton />
         </Flex>
       </Group>
@@ -113,9 +111,11 @@ export const Parties = () => {
     defaultToFirst: true,
   });
 
+  const might = stats?.might.total || 0;
+
   useEffect(() => {
-    setMight(stats?.might?.total || 0);
-  }, [stats]);
+    setMight(might);
+  }, [might, setMight]);
 
   const copyParty = useStableCallback(() => {
     partyApi.copyParty((copy) => setLocation(`/parties/${copy.id}`));
@@ -245,15 +245,5 @@ export const Parties = () => {
         record={draftParty}
       />
     </Box>
-  );
-};
-
-const Simulator = () => {
-  const { setMight, instance, setInstance, ...ctx } = useCalculatorContext();
-  return (
-    <Stack>
-      <TierSelect value={instance} onChange={setInstance} />
-      <NpcSimulator instance={instance} {...ctx} />
-    </Stack>
   );
 };

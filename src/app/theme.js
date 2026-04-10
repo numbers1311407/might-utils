@@ -1,3 +1,5 @@
+import { breakpoints } from "./breakpoints";
+
 import {
   ActionIcon,
   Alert,
@@ -32,10 +34,10 @@ const CONTAINER_SIZES = {
   xxs: rem("200px"),
   xs: rem("300px"),
   sm: rem("400px"),
-  md: rem("500px"),
-  lg: rem("600px"),
-  xl: rem("1400px"),
-  xxl: rem("1600px"),
+  md: rem("600px"),
+  lg: rem("800px"),
+  xl: rem("1600px"),
+  xxl: rem("1800px"),
 };
 
 const zincColors = [
@@ -326,6 +328,13 @@ const pinkColors = [
 ];
 
 export const theme = createTheme({
+  breakpoints: Object.entries(breakpoints).reduce(
+    (acc, [size, em]) => ({
+      ...acc,
+      [size]: `${em}em`,
+    }),
+    {},
+  ),
   colors: {
     slate: slateColors,
     gray: grayColors,
