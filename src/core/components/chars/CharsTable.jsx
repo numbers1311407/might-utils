@@ -156,6 +156,7 @@ export const CharsTableRow = ({
 // TODO this thing started off as the main roster index and is now
 // pulling some serious double duty. It should probably be refactored.
 export const CharsTable = ({
+  activeStar,
   chars,
   dirtyChars,
   onEdit,
@@ -175,7 +176,16 @@ export const CharsTable = ({
     <Table stickyHeader stickyHeaderOffset={66} {...props}>
       <Table.Thead>
         <Table.Tr>
-          {isRoster && <Table.Th width={65}>Active</Table.Th>}
+          {isRoster && (
+            <Table.Th width={65}>
+              Active
+              {activeStar && (
+                <Text span c="primary" size="xl" pos="absolute" lh={1}>
+                  *
+                </Text>
+              )}
+            </Table.Th>
+          )}
           {isRoster && !hideControls && <Table.Th>Name</Table.Th>}
           <Table.Th w={70}>
             {isRoster && !hideControls ? "Class" : "Name"}

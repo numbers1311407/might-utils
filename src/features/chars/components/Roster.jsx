@@ -83,13 +83,14 @@ export const Roster = () => {
       </PageTitle>
 
       <Paper py="xl" px="md" shadow="md">
-        <Tabs value={currentTab} onChange={onTabsChange} mt="-xs" mb="lg">
+        <Tabs value={currentTab} onChange={onTabsChange} mt="-xs">
           <Tabs.List>
             <Tabs.Tab value="characters">Characters</Tabs.Tab>
             <Tabs.Tab value="tags">Bulk Tag Editor</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="characters" pt="lg">
             <CharsTable
+              activeStar
               chars={roster}
               onEdit={(char) => setChar(char)}
               isRoster={true}
@@ -114,6 +115,16 @@ export const Roster = () => {
           </Tabs.Panel>
         </Tabs>
         <Divider />
+        <Text c="dark" mt="xs" pos="relative">
+          <Text span c="primary" size="xl">
+            *
+          </Text>{" "}
+          Only{" "}
+          <Text span fw="bold" c="primary">
+            active
+          </Text>{" "}
+          characters will be considered as eligible for the party generator.
+        </Text>
       </Paper>
 
       <RosterAside visibleFrom="lg" />
