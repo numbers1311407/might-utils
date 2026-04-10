@@ -1,5 +1,9 @@
 import { Box, Group, Switch, Table, Text, Tooltip } from "@mantine/core";
-import { getCharMight } from "@/core/chars";
+import {
+  getCharMight,
+  getMaxWardenForLevel,
+  getMinLevelForWarden,
+} from "@/core/chars";
 import { charLevelSchema } from "@/core/schemas";
 import {
   ClassIcon,
@@ -79,8 +83,7 @@ export const CharsTableRow = ({
     <Table.Td ta="center">
       <IncrementButtons
         value={char.level}
-        label="char level"
-        min={charLevelSchema.minValue}
+        min={getMinLevelForWarden(char.warden)}
         max={charLevelSchema.maxValue}
         onChange={(level) => update({ level })}
       />
@@ -88,9 +91,8 @@ export const CharsTableRow = ({
     <Table.Td ta="center">
       <IncrementButtons
         value={char.warden}
-        label="char level"
         min={0}
-        max={3}
+        max={getMaxWardenForLevel(char.level)}
         onChange={(warden) => update({ warden })}
       />
     </Table.Td>
@@ -161,7 +163,7 @@ export const CharsTable = ({
             {isRoster && !hideControls ? "Class" : "Name"}
           </Table.Th>
           {!hideControls && (
-            <Table.Th ta="center" w={120}>
+            <Table.Th ta="center" w={isRoster && !hideControls ? 140 : 80}>
               Might
             </Table.Th>
           )}

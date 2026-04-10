@@ -29,7 +29,7 @@ export const MightRangeFinder = ({
           <Text span fw="bold">
             Warning:
           </Text>{" "}
-          This output is experimental and may be slightly (or entirely!) wrong.
+          This output is experimental and may be inaccurate.
         </Text>
       </Stack>
     </Stack>

@@ -21,7 +21,7 @@ export const NpcSimulator = () => {
         <NumberInput
           value={might}
           onChange={(value) => setMight(value)}
-          placeholder="Enter Might"
+          placeholder="Enter your party's might"
           step={10}
           size="md"
           w={400}

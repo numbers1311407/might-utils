@@ -1,6 +1,7 @@
 import * as z from "zod";
 import { nanoid } from "nanoid";
 import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
+import { getMaxWardenForLevel } from "@/core/chars/warden";
 import { capitalize } from "@/utils";
 import { tagSchema } from "./tag.js";
 import { CLASS_SHORTNAMES } from "@/core/config";
@@ -32,15 +33,20 @@ export const charLevelSchema = z.coerce
   .min(MightMinLevel, { message: invalidLevelMessage })
   .max(MightMaxLevel, { message: invalidLevelMessage });
 
-export const charSchema = z.object({
-  id: z.nanoid().default(() => nanoid()),
-  active: charActiveSchema,
-  class: charClassSchema,
-  level: charLevelSchema,
-  name: charNameSchema,
-  tags: z
-    .array(tagSchema)
-    .default([])
-    .transform((tags) => [...tags].sort()),
-  warden: charWardenSchema,
-});
+export const charSchema = z
+  .object({
+    id: z.nanoid().default(() => nanoid()),
+    active: charActiveSchema,
+    class: charClassSchema,
+    level: charLevelSchema,
+    name: charNameSchema,
+    tags: z
+      .array(tagSchema)
+      .default([])
+      .transform((tags) => [...tags].sort()),
+    warden: charWardenSchema,
+  })
+  .refine((o) => o.warden <= getMaxWardenForLevel(o.level), {
+    message: "Warden rank is impossible for level",
+    path: ["warden"],
+  });

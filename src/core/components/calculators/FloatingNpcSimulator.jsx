@@ -1,6 +1,7 @@
-import { Button, NumberInput, Stack } from "@mantine/core";
+import { Button, NumberInput, Stack, Text } from "@mantine/core";
 import { usePersistedFloatingWindowHandle } from "@/core/hooks";
 import { FloatingWindow } from "@/core/components";
+import { useRoute } from "wouter";
 import { NpcSimulator as NpcSimulatorComponent } from "./NpcSimulator.jsx";
 import { TierSelect } from "./TierSelect.jsx";
 import { useCalculatorContext } from "./calculator-context.js";
@@ -16,6 +17,7 @@ export const useFloatingNpcSimulator = () => {
 
 export const FloatingNpcSimulator = () => {
   const { api } = useFloatingNpcSimulator();
+  const [match] = useRoute("/parties/*?");
   const { might, setMight, setInstance, instance } = useCalculatorContext();
 
   return (
@@ -40,9 +42,27 @@ export const FloatingNpcSimulator = () => {
           <NumberInput
             value={might}
             onChange={(value) => setMight(value)}
-            placeholder="Enter Might"
+            placeholder="Your party's might"
+            disabled={match}
+            description={match && "Tracking the current party's might"}
             step={10}
             size="md"
+            styles={{
+              description: {
+                fontSize: 13,
+                color: "var(--mantine-color-warning-5)",
+              },
+              input: {
+                paddingLeft: 70,
+              },
+            }}
+            leftSectionWidth={60}
+            leftSectionProps={{
+              style: {
+                background: "var(--mantine-color-default-border)",
+              },
+            }}
+            leftSection="Might"
             w={400}
           />
           <NpcSimulatorComponent instance={instance} might={might} />

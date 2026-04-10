@@ -11,7 +11,7 @@ export const defaultRoster = [
     id: "r6m8dzSL0bKdAg2MrPtsd",
     name: "Snarf",
     class: "PAL",
-    level: 66,
+    level: 67,
     warden: 2,
     active: true,
   },

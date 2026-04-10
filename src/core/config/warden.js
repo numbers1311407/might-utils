@@ -1,8 +1,10 @@
+import { MightMinLevel } from "./might";
+
 const Ranks = [
   {
     rank: 0,
     mightMultiplier: 1,
-    requiredLevel: 1,
+    requiredLevel: MightMinLevel,
   },
   {
     rank: 1,

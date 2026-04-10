@@ -10,12 +10,9 @@ import {
   Title,
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
-import { IconPlus } from "@tabler/icons-react";
+import { IconPlus, IconCalculator } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
-import {
-  getConfirmation,
-  usePartiesStoreApi as partiesApi,
-} from "@/core/store";
+import { usePartiesStoreApi as partiesApi } from "@/core/store";
 import {
   AppLink,
   Aside,
@@ -25,12 +22,12 @@ import {
   PageTitle,
   NpcSimulator,
   useCalculatorContext,
+  useFloatingNpcSimulator,
   EditSmallButton,
   RemoveSmallButton,
   RestoreSmallButton,
   CopySmallButton,
   TierSelect,
-  CalculatorContextProvider,
 } from "@/core/components";
 import { useParty, useStableCallback } from "@/core/hooks";
 
@@ -69,15 +66,34 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
           }}
         />
       </PageTitle>
-      <Group gap={8} my="sm">
-        <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
-        <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
-        <RestoreSmallButton disabled={!onReset} onClick={onReset}>
-          Reset
-        </RestoreSmallButton>
-        <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
+      <Group>
+        <Group gap={8} my="sm">
+          <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
+          <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
+          <RestoreSmallButton disabled={!onReset} onClick={onReset}>
+            Reset
+          </RestoreSmallButton>
+          <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
+        </Group>
+        <Group justify={{ base: "flex-start", md: "flex-end" }} flex="1">
+          <ToggleNpcSimButton />
+        </Group>
       </Group>
     </>
+  );
+};
+
+const ToggleNpcSimButton = () => {
+  const { api } = useFloatingNpcSimulator();
+  return (
+    <Button
+      size="compact-md"
+      onClick={api.toggle}
+      leftSection={<IconCalculator />}
+      variant="subtle"
+    >
+      Toggle instance NPC sim for this party
+    </Button>
   );
 };
 
@@ -85,7 +101,7 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
 // probably a pattern that should be established: components probably shouldn't
 // generally access low level stores but instead should use higher level stores
 // that bake in view logic
-export const PartiesMain = () => {
+export const Parties = () => {
   const [_match, { id: routeId }] = useRoute("/parties/:id?");
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
@@ -169,23 +185,12 @@ export const PartiesMain = () => {
       {party && (
         <Grid align="flex-start" gutter="xl">
           <Grid.Col span={{ base: 12, lg: 6 }}>
-            <Stack>
-              <Paper p="md" shadow="md">
-                <Title order={5} mb="xs">
-                  Instance Offerings for Might{" "}
-                  <Text span c="primary">
-                    {stats.might.total}
-                  </Text>
-                </Title>
-                <Simulator />
-              </Paper>
-              <Paper p="md" shadow="md">
-                <Title order={5} mb="xs">
-                  Party Stats
-                </Title>
-                <StatsTable stats={stats} />
-              </Paper>
-            </Stack>
+            <Paper p="md" shadow="md">
+              <Title order={5} mb="xs">
+                Party Stats
+              </Title>
+              <StatsTable stats={stats} />
+            </Paper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 6 }}>
             <Paper shadow="md" p="md">
@@ -249,13 +254,5 @@ const Simulator = () => {
       <TierSelect value={instance} onChange={setInstance} />
       <NpcSimulator instance={instance} {...ctx} />
     </Stack>
-  );
-};
-
-export const Parties = () => {
-  return (
-    <CalculatorContextProvider>
-      <PartiesMain />
-    </CalculatorContextProvider>
   );
 };

@@ -43,6 +43,18 @@ export const TierSelect = ({
         {...props}
         data={TIER_DATA}
         maxDropdownHeight={500}
+        leftSection="Tier"
+        styles={{
+          input: {
+            paddingLeft: 70,
+          },
+        }}
+        leftSectionWidth={60}
+        leftSectionProps={{
+          style: {
+            background: "var(--mantine-color-default-border)",
+          },
+        }}
         comboboxProps={{ zIndex }}
         onDropdownOpen={() => setOpen(true)}
         onDropdownClose={() => setOpen(false)}
@@ -89,6 +101,18 @@ export const DifficultySelect = ({ onChange, zIndex = 800, ...props }) => {
         size="md"
         {...props}
         data={DIFF_OPTIONS}
+        styles={{
+          input: {
+            paddingLeft: 70,
+          },
+        }}
+        leftSectionWidth={60}
+        leftSectionProps={{
+          style: {
+            background: "var(--mantine-color-default-border)",
+          },
+        }}
+        leftSection="Diff."
         comboboxProps={{ zIndex }}
         maxDropdownHeight={400}
         onDropdownOpen={() => setOpen(true)}

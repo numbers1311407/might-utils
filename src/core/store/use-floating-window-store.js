@@ -114,7 +114,7 @@ export const useFloatingWindowStore = createStore(
               left: pos.x,
             };
           });
-        }, 400);
+        }, 1000);
 
         set((state) => {
           const { [name]: storage = {} } = state.windows;
