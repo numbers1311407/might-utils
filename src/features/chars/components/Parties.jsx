@@ -27,12 +27,12 @@ import {
   RemoveSmallButton,
   RestoreSmallButton,
   CopySmallButton,
+  CharStatsTable as StatsTable,
 } from "@/core/components";
 import { useParty, useStableCallback } from "@/core/hooks";
 
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyModal } from "./PartyModal.jsx";
-import { StatsTable } from "./StatsTable.jsx";
 
 const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
   const exclude = useMemo(() => party.chars?.map((char) => char.id), [party]);

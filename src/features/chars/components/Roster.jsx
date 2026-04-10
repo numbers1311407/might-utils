@@ -4,7 +4,7 @@ import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
 import {
   CharsTable,
-  CharsAside,
+  RosterAside,
   AddSmallButton,
   RestoreSmallButton,
   RemoveSmallButton,
@@ -87,7 +87,7 @@ export const Roster = () => {
         />
       </Paper>
 
-      <CharsAside visibleFrom="lg" chars={roster} isRoster />
+      <RosterAside visibleFrom="lg" />
 
       <CharModalForm
         char={char}

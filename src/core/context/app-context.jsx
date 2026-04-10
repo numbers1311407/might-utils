@@ -16,7 +16,7 @@ export const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     closeMobileNav();
-  }, [pathname]);
+  }, [pathname, closeMobileNav]);
 
   const value = {
     asideRef,

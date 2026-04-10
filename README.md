@@ -2,11 +2,21 @@
 
 Going through a bit of a pivot, updating soon.
 
+
+### HOTLIST from Todos
+
+- snapshots for saved parties
+- bulk tags editing for roster (and floating roster, tabs?)
+- removal of deleted roster characters from parties
+- finder results page
+- name rules?
+- theme cleanup/testing & overall design consistency
+
 ### Todos
 
 - Features
   - Finder
-    - I think it's going to be critical to test rules and other common sense failure
+    - It's going to be critical to test rules and other common sense failure
       points to error early in search. it's too easy to accidentally set your level 1-off,
       etc, and end up scratching your head for a minute trying to figure out why you got no results
         - if min/max options mean you don't have enough to meet min group size
@@ -20,21 +30,8 @@ Going through a bit of a pivot, updating soon.
         - two key new features:
           - grouped results should clearly show who fulfills each of the grouped properties.
           - rules should clearly show who matched them
-    - We shouldn't return all results. It should:
-      - stop after finding a flat count of results.
-      - return what it's found if instances do go over
-      - if there are many results it should advise to add filters or reduce options
-    - Needs to accept search params, and consider how that will affect saved
-      finder options. Thinking it will consume them immediately on load and then there
-      can be a "share" button to copy the link. 
-    - Roster Variations select when that's ready
-    - Potentially roster quick edit
     - Multiselect for rulesets
     - Toggle for distinct vs merged group tags mode
-    - Helper link on the right to tag rules, just for clarity and since they can't
-      be edited inline
-    - Tracking when rules *cannot* be passed or can only be passed by a few chars,
-      to warn players of rules that may be problematic.
   - Might Range Finder
     - complete UI
     - include links from the might ranges to the finder, and possibly listings
@@ -63,7 +60,11 @@ Going through a bit of a pivot, updating soon.
     Global: 404 page
     - an actual in app 404 page for bad paths
 - Known Bugs
-  - Clear for now
+  - Things break if roster members disappear. A few ways to handle this, obviously we could
+    sweep parties on deletion of the roster char but there may be a better way like cleanup on
+    load, or no cleanup at all and just disablement of "restore" with a warning. Perhaps this
+    is best? Why not let people keep historical roster chars in parties, is there a downside
+    besides potential confusion?
  
 ### Nice to haves
   **More calculator data**

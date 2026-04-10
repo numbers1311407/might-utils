@@ -40,6 +40,7 @@ export const CharCounts = ({
   renderValue,
   renderCount,
 }) => {
+  // TODO fix memo for compiler
   return useMemo(() => {
     if (!Object.keys(chars).length) {
       return "No Entries";

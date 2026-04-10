@@ -3,6 +3,7 @@ import { defaultRoster } from "@/config/defaults";
 import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
 import { rosterSchema, charSchema } from "@/model/schemas";
 import { deepEqual } from "fast-equals";
+import { getCharsStats } from "./helpers/get-chars-stats.js";
 
 const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
@@ -90,6 +91,10 @@ const api = {
     });
 
     done?.(api.getChar(clone.id));
+  },
+
+  getStats: (roster) => {
+    return getCharsStats(roster);
   },
 };
 

@@ -4,6 +4,7 @@ export * from "./use-party.js";
 export * from "./use-persisted-floating-window.js";
 export * from "./use-roster.js";
 export * from "./use-roster-controls.js";
+export * from "./use-roster-stats.js";
 export * from "./use-stable-callback.js";
 export * from "./use-structured-clone.js";
 export * from "./use-tag-rules-active-filters.js";
