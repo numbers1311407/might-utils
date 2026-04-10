@@ -1,4 +1,4 @@
-import { CLASSES } from "@/core/config";
+import { CLASSES } from "@/config";
 import { initDict } from "@/utils";
 
 const classDict = initDict(

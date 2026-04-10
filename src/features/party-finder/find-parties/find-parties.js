@@ -3,7 +3,7 @@ import {
   MightScoreByLevel,
   MightMaxLevel,
   MightMinLevel,
-} from "@/core/config";
+} from "@/config";
 import { createPartyValidator } from "@/core/finder-rules";
 import { FindPartiesError } from "./find-parties-error.js";
 import { getGroupingOverrides, getTagGroupKey } from "./grouping.js";

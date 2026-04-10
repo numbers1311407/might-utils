@@ -1,4 +1,4 @@
-import { MightScoreByLevel, Warden } from "@/core/config";
+import { MightScoreByLevel, Warden } from "@/config";
 
 export const getCharMight = (char, warden = char.warden) => {
   const mightScore = MightScoreByLevel[char.level];

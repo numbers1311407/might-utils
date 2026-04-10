@@ -1,5 +1,5 @@
 import { createStore } from "./helpers";
-import { defaultRoster } from "@/core/config/defaults";
+import { defaultRoster } from "@/config/defaults";
 import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
 import { rosterSchema, charSchema } from "@/core/schemas";
 import { deepEqual } from "fast-equals";

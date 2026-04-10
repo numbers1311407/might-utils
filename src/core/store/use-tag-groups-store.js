@@ -1,4 +1,4 @@
-import { defaultTagGroups as defaults } from "@/core/config/defaults";
+import { defaultTagGroups as defaults } from "@/config/defaults";
 import { tagGroupSchema } from "@/core/schemas";
 import { createRegistryStore } from "./helpers";
 

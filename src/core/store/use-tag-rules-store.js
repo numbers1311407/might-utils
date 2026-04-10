@@ -2,7 +2,7 @@ import { deepEqual } from "fast-equals";
 import {
   defaultFiltersTagRules,
   defaultTimeFlagTagRules,
-} from "@/core/config/defaults";
+} from "@/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
 import { createStore } from "./helpers";
 

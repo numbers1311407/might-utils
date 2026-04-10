@@ -1,5 +1,5 @@
 import { getNumberedArray, countKeys } from "@/utils";
-import { Warden } from "@/core/config/warden";
+import { Warden } from "@/config/warden";
 import {
   ALL_RANGE_LITERAL,
   GROUP_TAG_DELIMITER,

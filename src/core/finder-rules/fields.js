@@ -6,7 +6,7 @@ import {
   charWardenSchema,
   tagSchema,
 } from "@/core/schemas";
-import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
+import { MightMinLevel, MightMaxLevel } from "@/config/might";
 
 const schemaValidator = (schema) => (r) => schema.safeParse(r.value).success;
 

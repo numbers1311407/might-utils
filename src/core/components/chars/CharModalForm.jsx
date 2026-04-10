@@ -19,7 +19,7 @@ import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
 import { charSchema, charClassSchema, tagSchema } from "@/core/schemas";
 import { useClassTagsStore, useRosterStore } from "@/core/store";
-import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
+import { MightMinLevel, MightMaxLevel } from "@/config/might";
 
 const formCharSchema = charSchema
   .extend({

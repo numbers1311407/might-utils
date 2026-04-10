@@ -1,10 +1,10 @@
 import * as z from "zod";
 import { nanoid } from "nanoid";
-import { MightMinLevel, MightMaxLevel } from "@/core/config/might";
+import { MightMinLevel, MightMaxLevel } from "@/config/might";
 import { getMaxWardenForLevel } from "@/core/chars/warden";
 import { capitalize } from "@/utils";
 import { tagSchema } from "./tag.js";
-import { CLASS_SHORTNAMES } from "@/core/config";
+import { CLASS_SHORTNAMES } from "@/config";
 
 export const charClassSchema = z.enum(CLASS_SHORTNAMES, {
   message: 'Expected a 3-letter class shortname, e.g. "WAR"',

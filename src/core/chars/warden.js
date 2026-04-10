@@ -1,4 +1,4 @@
-import { Warden } from "@/core/config/warden";
+import { Warden } from "@/config/warden";
 import { charLevelSchema } from "@/core/schemas";
 
 export const getMaxWardenForLevel = (() => {

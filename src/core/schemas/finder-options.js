@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { MightMaxLevel, MightMinLevel } from "@/core/config";
+import { MightMaxLevel, MightMinLevel } from "@/config";
 
 const levelSchema = z.coerce
   .number()

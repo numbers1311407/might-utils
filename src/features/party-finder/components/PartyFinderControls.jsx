@@ -1,7 +1,7 @@
 import { Divider, Group, Stack } from "@mantine/core";
 import { useThrottledCallback } from "@mantine/hooks";
 import { ActiveTagFiltersSelect, NumberField } from "@/core/components";
-import { MightMaxLevel, MightMinLevel } from "@/core/config/might";
+import { MightMaxLevel, MightMinLevel } from "@/config/might";
 import { usePartyFinderStore } from "../store";
 import { ResultsGroupingSelect } from "./ResultsGroupingSelect.jsx";
 
