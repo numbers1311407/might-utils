@@ -1,19 +1,18 @@
 import { Button, NumberInput, Stack, Text } from "@mantine/core";
-import { usePersistedFloatingWindowHandle } from "@/core/hooks";
 import { FloatingWindow } from "@/core/components";
 import { useRoute } from "wouter";
 import { NpcSimulator as NpcSimulatorComponent } from "./NpcSimulator.jsx";
 import { TierSelect } from "./TierSelect.jsx";
 import { useCalculatorContext } from "./calculator-context.js";
+import {
+  useFloatingNpcSimulator,
+  FLOATING_NPC_SIMULATOR_NAME,
+} from "./floating-calculator-hooks.js";
 
-const NAME = "npc-simulator";
+const NAME = FLOATING_NPC_SIMULATOR_NAME;
 const HELP =
   "This calculator attempts to predict what instance options the NPCs will offer " +
   "you for each tier given your might score.";
-
-export const useFloatingNpcSimulator = () => {
-  return usePersistedFloatingWindowHandle(NAME);
-};
 
 export const FloatingNpcSimulator = () => {
   const { api } = useFloatingNpcSimulator();

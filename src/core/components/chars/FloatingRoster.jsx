@@ -1,18 +1,17 @@
 import { Button } from "@mantine/core";
 import { Link } from "wouter";
 import { useRosterStoreApi as rosterApi } from "@/model/store";
-import { usePersistedFloatingWindowHandle, useRoster } from "@/core/hooks";
+import { useRoster } from "@/core/hooks";
 import { FloatingWindow } from "@/core/components/common";
 import { CharsTable } from "./CharsTable.jsx";
+import {
+  useFloatingRoster,
+  FLOATING_ROSTER_NAME,
+} from "./use-floating-roster.js";
 
-const NAME = "roster";
 const HELP =
   "This is the active roster used to power the party generator. It's in a window " +
   "to make it easy to view and edit to control finder output.";
-
-export const useFloatingRoster = () => {
-  return usePersistedFloatingWindowHandle(NAME);
-};
 
 export const FloatingRoster = () => {
   const { api } = useFloatingRoster();
@@ -28,7 +27,7 @@ export const FloatingRoster = () => {
         Character Roster
       </Button>
       <FloatingWindow
-        name={NAME}
+        name={FLOATING_ROSTER_NAME}
         w={475}
         help={HELP}
         p="lg"

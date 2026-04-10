@@ -4,3 +4,4 @@ export * from "./CharModalForm.jsx";
 export * from "./CharSelect.jsx";
 export * from "./CharTagsPopover.jsx";
 export * from "./FloatingRoster.jsx";
+export * from "./use-floating-roster.js";

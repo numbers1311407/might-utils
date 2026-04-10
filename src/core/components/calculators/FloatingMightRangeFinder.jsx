@@ -1,18 +1,17 @@
 import { Button, Stack } from "@mantine/core";
-import { usePersistedFloatingWindowHandle } from "@/core/hooks";
 import { FloatingWindow } from "@/core/components";
 import { MightRangeFinder as MightRangeFinderComponent } from "./MightRangeFinder.jsx";
 import { TierSelect } from "./TierSelect.jsx";
 import { useCalculatorContext } from "./calculator-context.js";
+import {
+  FLOATING_MIGHT_RANGE_FINDER_NAME,
+  useFloatingMightRangeFinder,
+} from "./floating-calculator-hooks.js";
 
-const NAME = "might-range-finder";
+const NAME = FLOATING_MIGHT_RANGE_FINDER_NAME;
 const HELP =
   "This calculator takes a tier and difficulty level and attempts to predict the might " +
   "ranges you'd need to hit that difficulty.";
-
-export const useFloatingMightRangeFinder = () => {
-  return usePersistedFloatingWindowHandle(NAME);
-};
 
 export const FloatingMightRangeFinder = () => {
   const { api } = useFloatingMightRangeFinder();

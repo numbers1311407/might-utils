@@ -7,3 +7,4 @@ export * from "./ChatWindow.jsx";
 export * from "./MightRangeFinder.jsx";
 export * from "./NpcSimulator.jsx";
 export * from "./TierSelect.jsx";
+export * from "./floating-calculator-hooks.js";
