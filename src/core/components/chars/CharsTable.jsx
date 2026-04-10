@@ -3,8 +3,8 @@ import {
   getCharMight,
   getMaxWardenForLevel,
   getMinLevelForWarden,
-} from "@/core/chars";
-import { charLevelSchema } from "@/core/schemas";
+} from "@/config/chars";
+import { charLevelSchema } from "@/model/schemas";
 import {
   ClassIcon,
   EditButton,
@@ -12,7 +12,7 @@ import {
   TrashButton,
   RestoreButton,
 } from "@/core/components/common";
-import { useClassTagsStore } from "@/core/store";
+import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
 
 export const CharsTableEmptyRow = ({ children }) => (

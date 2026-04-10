@@ -5,7 +5,7 @@ import {
   charLevelSchema,
   charWardenSchema,
   tagSchema,
-} from "@/core/schemas";
+} from "@/model/schemas";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
 
 const schemaValidator = (schema) => (r) => schema.safeParse(r.value).success;

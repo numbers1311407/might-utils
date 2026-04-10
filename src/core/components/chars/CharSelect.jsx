@@ -2,7 +2,7 @@ import { useMemo, useState, useRef } from "react";
 import { Select, Group, Stack, Text } from "@mantine/core";
 import { useRoster } from "@/core/hooks";
 import { ClassIcon } from "@/core/components";
-import { getClassName } from "@/core/chars";
+import { getClassName } from "@/config/chars";
 
 // TODO handle checked state better for selected characters in stateful
 // mode. (initially this was a stateless button, which is fine, but in

@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { RangeSlider } from "@mantine/core";
 import { deepEqual } from "fast-equals";
 import { useDraftState, useStableCallback } from "@/core/hooks";
-import { useTagRulesStore } from "@/core/store";
+import { useTagRulesStore } from "@/model/store";
 import { getNumberedArray } from "@/utils";
 
 export const TagRuleSizeSlider = ({

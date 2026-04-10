@@ -32,7 +32,7 @@ import {
   useTagRulesStore,
   useTagRulesStoreApi as tagRulesApi,
   getConfirmation,
-} from "@/core/store";
+} from "@/model/store";
 import { useTagRulesManager } from "@/core/hooks";
 import { useTagRulesContext } from "../context.js";
 import { TagRulesContextProvider } from "./TagRulesContextProvider.jsx";

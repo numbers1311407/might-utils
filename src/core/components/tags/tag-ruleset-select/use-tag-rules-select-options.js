@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useTagRulesStore } from "@/core/store";
+import { useTagRulesStore } from "@/model/store";
 import { useTagRulesList } from "@/core/hooks";
 
 export const useTagRulesSelectOptions = (type, options = {}) => {

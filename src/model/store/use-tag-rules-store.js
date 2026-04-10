@@ -3,7 +3,7 @@ import {
   defaultFiltersTagRules,
   defaultTimeFlagTagRules,
 } from "@/config/defaults";
-import { tagRulesetSchema, tagRuleSchema } from "@/core/schemas";
+import { tagRulesetSchema, tagRuleSchema } from "@/model/schemas";
 import { createStore } from "./helpers";
 
 const TYPES = {

@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { nanoid } from "nanoid";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
-import { getMaxWardenForLevel } from "@/core/chars/warden";
+import { getMaxWardenForLevel } from "@/config/chars/warden";
 import { capitalize } from "@/utils";
 import { tagSchema } from "./tag.js";
 import { CLASS_SHORTNAMES } from "@/config";

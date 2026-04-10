@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button, Group, Modal, Stack } from "@mantine/core";
 import { TextInput } from "@/core/components";
 import { useForm } from "@mantine/form";
-import { usePartiesStoreApi as storeApi } from "@/core/store";
-import { partySchema } from "@/core/schemas";
+import { usePartiesStoreApi as storeApi } from "@/model/store";
+import { partySchema } from "@/model/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
 const formSchema = partySchema.refine(

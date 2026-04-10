@@ -1,5 +1,5 @@
 import { defaultTagGroups as defaults } from "@/config/defaults";
-import { tagGroupSchema } from "@/core/schemas";
+import { tagGroupSchema } from "@/model/schemas";
 import { createRegistryStore } from "./helpers";
 
 const { useStore: useTagGroupsStore, api: useTagGroupsStoreApi } =

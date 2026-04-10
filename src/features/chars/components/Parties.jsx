@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { IconPlus, IconCalculator } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
-import { usePartiesStoreApi as partiesApi } from "@/core/store";
+import { usePartiesStoreApi as partiesApi } from "@/model/store";
 import {
   AppLink,
   Aside,

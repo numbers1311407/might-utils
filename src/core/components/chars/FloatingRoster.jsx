@@ -1,6 +1,6 @@
 import { Button } from "@mantine/core";
 import { Link } from "wouter";
-import { useRosterStoreApi as rosterApi } from "@/core/store";
+import { useRosterStoreApi as rosterApi } from "@/model/store";
 import { usePersistedFloatingWindowHandle, useRoster } from "@/core/hooks";
 import { FloatingWindow } from "@/core/components/common";
 import { CharsTable } from "./CharsTable.jsx";

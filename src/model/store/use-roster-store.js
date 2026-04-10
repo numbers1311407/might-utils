@@ -1,7 +1,7 @@
 import { createStore } from "./helpers";
 import { defaultRoster } from "@/config/defaults";
 import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
-import { rosterSchema, charSchema } from "@/core/schemas";
+import { rosterSchema, charSchema } from "@/model/schemas";
 import { deepEqual } from "fast-equals";
 
 const rosterSort = (a, b) => {

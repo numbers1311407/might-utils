@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
+import { useTagRulesStore, useTagRulesStoreApi as api } from "@/model/store";
 
 export const useTagRulesActiveFilters = () => {
   const activeIds = useTagRulesStore((store) => store.active.filters);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CloseButton, Button, Modal, TextInput, Group } from "@mantine/core";
-import { useTagRulesStoreApi } from "@/core/store";
-import { tagRulesetSchema } from "@/core/schemas";
+import { useTagRulesStoreApi } from "@/model/store";
+import { tagRulesetSchema } from "@/model/schemas";
 
 const { nameAvailable } = useTagRulesStoreApi;
 

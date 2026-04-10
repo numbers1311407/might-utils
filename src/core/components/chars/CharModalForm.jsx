@@ -17,8 +17,8 @@ import { useForm } from "@mantine/form";
 
 import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
-import { charSchema, charClassSchema, tagSchema } from "@/core/schemas";
-import { useClassTagsStore, useRosterStore } from "@/core/store";
+import { charSchema, charClassSchema, tagSchema } from "@/model/schemas";
+import { useClassTagsStore, useRosterStore } from "@/model/store";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
 
 const formCharSchema = charSchema

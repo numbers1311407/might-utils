@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useRosterStore, useRosterStoreApi as api } from "@/core/store";
+import { useRosterStore, useRosterStoreApi as api } from "@/model/store";
 
 export const useRoster = (options = {}) => {
   const { classTags = false, activeOnly: optActiveOnly } = options;

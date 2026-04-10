@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 
 import { useStableCallback } from "@/core/hooks";
 import { HelpLabel } from "@/core/components/common/HelpLabel";
-import { tagRuleSchema } from "@/core/schemas";
+import { tagRuleSchema } from "@/model/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
 import { ModalRangeInput } from "./ModalRangeInput.jsx";

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useDraftState } from "@/core/hooks";
-import { useTagRulesStore, useTagRulesStoreApi as api } from "@/core/store";
+import { useTagRulesStore, useTagRulesStoreApi as api } from "@/model/store";
 import { defaultFiltersTagRules } from "@/config/defaults";
 
 const defaultIdMap = {

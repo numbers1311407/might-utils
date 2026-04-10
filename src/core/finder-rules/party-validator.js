@@ -1,6 +1,6 @@
 import { add_operation, apply as jsonLogicApply } from "json-logic-js";
 import { formatQuery } from "react-querybuilder";
-import { TagRuleTypes } from "@/core/schemas";
+import { TagRuleTypes } from "@/model/schemas";
 import { jsonLogicAdditionalOperators } from "react-querybuilder";
 
 for (const [op, func] of Object.entries(jsonLogicAdditionalOperators)) {

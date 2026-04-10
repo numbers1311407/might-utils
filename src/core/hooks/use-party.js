@@ -3,7 +3,7 @@ import {
   getConfirmation,
   usePartiesStore,
   usePartiesStoreApi as partiesApi,
-} from "@/core/store";
+} from "@/model/store";
 
 // TODO a fun refactor would be to tie this hook and store hooks like it
 // to the modal editor for hte party. It would require a global modal service

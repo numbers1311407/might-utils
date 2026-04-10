@@ -14,7 +14,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useDraftState } from "@/core/hooks";
-import { useTagGroupsStore } from "@/core/store";
+import { useTagGroupsStore } from "@/model/store";
 import { usePartyFinderStore } from "../store";
 
 const staticOptions = {

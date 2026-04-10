@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useTagRulesStore } from "@/core/store";
+import { useTagRulesStore } from "@/model/store";
 import { defaultFiltersTagRules } from "@/config/defaults";
 
 const defaultIds = {

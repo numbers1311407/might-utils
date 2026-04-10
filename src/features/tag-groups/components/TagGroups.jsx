@@ -5,7 +5,7 @@ import {
   getConfirmation,
   useTagGroupsStore,
   useTagGroupsStoreApi as tgapi,
-} from "@/core/store";
+} from "@/model/store";
 import {
   Aside,
   PageTitle,
@@ -15,7 +15,7 @@ import {
   CopySmallButton,
   RemoveSmallButton,
 } from "@/core/components";
-import { tagSchema } from "@/core/schemas";
+import { tagSchema } from "@/model/schemas";
 import { TagGroupModal } from "./TagGroupModal.jsx";
 
 export const TagGroup = ({

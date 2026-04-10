@@ -1,5 +1,5 @@
 import { useMemo, useRef, Suspense } from "react";
-import { useTagGroupsStoreApi as tgapi } from "@/core/store";
+import { useTagGroupsStoreApi as tgapi } from "@/model/store";
 import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
 import { findPartiesAsync } from "../find-parties";
 import { PartyFinderContext } from "../context.js";

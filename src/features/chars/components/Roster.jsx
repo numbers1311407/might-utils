@@ -1,6 +1,6 @@
 import { Box, Button, Paper, Text } from "@mantine/core";
 import { useState } from "react";
-import { getConfirmation, useRosterStoreApi as rosterApi } from "@/core/store";
+import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
 import {
   CharsTable,

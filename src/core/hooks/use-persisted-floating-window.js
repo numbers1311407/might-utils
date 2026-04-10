@@ -2,7 +2,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
 import { useFloatingWindow } from "@mantine/hooks";
 import { useStableCallback } from "@/core/hooks";
-import { useFloatingWindowStore } from "@/core/store";
+import { useFloatingWindowStore } from "@/model/store";
 
 const DEFAULT_HOOK_OPTIONS = {
   enabled: true,

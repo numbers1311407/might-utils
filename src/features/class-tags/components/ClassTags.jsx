@@ -1,6 +1,6 @@
 import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
-import { getConfirmation, useClassTagsStore } from "@/core/store";
+import { getConfirmation, useClassTagsStore } from "@/model/store";
 import {
   Aside,
   ClassIcon,
@@ -8,7 +8,7 @@ import {
   PageTitle,
   ReloadSmallButton,
 } from "@/core/components";
-import { getClassName } from "@/core/chars";
+import { getClassName } from "@/config/chars";
 
 export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
   return (

@@ -1,8 +1,8 @@
 import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
 import { getConfirmation } from "./use-confirmation-store.js";
-import { partySchema } from "@/core/schemas";
-import { getCharMight } from "@/core/chars";
+import { partySchema } from "@/model/schemas";
+import { getCharMight } from "@/config/chars";
 import { deepEqual } from "fast-equals";
 import { sum, round } from "@/utils";
 

@@ -1,5 +1,5 @@
 import { Warden } from "@/config/warden";
-import { charLevelSchema } from "@/core/schemas";
+import { MightMinLevel } from "@/config/might";
 
 export const getMaxWardenForLevel = (() => {
   const cache = {};
@@ -15,5 +15,5 @@ export const getMaxWardenForLevel = (() => {
 })();
 
 export const getMinLevelForWarden = (rank) => {
-  return Warden.RankMap.get(rank)?.requiredLevel || charLevelSchema.min;
+  return Warden.RankMap.get(rank)?.requiredLevel || MightMinLevel;
 };

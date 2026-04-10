@@ -8,8 +8,8 @@ import {
   Text,
 } from "@mantine/core";
 import { useRosterControls } from "@/core/hooks";
-import { getCharMight } from "@/core/chars";
-import { useClassTagsStore } from "@/core/store";
+import { getCharMight } from "@/config/chars";
+import { useClassTagsStore } from "@/model/store";
 import { AppLink, Aside } from "@/core/components/common";
 
 export const CharsAside = ({ chars, isRoster, ...asideProps }) => {

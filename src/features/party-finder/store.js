@@ -1,5 +1,5 @@
-import { createStore } from "@/core/store/helpers";
-import { finderOptionsSchema } from "@/core/schemas";
+import { createStore } from "@/model/store/helpers";
+import { finderOptionsSchema } from "@/model/schemas";
 import { defaultOptions } from "./find-parties";
 
 export const usePartyFinderStore = createStore(

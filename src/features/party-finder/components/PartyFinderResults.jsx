@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { List, Stack, Table, Text } from "@mantine/core";
-import { getClassName } from "@/core/chars";
+import { getClassName } from "@/config/chars";
 import { useFindPartiesResults } from "../hooks";
 
 const hWarden = (rank) => (rank === "0" ? "Unwardened" : `Rank ${rank}`);

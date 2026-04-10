@@ -1,5 +1,5 @@
 import { createStore } from "./helpers";
-import { charClassSchema, tagSchema } from "@/core/schemas";
+import { charClassSchema, tagSchema } from "@/model/schemas";
 import { defaultClassTags } from "@/config/defaults";
 
 const isValidClass = (cls) => {

@@ -1,7 +1,7 @@
 import {
   useConfirmationStore,
   useConfirmationStoreApi as api,
-} from "@/core/store";
+} from "@/model/store";
 import { ConfirmationModal } from "@/core/components";
 
 export const GlobalConfirmationModal = () => {

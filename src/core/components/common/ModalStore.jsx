@@ -1,5 +1,5 @@
 import { Button, Flex, Modal, Stack, Text } from "@mantine/core";
-import { useModalStore } from "@/core/store";
+import { useModalStore } from "@/model/store";
 
 export const ModalStore = () => {
   const { Component, modalProps, componentProps, isOpen } = useModalStore();

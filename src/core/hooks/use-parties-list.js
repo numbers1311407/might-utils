@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { usePartiesStore } from "@/core/store";
+import { usePartiesStore } from "@/model/store";
 
 export const usePartiesList = () => {
   const registry = usePartiesStore((store) => store.registry);

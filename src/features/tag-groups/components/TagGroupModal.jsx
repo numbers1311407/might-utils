@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useTagGroupsStoreApi as tgapi } from "@/core/store";
-import { tagSchema, tagGroupSchema } from "@/core/schemas";
+import { useTagGroupsStoreApi as tgapi } from "@/model/store";
+import { tagSchema, tagGroupSchema } from "@/model/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { HelpLabel, TagsInput } from "@/core/components";
 
