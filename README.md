@@ -6,7 +6,7 @@ Going through a bit of a pivot, updating soon.
 ### HOTLIST from Todos
 
 - bulk tags editing for roster (and floating roster, tabs?)
-- removal of deleted roster characters from parties
+
 - finder results page
 - name rules?
 - theme cleanup/testing & overall design consistency

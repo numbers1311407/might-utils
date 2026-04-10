@@ -1,5 +1,6 @@
-import { Box, Button, Paper, Text } from "@mantine/core";
-import { useState } from "react";
+import { Box, Button, Divider, Paper, Stack, Tabs, Text } from "@mantine/core";
+import { useSearchParams } from "wouter";
+import { useMemo, useState } from "react";
 import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
 import {
@@ -12,9 +13,23 @@ import {
   PageTitle,
 } from "@/core/components";
 
+import { RosterTagsEditor } from "./RosterTagsEditor.jsx";
+
+const TABS = ["characters", "tags"];
+
 export const Roster = () => {
   const roster = useRoster();
   const [char, setChar] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentTab = useMemo(() => {
+    const tab = searchParams.get("tab");
+    return TABS.find((t) => t === tab) || TABS[0];
+  }, [searchParams]);
+
+  const onTabsChange = (tab) => {
+    setSearchParams({ tab });
+  };
 
   const onResetRoster = getConfirmation(
     () => {
@@ -67,24 +82,38 @@ export const Roster = () => {
         </AddSmallButton>
       </PageTitle>
 
-      <Paper p="md" shadow="md">
-        <CharsTable
-          chars={roster}
-          onEdit={(char) => setChar(char)}
-          isRoster={true}
-          onUpdate={onUpdate}
-          onRemove={onRemove}
-          emptyContent={
-            <>
-              <Text size="lg" mb="md">
-                You have no characters on your roster.
-              </Text>
-              <Button size="md" onClick={() => setChar({})}>
-                Create a character?
-              </Button>
-            </>
-          }
-        />
+      <Paper py="xl" px="md" shadow="md">
+        <Tabs value={currentTab} onChange={onTabsChange} mt="-xs" mb="lg">
+          <Tabs.List>
+            <Tabs.Tab value="characters">Characters</Tabs.Tab>
+            <Tabs.Tab value="tags">Bulk Tag Editor</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="characters" pt="lg">
+            <CharsTable
+              chars={roster}
+              onEdit={(char) => setChar(char)}
+              isRoster={true}
+              onUpdate={onUpdate}
+              onRemove={onRemove}
+              emptyContent={
+                <Stack gap="sm" py="xl">
+                  <Text size="xl" c="warning">
+                    You have no characters on your roster.
+                  </Text>
+                  <Box>
+                    <Button size="compact-md" onClick={() => setChar({})}>
+                      Create one now?
+                    </Button>
+                  </Box>
+                </Stack>
+              }
+            />
+          </Tabs.Panel>
+          <Tabs.Panel value="tags">
+            <RosterTagsEditor />
+          </Tabs.Panel>
+        </Tabs>
+        <Divider />
       </Paper>
 
       <RosterAside visibleFrom="lg" />

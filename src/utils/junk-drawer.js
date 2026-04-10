@@ -156,3 +156,7 @@ export const debounce = (func, wait = 250) => {
     timeout = setTimeout(later, wait);
   };
 };
+
+export const intersection = (arr1, arr2) => {
+  return [...new Set(arr1).intersection(new Set(arr2))];
+};

@@ -11,7 +11,6 @@ export const TagsInput = ({
   removeTag,
   addTag,
   onKeyDown: propsOnKeyDown,
-  onChange: propsOnChange,
   ...restProps
 }) => {
   const [error, setError] = useState(null);
@@ -24,6 +23,7 @@ export const TagsInput = ({
         key={tag}
         withRemoveButton={!locked}
         disabled={locked}
+        bg={locked ? "primary.7" : undefined}
         onRemove={locked ? undefined : () => removeTag(tag)}
       >
         {tag}

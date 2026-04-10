@@ -2,7 +2,6 @@ import { createStore } from "./helpers";
 import { defaultRoster } from "@/config/defaults";
 import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
 import { rosterSchema, charSchema } from "@/model/schemas";
-import { deepEqual } from "fast-equals";
 import { getCharsStats } from "./helpers/get-chars-stats.js";
 
 const rosterSort = (a, b) => {
@@ -97,6 +96,22 @@ const api = {
     });
 
     done?.(api.getChar(clone.id));
+  },
+
+  addCharTags: (charId, tags) => {
+    const char = _getChar(charId);
+    if (!char) return;
+
+    api.updateChar(charId, { tags: [...char.tags, ...tags] });
+  },
+
+  removeCharTags: (charId, tags) => {
+    const char = _getChar(charId);
+    if (!char) return;
+
+    api.updateChar(charId, {
+      tags: char.tags.filter((t) => !tags.includes(t)),
+    });
   },
 
   getStats: (roster) => {

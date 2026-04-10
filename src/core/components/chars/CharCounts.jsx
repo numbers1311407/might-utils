@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import {
   Group,
-  List as MantineList,
+  List,
   Pill,
   HoverCard,
   Text,
@@ -9,9 +9,7 @@ import {
 } from "@mantine/core";
 import { identity } from "@/utils";
 
-const DefaultList = MantineList;
-const DefaultListItem = MantineList.Item;
-const DefaultTarget = ({
+const Target = ({
   value,
   count,
   renderValue = identity,
@@ -32,56 +30,46 @@ const DefaultTarget = ({
   );
 };
 
-export const CharCounts = ({
-  chars,
-  List = DefaultList,
-  ListItem = DefaultListItem,
-  Target = DefaultTarget,
-  renderValue,
-  renderCount,
-}) => {
-  // TODO fix memo for compiler
-  return useMemo(() => {
-    if (!Object.keys(chars).length) {
-      return "No Entries";
-    }
-
-    return Object.entries(chars)
-      .sort((a, b) => {
+export const CharCounts = ({ chars, renderValue, renderCount }) => {
+  const sortedChars = useMemo(
+    () =>
+      Object.entries(chars).sort((a, b) => {
         return b[1].length === a[1].length
           ? a[0].localeCompare(b[0])
           : b[1].length - a[1].length;
-      })
-      .map(([value, charList]) => (
-        <HoverCard key={value} width={150} shadow="md" openDelay={300}>
-          <HoverCard.Target>
-            <UnstyledButton component={Pill} flex="0 0 auto">
-              <Target
-                value={value}
-                count={charList.length}
-                renderValue={renderValue}
-                renderCount={renderCount}
-              />
-            </UnstyledButton>
-          </HoverCard.Target>
-          <HoverCard.Dropdown>
-            <Text c="primary">
-              {charList.length} Character{charList.length === 1 ? "" : "s"}
-            </Text>
-            <List size="sm">
-              {charList.map(({ id, name }) => (
-                <ListItem key={id}>{name}</ListItem>
-              ))}
-            </List>
-          </HoverCard.Dropdown>
-        </HoverCard>
-      ));
-  }, [chars, List, ListItem, Target]);
-};
+      }),
+    [chars],
+  );
 
-CharCounts.DefaultTarget = DefaultTarget;
-CharCounts.DefaultList = DefaultList;
-CharCounts.DefaultListItem = DefaultListItem;
+  if (!sortedChars.length) {
+    return "No Entries";
+  }
+
+  return sortedChars.map(([value, charList]) => (
+    <HoverCard key={value} width={150} shadow="md" openDelay={300}>
+      <HoverCard.Target>
+        <UnstyledButton component={Pill} flex="0 0 auto">
+          <Target
+            value={value}
+            count={charList.length}
+            renderValue={renderValue}
+            renderCount={renderCount}
+          />
+        </UnstyledButton>
+      </HoverCard.Target>
+      <HoverCard.Dropdown>
+        <Text c="primary">
+          {charList.length} Character{charList.length === 1 ? "" : "s"}
+        </Text>
+        <List size="sm">
+          {charList.map(({ id, name }) => (
+            <List.Item key={id}>{name}</List.Item>
+          ))}
+        </List>
+      </HoverCard.Dropdown>
+    </HoverCard>
+  ));
+};
 
 export const TagCharCounts = (props) => {
   return <CharCounts {...props} renderValue={(value) => `"${value}"`} />;

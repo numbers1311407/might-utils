@@ -61,7 +61,10 @@ export const CharStatsTable = ({
       [
         "Classes",
         <Tags>
-          <CharCounts chars={stats.class.chars} />
+          <CharCounts
+            chars={stats.class.chars}
+            renderValue={(val) => val.toLowerCase()}
+          />
         </Tags>,
       ],
       [
