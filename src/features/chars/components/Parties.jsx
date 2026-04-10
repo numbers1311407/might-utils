@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   Grid,
   Group,
   Paper,
@@ -75,9 +76,9 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
           </RestoreSmallButton>
           <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
         </Group>
-        <Group justify={{ base: "flex-start", md: "flex-end" }} flex="1">
+        <Flex justify={{ base: "flex-start", xl: "flex-end" }} flex="1">
           <ToggleNpcSimButton />
-        </Group>
+        </Flex>
       </Group>
     </>
   );

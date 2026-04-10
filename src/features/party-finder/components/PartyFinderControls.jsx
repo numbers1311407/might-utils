@@ -89,7 +89,7 @@ export const PartyFinderControls = () => {
     <>
       <Stack
         gap={8}
-        bg="light-dark(var(--mantine-color-blue-3), var(--mantine-color-red-8))"
+        bg="light-dark(var(--mantine-color-blue-3), var(--mantine-color-red-9))"
         p="sm"
         bdrs="sm"
       >

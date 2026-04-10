@@ -49,6 +49,11 @@ Going through a bit of a pivot, updating soon.
       is a little tricky with static warden. Depending on the solution this may
       be post MVP. The whole idea for parties is that they have a static might
       level not a range.
+    - I think being able to save a snapshot to revert to might be another path
+      here. The thing is that playing around with might comes with the req. to
+      put it all back when you're done, so you hesitate to mess with it. THe
+      counterpoint is that you can always very rapidly copy a group and have
+      multiple versions of it, so perhaps the plan should be to encourage that.
   - Tag rules
     - Name rule should probably be back on the menu. It made less sense when one ruleset was the
       tech but if you have multiple rulesets I could see having "core team" or "tank 1" "tank 2"
