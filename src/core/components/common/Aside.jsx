@@ -6,7 +6,7 @@ import { useAppContext } from "@/core/context";
 
 const BaseAside = ({ children, ...props }) => {
   const el = document.getElementById("aside-slot");
-  const { hasAside, setHasAside } = useAppContext();
+  const { setHasAside } = useAppContext();
 
   useEffect(() => {
     setHasAside(true);
