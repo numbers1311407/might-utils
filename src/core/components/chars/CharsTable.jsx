@@ -10,14 +10,16 @@ import {
   EditButton,
   IncrementButtons,
   TrashButton,
+  HelpIconTooltip,
   RestoreButton,
 } from "@/core/components/common";
+import { useRosterChar } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
 
 export const CharsTableEmptyRow = ({ children }) => (
   <Table.Tr>
-    <Table.Td colSpan={8} p="3xl">
+    <Table.Td colSpan={8} py="xl" px="4xl">
       <Box ta="center">{children}</Box>
     </Table.Td>
   </Table.Tr>
@@ -33,107 +35,123 @@ export const CharsTableRow = ({
   remove,
   reset,
   update,
-}) => (
-  <Table.Tr>
-    {isRoster && (
+}) => {
+  const rosterChar = useRosterChar(char.id);
+  const disableControls = !rosterChar;
+  const noRosterMessage = !rosterChar
+    ? "This character can no longer be edited because they've been deleted from the roster"
+    : undefined;
+
+  return (
+    <Table.Tr>
+      {isRoster && (
+        <Table.Td>
+          <Switch
+            aria-label="Toggle Active Status"
+            checked={char.active}
+            onChange={(e) => {
+              update({ active: e.currentTarget.checked });
+            }}
+          />
+        </Table.Td>
+      )}
+      {isRoster && !hideControls && (
+        <Table.Td>
+          <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
+            {char.name}
+          </Text>
+        </Table.Td>
+      )}
       <Table.Td>
-        <Switch
-          aria-label="Toggle Active Status"
-          checked={char.active}
-          onChange={(e) => {
-            update({ active: e.currentTarget.checked });
-          }}
-        />
-      </Table.Td>
-    )}
-    {isRoster && !hideControls && (
-      <Table.Td>
-        <Text size="lg" style={{ opacity: char.active ? 1 : 0.5 }}>
-          {char.name}
-        </Text>
-      </Table.Td>
-    )}
-    <Table.Td>
-      <Group gap={8} wrap="nowrap">
-        <ClassIcon
-          size={24}
-          cls={char.class}
-          style={{ opacity: !isRoster || char.active ? 1 : 0.25 }}
-        />
-        <Text style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}>
-          {isRoster && !hideControls ? char.class : char.name}
-        </Text>
-      </Group>
-    </Table.Td>
-    {!hideControls && (
-      <Table.Td ta="center">
-        {isRoster && char.warden > 0 && (
-          <>
-            <Text c="yellow.7" span title="Unwardened" ff="mono">
-              {getCharMight(char, 0)}
-            </Text>{" "}
-            -{" "}
-          </>
-        )}
-        <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
-          {getCharMight(char)}
-        </Text>
-      </Table.Td>
-    )}
-    <Table.Td ta="center">
-      <IncrementButtons
-        value={char.level}
-        min={getMinLevelForWarden(char.warden)}
-        max={charLevelSchema.maxValue}
-        onChange={(level) => update({ level })}
-      />
-    </Table.Td>
-    <Table.Td ta="center">
-      <IncrementButtons
-        value={char.warden}
-        min={0}
-        max={getMaxWardenForLevel(char.level)}
-        onChange={(warden) => update({ warden })}
-      />
-    </Table.Td>
-    {isRoster && (
-      <Table.Td align="center">
-        <CharTagsPopover tags={char.tags} classTags={classTags[char.class]} />
-      </Table.Td>
-    )}
-    {!hideControls && (
-      <Table.Td>
-        <Group gap={6} justify="flex-end">
-          {!isRoster && dirtyChars && (
-            <Tooltip openDelay={500} label="Reset character to roster version">
-              <RestoreButton
-                aria-label="Reset character to roster version"
-                onClick={() => reset(char.id)}
-                disabled={!dirtyChars.has(char.id)}
-              />
-            </Tooltip>
-          )}
-          {isRoster && edit && (
-            <Tooltip openDelay={500} label="Edit character">
-              <EditButton
-                aria-label="Edit character"
-                onClick={() => edit(char)}
-              />
-            </Tooltip>
-          )}
-          {remove && (
-            <Tooltip openDelay={500} label="Remove character">
-              <TrashButton
-                aria-label="Remove character"
-                onClick={() => remove(char)}
-              />
-            </Tooltip>
-          )}
+        <Group gap={8} wrap="nowrap">
+          <ClassIcon
+            size={24}
+            cls={char.class}
+            style={{ opacity: !isRoster || char.active ? 1 : 0.25 }}
+          />
+          <Text style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}>
+            {isRoster && !hideControls ? char.class : char.name}
+          </Text>
         </Group>
       </Table.Td>
-    )}
-  </Table.Tr>
-);
+      {!hideControls && (
+        <Table.Td ta="center">
+          {isRoster && char.warden > 0 && (
+            <>
+              <Text c="yellow.7" span title="Unwardened" ff="mono">
+                {getCharMight(char, 0)}
+              </Text>{" "}
+              -{" "}
+            </>
+          )}
+          <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
+            {getCharMight(char)}
+          </Text>
+        </Table.Td>
+      )}
+      <Table.Td ta="center">
+        <IncrementButtons
+          value={char.level}
+          disabled={disableControls}
+          min={getMinLevelForWarden(char.warden)}
+          max={charLevelSchema.maxValue}
+          onChange={(level) => update({ level })}
+        />
+      </Table.Td>
+      <Table.Td ta="center">
+        <IncrementButtons
+          value={char.warden}
+          disabled={disableControls}
+          min={0}
+          max={getMaxWardenForLevel(char.level)}
+          onChange={(warden) => update({ warden })}
+        />
+      </Table.Td>
+      {isRoster && (
+        <Table.Td align="center">
+          <CharTagsPopover tags={char.tags} classTags={classTags[char.class]} />
+        </Table.Td>
+      )}
+      {!hideControls && (
+        <Table.Td>
+          <Group gap={6} justify="flex-end">
+            {!disableControls && !isRoster && dirtyChars && (
+              <Tooltip
+                openDelay={500}
+                label="Reset character to roster version"
+              >
+                <RestoreButton
+                  aria-label="Reset character to roster version"
+                  onClick={() => reset(char.id)}
+                  disabled={!dirtyChars.has(char.id)}
+                />
+              </Tooltip>
+            )}
+            {!disableControls && isRoster && edit && (
+              <Tooltip openDelay={500} label="Edit character">
+                <EditButton
+                  aria-label="Edit character"
+                  onClick={() => edit(char)}
+                />
+              </Tooltip>
+            )}
+            {disableControls && (
+              <HelpIconTooltip tooltip="This character has been deleted from the roster and can no longer be edited, only removed." />
+            )}
+            {remove && (
+              <Tooltip openDelay={500} label="Remove character">
+                <TrashButton
+                  aria-label="Remove character"
+                  onClick={() => remove(char)}
+                />
+              </Tooltip>
+            )}
+          </Group>
+        </Table.Td>
+      )}
+    </Table.Tr>
+  );
+};
 
 // TODO this thing started off as the main roster index and is now
 // pulling some serious double duty. It should probably be refactored.

@@ -19,11 +19,6 @@ const { getState: get, setState: set } = useRosterStore;
 const _getChar = (id) => get().roster.find((char) => char.id === id);
 
 const api = {
-  isCharDirty: (char, options = { classTags: false }) => {
-    const rosterChar = api.getChar(char.id, options);
-    return deepEqual(char, rosterChar);
-  },
-
   setActiveOnly: (value) => {
     set((state) => {
       state.activeOnly = value;
@@ -74,9 +69,10 @@ const api = {
 
   getCharTags: (charId, { classTags = true }) => {
     const char = typeof charId === "string" ? _getChar(charId) : charId;
-    if (!classTags) {
-      return char.tags;
-    }
+
+    if (!char) return [];
+    if (!classTags) return char.tags;
+
     return [
       ...new Set([...classTagsApi.getClassTags(char.class), ...char.tags]),
     ];

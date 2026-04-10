@@ -5,7 +5,6 @@ Going through a bit of a pivot, updating soon.
 
 ### HOTLIST from Todos
 
-- snapshots for saved parties
 - bulk tags editing for roster (and floating roster, tabs?)
 - removal of deleted roster characters from parties
 - finder results page

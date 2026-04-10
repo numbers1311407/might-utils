@@ -74,10 +74,21 @@ const extendApi = (_set, get, api) => {
     },
 
     isCharDirty: (partyId, charId) => {
-      return !deepEqual(
-        extApi.getChar(partyId, charId),
-        rosterApi.getChar(charId),
-      );
+      const rosterChar = rosterApi.getChar(charId, { classTags: false });
+
+      // We allow roster chars to be deleted without pulling them from parties
+      // in which they're referenced. This is... by design? Since the parties
+      // are in part historical reference and there's no reason (outside loss
+      // of upstream tags to reference) why the roster char needs to be removed.
+      // This is also probably an edge case, it's likely rare that roster
+      // members will be deleted.
+      //
+      // And even if they are, leaving incomplete parties isn't useful.
+      if (!rosterChar) {
+        return false;
+      }
+
+      return !deepEqual(extApi.getChar(partyId, charId), rosterChar);
     },
 
     isSnapshotDirty: (partyId) => {
@@ -182,7 +193,7 @@ const extendApi = (_set, get, api) => {
       {
         message:
           "This will resync this character with their roster version, " +
-          "reverting any changes to level, warden, and tags.",
+          "reverting any changes made to level or warden rank.",
       },
     ),
 
@@ -195,7 +206,7 @@ const extendApi = (_set, get, api) => {
       {
         message:
           "This will resync all characters with their roster versions, " +
-          "reverting any changes to level, warden, and tags.",
+          "reverting any changes made to level or warden rank.",
       },
     ),
 

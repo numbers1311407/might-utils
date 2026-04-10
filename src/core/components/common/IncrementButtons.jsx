@@ -6,6 +6,7 @@ export const IncrementButtons = ({
   max,
   value,
   onChange,
+  disabled = false,
   label = "value",
 }) => (
   <Paper
@@ -23,7 +24,7 @@ export const IncrementButtons = ({
   >
     <MinusButton
       aria-label={`Reduce ${label} by 1`}
-      disabled={min !== undefined && value <= min}
+      disabled={disabled || (min !== undefined && value <= min)}
       onClick={() => onChange?.(value - 1)}
     />
     <Text px={8} flex={1} span align="center">
@@ -31,7 +32,7 @@ export const IncrementButtons = ({
     </Text>
     <PlusButton
       aria-label={`Increase ${label} by 1`}
-      disabled={max !== undefined && value >= max}
+      disabled={disabled || (max !== undefined && value >= max)}
       onClick={() => onChange?.(value + 1)}
     />
   </Paper>

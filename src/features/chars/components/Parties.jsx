@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Divider,
-  Flex,
   Grid,
   Group,
   Paper,
@@ -75,10 +74,6 @@ const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
         <Group gap={8} my="sm">
           <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
           <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
-          <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
-          <RestoreSmallButton disabled={!onReset} onClick={onReset}>
-            Roster Sync
-          </RestoreSmallButton>
           <SaveSmallButton
             disabled={!api.snapshotDirty}
             onClick={() => api.saveSnapshot()}
@@ -91,6 +86,10 @@ const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
           >
             Restore Snapshot
           </RestoreSmallButton>
+          <RestoreSmallButton disabled={!onReset} onClick={onReset}>
+            Roster Sync
+          </RestoreSmallButton>
+          <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
         </Group>
       </Group>
     </>
@@ -222,10 +221,21 @@ export const Parties = () => {
                 onReset={partyApi.resetChar}
                 dirtyChars={dirtyChars}
                 emptyContent={
-                  <Stack>
-                    <Text>This party has no characters!</Text>
-                    <Text>
+                  <Stack gap="sm">
+                    <Text c="warning" size="xl">
+                      This party has no characters!
+                    </Text>
+                    <Text size="lg">
                       Use the dropdown above to add characters from the roster.
+                    </Text>
+                    <Text size="lg" c="warning">
+                      OR
+                    </Text>
+                    <Text size="lg">
+                      Use the{" "}
+                      <AppLink href="/party-generator">party generator</AppLink>{" "}
+                      to find a party for a specific might score and save a
+                      result.
                     </Text>
                   </Stack>
                 }
