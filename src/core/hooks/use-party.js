@@ -5,10 +5,6 @@ import {
   useRosterStoreApi as rosterApi,
 } from "@/model/store";
 
-// TODO a fun refactor would be to tie this hook and store hooks like it
-// to the modal editor for hte party. It would require a global modal service
-// like confirmations. The hook+modal combo would take care of everything
-// related to editing the party and just make callbacks on completion.
 export const useParty = (paramPartyId, options = {}) => {
   const { defaultToFirst, classTags = true } = options;
   const partyRegistry = usePartiesStore((store) => store.registry);
@@ -111,6 +107,28 @@ export const useParty = (paramPartyId, options = {}) => {
     [party],
   );
 
+  const saveSnapshot = useCallback(
+    (done) => {
+      if (partyId) partiesApi.saveSnapshot(partyId, done);
+    },
+    [partyId],
+  );
+
+  const restoreSnapshot = useCallback(
+    (done) => {
+      if (partyId) partiesApi.restoreSnapshot(partyId, done);
+    },
+    [partyId],
+  );
+
+  const snapshotDirty = useMemo(() => {
+    return !party?.id || partiesApi.isSnapshotDirty(party.id);
+  }, [party]);
+
+  const hasSnapshot = useMemo(() => {
+    return !party?.id || partiesApi.hasSnapshot(party.id);
+  }, [party]);
+
   return {
     addChar,
     copyParty,
@@ -119,7 +137,11 @@ export const useParty = (paramPartyId, options = {}) => {
     hasChar,
     isCharDirty,
     party,
-    partyId: party?.id,
+    partyId,
+    saveSnapshot,
+    snapshotDirty,
+    hasSnapshot,
+    restoreSnapshot,
     removeChar,
     removeParty,
     resetChar,

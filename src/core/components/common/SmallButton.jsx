@@ -3,6 +3,7 @@ import {
   IconRestore,
   IconSortAscendingNumbers,
   IconPlus,
+  IconDeviceFloppy,
   IconEdit,
   IconTrash,
   IconReload,
@@ -43,4 +44,8 @@ export const RemoveSmallButton = (props) => (
 
 export const RestoreSmallButton = (props) => (
   <SmallButton variant="outline" Icon={IconRestore} {...props} />
+);
+
+export const SaveSmallButton = (props) => (
+  <SmallButton variant="outline" Icon={IconDeviceFloppy} {...props} />
 );

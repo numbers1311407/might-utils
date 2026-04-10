@@ -28,14 +28,20 @@ import {
   RestoreSmallButton,
   CopySmallButton,
   CharStatsTable as StatsTable,
+  SaveSmallButton,
 } from "@/core/components";
 import { useParty, useStableCallback } from "@/core/hooks";
 
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyModal } from "./PartyModal.jsx";
 
-const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
-  const exclude = useMemo(() => party.chars?.map((char) => char.id), [party]);
+const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
+  const { party, ...api } = useParty(partyId);
+
+  const partyCharIds = useMemo(
+    () => party.chars?.map((char) => char.id),
+    [party],
+  );
 
   return (
     <>
@@ -59,7 +65,7 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
               gap: 12,
             },
           }}
-          exclude={exclude}
+          exclude={partyCharIds}
           onChange={(char) => {
             partiesApi.addChar(party.id, char.id);
           }}
@@ -69,20 +75,29 @@ const PartyHeader = ({ party, onCopy, onRemove, onReset, onRename }) => {
         <Group gap={8} my="sm">
           <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
           <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
-          <RestoreSmallButton disabled={!onReset} onClick={onReset}>
-            Reset
-          </RestoreSmallButton>
           <RemoveSmallButton onClick={onRemove}>Remove</RemoveSmallButton>
+          <RestoreSmallButton disabled={!onReset} onClick={onReset}>
+            Roster Sync
+          </RestoreSmallButton>
+          <SaveSmallButton
+            disabled={!api.snapshotDirty}
+            onClick={() => api.saveSnapshot()}
+          >
+            Save Snapshot
+          </SaveSmallButton>
+          <RestoreSmallButton
+            disabled={!api.hasSnapshot || !api.snapshotDirty}
+            onClick={() => api.restoreSnapshot()}
+          >
+            Restore Snapshot
+          </RestoreSmallButton>
         </Group>
-        <Flex justify={{ base: "flex-start", lg: "flex-end" }} flex="1">
-          <ToggleNpcSimButton />
-        </Flex>
       </Group>
     </>
   );
 };
 
-const ToggleNpcSimButton = () => {
+const ToggleNpcSimButton = (props) => {
   const { api } = useFloatingNpcSimulator();
   return (
     <Button
@@ -90,6 +105,7 @@ const ToggleNpcSimButton = () => {
       onClick={api.toggle}
       leftSection={<IconCalculator />}
       variant="subtle"
+      {...props}
     >
       Toggle instance NPC sim for this party
     </Button>
@@ -173,7 +189,7 @@ export const Parties = () => {
 
       {party && (
         <PartyHeader
-          party={party}
+          partyId={party.id}
           onCopy={copyParty}
           onRemove={removeParty}
           onRename={renameParty}
@@ -214,6 +230,8 @@ export const Parties = () => {
                   </Stack>
                 }
               />
+              <Divider />
+              <ToggleNpcSimButton mt="sm" />
             </Paper>
           </Grid.Col>
         </Grid>

@@ -50,122 +50,174 @@ const _addOrUpdateChar = (partyId, value, api) => {
   }
 };
 
-const extendApi = (_set, get, api) => ({
-  getFirst: () => {
-    const { registry } = get();
-    const ids = Object.keys(registry);
-    return ids.length ? registry[ids[0]] : undefined;
-  },
+const extendApi = (_set, get, api) => {
+  const extApi = {
+    // *super override*
+    // when copying or creating a party, set the snapshot to
+    // be the chars at the time of creation.
+    getCopy: (record, keepId) => {
+      const copy = api.getCopy(record, keepId);
+      return structuredClone({ ...copy, snapshot: copy.chars });
+    },
 
-  hasChar: (partyId, charId) => {
-    const party = api.get(partyId);
-    return (
-      !!party && !!charId && party.chars.find((char) => char.id === charId)
-    );
-  },
+    getFirst: () => {
+      const { registry } = get();
+      const ids = Object.keys(registry);
+      return ids.length ? registry[ids[0]] : undefined;
+    },
 
-  isCharDirty: (partyId, charId) => {
-    return !deepEqual(api.getChar(partyId, charId), rosterApi.getChar(charId));
-  },
-
-  getDirtyStatus: (partyId) => {
-    const party = api.get(partyId);
-
-    return (party?.chars || []).reduce((acc, char) => {
-      if (api.isCharDirty(party.id, char.id)) acc.add(char.id);
-      return acc;
-    }, new Set());
-  },
-
-  getChar: (partyId, charId) => {
-    const party = api.get(partyId);
-    return party && party.chars.find((char) => char.id === charId);
-  },
-
-  addChar: (partyId, charId) => {
-    if (typeof charId === "string") {
-      _addOrUpdateChar(partyId, charId, api);
-    }
-  },
-
-  removeChar: getConfirmation(
-    (partyId, char, done) => {
-      const charId = typeof char === "string" ? char : char?.id;
+    hasChar: (partyId, charId) => {
       const party = api.get(partyId);
-      const hasChar = party.chars.some((char) => char.id === charId);
-
-      if (!party || !hasChar) return;
-
-      api.add({
-        ...party,
-        chars: party.chars.filter((char) => char.id !== charId),
-      });
-
-      done?.();
+      return (
+        !!party && !!charId && party.chars.find((char) => char.id === charId)
+      );
     },
-    {
-      title: "Are you sure you want to remove this character from the party?",
-      message: "They will still be avaiable to re-add from the roster.",
+
+    isCharDirty: (partyId, charId) => {
+      return !deepEqual(
+        extApi.getChar(partyId, charId),
+        rosterApi.getChar(charId),
+      );
     },
-  ),
 
-  updateChar: (partyId, charId, update) => {
-    const char = api.getChar(partyId, charId);
-
-    if (!char || typeof update !== "object") return;
-
-    // strip off class and name from the update object in case
-    // they someone made it through
-    const { class: _c, name: _n, ...restUpdate } = update;
-
-    // if that leaves any props, merge it with the existing
-    // char and send it back in.
-    if (Object.keys(restUpdate).length) {
-      _addOrUpdateChar(partyId, { ...char, ...restUpdate }, api);
-    }
-  },
-
-  resetChar: getConfirmation(
-    (partyId, char) => {
-      const charId = typeof char === "string" ? char : char?.id;
-      api.addChar(partyId, charId);
-    },
-    {
-      message:
-        "This will resync this character with their roster version, " +
-        "reverting any changes to level, warden, and tags.",
-    },
-  ),
-
-  resetChars: getConfirmation(
-    (partyId) => {
+    isSnapshotDirty: (partyId) => {
       const party = api.get(partyId);
-      const ids = party.chars.map((char) => char.id);
-      _addOrUpdateChar(partyId, ids, api);
+      return !party || !deepEqual(party.chars, party.snapshot);
     },
-    {
-      message:
-        "This will resync all characters with their roster versions, " +
-        "reverting any changes to level, warden, and tags.",
+
+    hasSnapshot: (partyId) => {
+      const party = api.get(partyId);
+      return !!party && party.snapshot.length !== 0;
     },
-  ),
 
-  getMight: (partyId) => {
-    const party = api.get(partyId);
-    return party?.chars
-      ? sum(party.chars.map((char) => getCharMight(char)))
-      : 0;
-  },
+    getDirtyStatus: (partyId) => {
+      const party = api.get(partyId);
 
-  getStats: (partyId) => {
-    const { chars = [] } = api.get(partyId) || {};
-    const taggedChars = chars.map((char) => ({
-      ...char,
-      tags: rosterApi.getCharTags(char.id, { classTags: true }),
-    }));
-    return getCharsStats(taggedChars);
-  },
-});
+      return (party?.chars || []).reduce((acc, char) => {
+        if (extApi.isCharDirty(party.id, char.id)) acc.add(char.id);
+        return acc;
+      }, new Set());
+    },
+
+    getChar: (partyId, charId) => {
+      const party = api.get(partyId);
+      return party && party.chars.find((char) => char.id === charId);
+    },
+
+    addChar: (partyId, charId) => {
+      if (typeof charId === "string") {
+        _addOrUpdateChar(partyId, charId, api);
+      }
+    },
+
+    saveSnapshot: getConfirmation(
+      (partyId, done) => {
+        const party = api.get(partyId);
+        api.add({ ...party, snapshot: party.chars }, done);
+      },
+      {
+        title: "Save a new snapshot?",
+        message:
+          "This will save the current state of your party so you " +
+          "can restore it easily after making edits to characters. This " +
+          "will delete the previous snapshot if one exists.",
+      },
+    ),
+
+    restoreSnapshot: getConfirmation(
+      (partyId, done) => {
+        const party = api.get(partyId);
+        api.add({ ...party, chars: party.snapshot }, done);
+      },
+      {
+        title: "Restore saved snapshot?",
+        message:
+          "This will delete any changes you've made since the party was " +
+          "created or the last snapshot was saved.",
+      },
+    ),
+
+    removeChar: getConfirmation(
+      (partyId, char, done) => {
+        const charId = typeof char === "string" ? char : char?.id;
+        const party = api.get(partyId);
+        const hasChar = party.chars.some((char) => char.id === charId);
+
+        if (!party || !hasChar) return;
+
+        api.add({
+          ...party,
+          chars: party.chars.filter((char) => char.id !== charId),
+        });
+
+        done?.();
+      },
+      {
+        title: "Are you sure you want to remove this character from the party?",
+        message: "They will still be avaiable to re-add from the roster.",
+      },
+    ),
+
+    updateChar: (partyId, charId, update) => {
+      const char = extApi.getChar(partyId, charId);
+
+      if (!char || typeof update !== "object") return;
+
+      // strip off class and name from the update object in case
+      // they someone made it through
+      const { class: _c, name: _n, ...restUpdate } = update;
+
+      // if that leaves any props, merge it with the existing
+      // char and send it back in.
+      if (Object.keys(restUpdate).length) {
+        _addOrUpdateChar(partyId, { ...char, ...restUpdate }, api);
+      }
+    },
+
+    resetChar: getConfirmation(
+      (partyId, char) => {
+        const charId = typeof char === "string" ? char : char?.id;
+        extApi.addChar(partyId, charId);
+      },
+      {
+        message:
+          "This will resync this character with their roster version, " +
+          "reverting any changes to level, warden, and tags.",
+      },
+    ),
+
+    resetChars: getConfirmation(
+      (partyId) => {
+        const party = api.get(partyId);
+        const ids = party.chars.map((char) => char.id);
+        _addOrUpdateChar(partyId, ids, api);
+      },
+      {
+        message:
+          "This will resync all characters with their roster versions, " +
+          "reverting any changes to level, warden, and tags.",
+      },
+    ),
+
+    getMight: (partyId) => {
+      const party = api.get(partyId);
+      return party?.chars
+        ? sum(party.chars.map((char) => getCharMight(char)))
+        : 0;
+    },
+
+    getStats: (partyId) => {
+      const { chars = [] } = api.get(partyId) || {};
+      const taggedChars = chars.map((char) => ({
+        ...char,
+        tags: rosterApi.getCharTags(char.id, { classTags: true }),
+      }));
+      return getCharsStats(taggedChars);
+    },
+  };
+
+  return extApi;
+};
 
 const { useStore, api } = createRegistryStore(
   "might-utils-parties",

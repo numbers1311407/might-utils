@@ -73,7 +73,12 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
   };
 
   const { getState: get, setState: set } = useStore;
-  const api = {
+
+  // NOTE it's critical to note that "api" references in the base and defaults APIs
+  // are referring to the final `api` object returned below. This gives API extnesions
+  // access to modify base behavior via monkeypatching/hooking the base API such
+  // that internal calls between sibling functions can be modified.
+  const baseApi = {
     ...(defaults ? defaultsApi : {}),
 
     nameAvailable: (record) => {
@@ -156,9 +161,9 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
     ),
   };
 
-  if (options.extendApi) {
-    Object.assign(api, options.extendApi(set, get, api));
-  }
+  const api = options.extendApi
+    ? { ...baseApi, ...options.extendApi(set, get, baseApi) }
+    : baseApi;
 
   return { useStore, api };
 };

@@ -55,6 +55,7 @@ export const CharSelect = ({
       ref={ref}
       searchValue={search}
       searchable
+      maxDropdownHeight={350}
       selectFirstOptionOnChange={props.value === undefined}
       onFocus={() => {
         setSearch("");

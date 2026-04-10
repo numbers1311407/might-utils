@@ -8,8 +8,7 @@ const sortChars = (chars) =>
 // Saved party member tags are inherited and not editable. they're invisible
 // to the UI but we'll strip them here to keep the store clean and make that
 // a little more apparent.
-const stripTags = (chars) =>
-  chars.map(char => ({ ...char, tags: [] }));
+const stripTags = (chars) => chars.map((char) => ({ ...char, tags: [] }));
 
 export const partySchema = z.object({
   id: z.nanoid().default(() => nanoid()),
@@ -18,5 +17,10 @@ export const partySchema = z.object({
     .min(1, { message: "Name is required" })
     .max(30, { message: "Name must be 30 characters or less" })
     .default(""),
-  chars: z.array(charSchema).default([]).transform(sortChars).transform(stripTags),
+  chars: z
+    .array(charSchema)
+    .default([])
+    .transform(sortChars)
+    .transform(stripTags),
+  snapshot: z.array(charSchema).default([]),
 });
