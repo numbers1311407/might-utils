@@ -10,7 +10,7 @@ export default defineConfig([
     files: ["**/*.{js,jsx}"],
     extends: [
       js.configs.recommended,
-      reactHooks.configs.flat.recommended,
+      reactHooks.configs.flat['recommended-latest'],
       reactRefresh.configs.vite,
     ],
     languageOptions: {
@@ -22,10 +22,8 @@ export default defineConfig([
         sourceType: "module",
       },
     },
-    plugins: ["eslint-plugin-react-compiler"],
     rules: {
       "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
-      "react-compiler/react-compiler": "error",
     },
   },
 ]);
