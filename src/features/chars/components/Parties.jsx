@@ -102,14 +102,14 @@ const ToggleNpcSimButton = () => {
 // that bake in view logic
 export const Parties = () => {
   const [_match, { id: routeId }] = useRoute("/parties/:id?");
+  const { dirtyChars, party, partyId, stats, ...partyApi } = useParty(routeId, {
+    defaultToFirst: true,
+  });
+
   const [draftParty, editParty] = useState(null);
   const [draftChar, editChar] = useState(null);
   const [_location, setLocation] = useLocation();
   const { setMight } = useCalculatorContext();
-
-  const { dirtyChars, party, partyId, stats, ...partyApi } = useParty(routeId, {
-    defaultToFirst: true,
-  });
 
   const might = stats?.might.total || 0;
 

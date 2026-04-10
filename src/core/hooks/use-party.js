@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from "react";
 import {
-  getConfirmation,
   usePartiesStore,
   usePartiesStoreApi as partiesApi,
+  useRosterStoreApi as rosterApi,
 } from "@/model/store";
 
 // TODO a fun refactor would be to tie this hook and store hooks like it
@@ -10,7 +10,7 @@ import {
 // like confirmations. The hook+modal combo would take care of everything
 // related to editing the party and just make callbacks on completion.
 export const useParty = (paramPartyId, options = {}) => {
-  const { defaultToFirst } = options;
+  const { defaultToFirst, classTags = true } = options;
   const partyRegistry = usePartiesStore((store) => store.registry);
 
   const party = useMemo(() => {
@@ -18,11 +18,20 @@ export const useParty = (paramPartyId, options = {}) => {
 
     if (!keys.length) return;
 
-    return (
+    const party =
       (paramPartyId && partyRegistry[paramPartyId]) ||
-      (defaultToFirst && partyRegistry[keys[0]])
-    );
-  }, [paramPartyId, partyRegistry, defaultToFirst]);
+      (defaultToFirst && partyRegistry[keys[0]]);
+
+    if (!party || !classTags) return party;
+
+    return {
+      ...party,
+      chars: party.chars.map((char) => ({
+        ...char,
+        tags: rosterApi.getCharTags(char.id, { classTags: true }),
+      })),
+    };
+  }, [classTags, paramPartyId, partyRegistry, defaultToFirst]);
 
   const partyId = party?.id;
 

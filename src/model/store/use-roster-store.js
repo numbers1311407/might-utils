@@ -16,6 +16,8 @@ export const useRosterStore = createStore("might-utils-roster", () => ({
 
 const { getState: get, setState: set } = useRosterStore;
 
+const _getChar = (id) => get().roster.find((char) => char.id === id);
+
 const api = {
   isCharDirty: (char, options = { classTags: false }) => {
     const rosterChar = api.getChar(char.id, options);
@@ -55,21 +57,29 @@ const api = {
   },
 
   getChar: (id, options = {}) => {
-    const { classTags = true } = options;
-    const char = get().roster.find((char) => char.id === id);
+    const { classTags = false } = options;
+    const char = _getChar(id);
 
     if (!classTags) return char;
 
     return {
       ...char,
-      tags: [
-        ...new Set([...classTagsApi.getClassTags(char.class), ...char.tags]),
-      ],
+      tags: api.getCharTags(char, { charTags: true }),
     };
   },
 
   updateChar: (id, update, done) => {
     api.addChar({ ...update, id }, done);
+  },
+
+  getCharTags: (charId, { classTags = true }) => {
+    const char = typeof charId === "string" ? _getChar(charId) : charId;
+    if (!classTags) {
+      return char.tags;
+    }
+    return [
+      ...new Set([...classTagsApi.getClassTags(char.class), ...char.tags]),
+    ];
   },
 
   addChar: (char, done) => {
