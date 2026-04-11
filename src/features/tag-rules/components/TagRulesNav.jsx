@@ -26,7 +26,7 @@ export const TagRulesNav = ({ current, children, ...props }) => {
               leftSection={<IconChevronLeft size={16} />}
               rightSection={
                 <Box
-                  c="gold"
+                  c="primary"
                   style={{ visibility: active ? "visible" : "hidden" }}
                   display="flex"
                 >

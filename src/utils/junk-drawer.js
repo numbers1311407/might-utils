@@ -48,7 +48,7 @@ export const getNumberedArray = (start, end) => {
 
 export const capitalize = (str = "") => {
   if (!str.length) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 export const formatSortedNumbers = (nums) => {

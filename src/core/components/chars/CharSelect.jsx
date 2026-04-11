@@ -12,7 +12,7 @@ const renderOption = ({ option: { char }, checked }) => {
     <Group align="flex-end" gap="sm">
       <ClassIcon cls={char.class} size={42} />
       <Stack gap={2}>
-        <Text size="md" c="gold" lh={1.2}>
+        <Text size="md" c="primary" lh={1.2}>
           {char.name}
         </Text>
         <Text size="xs" c="dark">

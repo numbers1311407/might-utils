@@ -81,7 +81,7 @@ export const ClassTags = () => {
       </Stack>
       <Aside>
         <Stack>
-          <Title order={4} c="gold">
+          <Title order={4} c="primary">
             Quick Help
           </Title>
           <Text>

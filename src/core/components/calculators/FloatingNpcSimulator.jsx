@@ -14,14 +14,14 @@ const HELP =
   "This calculator attempts to predict what instance options the NPCs will offer " +
   "you for each tier given your might score.";
 
-export const FloatingNpcSimulator = () => {
+export const FloatingNpcSimulator = (props) => {
   const { api } = useFloatingNpcSimulator();
   const [match] = useRoute("/parties/*?");
   const { might, setMight, setInstance, instance } = useCalculatorContext();
 
   return (
     <>
-      <Button size="compact-md" onClick={api.toggle}>
+      <Button size="compact-md" {...props} onClick={api.toggle}>
         NPC Sim
       </Button>
       <FloatingWindow
@@ -49,7 +49,6 @@ export const FloatingNpcSimulator = () => {
             styles={{
               description: {
                 fontSize: 13,
-                color: "var(--mantine-color-warning-5)",
               },
               input: {
                 paddingLeft: 70,

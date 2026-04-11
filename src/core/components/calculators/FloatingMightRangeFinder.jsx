@@ -13,14 +13,14 @@ const HELP =
   "This calculator takes a tier and difficulty level and attempts to predict the might " +
   "ranges you'd need to hit that difficulty.";
 
-export const FloatingMightRangeFinder = () => {
+export const FloatingMightRangeFinder = (props) => {
   const { api } = useFloatingMightRangeFinder();
   const { difficulty, setDifficulty, setInstance, instance } =
     useCalculatorContext();
 
   return (
     <>
-      <Button size="compact-md" onClick={api.toggle}>
+      <Button size="compact-sm" {...props} onClick={api.toggle}>
         Might Range
       </Button>
       <FloatingWindow

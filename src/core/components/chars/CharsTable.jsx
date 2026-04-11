@@ -78,13 +78,13 @@ export const CharsTableRow = ({
         <Table.Td ta="center">
           {isRoster && char.warden > 0 && (
             <>
-              <Text c="yellow.7" span title="Unwardened" ff="mono">
+              <Text c="primary.6" span title="Unwardened" ff="mono">
                 {getCharMight(char, 0)}
               </Text>{" "}
               -{" "}
             </>
           )}
-          <Text c="gold" span title={`Warden ${char.warden}`} ff="mono">
+          <Text c="primary.3" span title={`Warden ${char.warden}`} ff="mono">
             {getCharMight(char)}
           </Text>
         </Table.Td>
@@ -164,6 +164,7 @@ export const CharsTable = ({
   onRemove,
   onReset,
   isRoster,
+  stickyHeader = true,
   hideControls = false,
   emptyContent = null,
   Row = CharsTableRow,
@@ -173,7 +174,7 @@ export const CharsTable = ({
   const classTags = useClassTagsStore((store) => store.tags);
 
   return (
-    <Table stickyHeader stickyHeaderOffset={66} {...props}>
+    <Table stickyHeader={stickyHeader} stickyHeaderOffset={66} {...props}>
       <Table.Thead>
         <Table.Tr>
           {isRoster && (

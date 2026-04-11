@@ -158,7 +158,7 @@ const TagRulesMain = () => {
   };
 
   const restoreCurrent = getConfirmation(
-    (ie) => tagRulesApi.restoreDefaultSet(ruleset.id),
+    () => tagRulesApi.restoreDefaultSet(ruleset.id),
     {
       message:
         "This will restore this ruleset to its original defaults. This cannot be undone.",
@@ -175,7 +175,6 @@ const TagRulesMain = () => {
     },
   );
 
-  const buttonsSize = "compact-sm";
   const buttons = (
     <Group gap="xs">
       <AddSmallButton
@@ -313,7 +312,7 @@ const TagRulesMain = () => {
 
         {!activeRules.length && (
           <Box p="2xl" ta="center">
-            <Text size="lg" mb="md" c="gold">
+            <Text size="lg" mb="md" c="primary">
               {activeSize === undefined ? (
                 "You have no rules defined in this ruleset."
               ) : (
@@ -332,7 +331,7 @@ const TagRulesMain = () => {
         )}
 
         {activeRules.map((rule) => (
-          <Paper bdrs="sm" shadow="md" variant="dark" p={8} key={rule.id}>
+          <Paper shadow="md" px="md" py="sm" key={rule.id}>
             <Stack
               key={rule.id}
               className={newRule?.id === rule.id ? classes.highlightRow : ""}

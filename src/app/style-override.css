@@ -1,0 +1,14 @@
+.mantine-Paper-root {
+  background-color: var(--paper-background-color);
+  border: rem(1px) solid var(--paper-border-color-custom);
+}
+
+:root,
+:host {
+  --paper-background-color: lighten(var(--mantine-color-body), 0.0175);
+  --paper-border-color-custom: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: lighten(var(--mantine-color-body), 0.0275);
+}

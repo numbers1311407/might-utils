@@ -5,8 +5,6 @@ Going through a bit of a pivot, updating soon.
 
 ### HOTLIST from Todos
 
-- bulk tags editing for roster (and floating roster, tabs?)
-
 - finder results page
 - name rules?
 - theme cleanup/testing & overall design consistency

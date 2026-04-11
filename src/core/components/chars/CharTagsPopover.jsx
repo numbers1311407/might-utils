@@ -15,7 +15,7 @@ export const CharTagsPopover = ({ tags, classTags, isParty }) => {
             <Text size="sm" fw="bold">
               Class:
             </Text>
-            <Text size="sm" c="gold">
+            <Text size="sm" c="primary">
               {!!classTags?.length ? (
                 classTags.join(", ")
               ) : (
@@ -29,7 +29,7 @@ export const CharTagsPopover = ({ tags, classTags, isParty }) => {
             <Text size="sm" fw="bold">
               Own:
             </Text>
-            <Text size="sm" c="gold">
+            <Text size="sm" c="primary">
               {!!tags?.length ? (
                 tags.join(", ")
               ) : (

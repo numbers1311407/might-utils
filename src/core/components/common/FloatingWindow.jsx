@@ -1,9 +1,17 @@
-import { alpha, Group, Paper, Portal, CloseButton, Text } from "@mantine/core";
+import {
+  alpha,
+  Box,
+  Group,
+  Paper,
+  Portal,
+  CloseButton,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
 import { HelpIconTooltip } from "@/core/components/common";
 import { usePersistedFloatingWindow } from "@/core/hooks";
 import { IconGripVertical } from "@tabler/icons-react";
 
-const DEFAULT_WIDTH = 300;
 const DEFAULT_Z_INDEX = 400;
 
 export const FloatingWindow = ({
@@ -11,7 +19,6 @@ export const FloatingWindow = ({
   help,
   name,
   title,
-  width = DEFAULT_WIDTH,
   initialPosition = "auto",
   ...paperProps
 }) => {
@@ -19,7 +26,7 @@ export const FloatingWindow = ({
     throw new Error("Floating window requires a name for persistence");
   }
 
-  const floatingWindow = usePersistedFloatingWindow(name, {
+  const { ref, ...floatingWindow } = usePersistedFloatingWindow(name, {
     initialPosition,
     dragHandleSelector: ".drag-handle",
     excludeDragHandleSelector: ".close-btn",
@@ -33,12 +40,12 @@ export const FloatingWindow = ({
         <Portal>
           <Paper
             {...paperProps}
-            pos="fixed"
-            style={{ transition: "box-shadow 70ms ease", zIndex }}
-            shadow={floatingWindow.isDragging ? "md" : "sm"}
             bd={`1px solid ${alpha("var(--mantine-color-primary-8)", 0.25)}`}
             onMouseDown={() => floatingWindow.raise()}
-            ref={floatingWindow.ref}
+            pos="fixed"
+            ref={ref}
+            shadow={floatingWindow.isDragging ? "md" : "sm"}
+            style={{ transition: "box-shadow 70ms ease", zIndex }}
           >
             <Group
               className="drag-handle"
@@ -59,7 +66,9 @@ export const FloatingWindow = ({
                 />
               </Group>
             </Group>
-            {children}
+            <ScrollArea.Autosize scrollbars="y" type="auto" mah="60vw">
+              <Box>{children}</Box>
+            </ScrollArea.Autosize>
           </Paper>
         </Portal>
       )}

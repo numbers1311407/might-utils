@@ -1,4 +1,4 @@
-import { Divider, Group, Stack } from "@mantine/core";
+import { Divider, Group, Paper, Stack } from "@mantine/core";
 import { useThrottledCallback } from "@mantine/hooks";
 import { ActiveTagFiltersSelect, NumberField } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/config/might";
@@ -87,12 +87,7 @@ const TargetScoreInput = (props) => (
 export const PartyFinderControls = () => {
   return (
     <>
-      <Stack
-        gap={8}
-        bg="light-dark(var(--mantine-color-blue-3), var(--mantine-color-red-9))"
-        p="sm"
-        bdrs="sm"
-      >
+      <Paper component={Stack} gap={8} p="sm" bdrs="sm">
         <TargetScoreInput />
         <MarginInput />
         <Divider m="md" />
@@ -107,7 +102,7 @@ export const PartyFinderControls = () => {
           <MinSizeInput />
           <MaxSizeInput />
         </Group>
-      </Stack>
+      </Paper>
     </>
   );
 };

@@ -41,15 +41,20 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
             display="box"
           >
             <Flex align="baseline" gap={2}>
-              <Text size="2xl">eq</Text>
-              <Text c="gold" size="4xl" fw="bold">
+              <Text size="2xl" c="primary.1">
+                eq
+              </Text>
+              <Text c="primary" size="4xl" fw="bold">
                 Might
               </Text>
-              <Text size="2xl">utils</Text>
+              <Text size="2xl" c="primary.1">
+                utils
+              </Text>
               <Badge
                 ml={0}
                 mt={-2}
                 size="xs"
+                bg="orange.4"
                 style={{ alignSelf: "flex-start" }}
               >
                 beta!

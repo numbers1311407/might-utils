@@ -1,10 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { useDraftState } from "@/core/hooks";
 import { useTagRulesStore, useTagRulesStoreApi as api } from "@/model/store";
-import { defaultFiltersTagRules } from "@/config/defaults";
+import {
+  defaultFiltersTagRules,
+  defaultTimeFlagTagRules,
+} from "@/config/defaults";
 
 const defaultIdMap = {
-  filters: [defaultFiltersTagRules.id],
+  filters: [defaultFiltersTagRules.id, defaultTimeFlagTagRules.id],
 };
 const defaultIds = Object.values(defaultIdMap).flat();
 

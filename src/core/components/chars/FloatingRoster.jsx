@@ -13,7 +13,7 @@ const HELP =
   "This is the active roster used to power the party generator. It's in a window " +
   "to make it easy to view and edit to control finder output.";
 
-export const FloatingRoster = () => {
+export const FloatingRoster = (props) => {
   const { api } = useFloatingRoster();
   const roster = useRoster({ activeOnly: false });
 
@@ -23,7 +23,7 @@ export const FloatingRoster = () => {
 
   return (
     <>
-      <Button size="compact-md" onClick={api.toggle}>
+      <Button size="compact-sm" {...props} onClick={api.toggle}>
         Character Roster
       </Button>
       <FloatingWindow
@@ -37,6 +37,7 @@ export const FloatingRoster = () => {
           chars={roster}
           isRoster={true}
           onUpdate={onUpdate}
+          stickyHeader={false}
           hideControls
           emptyContent={
             <>

@@ -4,7 +4,7 @@ export const defaultTimeFlagTagRules = {
   type: "filters",
   rules: [
     {
-      size: [1, 12],
+      size: [1, 20],
       type: "all",
       value: "all",
       query: {

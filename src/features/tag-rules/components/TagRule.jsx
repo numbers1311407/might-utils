@@ -1,9 +1,9 @@
 import { forwardRef } from "react";
-import { Badge, Kbd, Group, Text, Tooltip } from "@mantine/core";
+import { Kbd, Group, Text, Tooltip } from "@mantine/core";
 import { formatQuery } from "react-querybuilder";
-import { formatSortedNumbers } from "@/utils";
+import { capitalize } from "@/utils";
 
-const TagRuleContentAll = ({ rule, ...props }) => (
+const TagRuleContentAll = (props) => (
   <Tooltip
     withArrow
     multiline
@@ -60,23 +60,6 @@ const TagRuleContent = forwardRef(({ rule }, ref) => {
   return <Component ref={ref} rule={rule} />;
 });
 
-const ConflictedAlert = ({ conflicts }) => {
-  if (!conflicts) {
-    return null;
-  }
-
-  const sizes = Object.keys(conflicts).map(Number);
-  const label = `This rule has conflicts at size(s): ${formatSortedNumbers(sizes)}`;
-
-  return (
-    <Tooltip label={label}>
-      <Badge circle color="var(--mantine-color-error)">
-        !
-      </Badge>
-    </Tooltip>
-  );
-};
-
 export const getQueryDescription = (query) => {
   const value = formatQuery(query, {
     format: "natural_language",
@@ -86,20 +69,32 @@ export const getQueryDescription = (query) => {
     },
     fields: [{ value: "warden", label: "warden rank" }],
     parseNumbers: true,
+    valueProcessor: (rule) => {
+      if (rule.field === "class") {
+        return rule.value.toUpperCase();
+      }
+      if (rule.field === "tags") {
+        return `"${rule.value}"`;
+      }
+      // if (rule.field === "warden" && rule.value == 0) {
+      //   return "unwardened";
+      // }
+      return rule.value;
+    },
     operatorMap: {
       ">=": "is at least",
       "<=": "is at most",
     },
   });
+
   return value === "1 is 1"
-    ? "No rules are applied (might want to check your query)"
-    : `Character ${value}`;
+    ? "No rules are applied, check your query."
+    : capitalize(value);
 };
 
-export const TagRule = ({ conflicts, rule, ...props }) => {
+export const TagRule = ({ rule, ...props }) => {
   return (
     <Group {...props} gap={8} align="center">
-      <ConflictedAlert conflicts={conflicts} />
       <TagRuleContent rule={rule} />
       <Text size="md">{getQueryDescription(rule.query)}</Text>
     </Group>

@@ -1,952 +1,250 @@
-import { breakpoints } from "./breakpoints";
-
-import {
-  ActionIcon,
-  Alert,
-  Anchor,
-  Avatar,
-  Badge,
-  Blockquote,
-  Button,
-  Card,
-  Checkbox,
-  Chip,
-  Container,
-  createTheme,
-  Dialog,
-  Indicator,
-  Mark,
-  NavLink,
-  Pagination,
-  Paper,
-  Radio,
-  rem,
-  SegmentedControl,
-  Select,
-  Stepper,
-  Switch,
-  ThemeIcon,
-  Timeline,
-  Tooltip,
-} from "@mantine/core";
-
-const CONTAINER_SIZES = {
-  xxs: rem("200px"),
-  xs: rem("300px"),
-  sm: rem("400px"),
-  md: rem("600px"),
-  lg: rem("800px"),
-  xl: rem("1600px"),
-  xxl: rem("1800px"),
-};
-
-const zincColors = [
-  "#fafafa",
-  "#f4f4f5",
-  "#e4e4e7",
-  "#d4d4d8",
-  "#a1a1aa",
-  "#52525b",
-  "#3f3f46",
-  "#27272a",
-  "#18181b",
-  "#09090b",
-  "#71717A",
-];
-const slateColors = [
-  "#f8fafc",
-  "#f1f5f9",
-  "#e2e8f0",
-  "#cbd5e1",
-  "#94a3b8",
-  "#475569",
-  "#334155",
-  "#1e293b",
-  "#0f172a",
-  "#020817",
-  "#64748B",
-];
-const grayColors = [
-  "#f9fafb",
-  "#f3f4f6",
-  "#e5e7eb",
-  "#d1d5db",
-  "#9ca3af",
-  "#4b5563",
-  "#374151",
-  "#1f2937",
-  "#111827",
-  "#030712",
-  "#6B7280",
-];
-const neutralColors = [
-  "#fafafa",
-  "#f5f5f5",
-  "#e5e5e5",
-  "#d4d4d4",
-  "#a3a3a3",
-  "#525252",
-  "#404040",
-  "#262626",
-  "#171717",
-  "#0a0a0a",
-  "#737373",
-];
-const stoneColors = [
-  "#fafaf9",
-  "#f5f5f4",
-  "#e7e5e4",
-  "#d6d3d1",
-  "#a8a29e",
-  "#57534e",
-  "#44403c",
-  "#292524",
-  "#1c1917",
-  "#0c0a09",
-  "#78716C",
-];
-const redColors = [
-  "#FEF2F2",
-  "#FEE2E2",
-  "#FECACA",
-  "#FCA5A5",
-  "#F87171",
-  "#DC2626",
-  "#B91C1C",
-  "#991B1B",
-  "#7F1D1D",
-  "#450A0A",
-  "#EF4444",
-];
-const roseColors = [
-  "#fff1f2",
-  "#ffe4e6",
-  "#fecdd3",
-  "#fda4af",
-  "#fb7185",
-  "#e11d48",
-  "#be123c",
-  "#9f1239",
-  "#881337",
-  "#4c0519",
-  "#F43F5E",
-];
-const orangeColors = [
-  "#fff7ed",
-  "#ffedd5",
-  "#fed7aa",
-  "#fdba74",
-  "#fb923c",
-  "#f97316",
-  "#ea580c",
-  "#9a3412",
-  "#7c2d12",
-  "#431407",
-  "#F97316",
-];
-const amberColors = [
-  "#FFFBEB",
-  "#FEF3C7",
-  "#FDE68A",
-  "#FCD34D",
-  "#FBBF24",
-  "#f59e0b",
-  "#D97706",
-  "#92400E",
-  "#78350F",
-  "#451A03",
-  "#F59E0B",
-];
-const yellowColors = [
-  "#fefce8",
-  "#fef9c3",
-  "#fef08a",
-  "#fde047",
-  "#facc15",
-  "#ca8a04",
-  "#a16207",
-  "#854d0e",
-  "#713f12",
-  "#3f2c06",
-  "#F59E0B",
-];
-const limeColors = [
-  "#f7fee7",
-  "#ecfccb",
-  "#d9f99d",
-  "#bef264",
-  "#a3e635",
-  "#4d7c0f",
-  "#3f6212",
-  "#365314",
-  "#1a2e05",
-  "#0f1903",
-  "#84CC16",
-];
-const greenColors = [
-  "#F0FDF4",
-  "#DCFCE7",
-  "#BBF7D0",
-  "#86EFAC",
-  "#4ADE80",
-  "#22c55e",
-  "#16A34A",
-  "#166534",
-  "#14532D",
-  "#052E16",
-  "#10B981",
-];
-const emeraldColors = [
-  "#ecfdf5",
-  "#d1fae5",
-  "#a7f3d0",
-  "#6ee7b7",
-  "#34d399",
-  "#059669",
-  "#047857",
-  "#065f46",
-  "#064e3b",
-  "#022c22",
-  "#10B981",
-];
-const tealColors = [
-  "#f0fdfa",
-  "#ccfbf1",
-  "#99f6e4",
-  "#5eead4",
-  "#2dd4bf",
-  "#0d9488",
-  "#0f766e",
-  "#115e59",
-  "#134e4a",
-  "#042f2e",
-  "#14B8A6",
-];
-const cyanColors = [
-  "#ecfeff",
-  "#cffafe",
-  "#a5f3fc",
-  "#67e8f9",
-  "#22d3ee",
-  "#0891b2",
-  "#0e7490",
-  "#155e75",
-  "#164e63",
-  "#083344",
-  "#06B6D4",
-];
-const skyColors = [
-  "#f0f9ff",
-  "#e0f2fe",
-  "#bae6fd",
-  "#7dd3fc",
-  "#38bdf8",
-  "#0284c7",
-  "#0369a1",
-  "#075985",
-  "#0c4a6e",
-  "#082f49",
-  "#0EA5E9",
-];
-const blueColors = [
-  "#eff6ff",
-  "#dbeafe",
-  "#bfdbfe",
-  "#93c5fd",
-  "#60a5fa",
-  "#3b82f6",
-  "#2563eb",
-  "#1e40af",
-  "#1e3a8a",
-  "#172554",
-  "#3B82F6",
-];
-const indigoColors = [
-  "#eef2ff",
-  "#e0e7ff",
-  "#c7d2fe",
-  "#a5b4fc",
-  "#818cf8",
-  "#4f46e5",
-  "#4338ca",
-  "#3730a3",
-  "#312e81",
-  "#1e1b4b",
-  "#6366F1",
-];
-const violetColors = [
-  "#f5f3ff",
-  "#ede9fe",
-  "#ddd6fe",
-  "#c4b5fd",
-  "#a78bfa",
-  "#7c3aed",
-  "#6d28d9",
-  "#5b21b6",
-  "#4c1d95",
-  "#1e1b4b",
-  "#8B5CF6",
-];
-const purpleColors = [
-  "#faf5ff",
-  "#f3e8ff",
-  "#e9d5ff",
-  "#d8b4fe",
-  "#c084fc",
-  "#9333ea",
-  "#7e22ce",
-  "#6b21a8",
-  "#581c87",
-  "#2e1065",
-  "#A855F7",
-];
-const fuchsiaColors = [
-  "#fdf4ff",
-  "#fae8ff",
-  "#f5d0fe",
-  "#f0abfc",
-  "#e879f9",
-  "#c026d3",
-  "#a21caf",
-  "#86198f",
-  "#701a75",
-  "#4a044e",
-  "#D946EF",
-];
-const pinkColors = [
-  "#fdf2f8",
-  "#fce7f3",
-  "#fbcfe8",
-  "#f9a8d4",
-  "#f472b6",
-  "#db2777",
-  "#be185d",
-  "#9d174d",
-  "#831843",
-  "#500724",
-  "#EC4899",
-];
-
-export const theme = createTheme({
-  breakpoints: Object.entries(breakpoints).reduce(
-    (acc, [size, em]) => ({
-      ...acc,
-      [size]: `${em}em`,
-    }),
-    {},
-  ),
+export const theme = {
   colors: {
-    slate: slateColors,
-    gray: grayColors,
-    zinc: zincColors,
-    neutral: neutralColors,
-    stone: stoneColors,
-
-    red: redColors,
-    rose: roseColors,
-    orange: orangeColors,
-    amber: amberColors,
-    yellow: yellowColors,
-
-    lime: limeColors,
-    green: greenColors,
-    emerald: emeraldColors,
-
-    teal: tealColors,
-    cyan: cyanColors,
-    sky: skyColors,
-    blue: blueColors,
-
-    indigo: indigoColors,
-    violet: violetColors,
-    purple: purpleColors,
-    fuchsia: fuchsiaColors,
-    pink: pinkColors,
-
-    primary: yellowColors,
-    secondary: stoneColors,
-    dark: stoneColors,
-
-    error: redColors,
-    success: greenColors,
-    info: blueColors,
-    warning: amberColors,
+    dark: [
+      "#fff",
+      "#7b92c7",
+      "#4765aa",
+      "#2f4371",
+      "#27375c",
+      "#1c2a4a",
+      "#151e33",
+      "#0e1626",
+      "#0a101d",
+      "#060b15",
+    ],
+    gray: [
+      "#e3e7f1",
+      "#d8ddeb",
+      "#ced4e5",
+      "#c3cadf",
+      "#b8c1d9",
+      "#b8c1d9",
+      "#7b8cb8",
+      "#4b5c8b",
+      "#2a334d",
+      "#090b10",
+    ],
+    blue: [
+      "#d1deeb",
+      "#aecce7",
+      "#8bb9e2",
+      "#68a6de",
+      "#4393d9",
+      "#4393d9",
+      "#1473bb",
+      "#005187",
+      "#003052",
+      "#000e1c",
+    ],
+    green: [
+      "#dafbe1",
+      "#aceebb",
+      "#6fdd8b",
+      "#4ac26b",
+      "#2da44e",
+      "#1a7f37",
+      "#116329",
+      "#044f1e",
+      "#003d16",
+      "#002d11",
+    ],
+    yellow: [
+      "#f7f1e5",
+      "#faeacd",
+      "#fce3b5",
+      "#fddd9d",
+      "#fed687",
+      "#ffd685",
+      "#ffb82d",
+      "#ce8906",
+      "#744d03",
+      "#191102",
+    ],
+    orange: [
+      "#fff1e5",
+      "#ffd8b5",
+      "#ffb77c",
+      "#fb8f44",
+      "#e16f24",
+      "#bc4c00",
+      "#953800",
+      "#762c00",
+      "#5c2200",
+      "#471700",
+    ],
+    red: [
+      "#fff5f5",
+      "#ffe3e3",
+      "#ffc9c9",
+      "#ffa8a8",
+      "#ff8787",
+      "#ff6b6b",
+      "#fa5252",
+      "#f03e3e",
+      "#e03131",
+      "#c92a2a",
+    ],
+    pink: [
+      "#fff0f6",
+      "#ffdeeb",
+      "#fcc2d7",
+      "#faa2c1",
+      "#f783ac",
+      "#f06595",
+      "#e64980",
+      "#d6336c",
+      "#c2255c",
+      "#a61e4d",
+    ],
+    grape: [
+      "#f8f0fc",
+      "#f3d9fa",
+      "#eebefa",
+      "#e599f7",
+      "#da77f2",
+      "#cc5de8",
+      "#be4bdb",
+      "#ae3ec9",
+      "#9c36b5",
+      "#862e9c",
+    ],
+    violet: [
+      "#f3f0ff",
+      "#e5dbff",
+      "#d0bfff",
+      "#b197fc",
+      "#9775fa",
+      "#845ef7",
+      "#7950f2",
+      "#7048e8",
+      "#6741d9",
+      "#5f3dc4",
+    ],
+    indigo: [
+      "#edf2ff",
+      "#dbe4ff",
+      "#bac8ff",
+      "#91a7ff",
+      "#748ffc",
+      "#5c7cfa",
+      "#4c6ef5",
+      "#4263eb",
+      "#3b5bdb",
+      "#364fc7",
+    ],
+    cyan: [
+      "#e3fafc",
+      "#c5f6fa",
+      "#99e9f2",
+      "#66d9e8",
+      "#3bc9db",
+      "#22b8cf",
+      "#15aabf",
+      "#1098ad",
+      "#0c8599",
+      "#0b7285",
+    ],
+    teal: [
+      "#e6fcf5",
+      "#c3fae8",
+      "#96f2d7",
+      "#63e6be",
+      "#38d9a9",
+      "#20c997",
+      "#12b886",
+      "#0ca678",
+      "#099268",
+      "#087f5b",
+    ],
+    lime: [
+      "#f4fce3",
+      "#e9fac8",
+      "#d8f5a2",
+      "#c0eb75",
+      "#a9e34b",
+      "#94d82d",
+      "#82c91e",
+      "#74b816",
+      "#66a80f",
+      "#5c940d",
+    ],
   },
-  focusRing: "never",
-  scale: 1,
-  primaryColor: "primary",
-  primaryShade: { light: 4, dark: 4 },
+  primaryColor: "yellow",
+  primaryShade: {
+    light: 6,
+    dark: 5,
+  },
+  white: "#ffffff",
+  black: "#24292f",
   autoContrast: true,
   luminanceThreshold: 0.3,
+  isThemeDependentPrimaryShade: true,
+  defaultGradient: {
+    from: "blue",
+    to: "gray",
+    deg: 45,
+  },
   fontFamily: "Geist-Variable",
-  radius: {
-    xs: rem("6px"),
-    sm: rem("8px"),
-    md: rem("12px"),
-    lg: rem("16px"),
-    xl: rem("24px"),
-  },
-  defaultRadius: "sm",
-  spacing: {
-    "4xs": rem("2px"),
-    "3xs": rem("4px"),
-    "2xs": rem("8px"),
-    xs: rem("10px"),
-    sm: rem("12px"),
-    md: rem("16px"),
-    lg: rem("20px"),
-    xl: rem("24px"),
-    "2xl": rem("28px"),
-    "3xl": rem("32px"),
-    "4xl": rem("40px"),
-  },
-  fontSizes: {
-    xs: rem("12px"),
-    sm: rem("14px"),
-    md: rem("16px"),
-    lg: rem("18px"),
-    xl: rem("20px"),
-    "2xl": rem("24px"),
-    "3xl": rem("30px"),
-    "4xl": rem("36px"),
-    "5xl": rem("48px"),
-  },
-  lineHeights: {
-    xs: rem("18px"),
-    sm: rem("20px"),
-    md: rem("24px"),
-    lg: rem("28px"),
-  },
-
+  fontFamilyMonospace: "Roboto Mono",
   headings: {
     fontFamily: "Geist-Variable",
+    fontWeight: "600",
     sizes: {
       h1: {
-        fontSize: rem("36px"),
-        lineHeight: rem("44px"),
-        fontWeight: "600",
+        fontSize: "calc(2.125rem * var(--mantine-scale))",
+        lineHeight: "1.3",
+        fontWeight: "300",
       },
       h2: {
-        fontSize: rem("30px"),
-        lineHeight: rem("38px"),
-        fontWeight: "600",
+        fontSize: "calc(1.625rem * var(--mantine-scale))",
+        lineHeight: "1.35",
+        fontWeight: "300",
       },
       h3: {
-        fontSize: rem("24px"),
-        lineHeight: rem("32px"),
-        fontWeight: "600",
+        fontSize: "calc(1.375rem * var(--mantine-scale))",
+        lineHeight: "1.4",
+        fontWeight: "300",
       },
       h4: {
-        fontSize: rem("20px"),
-        lineHeight: rem("30px"),
-        fontWeight: "600",
+        fontSize: "calc(1.125rem * var(--mantine-scale))",
+        lineHeight: "1.45",
+        fontWeight: "500",
+      },
+      h5: {
+        fontSize: "calc(1rem * var(--mantine-scale))",
+        lineHeight: "1.5",
+        fontWeight: "400",
+      },
+      h6: {
+        fontSize: "calc(0.875rem * var(--mantine-scale))",
+        lineHeight: "1.5",
+        fontWeight: "400",
       },
     },
   },
-  shadows: {
-    xs: "0 1px 2px rgba(0, 0, 0, 0.05)",
-    sm: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    md: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
-    lg: "0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)",
-    xl: "0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)",
-    xxl: "0 25px 50px rgba(0, 0, 0, 0.25)",
+  scale: 1,
+  radius: {
+    xs: "calc(0.125rem * var(--mantine-scale))",
+    sm: "calc(0.25rem * var(--mantine-scale))",
+    md: "calc(0.5rem * var(--mantine-scale))",
+    lg: "calc(1rem * var(--mantine-scale))",
+    xl: "calc(2rem * var(--mantine-scale))",
   },
-
-  cursorType: "pointer",
-  other: {
-    style: "shadcn",
+  spacing: {
+    xs: "calc(0.625rem * var(--mantine-scale))",
+    sm: "calc(0.75rem * var(--mantine-scale))",
+    md: "calc(1rem * var(--mantine-scale))",
+    lg: "calc(1.25rem * var(--mantine-scale))",
+    xl: "calc(2rem * var(--mantine-scale))",
   },
-  components: {
-    Container: Container.extend({
-      vars: (_, { size, fluid }) => ({
-        root: {
-          "--container-size": fluid
-            ? "100%"
-            : size !== undefined && size in CONTAINER_SIZES
-              ? CONTAINER_SIZES[size]
-              : rem(size),
-        },
-      }),
-    }),
-    Checkbox: Checkbox.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--checkbox-color": colorKey
-              ? `var(--mantine-color-${colorKey}-filled)`
-              : "var(--mantine-primary-color-filled)",
-
-            "--checkbox-icon-color": colorKey
-              ? `var(--mantine-color-${colorKey}-contrast)`
-              : "var(--mantine-primary-color-contrast)",
-          },
-        };
-      },
-    }),
-    Chip: Chip.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const variant = props.variant ?? "filled";
-        return {
-          root: {
-            "--chip-bg":
-              variant !== "light"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-filled)`
-                  : "var(--mantine-primary-color-filled)"
-                : undefined,
-            "--chip-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : undefined,
-          },
-        };
-      },
-    }),
-    Radio: Radio.extend({
-      vars: (theme, props) => ({
-        root: {
-          "--radio-color": props.color
-            ? Object.keys(theme.colors).includes(props.color)
-              ? `var(--mantine-color-${props.color}-filled)`
-              : props.color
-            : "var(--mantine-primary-color-filled)",
-
-          "--radio-icon-color": props.color
-            ? Object.keys(theme.colors).includes(props.color)
-              ? `var(--mantine-color-${props.color}-contrast)`
-              : props.color
-            : "var(--mantine-primary-color-contrast)",
-        },
-      }),
-    }),
-    SegmentedControl: SegmentedControl.extend({
-      vars: (theme, props) => ({
-        root: {
-          "--sc-color": props.color
-            ? Object.keys(theme.colors).includes(props.color)
-              ? ["zinc", "slate", "gray", "neutral", "stone"].includes(
-                  props.color,
-                )
-                ? "var(--mantine-color-body)"
-                : `var(--mantine-color-${props.color}-filled)`
-              : props.color
-            : "var(--mantine-color-default)",
-        },
-      }),
-    }),
-    Switch: Switch.extend({
-      styles: () => ({
-        thumb: {
-          backgroundColor: "var(--mantine-color-default)",
-          borderColor: "var(--mantine-color-default-border)",
-        },
-        track: {
-          borderColor: "var(--mantine-color-default-border)",
-        },
-      }),
-    }),
-    Select: Select.extend({
-      defaultProps: {
-        checkIconPosition: "right",
-      },
-    }),
-    ActionIcon: ActionIcon.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-        const variant = props.variant ?? "filled";
-
-        return {
-          root: {
-            "--ai-color": (() => {
-              if (variant === "filled") {
-                if (colorKey) {
-                  return `var(--mantine-color-${colorKey}-contrast)`;
-                }
-                return "var(--mantine-primary-color-contrast)";
-              }
-              if (variant === "white") {
-                if (isNeutralColor || isNeutralPrimaryColor) {
-                  return "var(--mantine-color-black)";
-                }
-                return undefined;
-              }
-              return undefined;
-            })(),
-          },
-        };
-      },
-    }),
-    Button: Button.extend({
-      defaultProps: {
-        size: "sm",
-      },
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-        const variant = props.variant ?? "filled";
-        return {
-          root: {
-            "--button-color": (() => {
-              if (variant === "filled") {
-                if (colorKey) {
-                  return `var(--mantine-color-${colorKey}-contrast)`;
-                }
-                return "var(--mantine-primary-color-contrast)";
-              }
-              if (variant === "white") {
-                if (isNeutralColor || isNeutralPrimaryColor) {
-                  return "var(--mantine-color-black)";
-                }
-                return undefined;
-              }
-              return undefined;
-            })(),
-          },
-        };
-      },
-    }),
-    Anchor: Anchor.extend({
-      defaultProps: {
-        underline: "always",
-      },
-    }),
-    NavLink: NavLink.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const variant = props.variant ?? "light";
-        return {
-          root: {
-            "--nl-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : undefined,
-          },
-          children: {},
-        };
-      },
-    }),
-    Pagination: Pagination.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--pagination-active-color": colorKey
-              ? `var(--mantine-color-${colorKey}-contrast)`
-              : "var(--mantine-primary-color-contrast)",
-          },
-        };
-      },
-    }),
-    Stepper: Stepper.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--stepper-icon-color": colorKey
-              ? `var(--mantine-color-${colorKey}-contrast)`
-              : "var(--mantine-primary-color-contrast)",
-          },
-        };
-      },
-    }),
-    Alert: Alert.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-        const variant = props.variant ?? "light";
-        return {
-          root: {
-            "--alert-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : variant === "white"
-                  ? isNeutralColor || isNeutralPrimaryColor
-                    ? `var(--mantine-color-black)`
-                    : undefined
-                  : undefined,
-          },
-        };
-      },
-    }),
-    Dialog: Dialog.extend({
-      defaultProps: {
-        withBorder: true,
-      },
-    }),
-    Tooltip: Tooltip.extend({
-      vars: () => ({
-        tooltip: {
-          "--tooltip-bg": "var(--mantine-color-primary-color-filled)",
-          "--tooltip-color": "var(--mantine-color-primary-color-contrast)",
-        },
-      }),
-    }),
-    Avatar: Avatar.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-        const variant = props.variant ?? "light";
-        return {
-          root: {
-            "--avatar-bg":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-filled)`
-                  : "var(--mantine-primary-color-filled)"
-                : variant === "light"
-                  ? colorKey
-                    ? `var(--mantine-color-${colorKey}-light)`
-                    : "var(--mantine-primary-color-light)"
-                  : undefined,
-
-            "--avatar-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : variant === "light"
-                  ? colorKey
-                    ? `var(--mantine-color-${colorKey}-light-color)`
-                    : "var(--mantine-primary-color-light-color)"
-                  : variant === "white"
-                    ? isNeutralColor || isNeutralPrimaryColor
-                      ? `var(--mantine-color-black)`
-                      : colorKey
-                        ? `var(--mantine-color-${colorKey}-outline)`
-                        : "var(--mantine-primary-color-filled)"
-                    : variant === "outline" || variant === "transparent"
-                      ? colorKey
-                        ? `var(--mantine-color-${colorKey}-outline)`
-                        : "var(--mantine-primary-color-filled)"
-                      : undefined,
-
-            "--avatar-bd":
-              variant === "outline"
-                ? colorKey
-                  ? `1px solid var(--mantine-color-${colorKey}-outline)`
-                  : "1px solid var(--mantine-primary-color-filled)"
-                : undefined,
-          },
-        };
-      },
-    }),
-    Badge: Badge.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-        const variant = props.variant ?? "filled";
-        return {
-          root: {
-            "--badge-bg":
-              variant === "filled" && colorKey
-                ? `var(--mantine-color-${colorKey}-filled)`
-                : undefined,
-            "--badge-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : variant === "white"
-                  ? isNeutralColor || isNeutralPrimaryColor
-                    ? `var(--mantine-color-black)`
-                    : undefined
-                  : undefined,
-          },
-        };
-      },
-    }),
-    Card: Card.extend({
-      defaultProps: {
-        p: "xl",
-        shadow: "xl",
-        withBorder: true,
-      },
-      styles: (theme) => {
-        return {
-          root: {
-            backgroundColor:
-              theme.primaryColor === "rose" || theme.primaryColor === "green"
-                ? "var(--mantine-color-secondary-filled)"
-                : undefined,
-          },
-        };
-      },
-    }),
-    Indicator: Indicator.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--indicator-text-color": colorKey
-              ? `var(--mantine-color-${colorKey}-contrast)`
-              : "var(--mantine-primary-color-contrast)",
-          },
-        };
-      },
-    }),
-    ThemeIcon: ThemeIcon.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor,
-          );
-
-        const variant = props.variant ?? "filled";
-        return {
-          root: {
-            "--ti-color":
-              variant === "filled"
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-contrast)`
-                  : "var(--mantine-primary-color-contrast)"
-                : variant === "white"
-                  ? isNeutralColor || isNeutralPrimaryColor
-                    ? `var(--mantine-color-black)`
-                    : undefined
-                  : undefined,
-          },
-        };
-      },
-    }),
-    Timeline: Timeline.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--tl-icon-color": colorKey
-              ? `var(--mantine-color-${colorKey}-contrast)`
-              : "var(--mantine-primary-color-contrast)",
-          },
-        };
-      },
-    }),
-    Blockquote: Blockquote.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        return {
-          root: {
-            "--bq-bg-dark": colorKey
-              ? `var(--mantine-color-${colorKey}-light)`
-              : "var(--mantine-primary-color-light)",
-            "--bq-bg-light": colorKey
-              ? `var(--mantine-color-${colorKey}-light)`
-              : "var(--mantine-primary-color-light)",
-          },
-        };
-      },
-    }),
-    Mark: Mark.extend({
-      vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : "yellow";
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        return {
-          root: {
-            "--mark-bg-light": `var(--mantine-color-${colorKey}-${isNeutralColor ? "3" : "filled-hover"})`,
-            "--mark-bg-dark": `var(--mantine-color-${colorKey}-filled)`,
-          },
-        };
-      },
-    }),
-    Paper: Paper.extend({
-      defaultProps: {
-        shadow: "xl",
-      },
-    }),
+  defaultRadius: "md",
+  breakpoints: {
+    xs: "36em",
+    sm: "48em",
+    md: "62em",
+    lg: "75em",
+    xl: "88em",
   },
-});
+  fontSmoothing: true,
+  focusRing: "auto",
+};

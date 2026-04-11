@@ -24,9 +24,16 @@ import {
   ASIDE_WIDTH,
 } from "./constants.js";
 
-import { theme } from "./theme.js";
-import { cssVariablesResolver } from "./css-variables-resolver.js";
-import "./style.css";
+// import { theme } from "./theme.js";
+// import { cssVariablesResolver } from "./css-variables-resolver.js";
+// import "./style.css";
+// import { theme } from "./theme.teal.js";
+// import { cssVariablesResolver } from "./css-variables-resolver.teal.js";
+// import "./style.teal.css";
+import { theme } from "./theme.yellow.js";
+import { cssVariablesResolver } from "./css-variables-resolver.yellow.js";
+import "./style.yellow.css";
+import "./style-override.css";
 
 const Shell = () => {
   const { hasAside, toggleMobileNav, mobileNavOpened } = useAppContext();

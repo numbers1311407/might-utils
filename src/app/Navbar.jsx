@@ -28,7 +28,7 @@ export const Navbar = (props) => {
   return (
     <Stack gap={0} {...props}>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" pt={0} c="gold">
+        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
           Planning & Data
         </Text>
         <NavbarLink label="Party Generator" href="/party-generator" />
@@ -36,14 +36,14 @@ export const Navbar = (props) => {
         <NavbarLink label="Might Range Finder" href="/might-range-finder" />
       </Stack>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" c="gold">
+        <Text fw="bold" size="md" p="xs" c="primary">
           Team Management
         </Text>
         <NavbarLink label="Character Roster" href="/roster" />
         <NavbarLink label="Saved Parties" href="/parties" />
       </Stack>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" c="gold">
+        <Text fw="bold" size="md" p="xs" c="primary">
           Configuration
         </Text>
         <NavbarLink label="Generator Rules" href="/rulesets" />
