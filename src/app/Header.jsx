@@ -13,6 +13,7 @@ import { ColorSchemeButton } from "@/core/components";
 import { Link } from "wouter";
 import classes from "./Header.module.css";
 import { CONTAINER_WIDTH, HEADER_HEIGHT } from "./constants.js";
+import { GithubLink } from "./GithubLink.jsx";
 
 export const Header = ({ burgerOpened, onBurgerClick }) => (
   <AppShell.Header className={classes.header}>
@@ -60,6 +61,11 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
           Party building utility for{" "}
           <Anchor href="https://eqmight.com">EQ Might</Anchor>
         </Text>
+        <Divider orientation="vertical" mx="md" my="sm" />
+        <GithubLink
+          href="https://github.com/numbers1311407/might-utils"
+          target="_blank"
+        />
         <Divider orientation="vertical" mx="md" my="sm" />
         <ColorSchemeButton />
       </Flex>
