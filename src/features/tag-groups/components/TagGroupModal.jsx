@@ -108,7 +108,7 @@ export const TagGroupModal = ({ group, onClose, onCommit }) => {
       {group && (
         <TagGroupForm
           // note this key hack is to get around mantine's aggressive form caching
-          key={!!group ? "opened" : "closed"}
+          key={group ? "opened" : "closed"}
           group={group}
           onSubmit={(group) => {
             onCommit?.(group);

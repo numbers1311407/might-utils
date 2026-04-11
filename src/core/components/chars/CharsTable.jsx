@@ -17,7 +17,7 @@ import { useRosterChar } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
 
-export const CharsTableEmptyRow = ({ children }) => (
+export const EmptyRow = ({ children }) => (
   <Table.Tr>
     <Table.Td colSpan={8} py="xl" px="4xl">
       <Box ta="center">{children}</Box>
@@ -25,7 +25,7 @@ export const CharsTableEmptyRow = ({ children }) => (
   </Table.Tr>
 );
 
-export const CharsTableRow = ({
+const Row = ({
   char,
   classTags,
   dirtyChars,
@@ -38,9 +38,6 @@ export const CharsTableRow = ({
 }) => {
   const rosterChar = useRosterChar(char.id);
   const disableControls = !rosterChar;
-  const noRosterMessage = !rosterChar
-    ? "This character can no longer be edited because they've been deleted from the roster"
-    : undefined;
 
   return (
     <Table.Tr>
@@ -167,8 +164,6 @@ export const CharsTable = ({
   stickyHeader = true,
   hideControls = false,
   emptyContent = null,
-  Row = CharsTableRow,
-  EmptyRow = CharsTableEmptyRow,
   ...props
 }) => {
   const classTags = useClassTagsStore((store) => store.tags);
@@ -231,5 +226,5 @@ export const CharsTable = ({
   );
 };
 
-CharsTable.EmptyRow = CharsTableEmptyRow;
-CharsTable.Row = CharsTableRow;
+CharsTable.EmptyRow = EmptyRow;
+CharsTable.Row = Row;

@@ -7,7 +7,7 @@ import { getClassName } from "@/config/chars";
 // TODO handle checked state better for selected characters in stateful
 // mode. (initially this was a stateless button, which is fine, but in
 // stateful mode there's no indication on the option of it being selected)
-const renderOption = ({ option: { char }, checked }) => {
+const renderOption = ({ option: { char } }) => {
   return (
     <Group align="flex-end" gap="sm">
       <ClassIcon cls={char.class} size={42} />

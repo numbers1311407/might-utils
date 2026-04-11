@@ -78,7 +78,7 @@ const RuleSizeFilterButtons = () => {
 
   useEffect(() => {
     setRuleSizeFilter();
-  }, []);
+  }, [setRuleSizeFilter]);
 
   const numbers = useMemo(
     () => getNumberedArray(isTwenty ? 20 : 12),

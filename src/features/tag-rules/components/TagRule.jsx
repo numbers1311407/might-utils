@@ -60,7 +60,7 @@ const TagRuleContent = forwardRef(({ rule }, ref) => {
   return <Component ref={ref} rule={rule} />;
 });
 
-export const getQueryDescription = (query) => {
+const getQueryDescription = (query) => {
   const value = formatQuery(query, {
     format: "natural_language",
     translations: {

@@ -1,7 +1,7 @@
 import { Flex, Stack, Text, UnstyledButton, Popover } from "@mantine/core";
 import { IconTag } from "@tabler/icons-react";
 
-export const CharTagsPopover = ({ tags, classTags, isParty }) => {
+export const CharTagsPopover = ({ tags, classTags }) => {
   return (
     <Popover width={220} withArrow shadow="lg" zIndex={900}>
       <Popover.Target>
@@ -16,7 +16,7 @@ export const CharTagsPopover = ({ tags, classTags, isParty }) => {
               Class:
             </Text>
             <Text size="sm" c="primary">
-              {!!classTags?.length ? (
+              {classTags?.length ? (
                 classTags.join(", ")
               ) : (
                 <Text c="dimmed" span>
@@ -30,7 +30,7 @@ export const CharTagsPopover = ({ tags, classTags, isParty }) => {
               Own:
             </Text>
             <Text size="sm" c="primary">
-              {!!tags?.length ? (
+              {tags?.length ? (
                 tags.join(", ")
               ) : (
                 <Text c="dimmed" span>
