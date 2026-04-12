@@ -29,7 +29,7 @@ export const NpcSimulator = ({ instance, might, ...containerProps }) => {
         <Text span fw="bold">
           Warning:
         </Text>{" "}
-        This output is experimental and may be inaccurate.
+        This output is experimental, incomplete, and may be inaccurate.
       </Text>
     </Stack>
   );

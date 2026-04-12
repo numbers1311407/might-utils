@@ -12,3 +12,7 @@
 body {
   background-color: lighten(var(--mantine-color-body), 0.0275);
 }
+
+html {
+  scrollbar-gutter: stable;
+}

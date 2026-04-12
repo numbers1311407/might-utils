@@ -35,7 +35,7 @@ export const charLevelSchema = z.coerce
 
 export const charSchema = z
   .object({
-    id: z.nanoid().default(() => nanoid()),
+    id: z.nanoid("ID must be a valid nanoid").default(() => nanoid()),
     active: charActiveSchema,
     class: charClassSchema,
     level: charLevelSchema,

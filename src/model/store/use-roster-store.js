@@ -28,14 +28,18 @@ const api = {
     api.setActiveOnly(!get().activeOnly);
   },
 
-  setRoster: (roster = defaultRoster) => {
+  setRoster: (roster, cb) => {
+    const parsed = rosterSchema.safeParse(roster);
     set((state) => {
-      state.roster = rosterSchema.parse(roster).sort(rosterSort);
+      if (parsed.success) {
+        state.roster = parsed.data.sort(rosterSort);
+      }
     });
+    cb?.(parsed);
   },
 
   resetRoster: () => {
-    api.setRoster(undefined);
+    api.setRoster(defaultRoster);
   },
 
   clearRoster: () => {
@@ -77,25 +81,32 @@ const api = {
     ];
   },
 
-  addChar: (char, done) => {
-    let clone;
+  addChar: (chars, done) => {
+    let added = [];
 
     set((state) => {
       const { roster } = state;
-      const idx = roster.findIndex(({ id }) => char.id === id);
 
-      if (idx !== -1) {
-        clone = charSchema.parse({ ...roster[idx], ...char });
-        roster[idx] = clone;
-      } else {
-        clone = charSchema.parse(char);
-        roster.push(clone);
+      for (const char of [chars].flat()) {
+        const idx = roster.findIndex(({ id }) => char.id === id);
+        if (idx !== -1) {
+          roster[idx] = charSchema.parse({ ...roster[idx], ...char });
+          added.push(roster[idx]);
+        } else {
+          roster.push(charSchema.parse(char));
+          added.push(roster[roster.length - 1]);
+        }
       }
-
-      state.roster = [...roster].sort(rosterSort);
+      state.roster = rosterSchema.parse(roster).sort(rosterSort);
     });
 
-    done?.(api.getChar(clone.id));
+    const retv = Array.isArray(chars)
+      ? added.map((c) => api.getChar(c.id))
+      : added.length
+        ? api.getChar(added[0].id)
+        : undefined;
+
+    done?.(retv);
   },
 
   addCharTags: (charId, tags) => {

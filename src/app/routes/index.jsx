@@ -33,6 +33,15 @@ export const Routes = () => {
       <Route path="/roster">
         <Roster />
       </Route>
+      <Route path="/roster/characters">
+        <Roster />
+      </Route>
+      <Route path="/roster/tags">
+        <Roster />
+      </Route>
+      <Route path="/roster/io">
+        <Roster />
+      </Route>
       <Route path="/might-range-finder">
         <MightRangeFinder />
       </Route>

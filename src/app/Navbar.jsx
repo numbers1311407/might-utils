@@ -28,19 +28,30 @@ export const Navbar = (props) => {
   return (
     <Stack gap={0} {...props}>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
-          Planning & Data
+        <Text fw="bold" size="md" p="xs" c="primary">
+          Character Roster
         </Text>
-        <NavbarLink label="Party Generator" href="/party-generator" />
-        <NavbarLink label="Instance NPC Simulator" href="/npc-simulator" />
-        <NavbarLink label="Might Range Finder" href="/might-range-finder" />
+        <NavbarLink
+          label="Your Characters"
+          className={(active) => (active ? "active" : "")}
+          href="/roster/characters"
+        />
+        <NavbarLink label="Tags Editor" href="/roster/tags" />
+        <NavbarLink label="Import/Export" href="/roster/io" />
       </Stack>
       <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" c="primary">
-          Team Management
+        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
+          Party Building
         </Text>
-        <NavbarLink label="Character Roster" href="/roster" />
+        <NavbarLink label="Party Generator" href="/party-generator" />
         <NavbarLink label="Saved Parties" href="/parties" />
+      </Stack>
+      <Stack gap={2} mb="lg">
+        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
+          Calculators
+        </Text>
+        <NavbarLink label="Instance NPC Simulator" href="/npc-simulator" />
+        <NavbarLink label="Might Range Finder" href="/might-range-finder" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" c="primary">

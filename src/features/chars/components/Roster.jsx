@@ -1,6 +1,15 @@
-import { Box, Button, Divider, Paper, Stack, Tabs, Text } from "@mantine/core";
-import { useSearchParams } from "wouter";
-import { useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  Group,
+  Paper,
+  Stack,
+  Tabs,
+  Text,
+} from "@mantine/core";
+import { useRoute, useLocation, Link } from "wouter";
+import { useEffect, useState } from "react";
 import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
 import {
@@ -14,22 +23,25 @@ import {
 } from "@/core/components";
 
 import { RosterTagsEditor } from "./RosterTagsEditor.jsx";
+import { RosterImporter } from "./RosterImporter.jsx";
 
-const TABS = ["characters", "tags"];
+const TABS = ["characters", "tags", "io"];
 
 export const Roster = () => {
   const roster = useRoster();
   const [char, setChar] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const currentTab = useMemo(() => {
-    const tab = searchParams.get("tab");
-    return TABS.find((t) => t === tab) || TABS[0];
-  }, [searchParams]);
-
+  const [_location, setLocation] = useLocation();
+  const [_match, params] = useRoute("/roster/:tab?");
+  const currentTab = params?.tab || "characters";
   const onTabsChange = (tab) => {
-    setSearchParams({ tab });
+    setLocation(`/roster/${tab}`);
   };
+
+  useEffect(() => {
+    if (!params?.tab) {
+      setLocation("/roster/characters");
+    }
+  }, [params?.tab, setLocation]);
 
   const onResetRoster = getConfirmation(
     () => {
@@ -87,6 +99,7 @@ export const Roster = () => {
           <Tabs.List>
             <Tabs.Tab value="characters">Characters</Tabs.Tab>
             <Tabs.Tab value="tags">Bulk Tag Editor</Tabs.Tab>
+            <Tabs.Tab value="io">Import/Export</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="characters" pt="lg">
             <CharsTable
@@ -101,30 +114,43 @@ export const Roster = () => {
                   <Text size="xl" c="warning">
                     You have no characters on your roster.
                   </Text>
-                  <Box>
+                  <Group justify="center">
                     <Button size="compact-md" onClick={() => setChar({})}>
                       Create one now?
                     </Button>
-                  </Box>
+                    <Text span fw="bold">
+                      or
+                    </Text>
+                    <Button
+                      component={Link}
+                      size="compact-md"
+                      href="/roster?tab=io"
+                    >
+                      Import a list?
+                    </Button>
+                  </Group>
                 </Stack>
               }
             />
+            <Divider />
+            <Text c="dark" mt="xs" pos="relative">
+              <Text span c="primary" size="xl">
+                *
+              </Text>{" "}
+              Only{" "}
+              <Text span fw="bold" c="primary">
+                active
+              </Text>{" "}
+              characters will be considered as eligible for the party generator.
+            </Text>
           </Tabs.Panel>
           <Tabs.Panel value="tags">
             <RosterTagsEditor />
           </Tabs.Panel>
+          <Tabs.Panel value="io">
+            <RosterImporter />
+          </Tabs.Panel>
         </Tabs>
-        <Divider />
-        <Text c="dark" mt="xs" pos="relative">
-          <Text span c="primary" size="xl">
-            *
-          </Text>{" "}
-          Only{" "}
-          <Text span fw="bold" c="primary">
-            active
-          </Text>{" "}
-          characters will be considered as eligible for the party generator.
-        </Text>
       </Paper>
 
       <RosterAside visibleFrom="lg" />
