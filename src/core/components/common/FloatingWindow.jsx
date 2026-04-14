@@ -66,7 +66,7 @@ export const FloatingWindow = ({
                 />
               </Group>
             </Group>
-            <ScrollArea.Autosize scrollbars="y" type="auto" mah="60vw">
+            <ScrollArea.Autosize scrollbars="y" type="auto" mah="50vh">
               <Box>{children}</Box>
             </ScrollArea.Autosize>
           </Paper>
