@@ -17,7 +17,6 @@ import { usePartiesStoreApi as partiesApi } from "@/model/store";
 import {
   AppLink,
   Aside,
-  CharModalForm,
   CharSelect,
   CharsTable,
   PageTitle,
@@ -38,8 +37,8 @@ import { PartyModal } from "./PartyModal.jsx";
 const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
   const { party, ...api } = useParty(partyId);
 
-  const partyCharIds = useMemo(
-    () => party.chars?.map((char) => char.id),
+  const partyNames = useMemo(
+    () => party.chars?.map((char) => char.name),
     [party],
   );
 
@@ -65,9 +64,9 @@ const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
               gap: 12,
             },
           }}
-          exclude={partyCharIds}
+          exclude={partyNames}
           onChange={(char) => {
-            partiesApi.addChar(party.id, char.id);
+            partiesApi.addChar(party.id, char.name);
           }}
         />
       </PageTitle>
@@ -153,11 +152,6 @@ export const Parties = () => {
     }
   });
 
-  const saveChar = useStableCallback((char) => {
-    editChar(null);
-    partiesApi.updateChar(partyId, char.id, char);
-  });
-
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
   if (routeId && partyId !== routeId) {
@@ -226,13 +220,13 @@ export const Parties = () => {
                     <Text c="warning" size="xl">
                       This party has no characters!
                     </Text>
-                    <Text size="lg">
+                    <Text>
                       Use the dropdown above to add characters from the roster.
                     </Text>
                     <Text size="lg" c="warning">
                       OR
                     </Text>
-                    <Text size="lg">
+                    <Text>
                       Use the{" "}
                       <AppLink href="/party-generator">party generator</AppLink>{" "}
                       to find a party for a specific might score and save a
@@ -260,13 +254,6 @@ export const Parties = () => {
           <PartiesNav current={party?.id} />
         </Stack>
       </Aside>
-
-      <CharModalForm
-        char={draftChar}
-        onClose={() => editChar(null)}
-        onSubmit={saveChar}
-        isParty
-      />
 
       <PartyModal
         onClose={() => editParty(null)}

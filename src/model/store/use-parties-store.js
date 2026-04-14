@@ -20,8 +20,8 @@ const _addOrUpdateChar = (partyId, value, api) => {
 
   [value].flat().forEach((char) => {
     const isId = typeof char === "string";
-    const charId = isId ? char : char?.id;
-    const rosterChar = rosterApi.getChar(charId);
+    const charName = isId ? char : char?.name;
+    const rosterChar = rosterApi.getChar(charName);
 
     const charToAdd = structuredClone(isId ? rosterChar : char);
 
@@ -29,14 +29,14 @@ const _addOrUpdateChar = (partyId, value, api) => {
       !party ||
       !rosterChar ||
       rosterChar.name !== charToAdd.name ||
-      rosterChar.id !== charToAdd.id
+      rosterChar.name !== charToAdd.name
     ) {
       return;
     }
 
     updated = true;
 
-    const idx = chars.findIndex((char) => char.id === charId);
+    const idx = chars.findIndex((char) => char.name === charName);
 
     if (idx === -1) {
       chars.push(charToAdd);
@@ -66,15 +66,17 @@ const extendApi = (_set, get, api) => {
       return ids.length ? registry[ids[0]] : undefined;
     },
 
-    hasChar: (partyId, charId) => {
+    hasChar: (partyId, charName) => {
       const party = api.get(partyId);
       return (
-        !!party && !!charId && party.chars.find((char) => char.id === charId)
+        !!party &&
+        !!charName &&
+        party.chars.find((char) => char.name === charName)
       );
     },
 
-    isCharDirty: (partyId, charId) => {
-      const rosterChar = rosterApi.getChar(charId, { classTags: false });
+    isCharDirty: (partyId, charName) => {
+      const rosterChar = rosterApi.getChar(charName, { classTags: false });
 
       // We allow roster chars to be deleted without pulling them from parties
       // in which they're referenced. This is... by design? Since the parties
@@ -88,7 +90,7 @@ const extendApi = (_set, get, api) => {
         return false;
       }
 
-      return !deepEqual(extApi.getChar(partyId, charId), rosterChar);
+      return !deepEqual(extApi.getChar(partyId, charName), rosterChar);
     },
 
     isSnapshotDirty: (partyId) => {
@@ -105,19 +107,19 @@ const extendApi = (_set, get, api) => {
       const party = api.get(partyId);
 
       return (party?.chars || []).reduce((acc, char) => {
-        if (extApi.isCharDirty(party.id, char.id)) acc.add(char.id);
+        if (extApi.isCharDirty(party.id, char.name)) acc.add(char.name);
         return acc;
       }, new Set());
     },
 
-    getChar: (partyId, charId) => {
+    getChar: (partyId, charName) => {
       const party = api.get(partyId);
-      return party && party.chars.find((char) => char.id === charId);
+      return party && party.chars.find((char) => char.name === charName);
     },
 
-    addChar: (partyId, charId) => {
-      if (typeof charId === "string") {
-        _addOrUpdateChar(partyId, charId, api);
+    addChar: (partyId, charName) => {
+      if (typeof charName === "string") {
+        _addOrUpdateChar(partyId, charName, api);
       }
     },
 
@@ -150,15 +152,15 @@ const extendApi = (_set, get, api) => {
 
     removeChar: getConfirmation(
       (partyId, char, done) => {
-        const charId = typeof char === "string" ? char : char?.id;
+        const charName = typeof char === "string" ? char : char?.name;
         const party = api.get(partyId);
-        const hasChar = party.chars.some((char) => char.id === charId);
+        const hasChar = party.chars.some((char) => char.name === charName);
 
         if (!party || !hasChar) return;
 
         api.add({
           ...party,
-          chars: party.chars.filter((char) => char.id !== charId),
+          chars: party.chars.filter((char) => char.name !== charName),
         });
 
         done?.();
@@ -169,8 +171,8 @@ const extendApi = (_set, get, api) => {
       },
     ),
 
-    updateChar: (partyId, charId, update) => {
-      const char = extApi.getChar(partyId, charId);
+    updateChar: (partyId, charName, update) => {
+      const char = extApi.getChar(partyId, charName);
 
       if (!char || typeof update !== "object") return;
 
@@ -187,8 +189,8 @@ const extendApi = (_set, get, api) => {
 
     resetChar: getConfirmation(
       (partyId, char) => {
-        const charId = typeof char === "string" ? char : char?.id;
-        extApi.addChar(partyId, charId);
+        const charName = typeof char === "string" ? char : char?.name;
+        extApi.addChar(partyId, charName);
       },
       {
         message:
@@ -200,7 +202,7 @@ const extendApi = (_set, get, api) => {
     resetChars: getConfirmation(
       (partyId) => {
         const party = api.get(partyId);
-        const ids = party.chars.map((char) => char.id);
+        const ids = party.chars.map((char) => char.name);
         _addOrUpdateChar(partyId, ids, api);
       },
       {
@@ -221,7 +223,7 @@ const extendApi = (_set, get, api) => {
       const { chars = [] } = api.get(partyId) || {};
       const taggedChars = chars.map((char) => ({
         ...char,
-        tags: rosterApi.getCharTags(char.id, { classTags: true }),
+        tags: rosterApi.getCharTags(char.name, { classTags: true }),
       }));
       return getCharsStats(taggedChars);
     },

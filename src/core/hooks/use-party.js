@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import {
   usePartiesStore,
-  usePartiesStoreApi as partiesApi,
+  usePartiesStoreApi as partiesStore,
   useRosterStoreApi as rosterApi,
 } from "@/model/store";
 
@@ -24,7 +24,7 @@ export const useParty = (paramPartyId, options = {}) => {
       ...party,
       chars: party.chars.map((char) => ({
         ...char,
-        tags: rosterApi.getCharTags(char.id, { classTags: true }),
+        tags: rosterApi.getCharTags(char.name, { classTags: true }),
       })),
     };
   }, [classTags, paramPartyId, partyRegistry, defaultToFirst]);
@@ -32,26 +32,26 @@ export const useParty = (paramPartyId, options = {}) => {
   const partyId = party?.id;
 
   const dirtyChars = useMemo(() => {
-    return partiesApi.getDirtyStatus(party?.id);
+    return partiesStore.getDirtyStatus(party?.id);
   }, [party]);
 
   const stats = useMemo(() => {
-    return partiesApi.getStats(party?.id);
+    return partiesStore.getStats(party?.id);
   }, [party]);
 
   const addChar = useCallback(
-    (charId) => {
+    (name) => {
       if (partyId) {
-        partiesApi.addChar(partyId, charId);
+        partiesStore.addChar(partyId, name);
       }
     },
     [partyId],
   );
 
   const isCharDirty = useCallback(
-    (charId) => {
+    (name) => {
       if (party?.id) {
-        return partiesApi.isCharDirty(party.id, charId);
+        return partiesStore.isCharDirty(party.id, name);
       }
     },
     [party],
@@ -59,74 +59,74 @@ export const useParty = (paramPartyId, options = {}) => {
 
   const copyParty = useCallback(
     (done) => {
-      if (party) partiesApi.copy(party, done);
+      if (party) partiesStore.copy(party, done);
     },
     [party],
   );
 
   const removeParty = useCallback(
     (done) => {
-      if (partyId) partiesApi.remove(partyId, done);
+      if (partyId) partiesStore.remove(partyId, done);
     },
     [partyId],
   );
 
   const hasChar = useCallback(() => {
-    if (party?.id) return partiesApi.hasChar(party.id, charId);
+    if (party?.id) return partiesStore.hasChar(party.id, name);
   }, [party]);
 
   const updateChar = useCallback(
-    (charId, update) => {
-      if (partyId) partiesApi.updateChar(partyId, charId, update);
+    (name, update) => {
+      if (partyId) partiesStore.updateChar(partyId, name, update);
     },
     [partyId],
   );
 
   const resetChar = useCallback(
-    (charId) => {
-      if (partyId) partiesApi.resetChar(partyId, charId);
+    (name) => {
+      if (partyId) partiesStore.resetChar(partyId, name);
     },
     [partyId],
   );
 
   const resetChars = useCallback(() => {
-    if (partyId) partiesApi.resetChars(partyId);
+    if (partyId) partiesStore.resetChars(partyId);
   }, [partyId]);
 
   const getChar = useCallback(
-    (charId) => {
-      if (partyId) partiesApi.getChar(partyId, charId);
+    (name) => {
+      if (partyId) partiesStore.getChar(partyId, name);
     },
     [partyId],
   );
 
   const removeChar = useCallback(
-    (charId, done) => {
-      if (partyId) partiesApi.removeChar(partyId, charId, done);
+    (name, done) => {
+      if (partyId) partiesStore.removeChar(partyId, name, done);
     },
-    [party],
+    [partyId],
   );
 
   const saveSnapshot = useCallback(
     (done) => {
-      if (partyId) partiesApi.saveSnapshot(partyId, done);
+      if (partyId) partiesStore.saveSnapshot(partyId, done);
     },
     [partyId],
   );
 
   const restoreSnapshot = useCallback(
     (done) => {
-      if (partyId) partiesApi.restoreSnapshot(partyId, done);
+      if (partyId) partiesStore.restoreSnapshot(partyId, done);
     },
     [partyId],
   );
 
   const snapshotDirty = useMemo(() => {
-    return !party?.id || partiesApi.isSnapshotDirty(party.id);
+    return !party?.id || partiesStore.isSnapshotDirty(party.id);
   }, [party]);
 
   const hasSnapshot = useMemo(() => {
-    return !party?.id || partiesApi.hasSnapshot(party.id);
+    return !!party?.id && partiesStore.hasSnapshot(party.id);
   }, [party]);
 
   return {

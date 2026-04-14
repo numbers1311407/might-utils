@@ -24,7 +24,7 @@ const renderOption = ({ option: { char } }) => {
 };
 
 export const CharSelect = ({
-  emits = "id",
+  emits = "name",
   exclude = [],
   onChange,
   ...props
@@ -35,8 +35,8 @@ export const CharSelect = ({
 
   const data = useMemo(() => {
     return roster
-      .filter((char) => !exclude.includes(char.id))
-      .map((char) => ({ value: char.id, label: char.name, char }));
+      .filter((char) => !exclude.includes(char.name))
+      .map((char) => ({ value: char.name, label: char.name, char }));
   }, [roster, exclude]);
 
   const placeholder = !data.length
@@ -64,9 +64,9 @@ export const CharSelect = ({
         ref.current?.blur();
       }}
       renderOption={renderOption}
-      onChange={(id, option) => {
+      onChange={(name, option) => {
         const { char = null } = option || {};
-        onChange?.(emits === "char" ? char : id);
+        onChange?.(emits === "char" ? char : name);
         setSearch("");
         ref.current?.blur();
       }}
