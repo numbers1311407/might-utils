@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ActionIcon, Box, Group, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
+import * as titles from "@/config/constants/titles";
 import {
   getConfirmation,
   useTagGroupsStore,
@@ -99,8 +100,8 @@ export const TagGroups = () => {
   return (
     <Box>
       <PageTitle
-        section="Configuration"
-        title="Generator Grouping Tags"
+        section={titles.SETTINGS_CATEGORY}
+        title={titles.TAG_GROUPS_TITLE}
         subtitle="Collections of related tags used to group generated parties in a flexible way"
       >
         <AddSmallButton onClick={() => setCurrentGroup({})}>

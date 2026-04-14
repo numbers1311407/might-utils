@@ -1,4 +1,5 @@
 import { NumberInput, Stack } from "@mantine/core";
+import * as titles from "@/config/constants/titles";
 import { PageTitle } from "@/core/components";
 import {
   TierSelect,
@@ -12,8 +13,8 @@ export const NpcSimulator = () => {
   return (
     <Stack>
       <PageTitle
-        section="Planning & Data"
-        title="Instance NPC Simulator"
+        section={titles.CALCULATORS_CATEGORY}
+        title={titles.NPC_SIMULATOR_TITLE}
         subtitle="Know what Suki has to say before you're in hail distance"
       />
       <TierSelect value={instance} onChange={setInstance} w={400} />

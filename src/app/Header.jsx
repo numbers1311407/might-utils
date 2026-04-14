@@ -12,7 +12,7 @@ import {
 import { ColorSchemeButton } from "@/core/components";
 import { Link } from "wouter";
 import classes from "./Header.module.css";
-import { CONTAINER_WIDTH, HEADER_HEIGHT } from "./constants.js";
+import { CONTAINER_WIDTH, HEADER_HEIGHT } from "@/config/constants";
 import { GithubLink } from "./GithubLink.jsx";
 
 export const Header = ({ burgerOpened, onBurgerClick }) => (

@@ -22,7 +22,7 @@ import {
   HEADER_HEIGHT,
   NAVBAR_WIDTH,
   ASIDE_WIDTH,
-} from "./constants.js";
+} from "@/config/constants";
 
 import { theme } from "./theme.yellow.js";
 import { cssVariablesResolver } from "./css-variables-resolver.yellow.js";
@@ -54,7 +54,7 @@ const Shell = () => {
             pt={14}
             style={{ flex: `0 0 ${rem(NAVBAR_WIDTH)}` }}
           />
-          <AppShell.Main flex="1" pb="10em">
+          <AppShell.Main flex="1" pb="30em">
             <ErrorBoundary fallback={<ErrorPage />}>
               <Routes />
             </ErrorBoundary>
@@ -63,14 +63,15 @@ const Shell = () => {
             <Box
               component="aside"
               display={hasAside ? "block" : "none"}
-              id="aside-slot"
               pos="sticky"
               py={0}
               right={0}
               top={HEADER_HEIGHT}
               pt={14}
               style={{ flex: `0 0 ${rem(ASIDE_WIDTH)}` }}
-            />
+            >
+              <Box id="aside-slot" />
+            </Box>
           </ErrorBoundary>
         </Group>
       </Container>

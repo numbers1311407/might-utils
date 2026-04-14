@@ -1,6 +1,7 @@
 import { Link, useRoute } from "wouter";
 import { Stack, NavLink, Text } from "@mantine/core";
 import { useAppContext } from "@/core/context";
+import * as titles from "@/config/constants/titles";
 
 const NavbarLink = ({ href, ...props }) => {
   const route = href === "/" ? href : href.replace(/\/?$/, "/*?");
@@ -28,38 +29,47 @@ export const Navbar = (props) => {
   return (
     <Stack gap={0} {...props}>
       <Stack gap={2} mb="lg">
+        <Stack gap={2} mb="lg">
+          <Text fw="bold" size="md" p="xs" pt={0} c="primary">
+            {titles.PARTY_CATEGORY}
+          </Text>
+          <NavbarLink
+            label={titles.PARTY_FINDER_TITLE}
+            href="/party-generator"
+          />
+          <NavbarLink label={titles.PARTIES_TITLE} href="/parties" />
+        </Stack>
         <Text fw="bold" size="md" p="xs" c="primary">
-          Character Roster
+          {titles.ROSTER_CATEGORY}
         </Text>
         <NavbarLink
-          label="Your Characters"
+          label={titles.ROSTER_TITLE}
           className={(active) => (active ? "active" : "")}
           href="/roster/characters"
         />
-        <NavbarLink label="Tags Editor" href="/roster/tags" />
-        <NavbarLink label="Import/Export" href="/roster/io" />
+        <NavbarLink
+          label={titles.ROSTER_TAGS_EDITOR_TITLE}
+          href="/roster/tags"
+        />
+        <NavbarLink label={titles.ROSTER_IO_TITLE} href="/roster/io" />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" pt={0} c="primary">
-          Party Building
+          {titles.CALCULATORS_CATEGORY}
         </Text>
-        <NavbarLink label="Party Generator" href="/party-generator" />
-        <NavbarLink label="Saved Parties" href="/parties" />
-      </Stack>
-      <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
-          Calculators
-        </Text>
-        <NavbarLink label="Instance NPC Simulator" href="/npc-simulator" />
-        <NavbarLink label="Might Range Finder" href="/might-range-finder" />
+        <NavbarLink label={titles.NPC_SIMULATOR_TITLE} href="/npc-simulator" />
+        <NavbarLink
+          label={titles.MIGHT_RANGE_FINDER_TITLE}
+          href="/might-range-finder"
+        />
       </Stack>
       <Stack gap={2} mb="lg">
         <Text fw="bold" size="md" p="xs" c="primary">
-          Configuration
+          {titles.SETTINGS_CATEGORY}
         </Text>
-        <NavbarLink label="Generator Rules" href="/rulesets" />
-        <NavbarLink label="Generator Grouping Tags" href="/tag-groups" />
-        <NavbarLink label="Generator Class Tags" href="/class-tags" />
+        <NavbarLink label={titles.TAG_RULES_TITLE} href="/rulesets" />
+        <NavbarLink label={titles.TAG_GROUPS_TITLE} href="/tag-groups" />
+        <NavbarLink label={titles.CLASS_TAGS_TITLE} href="/class-tags" />
       </Stack>
     </Stack>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { IconSortAscendingNumbers, IconPlus } from "@tabler/icons-react";
+import * as titles from "@/config/constants/titles";
 import {
   ActionIcon,
   Button,
@@ -242,8 +243,8 @@ const TagRulesMain = () => {
   return (
     <Box>
       <PageTitle
-        section="Configuration"
-        title="Generator Rules"
+        section={titles.SETTINGS_CATEGORY}
+        title={titles.TAG_RULES_TITLE}
         subtitle="Tag and attribute based rules that define your generated parties are composed"
         size="h1"
       >

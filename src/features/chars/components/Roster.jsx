@@ -8,6 +8,7 @@ import {
   Tabs,
   Text,
 } from "@mantine/core";
+import * as titles from "@/config/constants/titles";
 import { useRoute, useLocation, Link } from "wouter";
 import { useEffect, useState } from "react";
 import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
@@ -81,8 +82,8 @@ export const Roster = () => {
   return (
     <Box>
       <PageTitle
-        section="Team Management"
-        title="Character Roster"
+        section={titles.ROSTER_CATEGORY}
+        title={titles.ROSTER_TITLE}
         subtitle="The list of all your characters, the reference for party generation and saved parties"
       >
         <RestoreSmallButton onClick={onResetRoster}>Reset</RestoreSmallButton>
@@ -94,10 +95,12 @@ export const Roster = () => {
         </AddSmallButton>
       </PageTitle>
 
+      <RosterAside visibleFrom="lg" />
+
       <Paper py="xl" px="md" shadow="md">
         <Tabs value={currentTab} onChange={onTabsChange} mt="-xs">
           <Tabs.List>
-            <Tabs.Tab value="characters">Characters</Tabs.Tab>
+            <Tabs.Tab value="characters">Character List</Tabs.Tab>
             <Tabs.Tab value="tags">Bulk Tag Editor</Tabs.Tab>
             <Tabs.Tab value="io">Import/Export</Tabs.Tab>
           </Tabs.List>
@@ -152,8 +155,6 @@ export const Roster = () => {
           </Tabs.Panel>
         </Tabs>
       </Paper>
-
-      <RosterAside visibleFrom="lg" />
 
       <CharModalForm
         char={char}

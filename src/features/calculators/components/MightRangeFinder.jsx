@@ -1,5 +1,6 @@
-import { Stack, Text, List } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { PageTitle } from "@/core/components";
+import * as titles from "@/config/constants/titles";
 import {
   TierSelect,
   MightRangeFinder as MightRangeFinderComponent,
@@ -13,8 +14,8 @@ export const MightRangeFinder = () => {
   return (
     <Stack>
       <PageTitle
-        section="Planning & Data"
-        title="Might Range Finder"
+        section={titles.CALCULATORS_CATEGORY}
+        title={titles.MIGHT_RANGE_FINDER_TITLE}
         subtitle="Look up might ranges by tier and desired difficulty"
       />
       <TierSelect value={instance} onChange={setInstance} w={400} />

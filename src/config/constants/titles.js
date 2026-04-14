@@ -1,0 +1,14 @@
+export const PARTY_CATEGORY = "Party Building";
+export const ROSTER_CATEGORY = "Team Management";
+export const CALCULATORS_CATEGORY = "Might Calculators";
+export const SETTINGS_CATEGORY = "Configuration";
+export const PARTY_FINDER_TITLE = "Party Generator";
+export const PARTIES_TITLE = "Your Parties";
+export const ROSTER_TITLE = "Your Roster";
+export const ROSTER_TAGS_EDITOR_TITLE = "Roster Tags Editor";
+export const ROSTER_IO_TITLE = "Roster Import/Export";
+export const NPC_SIMULATOR_TITLE = "Instance NPC Simulator";
+export const MIGHT_RANGE_FINDER_TITLE = "Might Range Finder";
+export const TAG_RULES_TITLE = "Generator Rules";
+export const TAG_GROUPS_TITLE = "Generator Grouping Tags";
+export const CLASS_TAGS_TITLE = "Generator Class Tags";

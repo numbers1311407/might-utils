@@ -9,6 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import * as titles from "@/config/constants/titles";
 import { useEffect, useMemo, useState } from "react";
 import { IconPlus, IconCalculator } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
@@ -166,8 +167,8 @@ export const Parties = () => {
   return (
     <Box>
       <PageTitle
-        section="Team Management"
-        title="Saved Parties"
+        section={titles.PARTY_CATEGORY}
+        title={titles.PARTIES_TITLE}
         subtitle={
           "Assemble parties from your roster to track their might and target specific instance tiers"
         }

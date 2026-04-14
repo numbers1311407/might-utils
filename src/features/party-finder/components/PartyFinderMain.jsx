@@ -2,6 +2,7 @@ import { Box } from "@mantine/core";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { LoadingPage, PageTitle } from "@/core/components";
+import * as titles from "@/config/constants/titles";
 import { PartyFinderResults } from "./PartyFinderResults.jsx";
 import { usePartyFinderContext } from "../context";
 import { FindPartiesError } from "../find-parties/find-parties-error.js";
@@ -25,8 +26,8 @@ export const PartyFinderMain = () => {
   return (
     <Box>
       <PageTitle
-        section="Planning & Data"
-        title="Party Generator"
+        section={titles.PARTY_CATEGORY}
+        title={titles.PARTY_FINDER_TITLE}
         subtitle={
           "Add your roster and group preferences, plug in your target might, " +
           "and generate your party!"

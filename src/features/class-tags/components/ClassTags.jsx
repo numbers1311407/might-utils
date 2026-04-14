@@ -1,5 +1,6 @@
 import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
+import * as titles from "@/config/constants/titles";
 import { getConfirmation, useClassTagsStore } from "@/model/store";
 import {
   Aside,
@@ -51,8 +52,8 @@ export const ClassTags = () => {
   return (
     <Box my="md">
       <PageTitle
-        section="Configuration"
-        title="Generator Class Tags"
+        section={titles.SETTINGS_CATEGORY}
+        title={titles.CLASS_TAGS_TITLE}
         subtitle="Default tags added to each class for the targeting during party generation"
       >
         <ReloadSmallButton
