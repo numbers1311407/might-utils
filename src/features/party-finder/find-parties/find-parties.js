@@ -4,10 +4,10 @@ import {
   MightMaxLevel,
   MightMinLevel,
 } from "@/config";
+import * as comps from "@/core/comps";
 import { createPartyValidator } from "@/core/finder-rules";
-import { FindPartiesError } from "./find-parties-error.js";
-import { getGroupingOverrides, getCompKey } from "./grouping.js";
 import { instrument } from "@/utils";
+import { FindPartiesError } from "./find-parties-error.js";
 
 const MAX_RECURSIONS = 10_000_000;
 const MAX_RESPONSE_LENGTH = 2500;
@@ -62,7 +62,7 @@ export const findParties = (roster, targetScore, options = {}) => {
         if (char.warden >= warden && level >= requiredLevel) {
           const slot = { ...char, score: score * mightMultiplier, warden };
 
-          const overrides = getGroupingOverrides(
+          const overrides = comps.getExtendedSlots(
             slot,
             compType,
             distinctGroupingTags,
@@ -184,7 +184,7 @@ export const findParties = (roster, targetScore, options = {}) => {
       const newParty = {
         party: sortParty(new Uint8Array(partyPoolIdxs)),
         score: targetScore - remainingScore,
-        comp: getCompKey(compType, Array.from(partyPoolIdxs), pool),
+        comp: comps.getPartyKey(compType, Array.from(partyPoolIdxs), pool),
       };
 
       parties.push(newParty);

@@ -1,40 +1,16 @@
 import { useMemo } from "react";
 import { List, Stack, Table, Text } from "@mantine/core";
+import * as comps from "@/core/comps";
 import { useFindPartiesResults } from "../hooks";
-
-const hWarden = (rank) => (rank === "0" ? "Unwardened" : `Rank ${rank}`);
-
-const typeFn = (type) => {
-  const comp = (_, level, warden) => `${hWarden(warden)} ${level}`;
-  return (
-    {
-      comp,
-      tags: (tags, level, warden) =>
-        `${hWarden(warden)} ${level} tagged: "${tags.split(",").join('" and "')}"`,
-    }[type] || comp
-  );
-};
-
-const humanizeGroupKey = (groupKey) => {
-  const [type, rest] = groupKey.split("|");
-  const tuples = rest.split(";");
-  const t = typeFn(type);
-
-  return tuples.map((tuple) => {
-    const [count, fullKey] = tuple.split(":");
-    const [level, warden, type] = fullKey.split("/");
-    return `${count} ${t(type, level, warden)}`;
-  });
-};
 
 const GroupedParties = ({ groups }) => {
   return (
     <Stack>
-      {groups.map(([groupKey, parties]) => {
-        const makeup = humanizeGroupKey(groupKey);
+      {groups.map(([partyKey, parties]) => {
+        const makeup = comps.humanizePartyKey(partyKey);
 
         return (
-          <div key={groupKey}>
+          <div key={partyKey}>
             <List>
               {makeup.map((key) => (
                 <List.Item key={key}>{key}</List.Item>
@@ -80,10 +56,10 @@ const PartiesTable = ({ parties }) => {
   );
 };
 
-export const PartyFinderResults = () => {
-  const { size, parties, groupBy } = useFindPartiesResults();
+const useGroupedParties = () => {
+  const { groupBy, parties } = useFindPartiesResults();
 
-  const groups = useMemo(() => {
+  return useMemo(() => {
     return (
       groupBy &&
       Object.entries(
@@ -95,6 +71,11 @@ export const PartyFinderResults = () => {
       )
     );
   }, [parties, groupBy]);
+};
+
+export const PartyFinderResults = () => {
+  const { size, parties } = useFindPartiesResults();
+  const groups = useGroupedParties();
 
   return (
     <Stack gap={0}>

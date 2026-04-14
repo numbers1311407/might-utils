@@ -8,10 +8,10 @@ import { usePartyFinderContext } from "../context";
 import { FindPartiesError } from "../find-parties/find-parties-error.js";
 
 const UNEXPECTED_ERROR_MESSAGE =
-  "An unexpected error occurred. Please attempt to fix any " +
-  "form input errors if they may exist and try to refresh the page.";
+  "An unexpected error occurred. Please be sure you've selected all options and corrected any " +
+  "form input errors if they exist and try to refresh the page.";
 
-const ErrorPage = ({ error, resetErrorBoundary: _r }) => {
+const ErrorPage = ({ error }) => {
   const message =
     error instanceof FindPartiesError
       ? error.message
