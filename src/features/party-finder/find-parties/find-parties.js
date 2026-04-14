@@ -6,13 +6,14 @@ import {
 } from "@/config";
 import { createPartyValidator } from "@/core/finder-rules";
 import { FindPartiesError } from "./find-parties-error.js";
-import { getGroupingOverrides, getTagGroupKey } from "./grouping.js";
+import { getGroupingOverrides, getCompKey } from "./grouping.js";
 import { instrument } from "@/utils";
 
 const MAX_RECURSIONS = 10_000_000;
 const MAX_RESPONSE_LENGTH = 2500;
 
 export const defaultOptions = {
+  groupBy: "comp",
   targetScore: 1250,
   minLevel: MightMinLevel,
   maxLevel: MightMaxLevel,
@@ -40,7 +41,7 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
-  const maxPoolScores = new Map();
+  const compType = groupBy || "comp";
 
   let slotIdx = 0;
 
@@ -61,17 +62,14 @@ export const findParties = (roster, targetScore, options = {}) => {
         if (char.warden >= warden && level >= requiredLevel) {
           const slot = { ...char, score: score * mightMultiplier, warden };
 
-          if (groupBy) {
-            const overrides = getGroupingOverrides(
-              slot,
-              groupBy,
-              distinctGroupingTags,
-            );
-            for (const ovr of overrides) {
-              charBucket.push({ ...slot, ...ovr });
-            }
-          } else {
-            charBucket.push(slot);
+          const overrides = getGroupingOverrides(
+            slot,
+            compType,
+            distinctGroupingTags,
+          );
+
+          for (const ovr of overrides) {
+            charBucket.push({ ...slot, ...ovr });
           }
         }
       }
@@ -186,15 +184,8 @@ export const findParties = (roster, targetScore, options = {}) => {
       const newParty = {
         party: sortParty(new Uint8Array(partyPoolIdxs)),
         score: targetScore - remainingScore,
+        comp: getCompKey(compType, Array.from(partyPoolIdxs), pool),
       };
-
-      if (groupBy) {
-        newParty.groupKey = getTagGroupKey(
-          groupBy,
-          Array.from(partyPoolIdxs),
-          pool,
-        );
-      }
 
       parties.push(newParty);
     }

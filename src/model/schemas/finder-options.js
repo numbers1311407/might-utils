@@ -17,6 +17,7 @@ const sizeSchema = z.coerce
 
 export const finderOptionsSchema = z
   .object({
+    groupBy: z.string(),
     targetScore: z.coerce.number().min(0),
     minLevel: levelSchema,
     maxLevel: levelSchema,

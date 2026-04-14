@@ -1,4 +1,4 @@
-import { useMemo, useRef, Suspense } from "react";
+import { useMemo, Suspense } from "react";
 import { useTagGroupsStoreApi as tgapi } from "@/model/store";
 import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
 import { findPartiesAsync } from "../find-parties";
@@ -8,9 +8,7 @@ import { usePartyFinderStore } from "../store.js";
 
 const groupByOptions = {
   none: undefined,
-  level: "level",
-  class: "class",
-  warden: "warden",
+  comp: "comp",
   tag: (id) => tgapi.get(id)?.tags,
 };
 
@@ -45,15 +43,13 @@ export const PartyFinderContextProvider = ({ children }) => {
     [options, roster, targetScore],
   );
 
-  const valueRef = useRef(0);
   const value = useMemo(() => {
-    valueRef.current += 1;
     return {
       options,
       resultsPromise,
-      key: `context-key-${valueRef.current}`,
+      // NOTE "key" for the error page to trigger re-render after caught error
+      key: resultsPromise,
       roster,
-      valueRef,
       targetScore,
     };
   }, [options, resultsPromise, roster, targetScore]);

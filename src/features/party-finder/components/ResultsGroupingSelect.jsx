@@ -1,18 +1,5 @@
 import { useMemo, useRef } from "react";
-import {
-  Box,
-  CheckIcon,
-  Group,
-  CloseIcon,
-  Combobox,
-  useCombobox,
-  Input,
-  InputBase,
-  InputLabel,
-  Text,
-  Select,
-  UnstyledButton,
-} from "@mantine/core";
+import { Select } from "@mantine/core";
 import { useDraftState } from "@/core/hooks";
 import { useTagGroupsStore } from "@/model/store";
 import { usePartyFinderStore } from "../store";
@@ -20,32 +7,21 @@ import { usePartyFinderStore } from "../store";
 const staticOptions = {
   none: {
     label: "Ungrouped",
-    value: "",
+    value: "none",
   },
   level: {
     label: "By Level & Warden",
-    value: "level",
+    value: "comp",
   },
-  // NOTE group by class was originally an option and isn't... totally insane,
-  // but unless your team has a lot of class duplicates this will lead to
-  // many groups. If that seems unintuitive this is because warden and level
-  // are *always* considered when generating group slots, so if you have 16
-  // chars with different classes, your group count will always equal the
-  // result count.
-  // class: {
-  //   label: "By Class",
-  //   value: "class",
-  // },
 };
 
-export const ResultsGroupingSelect = (props) => {
+export const ResultsGroupingSelect = () => {
   const value = usePartyFinderStore(
     (store) => store.options?.groupBy || staticOptions.none.value,
   );
   const [search, setSearch] = useDraftState(value);
   const setOption = usePartyFinderStore((store) => store.setOption);
   const groups = useTagGroupsStore((store) => store.registry);
-  const combobox = useCombobox();
   const ref = useRef();
 
   const activeGroupOptions = useMemo(() => {

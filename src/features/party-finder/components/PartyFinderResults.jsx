@@ -1,29 +1,29 @@
 import { useMemo } from "react";
 import { List, Stack, Table, Text } from "@mantine/core";
-import { getClassName } from "@/config/chars";
 import { useFindPartiesResults } from "../hooks";
 
 const hWarden = (rank) => (rank === "0" ? "Unwardened" : `Rank ${rank}`);
 
 const typeFn = (type) => {
-  return {
-    warden: (warden, level) => `${hWarden(warden)} ${level}`,
-    level: (_level, level, warden) => `${hWarden(warden)} ${level}`,
-    class: (cls, level, warden) =>
-      `${hWarden(warden)} ${level} ${getClassName(cls)}`,
-    tags: (tags, level, warden) =>
-      `${hWarden(warden)} ${level} tagged: "${tags.split(",").join('", "')}"`,
-  }[type];
+  const comp = (_, level, warden) => `${hWarden(warden)} ${level}`;
+  return (
+    {
+      comp,
+      tags: (tags, level, warden) =>
+        `${hWarden(warden)} ${level} tagged: "${tags.split(",").join('" and "')}"`,
+    }[type] || comp
+  );
 };
 
 const humanizeGroupKey = (groupKey) => {
   const [type, rest] = groupKey.split("|");
   const tuples = rest.split(";");
   const t = typeFn(type);
+
   return tuples.map((tuple) => {
     const [count, fullKey] = tuple.split(":");
-    const [key, level, warden] = fullKey.split("/");
-    return `${count} ${t(key, level, warden)}`;
+    const [level, warden, type] = fullKey.split("/");
+    return `${count} ${t(type, level, warden)}`;
   });
 };
 
@@ -88,8 +88,8 @@ export const PartyFinderResults = () => {
       groupBy &&
       Object.entries(
         parties.reduce((acc, party) => {
-          acc[party.groupKey] ||= [];
-          acc[party.groupKey].push(party);
+          acc[party.comp] ||= [];
+          acc[party.comp].push(party);
           return acc;
         }, {}),
       )
