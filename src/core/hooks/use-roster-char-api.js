@@ -5,27 +5,27 @@ import {
   useClassTagsStoreApi as classTagsApi,
 } from "@/model/store";
 
-export const useRosterCharApi = (charId, options = {}) => {
-  const char = useRosterChar(charId, options);
+export const useRosterCharApi = (name, options = {}) => {
+  const char = useRosterChar(name, options);
   const charClass = char?.class;
 
   const addTags = useCallback(
     (...tags) => {
-      if (charId) rosterApi.addCharTags(charId, tags);
+      if (name) rosterApi.addCharTags(name, tags);
     },
-    [charId],
+    [name],
   );
 
   const removeTags = useCallback(
     (...tags) => {
-      if (charId) rosterApi.removeCharTags(charId, tags);
+      if (name) rosterApi.removeCharTags(name, tags);
     },
-    [charId],
+    [name],
   );
 
   const clearTags = useCallback(() => {
-    if (charId) rosterApi.updateChar(charId, { tags: [] });
-  }, [charId]);
+    if (name) rosterApi.updateChar(name, { tags: [] });
+  }, [name]);
 
   const classTags = useMemo(() => {
     return charClass ? classTagsApi.getClassTags(charClass) : [];

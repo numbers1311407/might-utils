@@ -3,7 +3,7 @@ import { useRosterStore, useClassTagsStore } from "@/model/store";
 import { useShallow } from "zustand/react/shallow";
 import { intersection } from "@/utils";
 
-export const useRosterChar = (charId, options = {}) => {
+export const useRosterChar = (name, options = {}) => {
   const { classTags: mergeClassTags = false } = options;
 
   // NOTE this hookreally shines on the weakness of relying on
@@ -15,7 +15,7 @@ export const useRosterChar = (charId, options = {}) => {
   // to do external APIs. I got that pattern in my head then took it
   // to places that made no sense.
   const rosterChar = useRosterStore(
-    useShallow((state) => state.roster.find((char) => char.id === charId)),
+    useShallow((state) => state.roster.find((char) => char.name === name)),
   );
 
   const classTags = useClassTagsStore(

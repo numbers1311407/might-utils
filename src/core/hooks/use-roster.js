@@ -11,7 +11,7 @@ export const useRoster = (options = {}) => {
   const roster = useMemo(() => {
     return !classTags
       ? rawRoster
-      : rawRoster.map((char) => api.getChar(char.id, { classTags: true }));
+      : rawRoster.map((char) => api.getChar(char.name, { classTags: true }));
   }, [classTags, rawRoster]);
 
   return useMemo(() => {

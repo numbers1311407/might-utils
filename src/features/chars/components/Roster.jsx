@@ -75,8 +75,8 @@ export const Roster = () => {
     },
   );
 
-  const onUpdate = (id, char) => {
-    rosterApi.updateChar(id, char);
+  const onUpdate = (name, char) => {
+    rosterApi.updateChar(name, char);
   };
 
   return (
@@ -105,53 +105,58 @@ export const Roster = () => {
             <Tabs.Tab value="io">Import/Export</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="characters" pt="lg">
-            <CharsTable
-              activeStar
-              chars={roster}
-              onEdit={(char) => setChar(char)}
-              isRoster={true}
-              onUpdate={onUpdate}
-              onRemove={onRemove}
-              emptyContent={
-                <Stack gap="sm" py="xl">
-                  <Text size="xl" c="warning">
-                    You have no characters on your roster.
-                  </Text>
-                  <Group justify="center">
-                    <Button size="compact-md" onClick={() => setChar({})}>
-                      Create one now?
-                    </Button>
-                    <Text span fw="bold">
-                      or
-                    </Text>
-                    <Button
-                      component={Link}
-                      size="compact-md"
-                      href="/roster?tab=io"
-                    >
-                      Import a list?
-                    </Button>
-                  </Group>
-                </Stack>
-              }
-            />
-            <Divider />
-            <Text c="dark" mt="xs" pos="relative">
-              <Text span c="primary" size="xl">
-                *
-              </Text>{" "}
-              Only{" "}
-              <Text span fw="bold" c="primary">
-                active
-              </Text>{" "}
-              characters will be considered as eligible for the party generator.
-            </Text>
+            {currentTab === "characters" && (
+              <>
+                <CharsTable
+                  activeStar
+                  chars={roster}
+                  onEdit={(char) => setChar(char)}
+                  isRoster={true}
+                  onUpdate={onUpdate}
+                  onRemove={onRemove}
+                  emptyContent={
+                    <Stack gap="sm" py="xl">
+                      <Text size="xl" c="warning">
+                        You have no characters on your roster.
+                      </Text>
+                      <Group justify="center">
+                        <Button size="compact-md" onClick={() => setChar({})}>
+                          Create one now?
+                        </Button>
+                        <Text span fw="bold">
+                          or
+                        </Text>
+                        <Button
+                          component={Link}
+                          size="compact-md"
+                          href="/roster?tab=io"
+                        >
+                          Import a list?
+                        </Button>
+                      </Group>
+                    </Stack>
+                  }
+                />
+                <Divider />
+                <Text c="dark" mt="xs" pos="relative">
+                  <Text span c="primary" size="xl">
+                    *
+                  </Text>{" "}
+                  Only{" "}
+                  <Text span fw="bold" c="primary">
+                    active
+                  </Text>{" "}
+                  characters will be considered as eligible for the party
+                  generator.
+                </Text>
+              </>
+            )}
           </Tabs.Panel>
           <Tabs.Panel value="tags">
-            <RosterTagsEditor />
+            {currentTab === "tags" && <RosterTagsEditor />}
           </Tabs.Panel>
           <Tabs.Panel value="io">
-            <RosterImporter />
+            {currentTab === "io" && <RosterImporter />}
           </Tabs.Panel>
         </Tabs>
       </Paper>

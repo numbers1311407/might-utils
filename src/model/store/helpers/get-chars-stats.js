@@ -19,7 +19,7 @@ export const getCharsStats = (chars = []) => {
     tags: { count: 0, chars: {}, counts: {} },
   };
 
-  const t = (char) => ({ id: char.id, name: char.name });
+  const t = (char) => ({ name: char.name });
   const counts = (chars) =>
     Object.entries(chars).reduce(
       (counts, [v, t]) => (counts[v] = t.length) && counts,

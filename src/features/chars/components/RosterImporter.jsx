@@ -17,7 +17,7 @@ import { parse } from "csv-parse/browser/esm/sync";
 import { charSchema } from "@/model/schemas";
 import { useRosterStoreApi as rosterApi } from "@/model/store";
 
-const HEADER_ROW = ["name", "class", "level", "warden", "tags", "active", "id"];
+const HEADER_ROW = ["name", "class", "level", "warden", "tags", "active"];
 
 const RosterCopyButton = ({ value, ...buttonProps }) => {
   return (
@@ -49,7 +49,6 @@ const useRosterCsv = () => {
             char.warden,
             char.tags.length ? `"${char.tags.join(",")}"` : "",
             char.active ? 1 : 0,
-            char.id,
           ].join(", "),
         )
         .join("\n"),
@@ -74,12 +73,8 @@ const parseDraft = (csv) => {
   });
 };
 
-const EXAMPLE_1 = `Stabz, ROG, 70, 3, "sneaker,lover,fighter", 1
-Bonkz, WAR, 65, 0, "basher,smasher,sleepy", 0
-`;
-
-const EXAMPLE_2 = `Stabz, ROG, 70, 3, "sneaker,lover,fighter", 1, yKkL30CJ85HTvsMNmzMaD
-Bonkz, WAR, 65, 0, "basher,smasher,sleepy", 0, UPt3pF3CIldEgEPPreoig
+const EXAMPLE_1 = `Stabz, ROG, 70, 3, 1, "sneaker,lover,fighter"
+Bonkz, WAR, 65, 0, 0, "basher,smasher,sleepy"
 `;
 
 export const RosterImporter = () => {
@@ -129,10 +124,10 @@ export const RosterImporter = () => {
     }
     if (passed) {
       try {
-        rosterApi.addChar(chars);
+        rosterApi.syncChars(chars);
       } catch (e) {
         if (e instanceof z.ZodError) {
-          console.log(e.issues);
+          console.error(e.issues);
           setError(e.issues[0]?.message);
         }
         throw e;
@@ -244,41 +239,37 @@ export const RosterImporter = () => {
             button to begin editing and submit when finished.
           </Text>
           <Text size="sm">
-            If you have a semi large roster it's advisable to back it up just to
-            make it easy to recreate if ever issues ever arise with your local
-            website data.
+            If you have even a semi-large roster it's advisable to back it up
+            just to make it easy to recreate if ever issues ever arise with your
+            local website data.
           </Text>
           <Text size="sm">
             The format is: <br />
             <Text span c="primary">
-              Name, Class Shortname, Level, Warden Rank (0-3), Tags, ID
+              Name, Class Shortname, Level, Warden (0-3), Active, Tags
             </Text>
           </Text>
           <List size="xs">
             <List.Item>
-              Multiple tags should be wrapped in double quotes.
+              Tags should be wrapped in double quotes, joined by commas.
             </List.Item>
-            <List.Item>Extra spaces around values are ignored.</List.Item>
+            <List.Item>Extra space around values is ignored.</List.Item>
             <List.Item>1 for active, 0 for inactive.</List.Item>
           </List>
           <Text size="sm">
-            If you import up front you won't need IDs yet, your rows will look
-            like this:
+            A realistic 2 character roster might look like this:
           </Text>
-          <Code block c="blue" styles={{ root: { lineHeight: 1.4 } }}>
+          <Code block c="blue" styles={{ root: { lineHeight: 1.5 } }}>
             {EXAMPLE_1}
           </Code>
           <Text size="sm">
-            After, their nanoid IDs will be exposed. Make sure to keep track of
-            those in your spreadsheet, or you'll get a validation error trying
-            to create a new character with the same name.
-          </Text>
-          <Code block c="blue" styles={{ root: { lineHeight: 1.4 } }}>
-            {EXAMPLE_2}
-          </Code>
-          <Text size="sm">
-            From here out it's up to you if you want to just maintain your
-            roster in a spreadsheet or use the roster edit UI.
+            Note that character names{" "}
+            <Text span fw="bold" c="primary">
+              must be unique
+            </Text>{" "}
+            as they are used as each character's identifier. If you try to
+            create two characters with the same name only the last one will be
+            saved.
           </Text>
         </Stack>
       </Group>

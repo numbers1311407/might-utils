@@ -36,7 +36,7 @@ const Row = ({
   reset,
   update,
 }) => {
-  const rosterChar = useRosterChar(char.id);
+  const rosterChar = useRosterChar(char.name);
   const disableControls = !rosterChar;
 
   return (
@@ -119,8 +119,8 @@ const Row = ({
               >
                 <RestoreButton
                   aria-label="Reset character to roster version"
-                  onClick={() => reset(char.id)}
-                  disabled={!dirtyChars.has(char.id)}
+                  onClick={() => reset(char.name)}
+                  disabled={!dirtyChars.has(char.name)}
                 />
               </Tooltip>
             )}
@@ -209,7 +209,7 @@ export const CharsTable = ({
         )}
         {chars.map((char) => (
           <Row
-            key={char.id}
+            key={char.name}
             char={char}
             classTags={classTags}
             dirtyChars={dirtyChars}
@@ -218,7 +218,7 @@ export const CharsTable = ({
             remove={onRemove}
             reset={onReset}
             isRoster={isRoster}
-            update={(update) => onUpdate(char.id, update)}
+            update={(update) => onUpdate(char.name, update)}
           />
         ))}
       </Table.Tbody>

@@ -3,8 +3,8 @@ import { useRosterCharApi, useRoster } from "@/core/hooks";
 import { ClassIcon, TagsInput } from "@/core/components";
 import { getClassName } from "@/config/chars";
 
-export const RosterTagsEditorField = ({ charId }) => {
-  const { char, tags, classTags, ...api } = useRosterCharApi(charId);
+export const RosterTagsEditorField = ({ name }) => {
+  const { char, tags, classTags, ...api } = useRosterCharApi(name);
 
   return (
     <TagsInput
@@ -37,8 +37,8 @@ export const RosterTagsEditor = () => {
 
   return (
     <Stack py="xl" px="sm" gap="md">
-      {roster.map(({ id }) => (
-        <RosterTagsEditorField key={id} charId={id} />
+      {roster.map(({ name }) => (
+        <RosterTagsEditorField key={name} name={name} />
       ))}
     </Stack>
   );

@@ -15,7 +15,7 @@ export const useRosterStore = createStore("might-utils-roster", () => ({
 
 const { getState: get, setState: set } = useRosterStore;
 
-const _getChar = (id) => get().roster.find((char) => char.id === id);
+const _getChar = (name) => get().roster.find((char) => char.name === name);
 
 const api = {
   setActiveOnly: (value) => {
@@ -46,17 +46,18 @@ const api = {
     api.setRoster([]);
   },
 
-  removeChar: (char) => {
-    const id = typeof char === "string" ? char : char.id;
-
+  removeChar: (chars) => {
     set((state) => {
-      state.roster = state.roster.filter((char) => char.id !== id);
+      for (const char of [chars].flat()) {
+        const name = typeof char === "string" ? char : char.name;
+        state.roster = state.roster.filter((char) => char.name !== name);
+      }
     });
   },
 
-  getChar: (id, options = {}) => {
+  getChar: (name, options = {}) => {
     const { classTags = false } = options;
-    const char = _getChar(id);
+    const char = _getChar(name);
 
     if (!classTags) return char;
 
@@ -66,12 +67,12 @@ const api = {
     };
   },
 
-  updateChar: (id, update, done) => {
-    api.addChar({ ...update, id }, done);
+  updateChar: (name, update, done) => {
+    api.addChar({ ...update, _name: name }, done);
   },
 
-  getCharTags: (charId, { classTags = true }) => {
-    const char = typeof charId === "string" ? _getChar(charId) : charId;
+  getCharTags: (name, { classTags = true }) => {
+    const char = typeof name === "string" ? _getChar(name) : name;
 
     if (!char) return [];
     if (!classTags) return char.tags;
@@ -81,14 +82,24 @@ const api = {
     ];
   },
 
+  syncChars: (chars) => {
+    const roster = get().roster;
+    const charNames = chars.map((char) => char.name);
+    api.addChar(chars);
+    api.removeChar(roster.filter((char) => !charNames.includes(char.name)));
+  },
+
   addChar: (chars, done) => {
     let added = [];
 
     set((state) => {
       const { roster } = state;
 
-      for (const char of [chars].flat()) {
-        const idx = roster.findIndex(({ id }) => char.id === id);
+      for (const _char of [chars].flat()) {
+        const name = _char._name || _char.name;
+        const { _name, ...char } = _char;
+        const idx = roster.findIndex((c) => c.name === name);
+
         if (idx !== -1) {
           roster[idx] = charSchema.parse({ ...roster[idx], ...char });
           added.push(roster[idx]);
@@ -100,33 +111,37 @@ const api = {
       state.roster = rosterSchema.parse(roster).sort(rosterSort);
     });
 
+    // the callback value here is an array or single character depending
+    // on whether the function was sent an array or single char
     const retv = Array.isArray(chars)
-      ? added.map((c) => api.getChar(c.id))
+      ? added.map((c) => api.getChar(c.name))
       : added.length
-        ? api.getChar(added[0].id)
+        ? api.getChar(added[0].name)
         : undefined;
 
     done?.(retv);
   },
 
-  addCharTags: (charId, tags) => {
-    const char = _getChar(charId);
+  addCharTags: (name, tags) => {
+    const char = _getChar(name);
     if (!char) return;
 
-    api.updateChar(charId, { tags: [...char.tags, ...tags] });
+    api.updateChar(name, { tags: [...char.tags, ...tags] });
   },
 
-  removeCharTags: (charId, tags) => {
-    const char = _getChar(charId);
+  removeCharTags: (name, tags) => {
+    const char = _getChar(name);
     if (!char) return;
 
-    api.updateChar(charId, {
+    api.updateChar(name, {
       tags: char.tags.filter((t) => !tags.includes(t)),
     });
   },
 
   getStats: (roster) => {
-    return getCharsStats(roster);
+    return getCharsStats(
+      roster || get().roster.map((char) => api.getChar(char.name)),
+    );
   },
 };
 

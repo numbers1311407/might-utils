@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { nanoid } from "nanoid";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
 import { getMaxWardenForLevel } from "@/config/chars/warden";
 import { capitalize } from "@/utils";
@@ -7,7 +6,7 @@ import { tagSchema } from "./tag.js";
 import { CLASS_SHORTNAMES } from "@/config";
 
 export const charClassSchema = z.enum(CLASS_SHORTNAMES, {
-  message: 'Expected a 3-letter class shortname, e.g. "WAR"',
+  message: 'Expected a valid 3-letter class shortname, e.g. "WAR"',
 });
 
 export const charNameSchema = z
@@ -23,10 +22,15 @@ export const charNameSchema = z
   })
   .transform(capitalize);
 
-const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
 export const charActiveSchema = z.boolean().default(true);
 
-export const charWardenSchema = z.coerce.number().min(0).max(3).default(0);
+export const charWardenSchema = z.coerce
+  .number()
+  .min(0, "Warden must be between 0-3")
+  .max(3, "Warden must be between 0-3")
+  .default(0);
+
+const invalidLevelMessage = `Must be a might-enabled level ${MightMinLevel}-${MightMaxLevel}`;
 
 export const charLevelSchema = z.coerce
   .number({ message: invalidLevelMessage })
@@ -35,7 +39,6 @@ export const charLevelSchema = z.coerce
 
 export const charSchema = z
   .object({
-    id: z.nanoid("ID must be a valid nanoid").default(() => nanoid()),
     active: charActiveSchema,
     class: charClassSchema,
     level: charLevelSchema,

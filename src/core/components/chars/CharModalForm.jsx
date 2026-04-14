@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Button,
   Box,
   Checkbox,
@@ -33,7 +32,7 @@ const formCharSchema = charSchema
     },
   );
 
-export const CharModalForm = ({ char, isParty = false, onClose, onSubmit }) => {
+export const CharModalForm = ({ char, onClose, onSubmit }) => {
   return (
     <Modal
       opened={!!char}
@@ -44,42 +43,48 @@ export const CharModalForm = ({ char, isParty = false, onClose, onSubmit }) => {
       {char && (
         <CharForm
           // note this key hack is to get around mantine's aggressive form caching
-          key={!!char ? "opened" : "closed"}
+          key={char ? "opened" : "closed"}
           char={char}
           onSubmit={onSubmit}
           onClose={onClose}
-          isParty={isParty}
         />
       )}
     </Modal>
   );
 };
 
-const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
+const CharForm = ({ char, onClose, onSubmit }) => {
   const roster = useRosterStore((store) => store.roster);
   const classTags = useClassTagsStore((store) => store.tags);
   const [tagsError, setTagsError] = useState(null);
   const charClass = char.class || charClassSchema.options[0];
   const charClassTags = classTags[charClass] || [];
+  const initialValues = {
+    name: char.name || "",
+    level: char.level || 65,
+    active: char.active ?? true,
+    class: charClass,
+    warden: String(char.warden || 0),
+    tags: char.tags || [],
+    siblings: roster
+      .map(({ name }) => name)
+      .filter((name) => !char || char.name !== name),
+  };
 
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: {
-      id: char.id,
-      name: char.name || "",
-      level: char.level || 65,
-      active: char.active ?? true,
-      class: charClass,
-      warden: String(char.warden || 0),
-      tags: char.tags || [],
-      siblings: roster
-        .map(({ name }) => name)
-        .filter((name) => !char || char.name !== name),
-    },
+    initialValues,
     transformValues: (values) => {
       const { siblings: _, ...restValues } = values;
       return {
         ...restValues,
+        // Characters don't have IDs to make it trivial to attach them to parties
+        // and to keep the import/export process simpler, but this does create one
+        // problem: renaming. The roster store addesses this by allowing a _name
+        // attribute which is used as the primary key during add/update, which is
+        // used to look up the character while also allowing normal `name` to be
+        // sent in the update object.
+        _name: initialValues.name,
         warden: Number(values.warden),
       };
     },
@@ -90,19 +95,17 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
   // are unnecessary to add to characters separately. In the form these tags appear in
   // the field but aren't editable, and will prevent duplicates being added. On class
   // change we reset the class tags and strip any duplicates, which shouldn't be a big deal?
-  const [lockedTags, setLockedTags] = useState(isParty ? [] : charClassTags);
+  const [lockedTags, setLockedTags] = useState(charClassTags);
 
-  if (!isParty) {
-    form.watch("class", ({ value }) => {
-      const newClassTags = classTags[value];
-      const tags = form.getValues()?.tags || [];
-      setLockedTags(newClassTags);
-      form.setFieldValue(
-        "tags",
-        tags.filter((tag) => !newClassTags.includes(tag)),
-      );
-    });
-  }
+  form.watch("class", ({ value }) => {
+    const newClassTags = classTags[value];
+    const tags = form.getValues()?.tags || [];
+    setLockedTags(newClassTags);
+    form.setFieldValue(
+      "tags",
+      tags.filter((tag) => !newClassTags.includes(tag)),
+    );
+  });
 
   const addTag = (tag) => {
     tag = tag.toLowerCase();
@@ -135,10 +138,6 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
     onSubmit(char);
   };
 
-  const setClassTags = () => {
-    form.setFieldValue("tags", charClassTags.sort());
-  };
-
   return (
     <form onSubmit={form.onSubmit(onFormSubmit)}>
       <Stack gap={6}>
@@ -146,25 +145,13 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
           withAsterisk
           label="Character Name"
           placeholder="Character name"
-          disabled={isParty}
-          display={isParty ? "none" : "block"}
-          description={
-            isParty
-              ? "Party characters cannot edit name"
-              : char.id
-                ? 'Note name edits will not auto-update "name" rules for this character'
-                : undefined
-          }
           key={form.key("name")}
           {...form.getInputProps("name")}
         />
         <Select
           withAsterisk
           label="Class"
-          description={isParty ? "Party characters cannot edit class" : ""}
           placeholder="Select class"
-          disabled={isParty}
-          display={isParty ? "none" : "block"}
           searchable
           data={charSchema.shape.class.options}
           key={form.key("class")}
@@ -181,13 +168,10 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
         />
         <Select
           withAsterisk
-          label={isParty ? "Current Warden Rank" : "Max Warden Rank"}
-          placeholder={isParty ? "Current warden rank" : "Max warden rank"}
-          description={
-            !isParty ? "Max attained, do not account for deleveling" : ""
-          }
+          label="Max Warden Rank"
+          placeholder="Max warden rank earned"
           data={[
-            { label: "Rank 0 (Not Warden)", value: "0" },
+            { label: "Rank 0 (Unwardened)", value: "0" },
             { label: "Rank 1", value: "1" },
             { label: "Rank 2", value: "2" },
             { label: "Rank 3", value: "3" },
@@ -210,13 +194,6 @@ const CharForm = ({ char, onClose, onSubmit, isParty = false }) => {
           }}
           error={tagsError || form.errors.tags}
         />
-        {isParty && (
-          <Group justify="flex-end">
-            <Anchor size="xs" onClick={setClassTags} px="sm" mt={-4}>
-              Re-sync class tags
-            </Anchor>
-          </Group>
-        )}
         <Box my="sm">
           <Checkbox
             label="Active (eligible for party finder)"
