@@ -111,7 +111,7 @@ const Row = ({
       )}
       {!hideControls && (
         <Table.Td>
-          <Group gap={6} justify="flex-end">
+          <Group gap={6} justify="flex-end" wrap="nowrap">
             {!disableControls && !isRoster && dirtyChars && (
               <Tooltip
                 openDelay={500}
@@ -199,7 +199,7 @@ export const CharsTable = ({
           </Table.Th>
           {isRoster && <Table.Th width={50}>Tags</Table.Th>}
           {(isRoster || !hideControls) && (
-            <Table.Th width={80} ta="right"></Table.Th>
+            <Table.Th width={90} ta="right"></Table.Th>
           )}
         </Table.Tr>
       </Table.Thead>
