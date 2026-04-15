@@ -11,8 +11,8 @@ import {
   Title,
 } from "@mantine/core";
 import * as titles from "@/config/constants/titles";
-import { useEffect, useMemo, useState } from "react";
-import { IconPlus, IconCalculator } from "@tabler/icons-react";
+import { useEffect, useMemo } from "react";
+import { IconPlus, IconArrowLeft, IconCalculator } from "@tabler/icons-react";
 import { useLocation, useRoute, Redirect } from "wouter";
 import { usePartiesStoreApi as partiesApi } from "@/model/store";
 import {
@@ -31,9 +31,8 @@ import {
   SaveSmallButton,
 } from "@/core/components";
 import { useParty, usePartiesList, useStableCallback } from "@/core/hooks";
-
+import { usePartyEditor } from "./use-party-editor.js";
 import { PartiesNav } from "./PartiesNav.jsx";
-import { PartyModal } from "./PartyModal.jsx";
 
 const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
   const { party } = useParty(partyId);
@@ -102,16 +101,36 @@ const ToggleNpcSimButton = (props) => {
 
 export const Parties = () => {
   const [_match, { id: partyId }] = useRoute("/parties/:id?");
+  const editParty = usePartyEditor();
 
   return (
-    <Stack>
+    <Stack gap={0}>
       <PageTitle
         section={titles.PARTY_CATEGORY}
         title={titles.PARTIES_TITLE}
         subtitle={
           "Assemble parties from your roster to track their might and target specific instance tiers"
         }
-      />
+      >
+        {partyId && (
+          <Button
+            component={AppLink}
+            underline="never"
+            leftSection={<IconArrowLeft />}
+            size="compact-md"
+            href="/parties"
+          >
+            Back to parties
+          </Button>
+        )}
+        <Button
+          leftSection={<IconPlus size={18} />}
+          onClick={() => editParty({})}
+          size="compact-md"
+        >
+          Create a New Party
+        </Button>
+      </PageTitle>
       {partyId ? <Party id={partyId} /> : <PartyIndex />}
     </Stack>
   );
@@ -120,16 +139,16 @@ export const Parties = () => {
 const PartyIndex = () => {
   const parties = usePartiesList();
 
-  <Stack align="center" ta="center" p="3xl">
-    <Text size="lg" c="primary">
-      You have no saved parties.
-    </Text>
-    <Text size="md" style={{ maxWidth: 580 }} ta="center">
-      Click the button in the top right to create one manually, or use the{" "}
-      <AppLink href="/">party finder</AppLink> and save resulting parties you
-      want to track.
-    </Text>
-  </Stack>;
+  // <Stack align="center" ta="center" p="3xl">
+  //   <Text size="lg" c="primary">
+  //     You have no saved parties.
+  //   </Text>
+  //   <Text size="md" style={{ maxWidth: 580 }} ta="center">
+  //     Click the button in the top right to create one manually, or use the{" "}
+  //     <AppLink href="/">party finder</AppLink> and save resulting parties you
+  //     want to track.
+  //   </Text>
+  // </Stack>;
 
   return (
     <List>
@@ -149,6 +168,7 @@ const PartyIndex = () => {
 // that bake in view logic
 export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();
+  const beginPartyEdit = usePartyEditor();
 
   const { party, stats, ...partyApi } = useParty(partyId);
 
@@ -157,20 +177,6 @@ export const Party = ({ id: partyId }) => {
   useEffect(() => {
     setMight(might);
   }, [might, setMight]);
-
-  const [draftParty, editParty] = useState(null);
-
-  const beginPartyEdit = useStableCallback(() => {
-    editParty(party);
-  });
-
-  const commitPartyEdit = useStableCallback((record) => {
-    editParty(null);
-    partiesApi.add(record);
-    if (partyId !== record.id) {
-      setLocation(`/parties/${record.id}`);
-    }
-  });
 
   const copyParty = useStableCallback(() => {
     partyApi.copyParty((copy) => setLocation(`/parties/${copy.id}`));
@@ -192,7 +198,7 @@ export const Party = ({ id: partyId }) => {
         partyId={party.id}
         onCopy={copyParty}
         onRemove={removeParty}
-        onRename={beginPartyEdit}
+        onRename={() => beginPartyEdit(party)}
         onReset={party.isDirty ? partyApi.resetChars : undefined}
       />
 
@@ -200,12 +206,7 @@ export const Party = ({ id: partyId }) => {
 
       <Grid align="flex-start" gutter="xl">
         <Grid.Col span={{ base: 12, lg: 6 }}>
-          <Paper p="md" shadow="md">
-            <Title order={5} mb="xs">
-              Party Stats
-            </Title>
-            <StatsTable stats={stats} />
-          </Paper>
+          <Paper p="md" shadow="md"></Paper>
         </Grid.Col>
         <Grid.Col span={{ base: 12, lg: 6 }}>
           <Paper shadow="md" p="md">
@@ -245,23 +246,15 @@ export const Party = ({ id: partyId }) => {
       </Grid>
 
       <Aside>
-        <Stack gap="sm">
-          <Button
-            fullWidth
-            leftSection={<IconPlus size={18} />}
-            onClick={() => editParty({})}
-          >
-            Create a New Party
-          </Button>
-          <PartiesNav current={party?.id} />
+        <Stack gap="xs">
+          <Title order={4} c="primary">
+            Party Stats
+          </Title>
+          <StatsTable stats={stats} mode="stacked" />
+          <Divider />
+          <PartiesNav />
         </Stack>
       </Aside>
-
-      <PartyModal
-        onClose={() => editParty(null)}
-        onSubmit={commitPartyEdit}
-        record={draftParty}
-      />
     </Box>
   );
 };

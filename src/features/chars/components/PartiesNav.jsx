@@ -1,16 +1,17 @@
-import { Box, NavLink, Stack, Text } from "@mantine/core";
-import { Link } from "wouter";
+import { Box, NavLink, Stack, Text, Title } from "@mantine/core";
+import { Link, useRoute } from "wouter";
 import { usePartiesList } from "@/core/hooks";
 import { IconChevronLeft } from "@tabler/icons-react";
 
-export const PartiesNav = ({ current, ...props }) => {
+export const PartiesNav = (props) => {
   const list = usePartiesList();
+  const [_match, { id: partyId }] = useRoute("/parties/:id?");
 
   return (
     <Box {...props}>
-      <Text size="lg" py={8} px={14}>
+      <Title order={4} py="sm" c="primary">
         Your Parties
-      </Text>
+      </Title>
       <Stack gap={4} component="nav">
         {!list.length && (
           <Text px="md" c="dark">
@@ -22,7 +23,7 @@ export const PartiesNav = ({ current, ...props }) => {
             <NavLink
               key={record.id}
               component={Link}
-              active={current === record.id}
+              active={partyId === record.id}
               leftSection={<IconChevronLeft size={16} />}
               label={record.name}
               href={`/parties/${record.id}`}

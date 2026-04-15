@@ -7,7 +7,7 @@ module.exports = {
       variables: Object.entries(breakpoints).reduce(
         (acc, [size, em]) => ({
           ...acc,
-          [`mantine-breakpoint-${size}`]: `${em}em`,
+          [`mantine-breakpoint-${size}`]: em,
         }),
         {},
       ),

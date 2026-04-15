@@ -8,7 +8,7 @@ const emptyState = {
   componentProps: null,
 };
 
-export const useModalStore = create((set, get) => ({
+export const useModalStore = create(() => ({
   ...emptyState,
 }));
 
@@ -17,10 +17,10 @@ const { getState: get, setState: set } = useModalStore;
 const api = {
   createModal: (Component, options = {}) => {
     const {
-      onClose: propsOnClose,
-      onDone: propsOnDone,
-      modalProps = {},
-      componentProps = {},
+      onClose: _onClose,
+      onDone: _onDone,
+      modalProps: _modalProps = {},
+      componentProps: _componentProps = {},
     } = options;
 
     return () => {
@@ -28,13 +28,26 @@ const api = {
 
       const { onClose, close, done } = api;
 
+      const baseModalProps = { onClose, size: "md" };
+      const baseComponentProps = { done, cancel: close };
+
+      const modalProps =
+        typeof _modalProps === "function"
+          ? _modalProps(baseModalProps)
+          : { ...baseModalProps, ..._modalProps };
+
+      const componentProps =
+        typeof _componentProps === "function"
+          ? _componentProps(baseComponentProps)
+          : { ...baseComponentProps, ..._componentProps };
+
       set({
-        closeCallback: () => propsOnClose?.(),
-        doneCallback: (...args) => propsOnDone?.(...args),
+        closeCallback: () => _onClose?.(),
+        doneCallback: (...args) => _onDone?.(...args),
         Component,
         isOpen: true,
-        modalProps: { onClose, size: "md", ...modalProps },
-        componentProps: { done, cancel: close, ...componentProps },
+        modalProps,
+        componentProps,
       });
     };
   },

@@ -17,9 +17,19 @@ export const FloatingWindowDrawer = () => {
   return (
     <Affix
       position={{ bottom: 0, left: 0, right: 0 }}
-      style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        pointerEvents: "none",
+      }}
     >
-      <Paper shadow="md" p="sm" margin="0 auto">
+      <Paper
+        shadow="md"
+        p="sm"
+        margin="0 auto"
+        style={{ pointerEvents: "auto" }}
+      >
         <Group gap="sm">
           <Text size="sm">Floating Tools</Text>
           <HelpIconTooltip tooltip={HELP} />

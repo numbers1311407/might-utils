@@ -936,7 +936,7 @@ export const theme = createTheme({
     }),
     Paper: Paper.extend({
       defaultProps: {
-        shadow: "xl",
+        shadow: "md",
       },
     }),
   },
