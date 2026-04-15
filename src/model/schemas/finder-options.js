@@ -24,7 +24,6 @@ export const finderOptionsSchema = z
     minSize: sizeSchema,
     maxSize: sizeSchema,
     margin: z.coerce.number(),
-    distinctGroupingTags: z.coerce.boolean(),
   })
   .refine(
     (o) => {

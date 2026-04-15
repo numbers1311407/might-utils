@@ -1,4 +1,5 @@
 export * from "./char.js";
+export * from "./comp.js";
 export * from "./finder-options.js";
 export * from "./party.js";
 export * from "./roster.js";

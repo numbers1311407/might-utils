@@ -12,7 +12,7 @@ export const charClassSchema = z.enum(CLASS_SHORTNAMES, {
 export const charNameSchema = z
   .string()
   .regex(/^\w+$/, {
-    message: "Name can only contain letters",
+    message: "Name can only contain letters, numbers, and undercore.",
   })
   .min(1, {
     message: "Name is required",

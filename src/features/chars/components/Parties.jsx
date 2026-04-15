@@ -122,7 +122,6 @@ export const Parties = () => {
   });
 
   const [draftParty, editParty] = useState(null);
-  const [draftChar, editChar] = useState(null);
   const [_location, setLocation] = useLocation();
   const { setMight } = useCalculatorContext();
 
@@ -210,7 +209,6 @@ export const Parties = () => {
               </Title>
               <CharsTable
                 chars={party ? party.chars : []}
-                onEdit={editChar}
                 onUpdate={partyApi.updateChar}
                 onRemove={partyApi.removeChar}
                 onReset={partyApi.resetChar}

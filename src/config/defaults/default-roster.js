@@ -53,7 +53,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["dark-elf"],
+    tags: ["dark-elf", "tank"],
   },
   {
     name: "Guta",

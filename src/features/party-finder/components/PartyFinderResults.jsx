@@ -1,19 +1,22 @@
 import { useMemo } from "react";
 import { List, Stack, Table, Text } from "@mantine/core";
-import * as comps from "@/core/comps";
 import { useFindPartiesResults } from "../hooks";
+import { processComp } from "@/model/schemas/comp";
 
 const GroupedParties = ({ groups }) => {
   return (
     <Stack>
-      {groups.map(([partyKey, parties]) => {
-        const makeup = comps.humanizePartyKey(partyKey);
+      {groups.map(([compStr, parties]) => {
+        const comp = processComp(compStr);
 
         return (
-          <div key={partyKey}>
+          <div key={compStr}>
             <List>
-              {makeup.map((key) => (
-                <List.Item key={key}>{key}</List.Item>
+              {comp.map((req, i) => (
+                <List.Item key={i}>
+                  {req.count} {req.level} rank {req.warden}
+                  {!!req.terms.length && " - " + req.terms.join(",")}
+                </List.Item>
               ))}
             </List>
             <PartiesTable parties={parties} />

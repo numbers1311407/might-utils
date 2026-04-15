@@ -149,15 +149,13 @@ export const TagGroups = () => {
             grouped.
           </Text>
           <Text>
-            When you select a group in the dropdown nav of the party finder,
-            resulting parties will be grouped in buckets per tag, and all the
-            results sharing the same configuration will be grouped together.
+            For convenience two "roles" tag groups come predefined, which you
+            can use or edit to your preferences.
           </Text>
           <Text>
-            If a character has more than one tag, the grouping behavior will be
-            defined by the "Distinct Tag Group" checkbox. With distinct, the
-            character will be represented uniquely for 1 tag at time in the
-            results, otherwise, they will be treated as having every tag.
+            Note that if characters have multiple of these tags, they won't be
+            grouped with each tag individually, but rather they'll be put into a
+            merged group that requires all the group tags they're assigned.
           </Text>
         </Stack>
       </Aside>

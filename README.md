@@ -28,7 +28,6 @@ Going through a bit of a pivot, updating soon.
           - grouped results should clearly show who fulfills each of the grouped properties.
           - rules should clearly show who matched them
     - Multiselect for rulesets
-    - Toggle for distinct vs merged group tags mode
   - Might Range Finder
     - complete UI
     - include links from the might ranges to the finder, and possibly listings

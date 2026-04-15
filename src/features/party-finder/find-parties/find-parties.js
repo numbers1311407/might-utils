@@ -4,9 +4,9 @@ import {
   MightMaxLevel,
   MightMinLevel,
 } from "@/config";
-import * as comps from "@/core/comps";
 import { createPartyValidator } from "@/core/finder-rules";
-import { instrument } from "@/utils";
+import { instrument, intersection } from "@/utils";
+import { createComp, createTagsComp } from "@/model/schemas/comp";
 import { FindPartiesError } from "./find-parties-error.js";
 
 const MAX_RECURSIONS = 10_000_000;
@@ -20,14 +20,12 @@ export const defaultOptions = {
   minSize: 6,
   maxSize: 12,
   margin: 0,
-  distinctGroupingTags: true,
 };
 
 export const findParties = (roster, targetScore, options = {}) => {
   const instr = instrument();
 
   const {
-    distinctGroupingTags,
     groupBy,
     margin,
     maxLevel,
@@ -41,7 +39,7 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
-  const compType = groupBy || "comp";
+  const compType = Array.isArray(groupBy) ? "tags" : groupBy || "comp";
 
   let slotIdx = 0;
 
@@ -62,15 +60,20 @@ export const findParties = (roster, targetScore, options = {}) => {
         if (char.warden >= warden && level >= requiredLevel) {
           const slot = { ...char, score: score * mightMultiplier, warden };
 
-          const overrides = comps.getExtendedSlots(
-            slot,
-            compType,
-            distinctGroupingTags,
-          );
+          if (compType === "tags") {
+            const slotGroupTags = intersection(slot.tags, groupBy);
 
-          for (const ovr of overrides) {
-            charBucket.push({ ...slot, ...ovr });
+            if (!slotGroupTags.length) {
+              throw new FindPartiesError(
+                "When grouping by tags, all active characters in the roster must have " +
+                  `at least one of the tags in the group. Needed tags: [${groupBy.join(", ")}], ` +
+                  `character ${slot.name} tags: [${slot.tags.join(", ")}].`,
+                "MISSING_TAGS",
+              );
+            }
           }
+
+          charBucket.push(slot);
         }
       }
 
@@ -154,6 +157,20 @@ export const findParties = (roster, targetScore, options = {}) => {
   // the pool array
   const partyPoolIdxs = new Set();
 
+  const getCurrentParty = () => {
+    return Array.from(partyPoolIdxs).map((idx) => pool[idx]);
+  };
+
+  const createPartyComp = () => {
+    const party = getCurrentParty();
+
+    if (compType === "tags") {
+      return createTagsComp(party, groupBy);
+    }
+
+    return createComp(party);
+  };
+
   let recursionCount = 0;
 
   const recurse = (remainingScore, bucketIndex) => {
@@ -163,8 +180,8 @@ export const findParties = (roster, targetScore, options = {}) => {
 
     if (recursionCount++ >= MAX_RECURSIONS) {
       throw new FindPartiesError(
-        `Max recursions reached (${MAX_RECURSIONS.toLocaleString()}) trying to assemble the parties. Try adding ` +
-          `more rules or reducing your roster size.`,
+        `Max recursions reached (${MAX_RECURSIONS.toLocaleString()}) trying to assemble ` +
+          "the parties. Try adding more rules or reducing your roster size.",
         "MAX_RECURSIONS",
       );
     }
@@ -184,7 +201,7 @@ export const findParties = (roster, targetScore, options = {}) => {
       const newParty = {
         party: sortParty(new Uint8Array(partyPoolIdxs)),
         score: targetScore - remainingScore,
-        comp: comps.getPartyKey(compType, Array.from(partyPoolIdxs), pool),
+        comp: createPartyComp(),
       };
 
       parties.push(newParty);
