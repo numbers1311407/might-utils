@@ -9,5 +9,5 @@ export const partySchema = z.object({
     .min(1, { message: "Name is required" })
     .max(30, { message: "Name must be 30 characters or less" })
     .default(""),
-  comp: compSchema,
+  comp: compSchema.optional(),
 });

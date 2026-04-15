@@ -1,3 +1,5 @@
+import { breakpoints } from "./breakpoints";
+
 import {
   ActionIcon,
   Alert,
@@ -326,6 +328,7 @@ const pinkColors = [
 ];
 
 export const theme = createTheme({
+  breakpoints,
   colors: {
     slate: slateColors,
     gray: grayColors,

@@ -1,7 +1,9 @@
+import { em as rem } from "@mantine/core";
+
 export const breakpoints = {
-  xs: 48,
-  sm: 62,
-  md: 80,
-  lg: 92,
-  xl: 110,
+  xs: rem(48),
+  sm: rem(62),
+  md: rem(80),
+  lg: rem(92),
+  xl: rem(110),
 };

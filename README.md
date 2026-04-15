@@ -11,67 +11,58 @@ Going through a bit of a pivot, updating soon.
 
 ### Todos
 
-- Features
-  - Finder
-    - It's going to be critical to test rules and other common sense failure
-      points to error early in search. it's too easy to accidentally set your level 1-off,
-      etc, and end up scratching your head for a minute trying to figure out why you got no results
-        - if min/max options mean you don't have enough to meet min group size
-        - if roster score doesn't add up to target score
-        - if rules at all ranges exclude everyone
-        - others?
-      If results are low, we could also warn on the above if they're ALMOST true, like if your
-      party only just meets the score, or if there's only a brief window where enough chars
-      pass.
-    - UI for results and other UI cleanup.
-        - two key new features:
-          - grouped results should clearly show who fulfills each of the grouped properties.
-          - rules should clearly show who matched them
-    - Multiselect for rulesets
-  - Might Range Finder
-    - complete UI
-    - include links from the might ranges to the finder, and possibly listings
-      of "saved parties" that match the might level or are close?
-  - NPC Sim
-    - Should add a 2nd window with metadata, namely links to the finder for the
-      actual numeric ranges in the NPC response that you don't see in game.
-  - Misc
-    - Put together a character roster that isn't my team
-  - Saved parties
-    - The might score calculator should track min/max and current might, which
-      is a little tricky with static warden. Depending on the solution this may
-      be post MVP. The whole idea for parties is that they have a static might
-      level not a range.
-    - I think being able to save a snapshot to revert to might be another path
-      here. The thing is that playing around with might comes with the req. to
-      put it all back when you're done, so you hesitate to mess with it. THe
-      counterpoint is that you can always very rapidly copy a group and have
-      multiple versions of it, so perhaps the plan should be to encourage that.
-  - Tag rules
-    - Name rule should probably be back on the menu. It made less sense when one ruleset was the
-      tech but if you have multiple rulesets I could see having "core team" or "tank 1" "tank 2"
-      rulesets which you could mix into other sets. Does this remove the need for toggleable
-      warden ranks? probably not... since it's still clunky and the rule would require the char,
-      vs jsut restricting hte rank.
-    Global: 404 page
-    - an actual in app 404 page for bad paths
-- Known Bugs
-  - Things break if roster members disappear. A few ways to handle this, obviously we could
-    sweep parties on deletion of the roster char but there may be a better way like cleanup on
-    load, or no cleanup at all and just disablement of "restore" with a warning. Perhaps this
-    is best? Why not let people keep historical roster chars in parties, is there a downside
-    besides potential confusion?
+- Finder
+  - Throw better errors from the party finder to give players hints on why results are missing
+    - warn if the roster isn't big enough to fill the party size
+    - warn if characters pass no rules or few rules
+  - UI for results and other UI cleanup.
+      - two key features:
+        - grouped results should clearly show who fulfills each of the grouped properties.
+        - rules should clearly show who matched them
+  - Multiselect for rulesets
+- Might Range Finder
+  - complete UI
+  - include links from the might ranges to the finder, and possibly listings
+    of "saved parties" that match the might level or are close?
+- Parties rewrite
+  - Scrap and replace the party store with something more hook driven using lessons learned.
+  - Parties needs an index page with filtering & sorting
+  - Parties should track might score
+  - Parties should have concept of "diff score" tracking how close the current roster can get to
+    the party comp.
+  - Sort by name, might score, diff
+  - Parties needs a coloring/indicator scheme for identifying diff state, maybe con colors?
+    - roster satisfies the comp - 0 diff
+    - roster can satisfy the comp by shuffling warden - small diff
+    - roster needs to change levels - large diff
+- NPC Sim
+  - Should add a 2nd window with metadata, namely links to the finder for the
+    actual numeric ranges in the NPC response that you don't see in game.
+- Alt tags
+  - the tags ui should be removed from the modal and replaced witha link to the roster tags editor
+    in that editor the characters have a toggle to turn on their "alt" tags, allowing for two tag
+    sets. this is the replacement for distinct grouping tags, but better as it's more controlled.
+    implementation would probably be a 2nd tags array. For UI purposes the char would just be
+    considered to have all the tags, but in the party finder they'd be split.
+- Tag rules
+  - Name rule should probably be back on the menu. It made less sense when one ruleset was the
+    tech but if you have multiple rulesets I could see having "core team" or "tank 1" "tank 2"
+    rulesets which you could mix into other sets. Does this remove the need for toggleable
+    warden ranks? probably not... since it's still clunky and the rule would require the char,
+    vs jsut restricting hte rank.
+  Global: 404 page
+  - an actual in app 404 page for bad paths
  
 ### Nice to haves
-  **More calculator data**
+  - **More calculator data**
     - This is critical but I'm also waiting to see if post release either 1. we're asked not to
       do this or 2. a dev might offer us real data.
-  **Roster Variations**:
+  - **Roster Variations**
     - This is a key feature but it could technically be cut from mvp
     - Refactor current "saved parties" into roster variations
     - Allow choosing roster in generator
     - Bulk tag editing with the same exacty UI as class tags
-  **Global**: Help modals and/or guided tours
+  - **Global** Help modals and/or guided tours
   - Multiple: Warden shouldn't toggle
     - Character warden options shouldn't be a toggle, it should be possible to
       toggle any warden level.
@@ -92,7 +83,7 @@ Going through a bit of a pivot, updating soon.
 - Quick roster editing
   - add a mantine "floating window" modal to the generator which contains a mini roster
     editor (as currently selected), likely similar to the saved partie pages.
-- Multiple: Tags
+- *Multiple: Tags*
   - Introduce the concept of "negative tags" which could be used to couner class tags.
     The problem is there may be edge cases where a character doesn't want class tags,
     and it feels like overkill to create some kind of clone situation or other complicated
@@ -102,6 +93,7 @@ Going through a bit of a pivot, updating soon.
     One consideration here is that if someone deletes a class tag the -tag may live
     on in tags forever, but that's probably not a real issue. If concerned we could
     scrub tags for the class tag on deletion.
+  
 - Multiple: Might Button QoL
   - bigger increment buttons for the might inputs +100/-100, etc, this will be
     particularly useful on the calculator pages where people are fishing and wanting

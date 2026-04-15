@@ -16,3 +16,12 @@ body {
 html {
   scrollbar-gutter: stable;
 }
+
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+
+  .right-scroll-bar-position {
+    margin-right: 0 !important;
+    right: 0 !important;
+  }
+}

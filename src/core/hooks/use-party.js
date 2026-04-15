@@ -1,42 +1,22 @@
 import { useCallback, useMemo } from "react";
+import { useShallow } from "zustand/react/shallow";
 import {
   usePartiesStore,
   usePartiesStoreApi as partiesStore,
-  useRosterStoreApi as rosterApi,
 } from "@/model/store";
 
-export const useParty = (paramPartyId, options = {}) => {
-  const { defaultToFirst, classTags = true } = options;
-  const partyRegistry = usePartiesStore((store) => store.registry);
+export const useParty = (partyId, options = {}) => {
+  const { classTags = true } = options;
+  const storeParty = usePartiesStore(
+    useShallow((store) => store.registry[partyId]),
+  );
 
   const party = useMemo(() => {
-    const keys = Object.keys(partyRegistry);
-
-    if (!keys.length) return;
-
-    const party =
-      (paramPartyId && partyRegistry[paramPartyId]) ||
-      (defaultToFirst && partyRegistry[keys[0]]);
-
-    if (!party || !classTags) return party;
-
-    return {
-      ...party,
-      chars: party.chars.map((char) => ({
-        ...char,
-        tags: rosterApi.getCharTags(char.name, { classTags: true }),
-      })),
-    };
-  }, [classTags, paramPartyId, partyRegistry, defaultToFirst]);
-
-  const partyId = party?.id;
-
-  const dirtyChars = useMemo(() => {
-    return partiesStore.getDirtyStatus(party?.id);
-  }, [party]);
+    return storeParty && partiesStore.hydrateParty(storeParty, { classTags });
+  }, [classTags, storeParty]);
 
   const stats = useMemo(() => {
-    return partiesStore.getStats(party?.id);
+    return partiesStore.getStats(party);
   }, [party]);
 
   const addChar = useCallback(
@@ -46,15 +26,6 @@ export const useParty = (paramPartyId, options = {}) => {
       }
     },
     [partyId],
-  );
-
-  const isCharDirty = useCallback(
-    (name) => {
-      if (party?.id) {
-        return partiesStore.isCharDirty(party.id, name);
-      }
-    },
-    [party],
   );
 
   const copyParty = useCallback(
@@ -71,15 +42,11 @@ export const useParty = (paramPartyId, options = {}) => {
     [partyId],
   );
 
-  const hasChar = useCallback(() => {
-    if (party?.id) return partiesStore.hasChar(party.id, name);
-  }, [party]);
-
-  const updateChar = useCallback(
-    (name, update) => {
-      if (partyId) partiesStore.updateChar(partyId, name, update);
+  const hasChar = useCallback(
+    (name) => {
+      if (party?.id) return partiesStore.hasChar(party.id, name);
     },
-    [partyId],
+    [party],
   );
 
   const resetChar = useCallback(
@@ -107,41 +74,19 @@ export const useParty = (paramPartyId, options = {}) => {
     [partyId],
   );
 
-  const saveSnapshot = useCallback(
-    (done) => {
-      if (partyId) partiesStore.saveSnapshot(partyId, done);
+  const updateChar = useCallback(
+    (name, update) => {
+      if (partyId) partiesStore.updateChar(partyId, name, update);
     },
     [partyId],
   );
-
-  const restoreSnapshot = useCallback(
-    (done) => {
-      if (partyId) partiesStore.restoreSnapshot(partyId, done);
-    },
-    [partyId],
-  );
-
-  const snapshotDirty = useMemo(() => {
-    return !party?.id || partiesStore.isSnapshotDirty(party.id);
-  }, [party]);
-
-  const hasSnapshot = useMemo(() => {
-    return !!party?.id && partiesStore.hasSnapshot(party.id);
-  }, [party]);
 
   return {
     addChar,
     copyParty,
-    dirtyChars,
     getChar,
     hasChar,
-    isCharDirty,
     party,
-    partyId,
-    saveSnapshot,
-    snapshotDirty,
-    hasSnapshot,
-    restoreSnapshot,
     removeChar,
     removeParty,
     resetChar,

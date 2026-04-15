@@ -160,3 +160,13 @@ export const debounce = (func, wait = 250) => {
 export const intersection = (arr1, arr2) => {
   return [...new Set(arr1).intersection(new Set(arr2))];
 };
+
+export const pick = (object, ...attrs) => {
+  const picked = {};
+  for (const attr of attrs) {
+    if (attr in object) {
+      picked[attr] = object[attr];
+    }
+  }
+  return picked;
+};

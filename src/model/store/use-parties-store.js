@@ -2,194 +2,174 @@ import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
 import { getConfirmation } from "./use-confirmation-store.js";
 import { partySchema } from "@/model/schemas";
-import { getCharMight } from "@/config/chars";
-import { deepEqual } from "fast-equals";
-import { sum } from "@/utils";
-import { getCharsStats } from "./helpers/get-chars-stats.js";
+import { getCharsStats } from "./helpers";
+import { pick } from "@/utils";
+import * as compApi from "@/model/schemas/comp";
 
-// super overloaded for little good reason
-// ---
-// value can be a string ID (add case)
-// value can be an object (update cased)
-// value can be an array of both (reset case, mainly)
+const _resolveParty = (partyId, api) => {
+  return typeof partyId === "string" ? api.get(partyId) : partyId;
+};
+
+const _getChars = (partyId, api) => {
+  const party = _resolveParty(partyId, api);
+
+  try {
+    return compApi.processPartyComp(party.comp);
+  } catch {
+    return [];
+  }
+};
+
+const _getCharsMap = (partyId, api) => {
+  return _getChars(partyId, api).reduce((map, char) => {
+    return map.set(char.name, char);
+  }, new Map());
+};
+
 const _addOrUpdateChar = (partyId, value, api) => {
-  const party = api.get(partyId);
-  const chars = [...party.chars];
+  const party = _resolveParty(partyId, api);
+  const chars = _getCharsMap(party, api);
+
+  if (!party) {
+    return;
+  }
 
   let updated = false;
 
   [value].flat().forEach((char) => {
-    const isId = typeof char === "string";
-    const charName = isId ? char : char?.name;
-    const rosterChar = rosterApi.getChar(charName);
+    const addingByName = typeof char === "string";
+    const charName = addingByName ? char : char?.name;
+    const rosterChar = charName && rosterApi.getChar(charName);
+    const charToAdd = addingByName ? rosterChar : char;
 
-    const charToAdd = structuredClone(isId ? rosterChar : char);
-
-    if (
-      !party ||
-      !rosterChar ||
-      rosterChar.name !== charToAdd.name ||
-      rosterChar.name !== charToAdd.name
-    ) {
+    if (!rosterChar || rosterChar.name !== charToAdd.name) {
       return;
     }
 
     updated = true;
-
-    const idx = chars.findIndex((char) => char.name === charName);
-
-    if (idx === -1) {
-      chars.push(charToAdd);
-    } else {
-      chars.splice(idx, 1, charToAdd);
-    }
+    chars.set(rosterChar.name, charToAdd);
   });
 
   if (updated) {
-    api.add({ ...party, chars });
+    api.add({
+      ...party,
+      comp: compApi.createPartyComp(Array.from(chars.values())),
+    });
   }
 };
 
 const extendApi = (_set, get, api) => {
   const extApi = {
-    // *super override*
-    // when copying or creating a party, set the snapshot to
-    // be the chars at the time of creation.
-    getCopy: (record, keepId) => {
-      const copy = api.getCopy(record, keepId);
-      return structuredClone({ ...copy, snapshot: copy.chars });
+    hydrateParty: (partyId, options = {}) => {
+      const { classTags = true } = options;
+      const party = _resolveParty(partyId, api);
+
+      const compChars = compApi.processPartyComp(party.comp);
+      const hydration = compChars.reduce(
+        (acc, char) => {
+          const rosterChar = rosterApi.getChar(char.name, { classTags });
+
+          if (
+            char.warden !== rosterChar.warden ||
+            char.level !== rosterChar.level
+          ) {
+            acc.dirty.add(char.name);
+            acc.dirtyCount += 1;
+            acc.isDirty = true;
+          }
+
+          acc.chars.push({ ...rosterChar, ...char });
+          return acc;
+        },
+        {
+          dirty: new Set(),
+          chars: [],
+          isDirty: false,
+          dirtyCount: 0,
+        },
+      );
+
+      return { ...party, ...hydration };
     },
 
-    getFirst: () => {
-      const { registry } = get();
-      const ids = Object.keys(registry);
-      return ids.length ? registry[ids[0]] : undefined;
+    getStats: (partyId) => {
+      const party = _resolveParty(partyId, api);
+
+      if (party) {
+        const chars = party.chars || extApi.hydrateParty(party).chars;
+        return getCharsStats(chars);
+      }
     },
 
     hasChar: (partyId, charName) => {
-      const party = api.get(partyId);
-      return (
-        !!party &&
-        !!charName &&
-        party.chars.find((char) => char.name === charName)
-      );
-    },
-
-    isCharDirty: (partyId, charName) => {
-      const rosterChar = rosterApi.getChar(charName, { classTags: false });
-
-      // We allow roster chars to be deleted without pulling them from parties
-      // in which they're referenced. This is... by design? Since the parties
-      // are in part historical reference and there's no reason (outside loss
-      // of upstream tags to reference) why the roster char needs to be removed.
-      // This is also probably an edge case, it's likely rare that roster
-      // members will be deleted.
-      //
-      // And even if they are, leaving incomplete parties isn't useful.
-      if (!rosterChar) {
-        return false;
-      }
-
-      return !deepEqual(extApi.getChar(partyId, charName), rosterChar);
-    },
-
-    isSnapshotDirty: (partyId) => {
-      const party = api.get(partyId);
-      return !party || !deepEqual(party.chars, party.snapshot);
-    },
-
-    hasSnapshot: (partyId) => {
-      const party = api.get(partyId);
-      return !!party && party.snapshot.length !== 0;
-    },
-
-    getDirtyStatus: (partyId) => {
-      const party = api.get(partyId);
-
-      return (party?.chars || []).reduce((acc, char) => {
-        if (extApi.isCharDirty(party.id, char.name)) acc.add(char.name);
-        return acc;
-      }, new Set());
+      const party = _resolveParty(partyId, api);
+      return !!party && !!charName && party.comp.includes(charName);
     },
 
     getChar: (partyId, charName) => {
-      const party = api.get(partyId);
-      return party && party.chars.find((char) => char.name === charName);
+      const party = _resolveParty(partyId, api);
+      return !!party && !!charName && _getCharsMap(party, api)?.get(charName);
     },
 
     addChar: (partyId, charName) => {
-      if (typeof charName === "string") {
-        _addOrUpdateChar(partyId, charName, api);
+      if (typeof charName !== "string") {
+        throw new Error("characters can only be added from the roster by name");
       }
+      _addOrUpdateChar(partyId, charName, api);
     },
 
-    saveSnapshot: getConfirmation(
-      (partyId, done) => {
-        const party = api.get(partyId);
-        api.add({ ...party, snapshot: party.chars }, done);
-      },
-      {
-        title: "Save a new snapshot?",
-        message:
-          "This will save the current state of your party so you " +
-          "can restore it easily after making edits to characters. This " +
-          "will delete the previous snapshot if one exists.",
-      },
-    ),
-
-    restoreSnapshot: getConfirmation(
-      (partyId, done) => {
-        const party = api.get(partyId);
-        api.add({ ...party, chars: party.snapshot }, done);
-      },
-      {
-        title: "Restore saved snapshot?",
-        message:
-          "This will delete any changes you've made since the party was " +
-          "created or the last snapshot was saved.",
-      },
-    ),
-
     removeChar: getConfirmation(
-      (partyId, char, done) => {
-        const charName = typeof char === "string" ? char : char?.name;
-        const party = api.get(partyId);
-        const hasChar = party.chars.some((char) => char.name === charName);
+      (partyId, charName, done) => {
+        if (typeof charName === "object") {
+          charName = charName.name;
+        }
 
-        if (!party || !hasChar) return;
+        const party = _resolveParty(partyId, api);
+        const hasChar = extApi.hasChar(party, charName);
 
-        api.add({
-          ...party,
-          chars: party.chars.filter((char) => char.name !== charName),
-        });
+        if (party && hasChar) {
+          const chars = _getChars(party, api).filter(
+            (char) => char.name !== charName,
+          );
 
-        done?.();
+          api.add(
+            {
+              ...party,
+              comp: compApi.createPartyComp(chars),
+            },
+            done,
+          );
+        }
       },
       {
         title: "Are you sure you want to remove this character from the party?",
-        message: "They will still be avaiable to re-add from the roster.",
+        message: "They will still be available to re-add from the roster.",
       },
     ),
 
     updateChar: (partyId, charName, update) => {
+      if (typeof update !== "object") {
+        return;
+      }
+
       const char = extApi.getChar(partyId, charName);
 
-      if (!char || typeof update !== "object") return;
+      if (!char) return;
 
-      // strip off class and name from the update object in case
-      // they someone made it through
-      const { class: _c, name: _n, ...restUpdate } = update;
+      // explicitly disallow updating name or class through
+      // update (easily worked around, this is more of a safety
+      // net for sending updates generated by schemar parsing)
+      const validUpdate = pick(update, "warden", "level");
 
       // if that leaves any props, merge it with the existing
       // char and send it back in.
-      if (Object.keys(restUpdate).length) {
-        _addOrUpdateChar(partyId, { ...char, ...restUpdate }, api);
+      if (Object.keys(validUpdate).length) {
+        _addOrUpdateChar(partyId, { ...char, ...validUpdate }, api);
       }
     },
 
     resetChar: getConfirmation(
-      (partyId, char) => {
-        const charName = typeof char === "string" ? char : char?.name;
+      (partyId, charName) => {
         extApi.addChar(partyId, charName);
       },
       {
@@ -202,8 +182,8 @@ const extendApi = (_set, get, api) => {
     resetChars: getConfirmation(
       (partyId) => {
         const party = api.get(partyId);
-        const ids = party.chars.map((char) => char.name);
-        _addOrUpdateChar(partyId, ids, api);
+        const names = _getChars(party, api).map((char) => char.name);
+        _addOrUpdateChar(partyId, names, api);
       },
       {
         message:
@@ -211,22 +191,6 @@ const extendApi = (_set, get, api) => {
           "reverting any changes made to level or warden rank.",
       },
     ),
-
-    getMight: (partyId) => {
-      const party = api.get(partyId);
-      return party?.chars
-        ? sum(party.chars.map((char) => getCharMight(char)))
-        : 0;
-    },
-
-    getStats: (partyId) => {
-      const { chars = [] } = api.get(partyId) || {};
-      const taggedChars = chars.map((char) => ({
-        ...char,
-        tags: rosterApi.getCharTags(char.name, { classTags: true }),
-      }));
-      return getCharsStats(taggedChars);
-    },
   };
 
   return extApi;

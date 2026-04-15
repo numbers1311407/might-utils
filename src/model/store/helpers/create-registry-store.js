@@ -123,6 +123,12 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       return recordSchema.parse({ ...copy, name });
     },
 
+    getFirst: () => {
+      const { registry } = get();
+      const ids = Object.keys(registry);
+      return ids.length ? registry[ids[0]] : undefined;
+    },
+
     add: (record, done) => {
       let clone;
 

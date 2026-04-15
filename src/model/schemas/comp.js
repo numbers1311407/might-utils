@@ -16,6 +16,10 @@ const groupCountSort = (a, b) =>
 
 // items here expected to have warden+level and terms predefined
 export const createComp = (items, type = "base") => {
+  if (!items.length) {
+    return undefined;
+  }
+
   const counts = items.reduce((acc, item) => {
     const group = createCompGroup(item);
     acc[group] = (acc[group] || 0) + 1;
@@ -67,17 +71,22 @@ export const createCompGroup = ({ level, warden, terms }) => {
   return `${level}/${warden}${terms ? "/" + [...terms].sort().join(",") : ""}`;
 };
 
-export const processComp = (input) => {
-  if (!baseValid.test(input) && !subtermsValid.test(input)) {
-    throw new Error(
-      "Invalid party composition format or level/warden out of range.",
+export const processComp = (compStr) => {
+  if (!compStr) {
+    return [];
+  }
+
+  if (!baseValid.test(compStr) && !subtermsValid.test(compStr)) {
+    console.error(
+      `Invalid party composition format or level/warden out of range: "${compStr}"`,
     );
+    return [];
   }
 
   const extractRegex =
     /(\d+):(4[5-9]|[56][0-9]|7[01])\/([0-3])(?:\/([a-zA-Z0-9\-,]+))?/g;
 
-  return [...input.matchAll(extractRegex)].map((match) => {
+  return [...compStr.matchAll(extractRegex)].map((match) => {
     const [_, count, level, warden, subTerms] = match;
 
     return {
@@ -87,4 +96,16 @@ export const processComp = (input) => {
       terms: subTerms ? subTerms.split(",") : [],
     };
   });
+};
+
+export const processPartyComp = (compStr) => {
+  return processComp(compStr)
+    .reduce((party, group) => {
+      const { terms, ...rest } = group;
+      terms.forEach((name) => party.push({ name, ...rest }));
+      return party;
+    }, [])
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
 };

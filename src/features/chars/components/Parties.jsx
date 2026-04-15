@@ -4,6 +4,7 @@ import {
   Divider,
   Grid,
   Group,
+  List,
   Paper,
   Stack,
   Text,
@@ -29,13 +30,13 @@ import {
   CharStatsTable as StatsTable,
   SaveSmallButton,
 } from "@/core/components";
-import { useParty, useStableCallback } from "@/core/hooks";
+import { useParty, usePartiesList, useStableCallback } from "@/core/hooks";
 
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyModal } from "./PartyModal.jsx";
 
 const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
-  const { party, ...api } = useParty(partyId);
+  const { party } = useParty(partyId);
 
   const partyNames = useMemo(
     () => party.chars?.map((char) => char.name),
@@ -74,18 +75,6 @@ const PartyHeader = ({ partyId, onCopy, onRemove, onReset, onRename }) => {
         <Group gap={8} my="sm">
           <EditSmallButton onClick={onRename}>Rename</EditSmallButton>
           <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
-          <SaveSmallButton
-            disabled={!api.snapshotDirty}
-            onClick={() => api.saveSnapshot()}
-          >
-            Save Snapshot
-          </SaveSmallButton>
-          <RestoreSmallButton
-            disabled={!api.hasSnapshot || !api.snapshotDirty}
-            onClick={() => api.restoreSnapshot()}
-          >
-            Restore Snapshot
-          </RestoreSmallButton>
           <RestoreSmallButton disabled={!onReset} onClick={onReset}>
             Roster Sync
           </RestoreSmallButton>
@@ -111,25 +100,77 @@ const ToggleNpcSimButton = (props) => {
   );
 };
 
+export const Parties = () => {
+  const [_match, { id: partyId }] = useRoute("/parties/:id?");
+
+  return (
+    <Stack>
+      <PageTitle
+        section={titles.PARTY_CATEGORY}
+        title={titles.PARTIES_TITLE}
+        subtitle={
+          "Assemble parties from your roster to track their might and target specific instance tiers"
+        }
+      />
+      {partyId ? <Party id={partyId} /> : <PartyIndex />}
+    </Stack>
+  );
+};
+
+const PartyIndex = () => {
+  const parties = usePartiesList();
+
+  <Stack align="center" ta="center" p="3xl">
+    <Text size="lg" c="primary">
+      You have no saved parties.
+    </Text>
+    <Text size="md" style={{ maxWidth: 580 }} ta="center">
+      Click the button in the top right to create one manually, or use the{" "}
+      <AppLink href="/">party finder</AppLink> and save resulting parties you
+      want to track.
+    </Text>
+  </Stack>;
+
+  return (
+    <List>
+      {!parties.length && <List.Item>You have no parties</List.Item>}
+      {parties.map((party) => (
+        <List.Item key={party.id}>
+          <AppLink href={`/parties/${party.id}`}>{party.name}</AppLink>
+        </List.Item>
+      ))}
+    </List>
+  );
+};
+
 // TODO most of this data could be moved to a `useParties` hook, which is
 // probably a pattern that should be established: components probably shouldn't
 // generally access low level stores but instead should use higher level stores
 // that bake in view logic
-export const Parties = () => {
-  const [_match, { id: routeId }] = useRoute("/parties/:id?");
-  const { dirtyChars, party, partyId, stats, ...partyApi } = useParty(routeId, {
-    defaultToFirst: true,
-  });
-
-  const [draftParty, editParty] = useState(null);
+export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();
+
+  const { party, stats, ...partyApi } = useParty(partyId);
+
   const { setMight } = useCalculatorContext();
-
   const might = stats?.might.total || 0;
-
   useEffect(() => {
     setMight(might);
   }, [might, setMight]);
+
+  const [draftParty, editParty] = useState(null);
+
+  const beginPartyEdit = useStableCallback(() => {
+    editParty(party);
+  });
+
+  const commitPartyEdit = useStableCallback((record) => {
+    editParty(null);
+    partiesApi.add(record);
+    if (partyId !== record.id) {
+      setLocation(`/parties/${record.id}`);
+    }
+  });
 
   const copyParty = useStableCallback(() => {
     partyApi.copyParty((copy) => setLocation(`/parties/${copy.id}`));
@@ -139,106 +180,69 @@ export const Parties = () => {
     partyApi.removeParty(() => setLocation(`/parties`));
   });
 
-  const renameParty = useStableCallback(() => {
-    editParty(party);
-  });
-
-  const saveParty = useStableCallback((record) => {
-    editParty(null);
-    partiesApi.add(record);
-    if (partyId !== record.id) {
-      setLocation(`/parties/${record.id}`);
-    }
-  });
-
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
-  if (routeId && partyId !== routeId) {
+  if (!party) {
     return <Redirect to="/parties" />;
   }
 
   return (
     <Box>
-      <PageTitle
-        section={titles.PARTY_CATEGORY}
-        title={titles.PARTIES_TITLE}
-        subtitle={
-          "Assemble parties from your roster to track their might and target specific instance tiers"
-        }
+      <PartyHeader
+        partyId={party.id}
+        onCopy={copyParty}
+        onRemove={removeParty}
+        onRename={beginPartyEdit}
+        onReset={party.isDirty ? partyApi.resetChars : undefined}
       />
-
-      {!party && (
-        <Stack align="center" ta="center" p="3xl">
-          <Text size="lg" c="primary">
-            You have no saved parties.
-          </Text>
-          <Text size="md" style={{ maxWidth: 580 }} ta="center">
-            Click the button in the top right to create one manually, or use the{" "}
-            <AppLink href="/">party finder</AppLink> and save resulting parties
-            you want to track.
-          </Text>
-        </Stack>
-      )}
-
-      {party && (
-        <PartyHeader
-          partyId={party.id}
-          onCopy={copyParty}
-          onRemove={removeParty}
-          onRename={renameParty}
-          onReset={dirtyChars.size ? partyApi.resetChars : null}
-        />
-      )}
 
       <Divider my="md" />
 
-      {party && (
-        <Grid align="flex-start" gutter="xl">
-          <Grid.Col span={{ base: 12, lg: 6 }}>
-            <Paper p="md" shadow="md">
-              <Title order={5} mb="xs">
-                Party Stats
-              </Title>
-              <StatsTable stats={stats} />
-            </Paper>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, lg: 6 }}>
-            <Paper shadow="md" p="md">
-              <Title order={5} mb="xs">
-                The Party
-              </Title>
-              <CharsTable
-                chars={party ? party.chars : []}
-                onUpdate={partyApi.updateChar}
-                onRemove={partyApi.removeChar}
-                onReset={partyApi.resetChar}
-                dirtyChars={dirtyChars}
-                emptyContent={
-                  <Stack gap="sm">
-                    <Text c="warning" size="xl">
-                      This party has no characters!
-                    </Text>
-                    <Text>
-                      Use the dropdown above to add characters from the roster.
-                    </Text>
-                    <Text size="lg" c="warning">
-                      OR
-                    </Text>
-                    <Text>
-                      Use the{" "}
-                      <AppLink href="/party-generator">party generator</AppLink>{" "}
-                      to find a party for a specific might score and save a
-                      result.
-                    </Text>
-                  </Stack>
-                }
-              />
-              <Divider />
-              <ToggleNpcSimButton mt="sm" />
-            </Paper>
-          </Grid.Col>
-        </Grid>
-      )}
+      <Grid align="flex-start" gutter="xl">
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Paper p="md" shadow="md">
+            <Title order={5} mb="xs">
+              Party Stats
+            </Title>
+            <StatsTable stats={stats} />
+          </Paper>
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Paper shadow="md" p="md">
+            <Title order={5} mb="xs">
+              The Party
+            </Title>
+            <CharsTable
+              chars={party.chars}
+              onUpdate={partyApi.updateChar}
+              onRemove={partyApi.removeChar}
+              onReset={partyApi.resetChar}
+              dirtyChars={party.dirty}
+              emptyContent={
+                <Stack gap="sm">
+                  <Text c="warning" size="xl">
+                    This party has no characters!
+                  </Text>
+                  <Text>
+                    Use the dropdown above to add characters from the roster.
+                  </Text>
+                  <Text size="lg" c="warning">
+                    OR
+                  </Text>
+                  <Text>
+                    Use the{" "}
+                    <AppLink href="/party-generator">party generator</AppLink>{" "}
+                    to find a party for a specific might score and save a
+                    result.
+                  </Text>
+                </Stack>
+              }
+            />
+            <Divider />
+            <ToggleNpcSimButton mt="sm" />
+          </Paper>
+        </Grid.Col>
+      </Grid>
 
       <Aside>
         <Stack gap="sm">
@@ -255,7 +259,7 @@ export const Parties = () => {
 
       <PartyModal
         onClose={() => editParty(null)}
-        onSubmit={saveParty}
+        onSubmit={commitPartyEdit}
         record={draftParty}
       />
     </Box>
