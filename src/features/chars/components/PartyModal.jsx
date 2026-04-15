@@ -63,7 +63,7 @@ export const PartyModal = ({ record, onClose, onSubmit }) => {
       {record && (
         <PartyForm
           // note this key hack is to get around mantine's aggressive form caching
-          key={!!record ? "opened" : "closed"}
+          key={record ? "opened" : "closed"}
           record={record}
           onSubmit={(record) => {
             onSubmit?.(record);
