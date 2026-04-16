@@ -23,7 +23,7 @@ export const FIELDS = [
     max: MightMaxLevel,
     step: 1,
     operators: ops("=", "!=", "<", ">", "<=", ">=", "between", "notBetween"),
-    validator: (r) => schemaValidator(charLevelSchema),
+    validator: schemaValidator(charLevelSchema),
   },
   {
     name: "class",
@@ -32,7 +32,7 @@ export const FIELDS = [
     defaultValue: "BER",
     defaultOperator: "=",
     operators: ops("=", "!="),
-    validator: (r) => schemaValidator(charClassSchema),
+    validator: schemaValidator(charClassSchema),
     values: charClassSchema.options.map((option) => ({
       label: option,
       value: option,
@@ -50,13 +50,13 @@ export const FIELDS = [
       { label: "Rank 2", value: "2" },
       { label: "Rank 3", value: "3" },
     ],
-    validator: (r) => schemaValidator(charWardenSchema),
+    validator: schemaValidator(charWardenSchema),
   },
   {
     name: "tags",
     label: "Tags",
     inputType: "text",
     operators: ops("contains", "doesNotContain"),
-    validator: (r) => schemaValidator(tagSchema),
+    validator: schemaValidator(tagSchema),
   },
 ];
