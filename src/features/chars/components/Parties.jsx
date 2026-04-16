@@ -25,7 +25,7 @@ export const Parties = () => {
             component={AppLink}
             underline="never"
             leftSection={<IconArrowLeft />}
-            size="compact-md"
+            size="compact-sm"
             href="/parties"
           >
             Back to Party Index
@@ -34,7 +34,7 @@ export const Parties = () => {
         <Button
           leftSection={<IconPlus size={18} />}
           onClick={() => editParty({})}
-          size="compact-md"
+          size="compact-sm"
         >
           Create a New Party
         </Button>

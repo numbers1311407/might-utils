@@ -37,8 +37,8 @@ export const EmptyRow = ({ children }) => (
 );
 
 const getColor = (diff, char) => {
-  const levelDelta = diff.status[char.name]?.ld || 0;
-  const wardenDelta = diff.status[char.name]?.wd || 0;
+  const levelDelta = status[char.name]?.ld || 0;
+  const wardenDelta = status[char.name]?.wd || 0;
 
   if (levelDelta < 0) {
     return [PartyDiffColors.LEVEL_UNDER, -levelDelta];
@@ -54,12 +54,13 @@ const getColor = (diff, char) => {
 const useErrorStyles = (char) => {
   const diff = usePartyDiffContext();
   const theme = useMantineTheme();
+  const status = diff?.status;
 
-  if (!diff) {
+  if (!status) {
     return {};
   }
 
-  const [color, delta] = getColor(diff, char);
+  const [color, delta] = getColor(status, char);
   const opacity = Math.min(delta * 0.1, 0.3);
   const themeColor = alpha(getThemeColor(color, theme), opacity);
 
@@ -191,7 +192,7 @@ const Row = ({
               <HelpIconTooltip
                 c="error"
                 size="sm"
-                tooltip="This character has been deleted from the roster and can no longer be edited, only removed."
+                tooltip="This character is missing from the active roster and cannot be edited unless the roster character is restored."
               />
             )}
             {remove && (

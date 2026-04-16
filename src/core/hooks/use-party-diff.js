@@ -11,7 +11,7 @@ const BASE_UNDER_LEVEL = 1000;
 
 export const usePartyDiff = (partyId) => {
   const { party } = useParty(partyId, { classTags: false });
-  const roster = useRoster({ activeOnly: true });
+  const roster = useRoster({ activeOnly: false });
 
   return useMemo(() => {
     return getPartyDiff(party, roster);

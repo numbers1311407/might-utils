@@ -4,7 +4,6 @@ import {
   Group,
   Paper,
   Text,
-  Tooltip,
   Title,
   Table,
   Stack,

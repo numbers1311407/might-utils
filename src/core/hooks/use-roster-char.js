@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { intersection } from "@/utils";
 
 export const useRosterChar = (name, options = {}) => {
-  const { classTags: mergeClassTags = false } = options;
+  const { classTags: mergeClassTags = false, activeOnly = false } = options;
 
   // NOTE this hookreally shines on the weakness of relying on
   // the zustand API too much.  It's great to be outside the react
@@ -25,7 +25,7 @@ export const useRosterChar = (name, options = {}) => {
   );
 
   return useMemo(() => {
-    if (!rosterChar) return undefined;
+    if (!rosterChar || (activeOnly && !rosterChar.active)) return undefined;
 
     return {
       ...rosterChar,
@@ -33,5 +33,5 @@ export const useRosterChar = (name, options = {}) => {
         ? intersection(rosterChar.tags, classTags).sort()
         : rosterChar.tags,
     };
-  }, [mergeClassTags, classTags, rosterChar]);
+  }, [activeOnly, mergeClassTags, classTags, rosterChar]);
 };
