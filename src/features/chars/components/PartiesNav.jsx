@@ -9,7 +9,7 @@ export const PartiesNav = (props) => {
 
   return (
     <Box {...props}>
-      <Title order={4} py="sm" c="primary">
+      <Title order={5} py="sm" c="primary">
         Your Parties
       </Title>
       <Stack gap={4} component="nav">

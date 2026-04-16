@@ -2,10 +2,11 @@ import {
   alpha,
   Badge,
   Group,
-  List,
   Paper,
   Text,
+  Tooltip,
   Title,
+  Table,
   Stack,
   useMantineTheme,
   getThemeColor,
@@ -13,17 +14,42 @@ import {
 import { usePartyDiffContext } from "./party-diff-context.js";
 import { PartyDiffProvider } from "./PartyDiffProvider.jsx";
 
+const { Tr, Tbody, Thead } = Table;
+
+const Th = ({ size = "xs", children, ...tdProps }) => {
+  return (
+    <Table.Th bg="secondary.8" ta="right" {...tdProps}>
+      <Text size={size}>{children}</Text>
+    </Table.Th>
+  );
+};
+
+const Td = ({ size = "sm", children, ...tdProps }) => {
+  return (
+    <Table.Td
+      bg="var(--mantine-color-default)"
+      ff="mono"
+      ta="right"
+      {...tdProps}
+    >
+      <Text size={size}>{children}</Text>
+    </Table.Td>
+  );
+};
+
 const Colors = {
   INVALID_ROSTER: "error.10",
-  WARDEN_OVER: "warning.3",
-  LEVEL_OVER: "error.3",
-  LEVEL_UNDER: "error.4",
+  WARDEN_UNDER: "pink.4",
+  LEVEL_OVER: "warning.3",
+  LEVEL_UNDER: "error.5",
   READY: "success.10",
 };
 
+export const PartyDiffColors = Colors;
+
 const BADGE_MAP = {
   INVALID_ROSTER: [Colors.INVALID_ROSTER, "Invalid"],
-  WARDEN_OVER: [Colors.WARDEN_OVER, "Unattained Warden"],
+  WARDEN_UNDER: [Colors.WARDEN_UNDER, "Unattained Warden"],
   LEVEL_OVER: [Colors.LEVEL_OVER, "Over-leveled"],
   LEVEL_UNDER: [Colors.LEVEL_UNDER, "Under-leveled"],
   READY: [Colors.READY, "Ready!"],
@@ -40,28 +66,19 @@ const ReadinessBadge = ({ tier }) => {
 };
 
 const PartyDiffWardenOver = ({ log }) => {
-  const wardenLog = log.filter((item) => item.type === "WARDEN_OVER");
+  const wardenLog = log.filter((item) => item.type === "WARDEN_UNDER");
 
   if (!wardenLog.length) return null;
 
-  return (
-    <>
-      <Text c={Colors.WARDEN_OVER} size="sm">
-        Invalid warden ranks!
-      </Text>
-      <List size="sm">
-        {wardenLog.map((item, i) => (
-          <List.Item key={i}>
-            <Text c="primary" size="sm" span>
-              {item.char}:
-            </Text>{" "}
-            Party has rk.
-            {item.warden} but roster rk. is only {item.warden - item.diff}
-          </List.Item>
-        ))}
-      </List>
-    </>
-  );
+  return wardenLog.map((item, i) => (
+    <Tr key={i} c={Colors.WARDEN_UNDER}>
+      <Th>{item.char}</Th>
+      <Td>{item.warden}</Td>
+      <Td c="green">
+        {item.warden - item.warden} (-{item.warden})
+      </Td>
+    </Tr>
+  ));
 };
 
 const PartyDiffLevelOver = (props) => {
@@ -70,24 +87,16 @@ const PartyDiffLevelOver = (props) => {
 
   return (
     <>
-      {!!filteredLog.length && (
-        <>
-          <Text c={Colors.LEVEL_OVER} size="sm">
-            Deleveling required!
-          </Text>
-          <List size="sm">
-            {filteredLog.map((item, i) => (
-              <List.Item key={i}>
-                <Text c="primary" size="sm" span>
-                  {item.char}:
-                </Text>{" "}
-                Party only requires {item.level} but roster char is{" "}
-                {item.level + item.diff}
-              </List.Item>
-            ))}
-          </List>
-        </>
-      )}
+      {!!filteredLog.length &&
+        filteredLog.map((item, i) => (
+          <Tr key={i} c={Colors.LEVEL_OVER}>
+            <Th>{item.char}</Th>
+            <Td>{item.level}</Td>
+            <Td c="green">
+              {item.level + item.diff} (+{item.diff})
+            </Td>
+          </Tr>
+        ))}
       <PartyDiffWardenOver {...props} />
     </>
   );
@@ -99,24 +108,16 @@ const PartyDiffLevelUnder = (props) => {
 
   return (
     <>
-      {!!filteredLog.length && (
-        <>
-          <Text c={Colors.LEVEL_UNDER} size="sm">
-            Leveling required!
-          </Text>
-          <List size="sm">
-            {filteredLog.map((item, i) => (
-              <List.Item key={i}>
-                <Text c="primary" size="sm" span>
-                  {item.char}:
-                </Text>{" "}
-                Party requires {item.level} but roster char is only{" "}
-                {item.level - item.diff}
-              </List.Item>
-            ))}
-          </List>
-        </>
-      )}
+      {!!filteredLog.length &&
+        filteredLog.map((item, i) => (
+          <Tr c={Colors.LEVEL_UNDER} key={i}>
+            <Th>{item.char}</Th>
+            <Td>{item.level}</Td>
+            <Td c="green">
+              {item.level - item.diff} (-{item.diff})
+            </Td>
+          </Tr>
+        ))}
       <PartyDiffLevelOver {...props} />
     </>
   );
@@ -156,7 +157,7 @@ const PartyDiffReady = (props) => {
 
 const COMPONENT_MAP = {
   INVALID_ROSTER: PartyDiffInvalidRoster,
-  WARDEN_OVER: PartyDiffWardenOver,
+  WARDEN_UNDER: PartyDiffWardenOver,
   LEVEL_OVER: PartyDiffLevelOver,
   LEVEL_UNDER: PartyDiffLevelUnder,
   READY: PartyDiffReady,
@@ -166,8 +167,9 @@ export const PartyDiffComponent = () => {
   const diff = usePartyDiffContext();
   const theme = useMantineTheme();
   const color = getThemeColor(Colors[diff.tier], theme);
-  const background = alpha(color, 0.1);
+  const background = alpha(color, 0.02);
   const Component = COMPONENT_MAP[diff?.tier];
+  const isTable = !["INVALID_ROSTER", "READY"].includes(diff.tier);
 
   if (!Component) {
     return null;
@@ -177,14 +179,32 @@ export const PartyDiffComponent = () => {
     <Paper p="md" shadow="md" style={{ background }}>
       <Stack gap="sm">
         <Group>
-          <Title order={4} c="primary" flex="1">
+          <Title order={5} c="primary" flex="1">
             Party Readiness
           </Title>
           <ReadinessBadge tier={diff.tier} />
         </Group>
-        <Stack gap="sm">
+        {isTable ? (
+          <Table
+            variant="vertical"
+            withColumnBorders
+            withRowBorders
+            withTableBorder
+          >
+            <Thead>
+              <Tr>
+                <Th></Th>
+                <Th w={80}>Party</Th>
+                <Th w={80}>Roster</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Component {...diff} />
+            </Tbody>
+          </Table>
+        ) : (
           <Component {...diff} />
-        </Stack>
+        )}
       </Stack>
     </Paper>
   );

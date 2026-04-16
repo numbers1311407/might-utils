@@ -78,7 +78,7 @@ export const getPartyDiff = (party, roster) => {
     } else if (wdiff < 0) {
       hasInvalidWarden = true;
       diffLog.push({
-        type: "WARDEN_OVER",
+        type: "WARDEN_UNDER",
         char: char.name,
         diff: -wdiff,
         warden: char.warden,
@@ -106,7 +106,7 @@ export const getPartyDiff = (party, roster) => {
     tier = "LEVEL_OVER";
     finalScore = BASE_OVER_LEVEL + dUnder * M_LEVEL_DOWN;
   } else if (hasInvalidWarden) {
-    tier = "WARDEN_OVER";
+    tier = "WARDEN_UNDER";
     finalScore = Math.round(wardenRatio * 100);
   }
 

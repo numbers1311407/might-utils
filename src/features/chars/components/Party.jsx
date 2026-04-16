@@ -54,9 +54,8 @@ export const Party = ({ id: partyId }) => {
         <Divider my="md" />
 
         <Grid align="flex-start" gutter="xl">
-          <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Grid.Col span={{ base: 12, lg: 6 }} order={2}>
             <Stack gap="md">
-              <PartyDiff />
               <Paper p="md" shadow="md">
                 <Title order={4} c="primary">
                   Party Stats
@@ -65,7 +64,7 @@ export const Party = ({ id: partyId }) => {
               </Paper>
             </Stack>
           </Grid.Col>
-          <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Grid.Col span={{ base: 12, lg: 6 }} order={1}>
             <Stack gap="md">
               <Paper shadow="md" p="md">
                 <Title order={4} mb="xs" c="primary">
@@ -111,12 +110,14 @@ export const Party = ({ id: partyId }) => {
                 <Divider />
                 <ToggleNpcSimButton mt="sm" />
               </Paper>
+              <Paper p="md">Comp Breakdown</Paper>
             </Stack>
           </Grid.Col>
         </Grid>
 
         <Aside>
           <Stack gap="xs">
+            <PartyDiff />
             <PartiesNav />
           </Stack>
         </Aside>

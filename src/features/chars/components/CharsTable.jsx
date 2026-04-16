@@ -1,4 +1,14 @@
-import { alpha, Box, Group, Switch, Table, Text, Tooltip } from "@mantine/core";
+import {
+  alpha,
+  Box,
+  Group,
+  Switch,
+  Table,
+  Text,
+  getThemeColor,
+  useMantineTheme,
+  Tooltip,
+} from "@mantine/core";
 import {
   getCharMight,
   getMaxWardenForLevel,
@@ -13,7 +23,7 @@ import {
   HelpIconTooltip,
   RestoreButton,
 } from "@/core/components/common";
-import { usePartyDiffContext } from "./party-diff";
+import { PartyDiffColors, usePartyDiffContext } from "./party-diff";
 import { useRosterChar } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
@@ -26,26 +36,44 @@ export const EmptyRow = ({ children }) => (
   </Table.Tr>
 );
 
+const getColor = (diff, char) => {
+  const levelDelta = diff.status[char.name]?.ld || 0;
+  const wardenDelta = diff.status[char.name]?.wd || 0;
+
+  if (levelDelta < 0) {
+    return [PartyDiffColors.LEVEL_UNDER, -levelDelta];
+  } else if (levelDelta > 0) {
+    return [PartyDiffColors.LEVEL_OVER, levelDelta];
+  } else if (wardenDelta < 0) {
+    return [PartyDiffColors.WARDEN_UNDER, -wardenDelta];
+  } else {
+    return [];
+  }
+};
+
 const useErrorStyles = (char) => {
   const diff = usePartyDiffContext();
+  const theme = useMantineTheme();
 
-  const delta = Math.min(
-    Math.max(
-      Math.abs(diff?.status?.[char.name]?.ld || 0),
-      Math.abs(diff?.status?.[char.name]?.wd || 0),
-    ) * 0.1,
-    0.3,
-  );
-  const color = alpha("var(--mantine-color-red-6)", delta);
+  if (!diff) {
+    return {};
+  }
+
+  const [color, delta] = getColor(diff, char);
+  const opacity = Math.min(delta * 0.1, 0.3);
+  const themeColor = alpha(getThemeColor(color, theme), opacity);
+
   const backgroundImage = `repeating-linear-gradient(
     45deg,
-    ${color} 0px,
-    ${color} 10px,
+    ${themeColor} 0px,
+    ${themeColor} 10px,
     transparent 15px,
     transparent 25px
   )`;
 
-  return delta > 0 ? { style: { backgroundImage } } : {};
+  return delta > 0
+    ? { row: { style: { backgroundImage } }, name: { c: color } }
+    : {};
 };
 
 const Row = ({
@@ -64,7 +92,7 @@ const Row = ({
   const styles = useErrorStyles(char);
 
   return (
-    <Table.Tr {...styles}>
+    <Table.Tr {...styles.row}>
       {isRoster && (
         <Table.Td>
           <Switch
@@ -90,7 +118,10 @@ const Row = ({
             cls={char.class}
             style={{ opacity: !isRoster || char.active ? 1 : 0.25 }}
           />
-          <Text style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}>
+          <Text
+            style={{ opacity: !isRoster || char.active ? 1 : 0.5 }}
+            {...styles.name}
+          >
             {isRoster && !hideControls ? char.class : char.name}
           </Text>
         </Group>
