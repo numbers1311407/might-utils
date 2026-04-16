@@ -36,7 +36,7 @@ export const EmptyRow = ({ children }) => (
   </Table.Tr>
 );
 
-const getColor = (diff, char) => {
+const getColor = (status, char) => {
   const levelDelta = status[char.name]?.ld || 0;
   const wardenDelta = status[char.name]?.wd || 0;
 
