@@ -24,13 +24,14 @@ const renderOption = ({ option: { char } }) => {
 };
 
 export const CharSelect = ({
+  activeOnly = true,
   emits = "name",
   exclude = [],
   placeholder: propsPlaceholder,
   onChange,
   ...props
 }) => {
-  const roster = useRoster({ activeOnly: false });
+  const roster = useRoster({ activeOnly });
   const [search, setSearch] = useState("");
   const ref = useRef();
 
