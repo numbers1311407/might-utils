@@ -3,7 +3,7 @@ import * as titles from "@/config/constants/titles";
 import { IconPlus, IconArrowLeft } from "@tabler/icons-react";
 import { useRoute } from "wouter";
 import { AppLink, PageTitle } from "@/core/components";
-import { usePartyEditor } from "./use-party-editor.js";
+import { usePartyEditor } from "../hooks/use-party-editor.js";
 import { PartyIndex } from "./PartyIndex.jsx";
 import { Party } from "./Party.jsx";
 
@@ -28,7 +28,7 @@ export const Parties = () => {
             size="compact-md"
             href="/parties"
           >
-            Back to parties
+            Back to Party Index
           </Button>
         )}
         <Button

@@ -26,6 +26,7 @@ const renderOption = ({ option: { char } }) => {
 export const CharSelect = ({
   emits = "name",
   exclude = [],
+  placeholder: propsPlaceholder,
   onChange,
   ...props
 }) => {
@@ -40,8 +41,8 @@ export const CharSelect = ({
   }, [roster, exclude]);
 
   const placeholder = !data.length
-    ? "Nobody left to add"
-    : "Select party member...";
+    ? "Out of characters!"
+    : propsPlaceholder || "Select party member...";
 
   return (
     <Select

@@ -1,4 +1,4 @@
-import { Box, Group, Switch, Table, Text, Tooltip } from "@mantine/core";
+import { alpha, Box, Group, Switch, Table, Text, Tooltip } from "@mantine/core";
 import {
   getCharMight,
   getMaxWardenForLevel,
@@ -13,6 +13,7 @@ import {
   HelpIconTooltip,
   RestoreButton,
 } from "@/core/components/common";
+import { usePartyDiffContext } from "./party-diff";
 import { useRosterChar } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
@@ -24,6 +25,28 @@ export const EmptyRow = ({ children }) => (
     </Table.Td>
   </Table.Tr>
 );
+
+const useErrorStyles = (char) => {
+  const diff = usePartyDiffContext();
+
+  const delta = Math.min(
+    Math.max(
+      Math.abs(diff?.status?.[char.name]?.ld || 0),
+      Math.abs(diff?.status?.[char.name]?.wd || 0),
+    ) * 0.1,
+    0.3,
+  );
+  const color = alpha("var(--mantine-color-red-6)", delta);
+  const backgroundImage = `repeating-linear-gradient(
+    45deg,
+    ${color} 0px,
+    ${color} 10px,
+    transparent 15px,
+    transparent 25px
+  )`;
+
+  return delta > 0 ? { style: { backgroundImage } } : {};
+};
 
 const Row = ({
   char,
@@ -38,9 +61,10 @@ const Row = ({
 }) => {
   const rosterChar = useRosterChar(char.name);
   const disableControls = !rosterChar;
+  const styles = useErrorStyles(char);
 
   return (
-    <Table.Tr>
+    <Table.Tr {...styles}>
       {isRoster && (
         <Table.Td>
           <Switch
@@ -133,7 +157,11 @@ const Row = ({
               </Tooltip>
             )}
             {disableControls && (
-              <HelpIconTooltip tooltip="This character has been deleted from the roster and can no longer be edited, only removed." />
+              <HelpIconTooltip
+                c="error"
+                size="sm"
+                tooltip="This character has been deleted from the roster and can no longer be edited, only removed."
+              />
             )}
             {remove && (
               <Tooltip openDelay={500} label="Remove character">

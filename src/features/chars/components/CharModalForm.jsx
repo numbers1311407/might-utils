@@ -14,23 +14,26 @@ import { useState } from "react";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 
+import { CLASS_SHORTNAMES } from "@/config";
 import { capitalize } from "@/utils";
 import { TagsInput } from "@/core/components";
-import { charSchema, charClassSchema, tagSchema } from "@/model/schemas";
+import { extendCharSchema, charClassSchema, tagSchema } from "@/model/schemas";
 import { useClassTagsStore, useRosterStore } from "@/model/store";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
 
-const formCharSchema = charSchema
-  .extend({
-    siblings: z.array(z.string()),
-  })
-  .refine(
-    ({ name, siblings }) => !name || !siblings.includes(capitalize(name)),
-    {
-      message: "Character name is already taken",
-      path: ["name"],
-    },
-  );
+const formCharSchema = extendCharSchema((schema) =>
+  schema
+    .extend({
+      siblings: z.array(z.string()),
+    })
+    .refine(
+      ({ name, siblings }) => !name || !siblings.includes(capitalize(name)),
+      {
+        message: "Character name is already taken",
+        path: ["name"],
+      },
+    ),
+);
 
 export const CharModalForm = ({ char, onClose, onSubmit }) => {
   return (
@@ -153,7 +156,7 @@ const CharForm = ({ char, onClose, onSubmit }) => {
           label="Class"
           placeholder="Select class"
           searchable
-          data={charSchema.shape.class.options}
+          data={CLASS_SHORTNAMES}
           key={form.key("class")}
           {...form.getInputProps("class")}
         />

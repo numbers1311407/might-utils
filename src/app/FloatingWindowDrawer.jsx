@@ -3,10 +3,10 @@ import { usePersistedFloatingWindowApi } from "@/core/hooks";
 import {
   FloatingNpcSimulator,
   FloatingMightRangeFinder,
-  FloatingRoster,
   HelpIconTooltip,
   RestoreButton,
 } from "@/core/components";
+import { FloatingRoster } from "@/features/chars";
 
 const HELP =
   "These buttons will open floating windows containing useful controls you might want on different pages of the app. They'll stay where you leave them on close.";

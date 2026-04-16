@@ -1,25 +1,24 @@
 import { Box, Divider, Grid, Paper, Stack, Text, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
-import {
-  AppLink,
-  Aside,
-  CharsTable,
-  useCalculatorContext,
-  CharStatsTable as StatsTable,
-} from "@/core/components";
-
 import { useParty, useStableCallback } from "@/core/hooks";
-import { usePartyEditor } from "./use-party-editor.js";
+import { AppLink, Aside, useCalculatorContext } from "@/core/components";
+import { CharsTable } from "./CharsTable.jsx";
+import { CharSelect } from "./CharSelect.jsx";
+import { CharStatsTable as StatsTable } from "./CharStatsTable.jsx";
+import { usePartyEditor } from "../hooks/use-party-editor.js";
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyHeader } from "./PartyHeader.jsx";
 import { ToggleNpcSimButton } from "./ToggleNpcSimButton.jsx";
+import { PartyDiff, PartyDiffProvider } from "./party-diff";
 
 export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();
   const beginPartyEdit = usePartyEditor();
 
   const { party, stats, ...partyApi } = useParty(partyId);
+
+  const partyNames = party.chars.map((char) => char.name);
 
   const { setMight } = useCalculatorContext();
   const might = stats?.might.total || 0;
@@ -43,74 +42,85 @@ export const Party = ({ id: partyId }) => {
 
   return (
     <Box>
-      <PartyHeader
-        partyId={party.id}
-        onCopy={copyParty}
-        onRemove={removeParty}
-        onRename={() => beginPartyEdit(party)}
-        onReset={party.isDirty ? partyApi.resetChars : undefined}
-      />
+      <PartyDiffProvider partyId={partyId}>
+        <PartyHeader
+          partyId={party.id}
+          onCopy={copyParty}
+          onRemove={removeParty}
+          onRename={() => beginPartyEdit(party)}
+          onReset={party.isDirty ? partyApi.resetChars : undefined}
+        />
 
-      <Divider my="md" />
+        <Divider my="md" />
 
-      <Grid align="flex-start" gutter="xl">
-        <Grid.Col span={{ base: 12, lg: 6 }}>
-          <Stack gap="md">
-            <Paper p="md" shadow="md">
-              <Title order={4} c="primary">
-                Diff
-              </Title>
-            </Paper>
-            <Paper p="md" shadow="md">
-              <Title order={4} c="primary">
-                Party Stats
-              </Title>
-              <StatsTable stats={stats} />
-            </Paper>
+        <Grid align="flex-start" gutter="xl">
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack gap="md">
+              <PartyDiff />
+              <Paper p="md" shadow="md">
+                <Title order={4} c="primary">
+                  Party Stats
+                </Title>
+                <StatsTable stats={stats} />
+              </Paper>
+            </Stack>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack gap="md">
+              <Paper shadow="md" p="md">
+                <Title order={4} mb="xs" c="primary">
+                  The Party
+                </Title>
+                <CharSelect
+                  emits="char"
+                  size="md"
+                  mb="md"
+                  exclude={partyNames}
+                  placeholder="Click to add a character..."
+                  onChange={(char) => partyApi.addChar(char.name)}
+                />
+                <CharsTable
+                  chars={party.chars}
+                  onUpdate={partyApi.updateChar}
+                  onRemove={partyApi.removeChar}
+                  onReset={partyApi.resetChar}
+                  dirtyChars={party.dirty}
+                  emptyContent={
+                    <Stack gap="sm">
+                      <Text c="warning" size="xl">
+                        This party has no characters!
+                      </Text>
+                      <Text>
+                        Use the dropdown above to add characters from the
+                        roster.
+                      </Text>
+                      <Text size="lg" c="warning">
+                        OR
+                      </Text>
+                      <Text>
+                        Use the{" "}
+                        <AppLink href="/party-generator">
+                          party generator
+                        </AppLink>{" "}
+                        to find a party for a specific might score and save a
+                        result.
+                      </Text>
+                    </Stack>
+                  }
+                />
+                <Divider />
+                <ToggleNpcSimButton mt="sm" />
+              </Paper>
+            </Stack>
+          </Grid.Col>
+        </Grid>
+
+        <Aside>
+          <Stack gap="xs">
+            <PartiesNav />
           </Stack>
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, lg: 6 }}>
-          <Paper shadow="md" p="md">
-            <Title order={5} mb="xs">
-              The Party
-            </Title>
-            <CharsTable
-              chars={party.chars}
-              onUpdate={partyApi.updateChar}
-              onRemove={partyApi.removeChar}
-              onReset={partyApi.resetChar}
-              dirtyChars={party.dirty}
-              emptyContent={
-                <Stack gap="sm">
-                  <Text c="warning" size="xl">
-                    This party has no characters!
-                  </Text>
-                  <Text>
-                    Use the dropdown above to add characters from the roster.
-                  </Text>
-                  <Text size="lg" c="warning">
-                    OR
-                  </Text>
-                  <Text>
-                    Use the{" "}
-                    <AppLink href="/party-generator">party generator</AppLink>{" "}
-                    to find a party for a specific might score and save a
-                    result.
-                  </Text>
-                </Stack>
-              }
-            />
-            <Divider />
-            <ToggleNpcSimButton mt="sm" />
-          </Paper>
-        </Grid.Col>
-      </Grid>
-
-      <Aside>
-        <Stack gap="xs">
-          <PartiesNav />
-        </Stack>
-      </Aside>
+        </Aside>
+      </PartyDiffProvider>
     </Box>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useStableCallback } from "@/core/hooks";
 import { createModal, usePartiesStoreApi as partiesApi } from "@/model/store";
-import { PartyForm } from "./PartyForm.jsx";
+import { PartyForm } from "../components/PartyForm.jsx";
 
 export const usePartyEditor = () => {
   const [draftParty, setDraftParty] = useState(null);
@@ -15,7 +15,7 @@ export const usePartyEditor = () => {
   const openModal = createModal(PartyForm, {
     onClose: () => setDraftParty(null),
     modalProps: {
-      title: draftParty?.id ? "Edit Party" : "Creat a Party",
+      title: draftParty?.id ? "Edit Party" : "Create a New Party",
     },
     componentProps: (props) => ({
       record: draftParty,

@@ -1,9 +1,10 @@
 import * as z from "zod";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";
 import { getMaxWardenForLevel } from "@/config/chars/warden";
+import { getCharMight } from "@/config/chars/might";
+import { CLASS_SHORTNAMES } from "@/config";
 import { capitalize } from "@/utils";
 import { tagSchema } from "./tag.js";
-import { CLASS_SHORTNAMES } from "@/config";
 
 export const charClassSchema = z.enum(CLASS_SHORTNAMES, {
   message: 'Expected a valid 3-letter class shortname, e.g. "WAR"',
@@ -37,19 +38,29 @@ export const charLevelSchema = z.coerce
   .min(MightMinLevel, { message: invalidLevelMessage })
   .max(MightMaxLevel, { message: invalidLevelMessage });
 
-export const charSchema = z
-  .object({
-    active: charActiveSchema,
-    class: charClassSchema,
-    level: charLevelSchema,
-    name: charNameSchema,
-    tags: z
-      .array(tagSchema)
-      .default([])
-      .transform((tags) => [...tags].sort()),
-    warden: charWardenSchema,
-  })
-  .refine((o) => o.warden <= getMaxWardenForLevel(o.level), {
-    message: "Warden rank is impossible for level",
-    path: ["warden"],
-  });
+export const charSchemaBase = z.object({
+  active: charActiveSchema,
+  class: charClassSchema,
+  level: charLevelSchema,
+  name: charNameSchema,
+  tags: z
+    .array(tagSchema)
+    .default([])
+    .transform((tags) => [...tags].sort()),
+  warden: charWardenSchema,
+  might: z.number().min(0, "Might cannot be lower than 0").default(0),
+});
+
+export const extendCharSchema = (fn) => {
+  return fn(charSchemaBase)
+    .transform((char) => ({
+      ...char,
+      might: getCharMight(char),
+    }))
+    .refine((o) => o.warden <= getMaxWardenForLevel(o.level), {
+      message: "Warden rank is impossible for level",
+      path: ["warden"],
+    });
+};
+
+export const charSchema = extendCharSchema((s) => s);

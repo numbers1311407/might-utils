@@ -16,10 +16,11 @@ const formSchema = partySchema.refine(
 
 export const PartyForm = ({ record, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
+  const { data: initialValues = {} } = partySchema.safeParse(record);
 
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: partySchema.partial().parse(record),
+    initialValues,
     validate: zod4Resolver(formSchema),
   });
 

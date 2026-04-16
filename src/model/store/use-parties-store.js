@@ -1,9 +1,14 @@
 import { createRegistryStore } from "./helpers";
 import { useRosterStoreApi as rosterApi } from "./use-roster-store.js";
 import { getConfirmation } from "./use-confirmation-store.js";
-import { partySchema } from "@/model/schemas";
+import {
+  virtualCharSchema,
+  partySchema,
+  virtualPartySchema,
+} from "@/model/schemas";
 import { getCharsStats } from "./helpers";
 import { pick } from "@/utils";
+import { getCharMight } from "@/config/chars/might";
 import * as compApi from "@/model/schemas/comp";
 
 const _resolveParty = (partyId, api) => {
@@ -14,7 +19,10 @@ const _getChars = (partyId, api) => {
   const party = _resolveParty(partyId, api);
 
   try {
-    return compApi.processPartyComp(party.comp);
+    return compApi.processPartyComp(party.comp).map((char) => ({
+      ...char,
+      might: getCharMight(char),
+    }));
   } catch {
     return [];
   }
@@ -51,10 +59,12 @@ const _addOrUpdateChar = (partyId, value, api) => {
   });
 
   if (updated) {
-    api.add({
-      ...party,
-      comp: compApi.createPartyComp(Array.from(chars.values())),
-    });
+    api.add(
+      partySchema.parse({
+        ...party,
+        comp: compApi.createPartyComp(Array.from(chars.values())),
+      }),
+    );
   }
 };
 
@@ -70,6 +80,7 @@ const extendApi = (_set, get, api) => {
           const rosterChar = rosterApi.getChar(char.name, { classTags });
 
           if (
+            !rosterChar ||
             char.warden !== rosterChar.warden ||
             char.level !== rosterChar.level
           ) {
@@ -78,7 +89,7 @@ const extendApi = (_set, get, api) => {
             acc.isDirty = true;
           }
 
-          acc.chars.push({ ...rosterChar, ...char });
+          acc.chars.push(virtualCharSchema.parse({ ...rosterChar, ...char }));
           return acc;
         },
         {
@@ -89,7 +100,7 @@ const extendApi = (_set, get, api) => {
         },
       );
 
-      return { ...party, ...hydration };
+      return virtualPartySchema.parse({ ...party, ...hydration });
     },
 
     getStats: (partyId) => {

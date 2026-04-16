@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useRosterStore, useRosterStoreApi as api } from "@/model/store";
+import { useRosterStore, useRosterStoreApi as rosterApi } from "@/model/store";
 
 export const useRoster = (options = {}) => {
   const { classTags = false, activeOnly: optActiveOnly } = options;
@@ -8,13 +8,11 @@ export const useRoster = (options = {}) => {
   const storeActiveOnly = useRosterStore((store) => store.activeOnly);
   const activeOnly = optActiveOnly ?? storeActiveOnly;
 
-  const roster = useMemo(() => {
-    return !classTags
-      ? rawRoster
-      : rawRoster.map((char) => api.getChar(char.name, { classTags: true }));
-  }, [classTags, rawRoster]);
-
-  return useMemo(() => {
-    return roster.filter((char) => (activeOnly ? char.active : true));
-  }, [roster, activeOnly]);
+  return useMemo(
+    () =>
+      rawRoster
+        .map((char) => rosterApi.getChar(char.name, { classTags }))
+        .filter((char) => (activeOnly ? char.active : true)),
+    [activeOnly, classTags, rawRoster],
+  );
 };

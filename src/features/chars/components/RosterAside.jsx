@@ -1,7 +1,7 @@
 import { Box, Stack, SegmentedControl } from "@mantine/core";
 import { useRosterStats, useRosterControls } from "@/core/hooks";
 import { Aside } from "@/core/components/common";
-import { CharStatsTable } from "@/core/components/chars";
+import { CharStatsTable } from "./CharStatsTable.jsx";
 
 export const RosterActiveFilterToggle = () => {
   const { activeOnly, setActiveOnly } = useRosterControls();

@@ -3,6 +3,7 @@ import { defaultRoster } from "@/config/defaults";
 import { useClassTagsStoreApi as classTagsApi } from "./use-class-tags-store.js";
 import { rosterSchema, charSchema } from "@/model/schemas";
 import { getCharsStats } from "./helpers/get-chars-stats.js";
+import { getCharMight } from "@/config/chars/might";
 
 const rosterSort = (a, b) => {
   return a.name.localeCompare(b.name);
@@ -56,14 +57,17 @@ const api = {
   },
 
   getChar: (name, options = {}) => {
-    const { classTags = false } = options;
+    const { classTags = true } = options;
     const char = _getChar(name);
 
-    if (!classTags) return char;
+    if (!char) {
+      return undefined;
+    }
 
     return {
       ...char,
-      tags: api.getCharTags(char, { charTags: true }),
+      might: getCharMight(char),
+      tags: !classTags ? char.tags : api.getCharTags(char, { classTags }),
     };
   },
 

@@ -9,7 +9,6 @@ export const CharStatsTable = ({
   mode = "vertical",
   minMight = false,
 }) => {
-  // TOOD fix memoization for compiler
   const rows = useMemo(() => {
     if (!stats) return [];
 
@@ -19,13 +18,13 @@ export const CharStatsTable = ({
         "Might",
         <Text>
           <Text span c="primary.4">
-            {stats.might.total} max
+            {stats.might.total} {minMight ? "max" : ""}
           </Text>
           {minMight && (
             <>
               {" / "}
               <Text span c="primary.5">
-                {stats.might.minTotal} min
+                {stats.might.minTotal}
               </Text>
             </>
           )}

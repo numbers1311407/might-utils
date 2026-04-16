@@ -1,4 +1,6 @@
 import * as z from "zod";
+import { getCharMight } from "@/config/chars/might";
+import { sum } from "@/utils";
 
 // NOTE all these regexes assume the lowest level is 45 and highest is 71
 const baseValid =
@@ -93,6 +95,7 @@ export const processComp = (compStr) => {
       count: Number(count),
       level: Number(level),
       warden: Number(warden),
+      might: getCharMight({ level: Number(level), warden: Number(warden) }),
       terms: subTerms ? subTerms.split(",") : [],
     };
   });
@@ -101,11 +104,15 @@ export const processComp = (compStr) => {
 export const processPartyComp = (compStr) => {
   return processComp(compStr)
     .reduce((party, group) => {
-      const { terms, ...rest } = group;
+      const { terms, count: _c, ...rest } = group;
       terms.forEach((name) => party.push({ name, ...rest }));
       return party;
     }, [])
     .sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
+};
+
+export const getMightFromPartyComp = (comp) => {
+  return comp ? sum(processPartyComp(comp).map(({ might }) => might)) : 0;
 };

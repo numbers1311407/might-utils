@@ -14,15 +14,15 @@ import { useEffect, useState } from "react";
 import { getConfirmation, useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
 import {
-  CharsTable,
-  RosterAside,
   AddSmallButton,
   RestoreSmallButton,
   RemoveSmallButton,
-  CharModalForm,
   PageTitle,
 } from "@/core/components";
 
+import { CharModalForm } from "./CharModalForm.jsx";
+import { RosterAside } from "./RosterAside.jsx";
+import { CharsTable } from "./CharsTable.jsx";
 import { RosterTagsEditor } from "./RosterTagsEditor.jsx";
 import { RosterImporter } from "./RosterImporter.jsx";
 

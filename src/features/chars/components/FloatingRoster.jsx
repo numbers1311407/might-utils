@@ -7,7 +7,7 @@ import { CharsTable } from "./CharsTable.jsx";
 import {
   useFloatingRoster,
   FLOATING_ROSTER_NAME,
-} from "./use-floating-roster.js";
+} from "../hooks/use-floating-roster.js";
 
 const HELP =
   "This is the active roster used to power the party generator. It's in a window " +
