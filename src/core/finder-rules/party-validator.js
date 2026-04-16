@@ -1,16 +1,5 @@
-import { add_operation, apply as jsonLogicApply } from "json-logic-js";
-import { formatQuery } from "react-querybuilder";
 import { TagRuleTypes } from "@/model/schemas";
-import { jsonLogicAdditionalOperators } from "react-querybuilder";
-
-for (const [op, func] of Object.entries(jsonLogicAdditionalOperators)) {
-  add_operation(op, func);
-}
-
-const applyRule = (rule, char) => {
-  const query = formatQuery(rule.query, "jsonlogic");
-  return jsonLogicApply(query, char);
-};
+import { applyRule } from "./json-logic.js";
 
 export const createPartyValidator = (rules, pool) => {
   const [validIdxsByRule, rulesBySize] = rules.reduce(
