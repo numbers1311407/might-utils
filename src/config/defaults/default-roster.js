@@ -5,7 +5,7 @@ export const defaultRoster = [
     level: 68,
     warden: 2,
     active: true,
-    tags: ["erudite"],
+    tags: [],
   },
   {
     name: "Snarf",
@@ -13,7 +13,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["dwarf"],
+    tags: [],
   },
   {
     name: "Phatos",
@@ -21,7 +21,7 @@ export const defaultRoster = [
     level: 67,
     warden: 0,
     active: true,
-    tags: ["high-elf"],
+    tags: [],
   },
   {
     name: "Huffpo",
@@ -29,7 +29,7 @@ export const defaultRoster = [
     level: 67,
     warden: 0,
     active: true,
-    tags: ["halfling"],
+    tags: [],
   },
   {
     name: "Chacha",
@@ -37,7 +37,7 @@ export const defaultRoster = [
     level: 66,
     warden: 0,
     active: true,
-    tags: ["iksar"],
+    tags: [],
   },
   {
     name: "Dellingr",
@@ -45,7 +45,7 @@ export const defaultRoster = [
     level: 68,
     warden: 2,
     active: true,
-    tags: ["erudite"],
+    tags: [],
   },
   {
     name: "Difa",
@@ -53,7 +53,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["dark-elf", "tank"],
+    tags: [],
   },
   {
     name: "Guta",
@@ -61,7 +61,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["iksar"],
+    tags: [],
   },
   {
     name: "Delulu",
@@ -69,7 +69,7 @@ export const defaultRoster = [
     level: 66,
     warden: 0,
     active: true,
-    tags: ["erudite"],
+    tags: [],
   },
   {
     name: "Rodeo",
@@ -77,7 +77,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["iksar"],
+    tags: [],
   },
   {
     name: "Kwok",
@@ -85,7 +85,7 @@ export const defaultRoster = [
     level: 67,
     warden: 2,
     active: true,
-    tags: ["troll"],
+    tags: [],
   },
   {
     name: "Lala",
@@ -93,7 +93,7 @@ export const defaultRoster = [
     level: 66,
     warden: 0,
     active: true,
-    tags: ["wood-elf"],
+    tags: [],
   },
   {
     name: "Rizzt",
@@ -101,7 +101,7 @@ export const defaultRoster = [
     level: 65,
     warden: 0,
     active: true,
-    tags: ["human"],
+    tags: [],
   },
   {
     name: "Oldboy",
@@ -109,7 +109,7 @@ export const defaultRoster = [
     level: 65,
     warden: 0,
     active: true,
-    tags: ["dwarf"],
+    tags: [],
   },
   {
     name: "Yeti",
@@ -117,6 +117,6 @@ export const defaultRoster = [
     level: 65,
     warden: 0,
     active: true,
-    tags: ["ogre"],
+    tags: [],
   },
 ];

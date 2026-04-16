@@ -29,16 +29,21 @@ more convenient:
   - include links from the might ranges to the finder, and possibly listings
     of "saved parties" that match the might level or are close?
 - **Parties: MVP**
-  - Scrap and replace the party store with something more hook driven using lessons learned.
   - Parties needs an index page with filtering & sorting
-  - Parties should track might score
-  - Parties should have concept of "diff score" tracking how close the current roster can get to
-    the party comp.
   - Sort by name, might score, diff
-  - Parties needs a coloring/indicator scheme for identifying diff state, maybe con colors?
-    - roster satisfies the comp - 0 diff
-    - roster can satisfy the comp by shuffling warden - small diff
-    - roster needs to change levels - large diff
+  - The show page probably doesn't need the shared header, it's kind of fighting for space
+  - Comp breakdown view (eventually this will link to the comp)
+  - Embrace the range. Show might, min and max prominently.
+  - Instead of an edit mode, consider a big old "save changes" button and perhaps confirmation
+    on routing away. The thing is I think we need some way for users to roll back changes,
+    be that an "edit mode" where users enter manually and have to commit to save, a
+    save button and a confirmation on leaving, an "undo" functionality (question would
+    be when the quicksave happens), or even a manual snapshot like we had previously.
+    Manual snapshot could be interesting but it clutters the UI further, though there's
+    plenty of room in the diff table for a 3rd column: snapshot compare.
+  - The point is: users need to be able to mess with the form and know they can revert what
+    they did. No one wants to try to remember the level and warden settings for 12 chars.
+    
 - **NPC Sim: MVP**
   - Should add a 2nd window with metadata, namely links to the finder for the
     actual numeric ranges in the NPC response that you don't see in game.
@@ -47,6 +52,10 @@ more convenient:
 - **Tag rules: Name rules in the builder**
   - This doesn't solve warden toggling but it's a start. Having "name" type rules in the builder would
     allow for rules like "name is tank1 and level > x or name is tank2 and level > y".
+  **Issues**
+  - For parties and other records with duplicate name generation, if the name is near max it
+    will fail validation silently. The answer is probably to not do that, we have the create
+    form right there and can just ask for the name.
   
 ### Post MVP Roadmap
 
@@ -76,10 +85,6 @@ more convenient:
  
 ### Nice to haves (future work)
 
-- **Parties: Party edit mode**
-  - The final form of party as a largely static comp you're tracking roster diff against
-    makes it feel like editing needs to be more controlled. There should be an edit mode with
-    not only a confirmation button but a "save as copy" button to easily create dupe parties.
 - **Tag Rules: Prettify**
   - decorate the rules human output with JSX to colorize keywords and so on.
   - RQB has NO validation. it should at least test for blank fields and no rules.

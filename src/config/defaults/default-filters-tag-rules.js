@@ -14,7 +14,7 @@ export const defaultFiltersTagRules = {
     { size: [3, 6], type: "range", query: tagRule("support"), value: [0, 1] },
     { size: [3, 6], type: "range", query: tagRule("dps"), value: [3] },
     { size: [7, 12], type: "range", query: tagRule("healer"), value: [2] },
-    { size: [9, 12], type: "range", query: tagRule("support"), value: [1, 1] },
+    { size: [9, 12], type: "range", query: tagRule("support"), value: [1] },
     { size: [9, 12], type: "range", query: tagRule("dps"), value: [4] },
     { size: [9, 12], type: "range", query: tagRule("tank"), value: [2, 2] },
   ],

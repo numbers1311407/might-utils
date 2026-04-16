@@ -50,7 +50,7 @@ const handleDirtyDefaults = (ruleset, state) => {
 // a lot if this could be simplified.
 export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   active: {
-    filters: [defaultFilters.id, defaultTimeFlag.id],
+    filters: [defaultFilters.id],
   },
   dirtyDefaults: [],
   groupSizeTwenty: false,
