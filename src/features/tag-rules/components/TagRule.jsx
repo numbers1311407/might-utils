@@ -1,9 +1,8 @@
 import { forwardRef } from "react";
 import { Kbd, Group, Text, Tooltip } from "@mantine/core";
-import { formatQuery } from "react-querybuilder";
-import { capitalize } from "@/utils";
+import { getQueryDescription } from "@/core/finder-rules";
 
-const TagRuleContentAll = (props) => (
+const TagRuleSizeAll = (props) => (
   <Tooltip
     withArrow
     multiline
@@ -37,7 +36,7 @@ const getRangeRuleTooltip = (min, max) => {
         : `Beteen ${min} and ${max} characters must satisfy this rule`;
 };
 
-const TagRuleContentRange = ({ rule, ...props }) => (
+const TagRuleSizeRange = ({ rule, ...props }) => (
   <Tooltip
     withArrow
     multiline
@@ -51,52 +50,26 @@ const TagRuleContentRange = ({ rule, ...props }) => (
 );
 
 const comps = {
-  all: TagRuleContentAll,
-  range: TagRuleContentRange,
+  all: TagRuleSizeAll,
+  range: TagRuleSizeRange,
 };
 
-const TagRuleContent = forwardRef(({ rule }, ref) => {
+const TagRuleSize = forwardRef(({ rule }, ref) => {
   const Component = comps[rule.type];
   return <Component ref={ref} rule={rule} />;
 });
 
-const getQueryDescription = (query) => {
-  const value = formatQuery(query, {
-    format: "natural_language",
-    translations: {
-      groupSuffix: "",
-      groupSuffix_not: "",
-    },
-    fields: [{ value: "warden", label: "warden rank" }],
-    parseNumbers: true,
-    valueProcessor: (rule) => {
-      if (rule.field === "class") {
-        return rule.value.toUpperCase();
-      }
-      if (rule.field === "tags") {
-        return `"${rule.value}"`;
-      }
-      // if (rule.field === "warden" && rule.value == 0) {
-      //   return "unwardened";
-      // }
-      return rule.value;
-    },
-    operatorMap: {
-      ">=": "is at least",
-      "<=": "is at most",
-    },
-  });
-
-  return value === "1 is 1"
-    ? "No rules are applied, check your query."
-    : capitalize(value);
-};
+const TagRuleDescription = ({ rule, ...props }) => (
+  <Text size="md" {...props}>
+    {getQueryDescription(rule.query)}
+  </Text>
+);
 
 export const TagRule = ({ rule, ...props }) => {
   return (
     <Group {...props} gap={8} align="center">
-      <TagRuleContent rule={rule} />
-      <Text size="md">{getQueryDescription(rule.query)}</Text>
+      <TagRuleSize rule={rule} />
+      <TagRuleDescription rule={rule} size="md" />
     </Group>
   );
 };
