@@ -10,7 +10,7 @@ import { createComp, createTagsComp } from "@/model/schemas/comp";
 import { FindPartiesError } from "./find-parties-error.js";
 
 const MAX_RECURSIONS = 10_000_000;
-const MAX_RESPONSE_LENGTH = 2500;
+const MAX_RESPONSE_LENGTH = 5000;
 
 export const defaultOptions = {
   groupBy: "comp",
@@ -37,6 +37,8 @@ export const findParties = (roster, targetScore, options = {}) => {
     ...options,
   };
 
+  const maxScore = targetScore;
+  const minScore = targetScore - margin;
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
   const compType = Array.isArray(groupBy) ? "tags" : groupBy || "comp";
@@ -86,6 +88,15 @@ export const findParties = (roster, targetScore, options = {}) => {
       return acc;
     }, []);
 
+  if (buckets.length < minSize) {
+    throw new FindPartiesError(
+      "The search options applied to your roster didn't result in enough characters to " +
+        `satisfy the query. ${buckets.length} eligible characters found, but min party ` +
+        `size is set to ${minSize}.`,
+      "POOL_SIZE",
+    );
+  }
+
   const pool = buckets.flat();
 
   // minSumLookup and maxSumLookup will contain calculated possible
@@ -123,12 +134,18 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   instr.end("setupPool");
 
-  if (!pool.length) {
-    throw new FindPartiesError(
-      "No eligible roster members found, check your min/max character levels and roster.",
-      "EMPTY_ROSTER",
-    );
-  }
+  instr.start("validator-create");
+  const validator = createPartyValidator(rules, buckets, {
+    minSize,
+    maxSize,
+    minScore,
+    maxScore,
+  });
+  instr.end("validator-create");
+
+  instr.start("validator-prechecks");
+  validator.runPreChecks();
+  instr.end("validator-prechecks");
 
   if (pool[0].score <= margin) {
     throw new FindPartiesError(
@@ -145,10 +162,6 @@ export const findParties = (roster, targetScore, options = {}) => {
   const sortParty = (idxs) => {
     return idxs.sort((a, b) => pool[a].name.localeCompare(pool[b].name));
   };
-
-  instr.start("setupValidator");
-  const validator = createPartyValidator(rules, pool);
-  instr.end("setupValidator");
 
   // NOTE this is the parties array in the response
   const parties = [];
@@ -175,6 +188,7 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   const recurse = (remainingScore, bucketIndex) => {
     if (parties.length >= MAX_RESPONSE_LENGTH) {
+      validator.reporter.end("maxResponseLength");
       return;
     }
 
@@ -188,6 +202,11 @@ export const findParties = (roster, targetScore, options = {}) => {
 
     const partySize = partyPoolIdxs.size;
 
+    validator.reporter.call({
+      currentScore: targetScore - remainingScore,
+      currentSize: partySize,
+    });
+
     if (
       remainingScore >= 0 &&
       remainingScore <= margin &&
@@ -195,23 +214,32 @@ export const findParties = (roster, targetScore, options = {}) => {
       partySize <= maxSize
     ) {
       if (!validator.test(partyPoolIdxs)) {
+        validator.reporter.end("ruleFailure");
         return;
       }
 
-      const newParty = {
+      parties.push({
         party: sortParty(new Uint8Array(partyPoolIdxs)),
         score: targetScore - remainingScore,
         comp: createPartyComp(),
-      };
+      });
 
-      parties.push(newParty);
+      validator.reporter.end("partyFound");
+      return;
     }
 
-    if (
-      bucketIndex >= buckets.length ||
-      partyPoolIdxs.size >= maxSize ||
-      remainingScore <= 0
-    ) {
+    if (bucketIndex >= buckets.length) {
+      validator.reporter.end("rosterExhausted");
+      return;
+    }
+
+    if (partyPoolIdxs.size >= maxSize) {
+      validator.reporter.end("sizeExceeded");
+      return;
+    }
+
+    if (remainingScore <= 0) {
+      validator.reporter.end("scoreExceeded");
       return;
     }
 
@@ -224,7 +252,14 @@ export const findParties = (roster, targetScore, options = {}) => {
     const remainingMin = minSumLookup[bucketIndex][minSlotsLeft];
     const remainingMax = maxSumLookup[bucketIndex][maxSlotsLeft];
     const minRemainingScore = remainingScore - margin;
-    if (remainingMin > remainingScore || remainingMax < minRemainingScore) {
+
+    if (remainingMin > remainingScore) {
+      validator.reporter.end("branchHigh");
+      return;
+    }
+
+    if (remainingMax < minRemainingScore) {
+      validator.reporter.end("branchLow");
       return;
     }
 
@@ -233,13 +268,16 @@ export const findParties = (roster, targetScore, options = {}) => {
     for (let i = 0; i < charBucket.length; i++) {
       const slot = charBucket[i];
 
-      if (slot.score > remainingScore) break;
+      if (slot.score > remainingScore) {
+        break;
+      }
 
       partyPoolIdxs.add(slot.idx);
       recurse(remainingScore - slot.score, bucketIndex + 1);
       partyPoolIdxs.delete(slot.idx);
     }
 
+    validator.reporter.end("pathComplete");
     recurse(remainingScore, bucketIndex + 1);
   };
 
@@ -264,8 +302,9 @@ export const findParties = (roster, targetScore, options = {}) => {
     pool,
     size: parties.length,
     groupBy,
-    perf: {
-      recursions: recursionCount,
+    analytics: {
+      telemetry: validator.telemetry,
+      reports: validator.reports,
       timing: instr.finish(),
     },
   };
