@@ -1,7 +1,6 @@
-import { useMemo, Suspense } from "react";
+import { useMemo } from "react";
 import { useTagGroupsStoreApi as tgapi } from "@/model/store";
 import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
-import { findPartiesAsync } from "../find-parties";
 import { PartyFinderContext } from "../context.js";
 import { useFindPartiesOptionsUrlHydration } from "../hooks.js";
 import { usePartyFinderStore } from "../store.js";
@@ -38,25 +37,13 @@ export const PartyFinderContextProvider = ({ children }) => {
     ];
   }, [finderOptions, rules]);
 
-  const resultsPromise = useMemo(
-    () => findPartiesAsync(roster, targetScore, options),
-    [options, roster, targetScore],
-  );
+  const value = {
+    options,
+    roster,
+    targetScore,
+    // this is used for the react-query and the error boundary key, YOLO.
+    key: JSON.stringify({ options, roster, targetScore }),
+  };
 
-  const value = useMemo(() => {
-    return {
-      options,
-      resultsPromise,
-      // NOTE "key" for the error page to trigger re-render after caught error
-      key: resultsPromise,
-      roster,
-      targetScore,
-    };
-  }, [options, resultsPromise, roster, targetScore]);
-
-  return (
-    <Suspense>
-      <PartyFinderContext value={value}>{children}</PartyFinderContext>
-    </Suspense>
-  );
+  return <PartyFinderContext value={value}>{children}</PartyFinderContext>;
 };

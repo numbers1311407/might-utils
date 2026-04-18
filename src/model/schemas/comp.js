@@ -73,6 +73,17 @@ export const createCompGroup = ({ level, warden, terms }) => {
   return `${level}/${warden}${terms ? "/" + [...terms].sort().join(",") : ""}`;
 };
 
+export const humanizeComp = (comp) => {
+  return comp
+    .map((item) => {
+      return (
+        `${item.count} ${item.level}${item.warden ? ` Rk. ${item.warden}` : ""} ` +
+        `${item.terms.length ? `"${item.terms.join('", "')}"` : ""}`
+      );
+    })
+    .join(", ");
+};
+
 export const processComp = (compStr) => {
   if (!compStr) {
     return [];

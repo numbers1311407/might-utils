@@ -15,14 +15,17 @@ more convenient:
 
 ### Release checklist
 
+- **Roster Changes**
+  - Move the tag forms to the roster page and kill the tags editor
+  - Let's do negative tags, it's almost there with the locked tag concept they just need to be
+    toggleable instead of deletable. That toggle will be in the form of a 2nd tags array, antitags.
+  - And while we're at it, add might toggle buttons on the roster nav as well now that we're
+    committing to opening that UI up a bit.
+  - (probably actually just separate out the party list now since the two components are so
+    different.
 - **Party Generator: MVP**
-  - Throw better errors from the party finder to give players hints on why results are missing
-    - warn if the roster isn't big enough to fill the party size
-    - warn if characters pass no rules or few rules
-  - UI for results and other UI cleanup.
-      - two key features:
-        - grouped results should clearly show who fulfills each of the grouped properties.
-        - rules should clearly show who matched them
+  - Expose the analytics as a 2nd tab where search stats are shown and possible bottlenecks listed.
+  - If a search has no results, try to show the reasons why on the empty page directly.
   - Multiselect for rulesets
 - **Might Range Finder: MVP**
   - complete UI
@@ -43,15 +46,13 @@ more convenient:
     plenty of room in the diff table for a 3rd column: snapshot compare.
   - The point is: users need to be able to mess with the form and know they can revert what
     they did. No one wants to try to remember the level and warden settings for 12 chars.
-    
 - **NPC Sim: MVP**
-  - Should add a 2nd window with metadata, namely links to the finder for the
+  - Should add a 2nd window with metadata in the main calculator, namely links to the finder for the
     actual numeric ranges in the NPC response that you don't see in game.
   **Global: 404 page**
   - an actual in app 404 page for bad paths
 - **Tag rules: Name rules in the builder**
-  - This doesn't solve warden toggling but it's a start. Having "name" type rules in the builder would
-    allow for rules like "name is tank1 and level > x or name is tank2 and level > y".
+  - There's no reason not to have this and it could be useful.
   **Issues**
   - For parties and other records with duplicate name generation, if the name is near max it
     will fail validation silently. The answer is probably to not do that, we have the create

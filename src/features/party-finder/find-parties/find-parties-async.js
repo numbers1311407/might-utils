@@ -11,15 +11,8 @@ export const findPartiesAsync = async (roster, targetScore, options) => {
         return;
       }
       if (data.error) {
-        console.error("worker error", data.error);
-
         if (data.error.__type === "FindPartiesError") {
-          const error = new FindPartiesError(
-            data.error.message,
-            data.error.code,
-          );
-          error.stack = data.error.stack;
-          reject(error);
+          reject(FindPartiesError.fromJSON(data.error));
         } else {
           reject(data.error);
         }

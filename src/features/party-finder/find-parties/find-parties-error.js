@@ -14,3 +14,9 @@ export class FindPartiesError extends Error {
     };
   }
 }
+
+FindPartiesError.fromJSON = (err) => {
+  const error = new FindPartiesError(err.message, err.code);
+  error.stack = err.stack;
+  return error;
+};
