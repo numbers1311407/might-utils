@@ -24,7 +24,7 @@ import {
   RestoreButton,
 } from "@/core/components/common";
 import { PartyDiffColors, usePartyDiffContext } from "./party-diff";
-import { useRosterChar } from "@/core/hooks";
+import { useRosterChar, usePreference } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";
 import { CharTagsPopover } from "./CharTagsPopover.jsx";
 
@@ -36,10 +36,7 @@ export const EmptyRow = ({ children }) => (
   </Table.Tr>
 );
 
-const getColor = (status, char) => {
-  const levelDelta = status[char.name]?.ld || 0;
-  const wardenDelta = status[char.name]?.wd || 0;
-
+const getColor = (levelDelta, wardenDelta) => {
   if (levelDelta < 0) {
     return [PartyDiffColors.LEVEL_UNDER, -levelDelta];
   } else if (levelDelta > 0) {
@@ -51,16 +48,19 @@ const getColor = (status, char) => {
   }
 };
 
-const useErrorStyles = (char) => {
+const useErrorUI = (char) => {
+  const [showPartyDiffs] = usePreference("showPartyDiffs");
   const diff = usePartyDiffContext();
   const theme = useMantineTheme();
-  const status = diff?.status;
+  const status = diff?.status || {};
+  const levelDelta = status[char.name]?.ld || 0;
+  const wardenDelta = status[char.name]?.wd || 0;
 
-  if (!status) {
-    return {};
+  if (!status || !showPartyDiffs) {
+    return { styles: {}, deltas: {} };
   }
 
-  const [color, delta] = getColor(status, char);
+  const [color, delta] = getColor(levelDelta, wardenDelta);
   const opacity = Math.min(delta * 0.1, 0.3);
   const themeColor = alpha(getThemeColor(color, theme), opacity);
 
@@ -72,9 +72,16 @@ const useErrorStyles = (char) => {
     transparent 25px
   )`;
 
-  return delta > 0
-    ? { row: { style: { backgroundImage } }, name: { c: color } }
-    : {};
+  return {
+    styles:
+      delta > 0
+        ? { row: { style: { backgroundImage } }, name: { c: color } }
+        : {},
+    deltas: {
+      level: levelDelta,
+      warden: wardenDelta,
+    },
+  };
 };
 
 const Row = ({
@@ -90,7 +97,7 @@ const Row = ({
 }) => {
   const rosterChar = useRosterChar(char.name);
   const disableControls = !rosterChar;
-  const styles = useErrorStyles(char);
+  const { styles, deltas } = useErrorUI(char);
 
   return (
     <Table.Tr {...styles.row}>
@@ -145,6 +152,7 @@ const Row = ({
       <Table.Td ta="center">
         <IncrementButtons
           value={char.level}
+          highlight={deltas?.level && (deltas.level > 0 ? "up" : "down")}
           disabled={disableControls}
           min={getMinLevelForWarden(char.warden)}
           max={charLevelSchema.maxValue}
@@ -155,6 +163,7 @@ const Row = ({
         <IncrementButtons
           value={char.warden}
           disabled={disableControls}
+          highlight={deltas?.warden && (deltas.warden > 0 ? "up" : "down")}
           min={0}
           max={getMaxWardenForLevel(char.level)}
           onChange={(warden) => update({ warden })}

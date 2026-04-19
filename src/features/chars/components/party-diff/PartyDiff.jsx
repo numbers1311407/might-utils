@@ -139,16 +139,15 @@ const PartyDiffInvalidRoster = (props) => {
 const PartyDiffReady = (props) => {
   return (
     <>
-      <Text c={Colors.READY}>
-        This party can be assembled with your current roster.
+      <Text c={Colors.READY} size="sm">
+        This party can be assembled with warden ring swaps only.
       </Text>
-      <Text size="sm">
-        This party uses{" "}
+      <Text size="xs">
+        Requires{" "}
         <Text c="gold" size="sm" span>
           {props.warden.ratio * 100}%
         </Text>{" "}
-        of your available warden ranks. You may need to swap warden rings but
-        you can assemble this party without adjusting levels.
+        of your available warden ranks.
       </Text>
     </>
   );
@@ -184,23 +183,29 @@ export const PartyDiffComponent = () => {
           <ReadinessBadge tier={diff.tier} />
         </Group>
         {isTable ? (
-          <Table
-            variant="vertical"
-            withColumnBorders
-            withRowBorders
-            withTableBorder
-          >
-            <Thead>
-              <Tr>
-                <Th></Th>
-                <Th w={80}>Party</Th>
-                <Th w={80}>Roster</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Component {...diff} />
-            </Tbody>
-          </Table>
+          <>
+            <Table
+              variant="vertical"
+              withColumnBorders
+              withRowBorders
+              withTableBorder
+            >
+              <Thead>
+                <Tr>
+                  <Th></Th>
+                  <Th w={80}>Party</Th>
+                  <Th w={80}>Roster</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Component {...diff} />
+              </Tbody>
+            </Table>
+            <Text size="xs" c="dark">
+              You will need to level/delevel or attain missing warden ranks to
+              assemble this party.
+            </Text>
+          </>
         ) : (
           <Component {...diff} />
         )}

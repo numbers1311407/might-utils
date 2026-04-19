@@ -9,6 +9,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
+/* eslint-disable no-unused-vars */
 export const IconButton = ({ Icon, ...props }) => (
   <ActionIcon size="sm" {...props}>
     <Icon />

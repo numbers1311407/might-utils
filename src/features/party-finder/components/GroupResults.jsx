@@ -4,6 +4,7 @@ import { ClassIcon, PartyLine } from "@/core/components";
 // import { IconTag } from "@tabler/icons-react";
 import { humanizeComp } from "@/model/schemas/comp.js";
 import { useFindPartiesResults } from "../hooks";
+import { Virtuoso } from "react-virtuoso";
 
 // const slots = (idxs, pool, fn) =>
 //   Array.from(idxs).map((idx) => fn(pool[idx], idx));
@@ -25,7 +26,7 @@ import { useFindPartiesResults } from "../hooks";
 // };
 
 const GroupResult = ({ group, pool }) => {
-  const { comp, parties, compSlotMap, ...foo } = group;
+  const { comp, parties, compSlotMap } = group;
   const size = parties.length;
   const [shownParties] = useState(5);
   const { score } = parties[0];
@@ -46,7 +47,10 @@ const GroupResult = ({ group, pool }) => {
           Might: {score} - {size} parties sharing composition
         </Text>
         <Text size="md">{humanizeComp(comp)}</Text>
-        <SimpleGrid spacing="2xl" cols={5}>
+        <SimpleGrid
+          spacing="2xl"
+          cols={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+        >
           {hydratedParties.map((party, i) => (
             <Box key={i}>
               <Text size="lg" ta="center" bg="secondary" bdrs="sm">
@@ -67,10 +71,14 @@ export const GroupResults = () => {
   const { groups, pool } = useFindPartiesResults();
 
   return (
-    <Stack>
-      {groups.map((group) => (
+    <Virtuoso
+      totalCount={groups.length}
+      data={groups}
+      useWindowScroll
+      components={{ List: Stack }}
+      itemContent={(_i, group) => (
         <GroupResult key={group.compStr} group={group} pool={pool} />
-      ))}
-    </Stack>
+      )}
+    />
   );
 };

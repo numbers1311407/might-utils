@@ -1,4 +1,14 @@
-import { Box, Divider, Grid, Paper, Stack, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Divider,
+  Grid,
+  Group,
+  Paper,
+  Stack,
+  Switch,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useParty, useStableCallback } from "@/core/hooks";
@@ -10,7 +20,7 @@ import { usePartyEditor } from "../hooks/use-party-editor.js";
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyHeader } from "./PartyHeader.jsx";
 import { ToggleNpcSimButton } from "./ToggleNpcSimButton.jsx";
-import { PartyDiff, PartyDiffProvider } from "./party-diff";
+import { PartyDiff, PartyDiffProvider, PartyDiffToggle } from "./party-diff";
 
 export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();
@@ -67,9 +77,12 @@ export const Party = ({ id: partyId }) => {
           <Grid.Col span={{ base: 12, lg: 6 }} order={1}>
             <Stack gap="md">
               <Paper shadow="md" p="md">
-                <Title order={4} mb="xs" c="primary">
-                  The Party
-                </Title>
+                <Group align="center" mb="xs">
+                  <Title order={4} c="primary" flex="1">
+                    The Party
+                  </Title>
+                  <PartyDiffToggle />
+                </Group>
                 <CharSelect
                   emits="char"
                   size="md"

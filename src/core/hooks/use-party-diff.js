@@ -18,6 +18,20 @@ export const usePartyDiff = (partyId) => {
   }, [party, roster]);
 };
 
+const emptyResponse = {
+  log: [],
+  mightDiff: 0,
+  ready: "READY",
+  score: 0,
+  tier: undefined,
+  status: {},
+  warden: {
+    party: 0,
+    roster: 0,
+    ratio: 0,
+  },
+};
+
 export const getPartyDiff = (party, roster) => {
   const { might: partyMight, chars } = party;
 
@@ -96,7 +110,12 @@ export const getPartyDiff = (party, roster) => {
   );
 
   if (missingChars.length) {
-    return { tier: "INVALID_ROSTER", missing: missingChars, score: 1000000 };
+    return {
+      ...emptyResponse,
+      tier: "INVALID_ROSTER",
+      missing: missingChars,
+      score: 1000000,
+    };
   }
 
   if (dOver > 0) {
@@ -107,10 +126,11 @@ export const getPartyDiff = (party, roster) => {
     finalScore = BASE_OVER_LEVEL + dUnder * M_LEVEL_DOWN;
   } else if (hasInvalidWarden) {
     tier = "WARDEN_UNDER";
-    finalScore = Math.round(wardenRatio * 100);
+    finalScore = round(wardenRatio * 100, 2);
   }
 
   return {
+    ...emptyResponse,
     log: diffLog,
     mightDiff: rosterMight - partyMight,
     ready: tier === "READY",

@@ -64,8 +64,8 @@ more convenient:
   - This is critical but I'm also waiting to see if post release either 1. we're asked not to
     expose the calculators and need to remove them or 2. a dev might offer us real data, or
     3. we could crowdsource some more data from others with access to different tiers.
-- **Multiple: Warden shouldn't toggle**
-  - Character warden options shouldn't be a toggle, it should be possible to toggle specific
+- **Multiple: for finder purposes each warden rank should be opt-in**
+  - Character warden options shouldn't be a fixed range, it should be possible to toggle specific
     warden levels on or off. This would be possible with the reintroduction of name rules but
     it would be a very clunky and expensive approach for what should be a reduction in complexity
     via voluntary pool shrinking.
