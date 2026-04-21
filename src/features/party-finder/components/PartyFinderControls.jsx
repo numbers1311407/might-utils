@@ -62,8 +62,8 @@ const MinSizeInput = (props) => (
 const MarginInput = (props) => (
   <PartyOptionInput
     option="margin"
-    label="Target Tolerance"
-    help="Acceptable deviation under your target score. Must be higher than the lowest might score on your roster."
+    label="Score Tolerance"
+    help="Acceptable deviation under your target might score. Must be higher than the lowest might score on your roster."
     placeholder="Close enough?"
     min={0}
     step={5}
@@ -74,7 +74,7 @@ const MarginInput = (props) => (
 const TargetScoreInput = (props) => (
   <PartyOptionInput
     option="targetScore"
-    label="Targe Might Score"
+    label="Target Might Score"
     description="What might score are you trying to hit?"
     placeholder="Enter Target Might"
     type="number"
@@ -86,14 +86,10 @@ const TargetScoreInput = (props) => (
 
 export const PartyFinderControls = () => {
   return (
-    <>
+    <Stack>
       <Paper component={Stack} gap={8} p="sm" bdrs="sm">
         <TargetScoreInput />
         <MarginInput />
-        <Divider m="md" />
-        <ResultsGroupingSelect />
-        <ActiveTagFiltersSelect />
-        <Divider m="md" />
         <Group wrap="nowrap">
           <MinLevelInput />
           <MaxLevelInput />
@@ -103,6 +99,11 @@ export const PartyFinderControls = () => {
           <MaxSizeInput />
         </Group>
       </Paper>
-    </>
+
+      <Paper component={Stack} gap={8} p="sm" bdrs="sm">
+        <ResultsGroupingSelect />
+        <ActiveTagFiltersSelect />
+      </Paper>
+    </Stack>
   );
 };

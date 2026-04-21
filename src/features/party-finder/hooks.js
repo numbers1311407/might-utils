@@ -58,7 +58,7 @@ export const useFindPartiesResults = () => {
       return findPartiesAsync(roster, targetScore, options).then((data) => {
         return {
           ...data,
-          groups: data.groupBy && extractGroups(data),
+          groups: extractGroups(data),
         };
       });
     },

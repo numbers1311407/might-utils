@@ -4,7 +4,7 @@ import { PartyResults } from "./PartyResults.jsx";
 import { useFindPartiesResults } from "../hooks";
 
 export const PartyFinderResults = () => {
-  const { groupBy, parties, isPending } = useFindPartiesResults();
+  const { groupBy = "comp", parties, isPending } = useFindPartiesResults();
 
   if (isPending) {
     return <LoadingPage />;

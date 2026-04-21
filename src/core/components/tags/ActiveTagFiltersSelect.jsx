@@ -16,7 +16,6 @@ export const ActiveTagFiltersSelect = (props) => {
       placeholder="Select ruleset..."
       labelActive={false}
       clearable
-      includeNone
     />
   );
 };

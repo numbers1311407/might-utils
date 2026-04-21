@@ -2,7 +2,7 @@ import { Warden, MightScoreByLevel } from "@/config";
 import { intersection } from "@/utils";
 import { FindPartiesError } from "./find-parties-error.js";
 
-export const expandRoster = ({ roster, minLevel, maxLevel, groupTags }) => {
+export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
   let slotIdx = 0;
 
   const buckets = roster

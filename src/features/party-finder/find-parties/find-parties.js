@@ -4,7 +4,11 @@ import {
   MightMaxLevel,
   MightMinLevel,
 } from "@/config";
-import { createPartyValidator, FindPartiesError } from "@/core/party-finder";
+import {
+  createPartyValidator,
+  expandRoster,
+  FindPartiesError,
+} from "@/core/party-finder";
 import { instrument, intersection } from "@/utils";
 import { createComp, createTagsComp } from "@/model/schemas/comp";
 
@@ -39,52 +43,16 @@ export const findParties = (roster, targetScore, options = {}) => {
   const minScore = targetScore - margin;
   const minSize = restOptions.size || restOptions.minSize;
   const maxSize = restOptions.size || restOptions.maxSize;
-  const compType = Array.isArray(groupBy) ? "tags" : groupBy || "comp";
-
-  let slotIdx = 0;
+  const groupTags = Array.isArray(groupBy) ? groupBy : [];
+  const compType = Array.isArray(groupBy) ? "tags" : "comp";
 
   instr.start("setupPool");
-  const buckets = roster
-    // filter out of bounds levels
-    .filter(({ level, active }) => {
-      return active && level >= minLevel && level <= maxLevel;
-    })
-    .reduce((acc, char) => {
-      const level = char.level;
-      const score = MightScoreByLevel[level];
-      const charBucket = [];
-      acc.push(charBucket);
 
-      for (const rank of Warden.Ranks) {
-        const { rank: warden, requiredLevel, mightMultiplier } = rank;
-        if (char.warden >= warden && level >= requiredLevel) {
-          const slot = { ...char, score: score * mightMultiplier, warden };
-
-          if (compType === "tags") {
-            const slotGroupTags = intersection(slot.tags, groupBy);
-
-            if (!slotGroupTags.length) {
-              throw new FindPartiesError(
-                "When grouping by tags, all active characters in the roster must have " +
-                  `at least one of the tags in the group. Needed tags: [${groupBy.join(", ")}], ` +
-                  `character ${slot.name} tags: [${slot.tags.join(", ")}].`,
-                "MISSING_TAGS",
-              );
-            }
-          }
-
-          charBucket.push(slot);
-        }
-      }
-
-      charBucket
-        .sort((a, b) => a.score - b.score)
-        .forEach((slot) => {
-          slot.idx = slotIdx++;
-        });
-
-      return acc;
-    }, []);
+  const { buckets, pool } = expandRoster(roster, {
+    minLevel,
+    maxLevel,
+    groupTags,
+  });
 
   if (buckets.length < minSize) {
     throw new FindPartiesError(
@@ -94,8 +62,6 @@ export const findParties = (roster, targetScore, options = {}) => {
       "POOL_SIZE",
     );
   }
-
-  const pool = buckets.flat();
 
   // minSumLookup and maxSumLookup will contain calculated possible
   // min and max values for the remaining buckets in the list, taking
@@ -144,6 +110,13 @@ export const findParties = (roster, targetScore, options = {}) => {
   instr.start("validator-prechecks");
   validator.runPreChecks();
   instr.end("validator-prechecks");
+
+  if (!validator.status.isPossible) {
+    throw new FindPartiesError(
+      "It is impossible to create the minimum sized group with the given rules.",
+      "IMPOSSIBLE_RULES",
+    );
+  }
 
   if (pool[0].score <= margin) {
     throw new FindPartiesError(
@@ -304,6 +277,7 @@ export const findParties = (roster, targetScore, options = {}) => {
       telemetry: validator.telemetry,
       reports: validator.reports,
       timing: instr.finish(),
+      validatorStatus: validator.status,
     },
   };
 };

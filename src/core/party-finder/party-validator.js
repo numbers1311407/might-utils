@@ -269,5 +269,28 @@ export const createPartyValidator = (rules, buckets, options = {}) => {
     maxScore,
   });
 
-  return { test, runPreChecks, reporter, telemetry, reports };
+  return {
+    test,
+    runPreChecks,
+    reporter,
+    telemetry,
+    reports,
+    get status() {
+      const errorSizes = new Set(
+        reports.filter((r) => r.level === "ERROR").map((r) => r.size),
+      );
+
+      const possibleSizes = [];
+      for (let s = minSize; s <= maxSize; s++) {
+        if (!errorSizes.has(s)) possibleSizes.push(s);
+      }
+
+      return {
+        isPossible: possibleSizes.length > 0,
+        possibleSizes,
+        errorCount: reports.filter((r) => r.level === "ERROR").length,
+        warningCount: reports.filter((r) => r.level === "WARNING").length,
+      };
+    },
+  };
 };
