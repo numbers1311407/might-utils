@@ -1,4 +1,4 @@
-import { Divider, Group, Paper, Stack } from "@mantine/core";
+import { Group, Paper, Stack } from "@mantine/core";
 import { useThrottledCallback } from "@mantine/hooks";
 import { ActiveTagFiltersSelect, NumberField } from "@/core/components";
 import { MightMaxLevel, MightMinLevel } from "@/config/might";

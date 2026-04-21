@@ -1,15 +1,10 @@
-import {
-  Warden,
-  MightScoreByLevel,
-  MightMaxLevel,
-  MightMinLevel,
-} from "@/config";
+import { MightMaxLevel, MightMinLevel } from "@/config";
 import {
   createPartyValidator,
   expandRoster,
   FindPartiesError,
 } from "@/core/party-finder";
-import { instrument, intersection } from "@/utils";
+import { instrument } from "@/utils";
 import { createComp, createTagsComp } from "@/model/schemas/comp";
 
 const MAX_RECURSIONS = 10_000_000;
@@ -22,6 +17,7 @@ export const defaultOptions = {
   minSize: 6,
   maxSize: 12,
   margin: 0,
+  sort: "-score -size",
 };
 
 export const findParties = (roster, targetScore, options = {}) => {
@@ -98,18 +94,18 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   instr.end("setupPool");
 
-  instr.start("validator-create");
+  instr.start("validatorCreate");
   const validator = createPartyValidator(rules, buckets, {
     minSize,
     maxSize,
     minScore,
     maxScore,
   });
-  instr.end("validator-create");
+  instr.end("validatorCreate");
 
-  instr.start("validator-prechecks");
+  instr.start("validatorPrechecks");
   validator.runPreChecks();
-  instr.end("validator-prechecks");
+  instr.end("validatorPrechecks");
 
   if (!validator.status.isPossible) {
     throw new FindPartiesError(
@@ -124,11 +120,6 @@ export const findParties = (roster, targetScore, options = {}) => {
       "MARGIN_TOO_SMALL",
     );
   }
-
-  const sortParties = (parties) =>
-    parties.sort((a, b) => {
-      return a.size === b.size ? b.score - a.score : b.size - a.size;
-    });
 
   const sortParty = (idxs) => {
     return idxs.sort((a, b) => pool[a].name.localeCompare(pool[b].name));
@@ -191,8 +182,8 @@ export const findParties = (roster, targetScore, options = {}) => {
 
       parties.push({
         party: sortParty(new Uint8Array(partyPoolIdxs)),
-        score: targetScore - remainingScore,
         comp: createPartyComp(),
+        score: targetScore - remainingScore,
       });
 
       validator.reporter.end("partyFound");
@@ -268,11 +259,11 @@ export const findParties = (roster, targetScore, options = {}) => {
   // who's in them, namely the group key, but that could also be found on the
   // other side. Is there anything calculable here that's not calculable in the UI.
   return {
-    parties: sortParties(parties),
+    parties,
     params: { roster, targetScore, options },
     pool,
     size: parties.length,
-    groupBy,
+    compType,
     analytics: {
       telemetry: validator.telemetry,
       reports: validator.reports,

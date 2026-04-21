@@ -24,6 +24,7 @@ export const finderOptionsSchema = z
     minSize: sizeSchema,
     maxSize: sizeSchema,
     margin: z.coerce.number(),
+    sort: z.string(),
   })
   .refine(
     (o) => {

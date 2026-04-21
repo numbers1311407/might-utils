@@ -106,6 +106,7 @@ export const processComp = (compStr) => {
       count: Number(count),
       level: Number(level),
       warden: Number(warden),
+      baseMight: getCharMight({ level: Number(level), warden: 0 }),
       might: getCharMight({ level: Number(level), warden: Number(warden) }),
       terms: subTerms ? subTerms.split(",") : [],
     };

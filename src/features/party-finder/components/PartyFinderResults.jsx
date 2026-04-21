@@ -1,10 +1,9 @@
 import { LoadingPage } from "@/core/components";
-import { GroupResults } from "./GroupResults.jsx";
 import { PartyResults } from "./PartyResults.jsx";
 import { useFindPartiesResults } from "../hooks";
 
 export const PartyFinderResults = () => {
-  const { groupBy = "comp", parties, isPending } = useFindPartiesResults();
+  const { parties, isPending } = useFindPartiesResults();
 
   if (isPending) {
     return <LoadingPage />;
@@ -15,5 +14,5 @@ export const PartyFinderResults = () => {
     return "No results";
   }
 
-  return groupBy ? <GroupResults /> : <PartyResults />;
+  return <PartyResults />;
 };
