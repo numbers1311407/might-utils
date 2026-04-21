@@ -5,7 +5,7 @@ const tagRule = (tag) => ({
 });
 
 export const defaultFiltersTagRules = {
-  name: "Standard Rules",
+  name: "Standard",
   type: "filters",
   id: "standard-rules",
   rules: [

@@ -2,10 +2,10 @@ import { Box } from "@mantine/core";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { LoadingPage, PageTitle } from "@/core/components";
+import { FindPartiesError } from "@/core/party-finder";
 import * as titles from "@/config/constants/titles";
 import { PartyFinderResults } from "./PartyFinderResults.jsx";
 import { usePartyFinderContext } from "../context";
-import { FindPartiesError } from "../find-parties/find-parties-error.js";
 
 const UNEXPECTED_ERROR_MESSAGE =
   "An unexpected error occurred. Please be sure you've selected all options and corrected any " +

@@ -6,7 +6,7 @@ import {
   MantineValueEditor,
 } from "@react-querybuilder/mantine";
 import { deepEqual } from "fast-equals";
-import { FIELDS } from "@/core/finder-rules";
+import { FIELDS } from "@/core/party-finder";
 
 // may be missing something but this seems to be a required workaround
 // to get unsupported (yes that includes min, max, and step) props to

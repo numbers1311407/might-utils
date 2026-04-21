@@ -83,20 +83,31 @@ const api = {
     }
   },
 
-  activate: (id) => {
+  activate: (ids, exclusive = true) => {
     set((state) => {
-      const ruleset = state.sets[id];
-      const type = ruleset?.type;
+      const sets = {};
 
-      if (type in defaultTypeStorage) {
-        const storage = defaultTypeStorage[type];
+      [ids].flat().forEach((id) => {
+        const ruleset = state.sets[id];
+        const type = ruleset?.type;
 
-        if (storage === TYPES.Unique) {
-          state.active[type] = [ruleset.id];
-        } else {
-          state.active[type] = addUniquely(state.active[type], ruleset.id);
+        sets[type] ||= [];
+
+        if (type in defaultTypeStorage) {
+          const storage = defaultTypeStorage[type];
+
+          if (storage === TYPES.Unique) {
+            sets[type] = [ruleset.id];
+          } else {
+            state.active[type] = addUniquely(state.active[type], ruleset.id);
+            sets[type] = addUniquely(sets[type], ruleset.id);
+          }
         }
-      }
+
+        Object.entries(sets).forEach(([type, active]) => {
+          state.active[type] = active;
+        });
+      });
     });
   },
 

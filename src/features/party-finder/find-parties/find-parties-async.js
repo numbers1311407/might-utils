@@ -1,5 +1,5 @@
+import { FindPartiesError } from "@/core/party-finder/find-parties-error.js";
 import PartiesWorker from "./find-parties.worker.js?worker";
-import { FindPartiesError } from "./find-parties-error.js";
 
 export const findPartiesAsync = async (roster, targetScore, options) => {
   const partiesWorker = new PartiesWorker();

@@ -49,6 +49,7 @@ export const CharSelect = ({
     <Select
       size="md"
       placeholder={placeholder}
+      nothingFoundMessage="No matching characters"
       value=""
       {...props}
       data={data}

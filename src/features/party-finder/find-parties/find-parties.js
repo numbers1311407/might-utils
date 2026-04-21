@@ -4,16 +4,14 @@ import {
   MightMaxLevel,
   MightMinLevel,
 } from "@/config";
-import { createPartyValidator } from "@/core/finder-rules";
+import { createPartyValidator, FindPartiesError } from "@/core/party-finder";
 import { instrument, intersection } from "@/utils";
 import { createComp, createTagsComp } from "@/model/schemas/comp";
-import { FindPartiesError } from "./find-parties-error.js";
 
 const MAX_RECURSIONS = 10_000_000;
 const MAX_RESPONSE_LENGTH = 5000;
 
 export const defaultOptions = {
-  groupBy: "comp",
   targetScore: 1250,
   minLevel: MightMinLevel,
   maxLevel: MightMaxLevel,

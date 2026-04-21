@@ -1,5 +1,5 @@
+import { FindPartiesError } from "@/core/party-finder/find-parties-error.js";
 import { findParties } from "./find-parties.js";
-import { FindPartiesError } from "./find-parties-error.js";
 
 self.onmessage = function (evt) {
   const [roster, maxScore, options] = evt.data;

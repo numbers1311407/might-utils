@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Kbd, Group, Text, Tooltip } from "@mantine/core";
-import { getQueryDescription } from "@/core/finder-rules";
+import { getQueryDescription } from "@/core/party-finder";
 
 const TagRuleSizeAll = (props) => (
   <Tooltip

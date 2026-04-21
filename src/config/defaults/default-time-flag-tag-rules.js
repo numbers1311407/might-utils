@@ -1,6 +1,6 @@
 export const defaultTimeFlagTagRules = {
   id: "time-flagged",
-  name: "Flagged for Time",
+  name: "Time-Flagged",
   type: "filters",
   rules: [
     {

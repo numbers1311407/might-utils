@@ -3,7 +3,7 @@ import { finderOptionsSchema } from "@/model/schemas";
 import { defaultOptions } from "./find-parties";
 
 export const usePartyFinderStore = createStore(
-  "might-utils-parties",
+  "might-utils-party-finder-options",
   (set, get) => ({
     options: finderOptionsSchema.parse(defaultOptions),
     setOption: (name, value) => {

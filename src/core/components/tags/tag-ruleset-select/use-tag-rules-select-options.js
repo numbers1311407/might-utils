@@ -8,16 +8,18 @@ export const useTagRulesSelectOptions = (type, options = {}) => {
   const active = useTagRulesStore((store) => store.active);
 
   return useMemo(() => {
-    const typedActive = active[type] || [];
+    const checked = active[type] || [];
     const baseOptions = includeNone ? [{ label: "None", value: "" }] : [];
 
-    return baseOptions.concat(
+    const data = baseOptions.concat(
       list.map((set) => ({
         label: labelActive
-          ? `${set.name}${typedActive.includes(set.id) ? " (active)" : ""}`
+          ? `${set.name}${checked.includes(set.id) ? " (active)" : ""}`
           : set.name,
         value: set.id,
       })),
     );
+
+    return { data, checked };
   }, [labelActive, list, active, type, includeNone]);
 };
