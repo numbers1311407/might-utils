@@ -5,6 +5,18 @@ import { useFindPartiesResults } from "../hooks";
 import { PartySortSelect } from "./PartySortSelect.jsx";
 import { MAX_RESPONSE_LENGTH } from "../find-parties/find-parties.js";
 
+const PartyFinderResultsCount = ({ parties, ...props }) => (
+  <Text {...props}>
+    <Text span>{parties.length} Parties Found</Text>
+    {parties.length === MAX_RESPONSE_LENGTH ? (
+      <Text c="dark" span>
+        {" "}
+        (max reached)
+      </Text>
+    ) : null}
+  </Text>
+);
+
 export const PartyFinderResults = () => {
   const { parties, isPending } = useFindPartiesResults();
 
@@ -12,7 +24,8 @@ export const PartyFinderResults = () => {
     return <LoadingPage />;
   }
 
-  // TODO here's where we wanna show errors
+  // TODO here's where we wanna show errors about why using the
+  // error reports and telemetry data in the response
   if (!parties.length) {
     return "No results";
   }
@@ -20,6 +33,7 @@ export const PartyFinderResults = () => {
   return (
     <>
       <Group
+        bg="var(--mantine-color-body-custom)"
         py="xl"
         mt="-lg"
         style={{
@@ -27,20 +41,9 @@ export const PartyFinderResults = () => {
           top: 66,
           zIndex: 200,
         }}
-        bg="var(--mantine-color-body-custom)"
       >
-        <Text flex="1">
-          <Text span>{parties.length} Parties Found</Text>
-          {parties.length === MAX_RESPONSE_LENGTH ? (
-            <Text c="dark" span>
-              {" "}
-              (max reached)
-            </Text>
-          ) : null}
-        </Text>
-        <Box>
-          <PartySortSelect />
-        </Box>
+        <PartyFinderResultsCount parties={parties} flex="1" />
+        <PartySortSelect />
       </Group>
       <PartyResults />
     </>

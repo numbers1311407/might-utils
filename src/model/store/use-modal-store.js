@@ -23,7 +23,7 @@ const api = {
       componentProps: _componentProps = {},
     } = options;
 
-    return () => {
+    const create = () => {
       if (get().isOpen) return;
 
       const { onClose, close, done } = api;
@@ -50,6 +50,34 @@ const api = {
         componentProps,
       });
     };
+
+    return [create, api];
+  },
+
+  updateComponentProps: (props) => {
+    set((state) => {
+      const { componentProps: stateProps } = state;
+
+      return {
+        componentProps:
+          typeof props === "function"
+            ? props(stateProps)
+            : { ...stateProps, ...props },
+      };
+    });
+  },
+
+  updateModalProps: (props) => {
+    set((state) => {
+      const { modalProps: stateProps } = state;
+
+      return {
+        modalProps:
+          typeof props === "function"
+            ? props(stateProps)
+            : { ...stateProps, ...props },
+      };
+    });
   },
 
   close: () => {

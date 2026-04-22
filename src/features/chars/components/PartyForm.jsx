@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Group, Stack } from "@mantine/core";
+import { Box, Button, Group, Stack, Text, CheckIcon } from "@mantine/core";
 import { TextInput } from "@/core/components";
 import { useForm } from "@mantine/form";
 import { usePartiesStoreApi as storeApi } from "@/model/store";
@@ -14,7 +14,9 @@ const formSchema = partySchema.refine(
   },
 );
 
-export const PartyForm = ({ record, onSubmit }) => {
+const focusInput = (el) => setTimeout(() => el?.focus(), 50);
+
+export const PartyForm = ({ record, navigate, cancel, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
   const { data: initialValues = {} } = partySchema.safeParse(record);
 
@@ -32,11 +34,33 @@ export const PartyForm = ({ record, onSubmit }) => {
     setSubmitted(true);
   };
 
+  if (navigate) {
+    return (
+      <Stack gap="sm">
+        <Group align="flex-start" p="sm">
+          <Box c="success">
+            <CheckIcon size={32} />
+          </Box>
+          <Text size="md" py={6}>
+            Your party has been created.
+          </Text>
+        </Group>
+        <Group justify="flex-end">
+          <Button variant="outline" onClick={cancel}>
+            Cancel
+          </Button>
+          <Button onClick={navigate}>View it now?</Button>
+        </Group>
+      </Stack>
+    );
+  }
+
   return (
     <form onSubmit={form.onSubmit(onFormSubmit, onFormValidationFail)}>
-      <Stack gap={6}>
+      <Stack gap="sm">
         <TextInput
           label="Name"
+          ref={focusInput}
           description="Name to describe your party"
           placeholder="Enter name"
           key={form.key("name")}
@@ -46,6 +70,9 @@ export const PartyForm = ({ record, onSubmit }) => {
           {...form.getInputProps("name")}
         />
         <Group justify="flex-end">
+          <Button variant="subtle" onClick={cancel}>
+            Cancel
+          </Button>
           <Button type="submit">Submit</Button>
         </Group>
       </Stack>

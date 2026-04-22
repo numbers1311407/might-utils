@@ -3,6 +3,12 @@ import { Virtuoso } from "react-virtuoso";
 import { Badge, Group, Grid, Stack, Paper, Table, Text } from "@mantine/core";
 import { useFindPartiesResults } from "../hooks";
 import { PartyLine, SaveSmallButton } from "@/core/components";
+import { createPartyComp } from "@/model/schemas/comp";
+
+// TODO at some point we need a great re-org to shuffle all these feature
+// concerns around into the right buckets but for the moment, we're pulling
+// cross "feature"
+import { usePartyEditor } from "@/features/chars/hooks/use-party-editor.js";
 
 const StatsTable = ({ stats, ...props }) => {
   const rows = useMemo(() => {
@@ -48,7 +54,7 @@ const StatsTable = ({ stats, ...props }) => {
   );
 };
 
-const ItemContent = ({ party, comp, stats }) => (
+const ItemContent = ({ party, comp, stats, createParty }) => (
   <Paper p="md" flex="1">
     <Group p="md" align="baseline">
       <Text size="3xl" c="primary" fw="bold">
@@ -63,7 +69,7 @@ const ItemContent = ({ party, comp, stats }) => (
           {stats.size}
         </Text>
       </Text>
-      <SaveSmallButton>Save Party</SaveSmallButton>
+      <SaveSmallButton onClick={createParty}>Save Party</SaveSmallButton>
     </Group>
     <Grid gap="xl" pl="md">
       <Grid.Col pr={{ base: 0, md: "lg" }} span={{ base: 12, md: 4 }}>
@@ -93,10 +99,6 @@ const ItemContent = ({ party, comp, stats }) => (
     </Grid>
   </Paper>
 );
-
-const virtuosoComponents = {
-  List: forwardRef((props, ref) => <Stack gap="lg" ref={ref} {...props} />),
-};
 
 const CompWarden = ({ rank, ...props }) => {
   if (!rank) return null;
@@ -146,7 +148,11 @@ export const CompBreakdown = ({ comp, ...props }) => {
   );
 };
 
-export const PartyResultsList = ({ parties, comps, stats }) => {
+const virtuosoComponents = {
+  List: forwardRef((props, ref) => <Stack gap="lg" ref={ref} {...props} />),
+};
+
+export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
   return (
     <Virtuoso
       totalCount={parties.length}
@@ -156,6 +162,7 @@ export const PartyResultsList = ({ parties, comps, stats }) => {
       itemContent={(_i, party) => (
         <ItemContent
           party={party}
+          createParty={() => createParty(party)}
           stats={stats.get(party.comp)}
           comp={comps.get(party.comp)}
         />
@@ -166,6 +173,15 @@ export const PartyResultsList = ({ parties, comps, stats }) => {
 
 export const PartyResults = () => {
   const { parties, pool, comps, stats } = useFindPartiesResults();
+  const createParty = usePartyEditor({
+    title: "Save this party?",
+    confirmNav: true,
+    prepareDraft: (party) => {
+      return {
+        comp: createPartyComp(party.party),
+      };
+    },
+  });
 
   const hydratedParties = useMemo(() => {
     return parties.map((party) => ({
@@ -175,6 +191,11 @@ export const PartyResults = () => {
   }, [parties, pool]);
 
   return (
-    <PartyResultsList parties={hydratedParties} comps={comps} stats={stats} />
+    <PartyResultsList
+      parties={hydratedParties}
+      comps={comps}
+      stats={stats}
+      createParty={createParty}
+    />
   );
 };

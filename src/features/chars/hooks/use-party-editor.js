@@ -1,31 +1,53 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useStableCallback } from "@/core/hooks";
+import { identity } from "@/utils";
 import { createModal, usePartiesStoreApi as partiesApi } from "@/model/store";
 import { PartyForm } from "../components/PartyForm.jsx";
 
-export const usePartyEditor = () => {
+const defaultTitleFn = (party) =>
+  party?.id ? "Edit Party" : "Create a New Party";
+
+export const usePartyEditor = (options = {}) => {
+  const {
+    confirmNav = false,
+    prepareDraft = identity,
+    title = defaultTitleFn,
+  } = options;
+
   const [draftParty, setDraftParty] = useState(null);
   const [_location, setLocation] = useLocation();
 
   const beginPartyEdit = useStableCallback((party) => {
-    setDraftParty(party || {});
+    setDraftParty(prepareDraft(party || {}));
   });
 
-  const openModal = createModal(PartyForm, {
+  const [openModal, modalApi] = createModal(PartyForm, {
     onClose: () => setDraftParty(null),
+    onDone: (record) => {
+      if (record && draftParty.id !== record.id) {
+        setLocation(`/parties/${record.id}`);
+      }
+    },
     modalProps: {
-      title: draftParty?.id ? "Edit Party" : "Create a New Party",
+      title: typeof title === "function" ? title(draftParty) : title,
     },
     componentProps: (props) => ({
+      ...props,
       record: draftParty,
+      completed: false,
       onSubmit: (record) => {
         partiesApi.add(record);
-        setDraftParty(null);
-        props.done();
 
-        if (draftParty.id !== record.id) {
-          setLocation(`/parties/${record.id}`);
+        if (confirmNav) {
+          modalApi.updateComponentProps({
+            navigate: () => props.done(record),
+          });
+          modalApi.updateModalProps({
+            title: "Success!",
+          });
+        } else {
+          props.done(record);
         }
       },
     }),
