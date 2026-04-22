@@ -3,7 +3,7 @@ import { useSearchParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useDraftState } from "@/core/hooks";
 import { processComp } from "@/model/schemas/comp";
-import { round as utilsRound } from "@/utils";
+import { round as utilsRound, standardDeviation } from "@/utils";
 import { PartyFinderContext } from "./context.js";
 import { usePartyFinderStore } from "./store.js";
 import { findPartiesAsync } from "./find-parties/find-parties-async.js";
@@ -23,27 +23,13 @@ export const usePartyFinderOption = (option) => {
   return [draftValue, setValue];
 };
 
-const sd = (array, usePopulation = false) => {
-  const n = array.length;
-  if (n < 2 && !usePopulation) return 0;
-
-  // 1. Calculate the mean (average)
-  const mean = array.reduce((a, b) => a + b) / n;
-
-  // 2. Calculate variance (average of squared differences from mean)
-  const variance =
-    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) /
-    (n - (usePopulation ? 0 : 1));
-
-  // 3. Return square root of variance
-  return Math.sqrt(variance);
-};
-
 const getStats = (comps) => {
   const round = (v) => utilsRound(v, 3);
   return comps.entries().reduce((map, [comp, compSlots]) => {
     const stats = compSlots.reduce(
       (totals, slot, i) => {
+        totals.scores.push(slot.might);
+
         totals.size += slot.count;
         totals.level += slot.level * slot.count;
         totals.might += slot.might * slot.count;
@@ -71,6 +57,7 @@ const getStats = (comps) => {
 
           mightAvg: round(totals.might / totals.size),
           mightRange: totals.mightRange[1] - totals.mightRange[0],
+          mightSD: standardDeviation(totals.scores, { usePopulation: true }),
 
           wardenAvg: round(totals.warden / totals.size),
           wardenMightPct: round((totals.wardenMight / totals.might) * 100),
@@ -86,12 +73,8 @@ const getStats = (comps) => {
         warden: 0,
         wardenMight: 0,
         mightRange: [Infinity, 0],
+        scores: [],
       },
-    );
-
-    stats.mightSD = sd(
-      compSlots.map((s) => s.might),
-      true,
     );
 
     return map.set(comp, stats);

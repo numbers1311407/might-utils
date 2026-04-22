@@ -170,3 +170,14 @@ export const pick = (object, ...attrs) => {
   }
   return picked;
 };
+
+export const standardDeviation = (array, { usePopulation = true } = {}) => {
+  const n = array.length;
+  if (n < 2 && !usePopulation) return 0;
+
+  const mean = array.reduce((a, b) => a + b) / n;
+  const variance =
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) /
+    (n - (usePopulation ? 0 : 1));
+  return Math.sqrt(variance);
+};
