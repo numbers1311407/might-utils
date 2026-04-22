@@ -12,9 +12,13 @@ import {
 import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useParty, useStableCallback } from "@/core/hooks";
-import { AppLink, Aside, useCalculatorContext } from "@/core/components";
+import {
+  AppLink,
+  Aside,
+  CharSelect,
+  useCalculatorContext,
+} from "@/core/components";
 import { CharsTable } from "./CharsTable.jsx";
-import { CharSelect } from "./CharSelect.jsx";
 import { CharStatsTable as StatsTable } from "./CharStatsTable.jsx";
 import { usePartyEditor } from "../hooks/use-party-editor.js";
 import { PartiesNav } from "./PartiesNav.jsx";

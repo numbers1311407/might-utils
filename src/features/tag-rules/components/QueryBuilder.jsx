@@ -1,6 +1,7 @@
 import { Stack } from "@mantine/core";
 import { QueryBuilder as ReactQueryBuilder } from "react-querybuilder";
 import { useStructuredClone, useStableCallback } from "@/core/hooks";
+import { CharSelect } from "@/core/components";
 import {
   QueryBuilderMantine,
   MantineValueEditor,
@@ -12,6 +13,22 @@ import { FIELDS } from "@/core/party-finder";
 // to get unsupported (yes that includes min, max, and step) props to
 // underlying number inputs.
 function CustomMantineEditor(props) {
+  if (props.fieldData.dataType === "character") {
+    return (
+      <CharSelect
+        emits="id"
+        size="sm"
+        placeholder="Select a Character"
+        value={props.value}
+        onChange={(name) => props.handleOnChange(name)}
+        comboboxProps={{
+          width: 250,
+          position: "top-end",
+        }}
+      />
+    );
+  }
+
   if (props.inputType !== "number") {
     return <MantineValueEditor {...props} />;
   }

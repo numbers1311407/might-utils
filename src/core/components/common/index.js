@@ -1,5 +1,6 @@
 export * from "./AppLink.jsx";
 export * from "./Aside.jsx";
+export * from "./CharSelect.jsx";
 export * from "./ClassIcon.jsx";
 export * from "./ColorSchemeButton.jsx";
 export * from "./ConfirmationModal.jsx";
