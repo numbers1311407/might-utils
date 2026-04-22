@@ -7,8 +7,8 @@ import {
 import { instrument } from "@/utils";
 import { createComp, createTagsComp } from "@/model/schemas/comp";
 
-const MAX_RECURSIONS = 10_000_000;
-const MAX_RESPONSE_LENGTH = 5000;
+export const MAX_RECURSIONS = 10_000_000;
+export const MAX_RESPONSE_LENGTH = 5000;
 
 export const defaultOptions = {
   targetScore: 1250,

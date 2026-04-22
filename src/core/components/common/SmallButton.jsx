@@ -12,7 +12,7 @@ import { Button } from "@mantine/core";
 
 export const SmallButton = ({ Icon, ...props }) => (
   <Button
-    leftSection={Icon && <Icon size={12} />}
+    leftSection={Icon && <Icon size={20} />}
     size="compact-sm"
     {...props}
   />
@@ -47,5 +47,5 @@ export const RestoreSmallButton = (props) => (
 );
 
 export const SaveSmallButton = (props) => (
-  <SmallButton variant="outline" Icon={IconDeviceFloppy} {...props} />
+  <SmallButton Icon={IconDeviceFloppy} {...props} />
 );

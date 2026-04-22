@@ -30,6 +30,7 @@ const getStats = (comps) => {
       (totals, slot, i) => {
         totals.scores.push(slot.might);
 
+        // TODO the size is right in the comp string but it's not parsed out
         totals.size += slot.count;
         totals.level += slot.level * slot.count;
         totals.might += slot.might * slot.count;
@@ -52,12 +53,15 @@ const getStats = (comps) => {
 
           levelAvg: round(totals.level / totals.size),
           levelMightPct: round((totals.baseMight / totals.might) * 100),
-          levelMightotal: totals.baseMight,
+          levelMightTotal: totals.baseMight,
           levelTotal: totals.level,
 
           mightAvg: round(totals.might / totals.size),
           mightRange: totals.mightRange[1] - totals.mightRange[0],
-          mightSD: standardDeviation(totals.scores, { usePopulation: true }),
+          mightRangeBounds: totals.mightRange,
+          mightSD: round(
+            standardDeviation(totals.scores, { usePopulation: true }),
+          ),
 
           wardenAvg: round(totals.warden / totals.size),
           wardenMightPct: round((totals.wardenMight / totals.might) * 100),
@@ -106,10 +110,12 @@ const sortParties = (sort, parties, stats) => {
   }
 };
 
-const extractComps = (results) => {
-  const pool = results.pool;
-
-  return results.parties.reduce((acc, party) => {
+const extractComps = ({ pool, parties }) => {
+  // going over each party
+  return parties.reduce((acc, party) => {
+    // add it to our set if it's not there, processing the comp
+    // string and attaching a `slots` set we'll use to track slots
+    // who fit this comp (for the UI to show a tooltip, etc)
     if (!acc.has(party.comp)) {
       acc.set(
         party.comp,
@@ -120,9 +126,12 @@ const extractComps = (results) => {
       );
     }
 
+    // get the deserialized comp we just added
     const compSlots = acc.get(party.comp);
 
-    // collect all pool idxs for chars that match this the comp
+    // for each party member, figure out who's matching which of the
+    // warden/level/tags requirements for the comp slots, and add them
+    // to a set in the comp for use in the UI.
     party.party.forEach((idx) => {
       const slot = pool[idx];
       const compItemIdx = compSlots.findIndex((o) => {
@@ -132,7 +141,9 @@ const extractComps = (results) => {
           o.terms.every((tag) => slot.tags.includes(tag))
         );
       });
-      if (compItemIdx !== -1) compSlots[compItemIdx].slots.add(idx);
+      if (compItemIdx !== -1) {
+        compSlots[compItemIdx].slots.add(slot);
+      }
     });
 
     return acc;

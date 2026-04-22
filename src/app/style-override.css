@@ -7,10 +7,11 @@
 :host {
   --paper-background-color: lighten(var(--mantine-color-body), 0.0175);
   --paper-border-color-custom: rgba(255, 255, 255, 0.1);
+  --mantine-color-body-custom: lighten(var(--mantine-color-body), 0.0275);
 }
 
 body {
-  background-color: lighten(var(--mantine-color-body), 0.0275);
+  background-color: var(--mantine-color-body-custom);
 }
 
 html {
