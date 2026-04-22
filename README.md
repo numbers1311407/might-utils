@@ -6,92 +6,51 @@ manage parties that satisfy that score.
 ### Release checklist
 
 - **Party Generator: MVP**
-  - Error messaging - if there are zero (or potentially low) results, show human errors as
-    to why that is. This will be critical for comp searches.
+  - Error messaging - if there are zero (or potentially low) results, show human errors as to why that is. This will be critical for comp searches.
   - Complete the search results with links to save party, comp
-  - Search results sortable by avg. level, warden level applied, group size, ???
-  - Save party and comp should be modal based and on success, show a green check + message
-    and present a link to go there now or close. This should all be doable with the modal
-    hook so we can use the same hook on both the search page and comp page.
-  - Saved comps search menu
-    - it's a little unclear how to toggle search types between normal and comps.
-      comps is clearly secondary and not really a "search type" so there may be a
-      hierarchy here vs something like 2 tabs. Needs consideration.
-    - replaces the score/size options
-    - shows current comp details
-    - if no comp selected, show a prompt in the search results pane
-    - select should discern comps that are not eligible and disallow selection
-      - if an ineligible comp is passed (url doctoring etc) it should detect and error
-- **Saved Comps**
-  - Saved comp store
-    - name
-    - value/comp (primary key)
-  - Saved comp index
-    - Note saved comp probably doesn't need an index page for now, possibly at all. The comp's "page" is the search page with a comp panel and details really.
-    - Filterable by buildable, indicators of buildable or how far off similar to parties.
-    - Sortable by the same criteria as search.
-    - Has modal workflows to create 
-    - has diff similar to party page but at least currently it's not editable. Diff should indicate whether the comp can be created and how far off the roster is.
+  - Save party and comp should be modal based and on success, show a green check + message and present a link to go there now or close. This should all be doable with the modal
 - **Parties: MVP**
   - Parties needs an index page with filtering & sorting
   - Sort by name, might score, diff
   - The show page probably doesn't need the shared header, it's kind of fighting for space
   - Comp breakdown view - Named/linked if saved, modal to save if not saved.
-  - Edit mode - one way or another users need to be able to mess with parties without
-    committing changes. Edit mode solves this, while also making changes more intentional.  Roster doesn't feel like it needs this because by its nature it's constantly changing. Editing a saved party should be more intentional, while the ability to edit without
-    committing also makes it possible to play around with the scores.
+  - Edit mode - one way or another users need to be able to mess with parties without committing changes. Edit mode solves this, while also making changes more intentional.  Roster doesn't feel like it needs this because by its nature it's constantly changing. Editing a saved party should be more intentional, while the ability to edit without committing also makes it possible to play around with the scores.
+- **Saved Comps**
+  - Saved comp store
+    - name
+    - value/comp (primary key)
+    - tag group - questionable but making this link to tag group by ID mean we don't have to hardcode the tags into the comp string (it would use the no-terms option) and instead it'd just be a default query param. We can make it so if the tags group is changed on the comp search a button becomes active to save the change. But all this is is a default tag group which gets incorporated into the rules. Note this means there's only one type of comp, which can optionally be further specced with tags.
 - **Might Range Finder: MVP**
   - complete UI
-  - include links from the might ranges to the finder, and possibly listings
-    of "saved parties" that match the might level or are close?
+  - include links from the might ranges to the finder, and possibly listings of "saved parties" that match the might level or are close?
 - **NPC Sim: MVP**
-  - Should add a 2nd window with metadata in the main calculator, namely links to the finder for the
-    actual numeric ranges in the NPC response that you don't see in game.
+  - Should add a 2nd window with metadata in the main calculator, namely links to the finder for the actual numeric ranges in the NPC response that you don't see in game.
   **Global: 404 page**
   - an actual in app 404 page for bad paths
-- **Tag rules: Name rules in the builder**
-  - There's no reason not to have this and it could be useful.
   **Issues**
-  - For parties and other records with duplicate name generation, if the name is near max it
-    will fail validation silently. The answer is probably to not do that, we have the create
-    form right there and can just ask for the name.
+  - For parties and other records with duplicate name generation, if the name is near max it will fail validation silently. The answer is probably to not do that, we have the create form right there and can just ask for the name.
   
 ### Post MVP Roadmap
 
+- **Saved Comps**
+  - Saved comps "search" UI
+  - There's consideration whether this is treated as a first class record with its own "search page", but I think it makes more sense as party finder "mode" largely because we'll be linking to comp-based searches from other results and parties, and the act of saving is essentially like a permalink to a page on the site that already exists.
 - **Roster Changes**
   - Move the tag forms to the roster page and kill the tags editor
-  - Let's do negative tags, it's almost there with the locked tag concept they just need to be
-    toggleable instead of deletable. That toggle will be in the form of a 2nd tags array, antitags.
-  - And while we're at it, add might toggle buttons on the roster nav as well now that we're
-    committing to opening that UI up a bit.
-  - (probably actually just separate out the party list now since the two components are so
-    different.
+  - Let's do negative tags, it's almost there with the locked tag concept they just need to be toggleable instead of deletable. That toggle will be in the form of a 2nd tags array, antitags. And while we're at it, add might toggle buttons on the roster nav as well now that we're committing to opening that UI up a bit.
+  - (probably actually just separate out the party list now since the two components are so different.
 - **Calculators: Complete calculator data**
-  - This is critical but I'm also waiting to see if post release either 1. we're asked not to
-    expose the calculators and need to remove them or 2. a dev might offer us real data, or
-    3. we could crowdsource some more data from others with access to different tiers.
+  - This is critical but I'm also waiting to see if post release either 1. we're asked not to expose the calculators and need to remove them or 2. a dev might offer us real data, or 3. we could crowdsource some more data from others with access to different tiers.
 - **Multiple: for finder purposes each warden rank should be opt-in**
-  - Character warden options shouldn't be a fixed range, it should be possible to toggle specific
-    warden levels on or off. This would be possible with the reintroduction of name rules but
-    it would be a very clunky and expensive approach for what should be a reduction in complexity
-    via voluntary pool shrinking.
+  - Character warden options shouldn't be a fixed range, it should be possible to toggle specific warden levels on or off. This would be possible with the reintroduction of name rules but it would be a very clunky and expensive approach for what should be a reduction in complexity via voluntary pool shrinking.
 - **Roster: Alt tags**
-  - The tags ui should be removed from the modal and replaced witha link to the roster tags editor,
-    making that the only place to edit character tags.
-  - In that editor the characters have a toggle to turn on their "alt" tags, allowing for two tag
-    sets. This is the replacement for lost functionality from the removal of
-    "distinct grouping tags", but better as it's more controlled.  Implementation would probably
-    be a 2nd tags array. For UI purposes the char would just be considered to have all the tags,
-    but in the party finder they'd be split.
-  - Potentially we could even have a separate toggle for the alt tag version, letting the active
-    roster include either or both.
+  - The tags ui should be removed from the modal and replaced witha link to the roster tags editor, making that the only place to edit character tags. In that editor the characters have a toggle to turn on their "alt" tags, allowing for two tag sets. This is the replacement for lost functionality from the removal of "distinct grouping tags", but better as it's more controlled.  Implementation would probably be a 2nd tags array. For UI purposes the char would just be considered to have all the tags, but in the party finder they'd be split.
+  - Potentially we could even have a separate toggle for the alt tag version, letting the active roster include either or both.
 - **Calculators: Might Range Finder**
   - A toggle to show "and up" from the dificulty to show the full range.
-  - This calculator is currently confusing because as it only shows you one difficulty, it
-    also presents gaps where the difficulty has shifted. There's probably a better UX here.
+  - This calculator is currently confusing because as it only shows you one difficulty, it also presents gaps where the difficulty has shifted. There's probably a better UX here.
 - **Party Generator: Analytics**
   - Show analytic data about the search and potentially some analysis to go along.
-
  
 ### Nice to haves (future work)
 
