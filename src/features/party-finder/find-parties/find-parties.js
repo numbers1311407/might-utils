@@ -17,7 +17,7 @@ export const defaultOptions = {
   minSize: 6,
   maxSize: 12,
   margin: 0,
-  sort: "-score -size",
+  sort: "-score mightSD mightRange -mightAvg",
 };
 
 export const findParties = (roster, targetScore, options = {}) => {

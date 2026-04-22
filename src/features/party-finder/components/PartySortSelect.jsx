@@ -4,20 +4,20 @@ import { usePartyFinderOption } from "../hooks";
 
 const OPTIONS = [
   {
-    label: "Lowest Might Variance",
-    value: "-score sdMight -size",
+    label: "Might Variance - Low",
+    value: "-score mightSD mightRange -mightAvg",
   },
   {
-    label: "Highest Might Variance",
-    value: "-score -sdMight size",
+    label: "Might Variance - High",
+    value: "-score -mightSD -mightRange mightAvg",
   },
   {
-    label: "Highest Avg. Power",
-    value: "-score -avgMight -avgWarden size",
+    label: "Might Density - High",
+    value: "-score -mightAvg -mightTotal size",
   },
   {
-    label: "Highest Avg. Level",
-    value: "-score -avgLevel size",
+    label: "Might Density - Low",
+    value: "-score mightAvg mightTotal -size",
   },
 ];
 

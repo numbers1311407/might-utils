@@ -51,12 +51,14 @@ const getStats = (comps) => {
 
         totals.baseMight += slot.baseMight * slot.count;
         totals.wardenMight += (slot.might - slot.baseMight) * slot.count;
+        totals.mightRange = [
+          Math.min(slot.might, totals.mightRange[0]),
+          Math.max(slot.might, totals.mightRange[1]),
+        ];
 
         if (i !== compSlots.length - 1) {
           return totals;
         }
-        const pctMightLevel = round((totals.baseMight / totals.might) * 100);
-        const pctMightWarden = round((totals.wardenMight / totals.might) * 100);
 
         return {
           size: totals.size,
@@ -64,13 +66,13 @@ const getStats = (comps) => {
           avgLevel: round(totals.level / totals.size),
           avgMight: round(totals.might / totals.size),
           avgWarden: round(totals.warden / totals.size),
-          scoreBalance: pctMightLevel / pctMightWarden,
-          pctMightLevel,
-          pctMightWarden,
+          pctMightLevel: round((totals.baseMight / totals.might) * 100),
+          pctMightWarden: round((totals.wardenMight / totals.might) * 100),
           totalLevel: totals.level,
           totalLevelScore: totals.baseMight,
           totalWardenScore: totals.wardenMight,
           totalWardenRank: totals.warden,
+          mightVolatility: totals.mightRange[1] - totals.mightRange[0],
         };
       },
       {
@@ -80,6 +82,7 @@ const getStats = (comps) => {
         might: 0,
         warden: 0,
         wardenMight: 0,
+        mightRange: [Infinity, 0],
       },
     );
 
