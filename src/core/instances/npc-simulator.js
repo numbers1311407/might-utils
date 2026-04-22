@@ -60,7 +60,7 @@ export const getInstanceOfferings = (type, suggestedMight, partyMight) => {
   });
 
   return Object.entries(offerings)
-    .filter(([_, offering]) => offering !== null)
+    .filter(([, offering]) => offering !== null)
     .map(([medal, offering]) => ({
       medal,
       ...offering,
