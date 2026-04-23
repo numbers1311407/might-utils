@@ -5,7 +5,7 @@ import {
   FloatingNpcSimulator,
   FloatingMightRangeFinder,
 } from "@/core/calculators";
-import { FloatingRoster } from "@/features/chars";
+import { FloatingRoster } from "./routes/chars";
 
 const HELP =
   "These buttons will open floating windows containing useful controls you might want on different pages of the app. They'll stay where you leave them on close.";

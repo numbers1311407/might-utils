@@ -1,10 +1,10 @@
 import { Route, Link } from "wouter";
-import { PartyFinder } from "@/features/party-finder";
-import { ClassTags } from "@/features/class-tags";
-import { TagGroups } from "@/features/tag-groups";
-import { NpcSimulator, MightRangeFinder } from "@/features/calculators";
-import { TagRules } from "@/features/tag-rules";
-import { Roster, Parties } from "@/features/chars";
+import { ClassTags } from "./class-tags";
+import { NpcSimulator, MightRangeFinder } from "./calculators";
+import { PartyFinder } from "./party-finder";
+import { Roster, Parties } from "./chars";
+import { TagGroups } from "./tag-groups";
+import { TagRules } from "./tag-rules";
 
 const HomePage = () => {
   return (

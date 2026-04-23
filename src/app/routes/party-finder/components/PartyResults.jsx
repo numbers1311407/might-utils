@@ -1,14 +1,10 @@
 import { forwardRef, useMemo } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { Badge, Group, Grid, Stack, Paper, Table, Text } from "@mantine/core";
-import { useFindPartiesResults } from "../hooks";
 import { PartyLine, SaveSmallButton } from "@/core/components";
 import { createPartyComp } from "@/model/schemas/comp";
-
-// TODO at some point we need a great re-org to shuffle all these feature
-// concerns around into the right buckets but for the moment, we're pulling
-// cross "feature"
-import { usePartyEditor } from "@/features/chars/hooks/use-party-editor.js";
+import { useFindPartiesResults } from "../hooks";
+import { usePartyEditor } from "../../chars/hooks/use-party-editor.js";
 
 const StatsTable = ({ stats, ...props }) => {
   const rows = useMemo(() => {
