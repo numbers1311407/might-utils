@@ -50,7 +50,7 @@ export const PartyCard = ({ title, party, comp, stats, buttons }) => (
               <Text size="lg" c="primary.5">
                 Party Composition
               </Text>
-              <CompBreakdown comp={comp} />
+              <CompBreakdown comp={comp} score={stats?.score} />
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>

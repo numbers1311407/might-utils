@@ -1,15 +1,15 @@
-import { Badge, Group, Stack, Text } from "@mantine/core";
+import { Divider, Badge, Group, Stack, Text } from "@mantine/core";
 
 const CompWarden = ({ rank, ...props }) => {
   if (!rank) return null;
   return <Text {...props}>Rk. {rank}</Text>;
 };
 
-export const CompBreakdown = ({ comp, ...props }) => {
+export const CompBreakdown = ({ comp, score, ...props }) => {
   const key = (slot) => `${slot.level}/${slot.warden}/${slot.terms.join(",")}`;
 
   return (
-    <Stack gap="sm" {...props}>
+    <Stack gap={0} {...props}>
       <Stack gap={6} py={4}>
         {comp.map((slot) => (
           <Group key={key(slot)} gap={4} align="baseline">
@@ -44,6 +44,16 @@ export const CompBreakdown = ({ comp, ...props }) => {
           </Group>
         ))}
       </Stack>
+      {score !== undefined && (
+        <>
+          <Divider my={4} />
+          <Group justify="right">
+            <Text ff="mono" ta="right" flex="1">
+              Total Might: {score}
+            </Text>
+          </Group>
+        </>
+      )}
     </Stack>
   );
 };

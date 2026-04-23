@@ -72,33 +72,43 @@ export const Party = ({ id: partyId }) => {
         <Grid align="flex-start" gutter="xl">
           <Grid.Col span={{ base: 12, lg: 6 }} order={2}>
             <Paper p="md">
-              <Stack gap="md">
+              <Stack gap="xs">
+                <Title order={3} c="primary" fw="bold">
+                  {party.might} Might
+                </Title>
+                <Divider />
                 <Title order={4} c="primary">
                   Comp Breakdown
                 </Title>
-                <CompBreakdown comp={maps.comps.get(party.comp)} />
-                <Stack gap="xs">
-                  <Title order={4} c="primary">
-                    Stats
-                  </Title>
-                  <PartyStatsTable stats={maps.stats.get(party.comp)} />
-                </Stack>
-                <StatsTable
-                  mode="stacked"
-                  stats={hookStats}
-                  rowFilter="Tags"
-                  titleColor="primary"
+                <CompBreakdown
+                  score={party.might}
+                  comp={maps.comps.get(party.comp)}
                 />
+                <Title order={4} c="primary">
+                  Stats
+                </Title>
+                <PartyStatsTable stats={maps.stats.get(party.comp)} />
+                <Box mt="-xs">
+                  <StatsTable
+                    mode="stacked"
+                    stats={hookStats}
+                    rowFilter="Tags"
+                    titleColor="primary"
+                  />
+                </Box>
               </Stack>
             </Paper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 6 }} order={1}>
             <Stack gap="md">
               <Paper shadow="md" p="md">
-                <Group align="center" mb="xs">
-                  <Title order={4} c="primary" flex="1">
+                <Group align="center" mb="xs" gap={4}>
+                  <Title order={4} c="primary">
                     Party Members
                   </Title>
+                  <Text size="lg" flex="1" ff="mono">
+                    ({party.chars.length})
+                  </Text>
                   <PartyDiffToggle />
                 </Group>
                 <CharSelect

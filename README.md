@@ -9,14 +9,8 @@ manage parties that satisfy that score.
   - Error messaging - if there are zero (or potentially low) results, show human errors as to why that is. This will be critical for comp searches.
   - *Saved Comp Mode*
     - saved comps don't have a proper "show" page but rather act as permalinks to the saved comp search mode
-  
 - **Parties: MVP**
-  - Parties needs an index page with filtering & sorting
-  - Sort by name, might score, diff
-  - The show page probably doesn't need the shared header, it's kind of fighting for space
-  - Comp breakdown view
-    - NOTE this is probably simply *the* view and then the shared roster UI is the edit mode
-    - Once saving comps is in place you should be able to save a comp from here, or link to it if saved
+  - Once saving comps is in place you should be able to save a comp from here, or link to it if saved
   - Edit mode - one way or another users need to be able to mess with parties without committing changes. Edit mode solves this, while also making changes more intentional.  Roster doesn't feel like it needs this because by its nature it's constantly changing. Editing a saved party should be more intentional, while the ability to edit without committing also makes it possible to play around with the scores.
 - **Saved Comps**
   - Saved comp store
