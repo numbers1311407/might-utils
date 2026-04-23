@@ -17,7 +17,7 @@ import { parse } from "csv-parse/browser/esm/sync";
 import { charSchema } from "@/model/schemas";
 import { useRosterStoreApi as rosterApi } from "@/model/store";
 
-const HEADER_ROW = ["name", "class", "level", "warden", "tags", "active"];
+const HEADER_ROW = ["name", "class", "level", "warden", "active", "tags"];
 
 const RosterCopyButton = ({ value, ...buttonProps }) => {
   return (
@@ -36,7 +36,7 @@ const RosterCopyButton = ({ value, ...buttonProps }) => {
 };
 
 const useRosterCsv = () => {
-  const roster = useRoster();
+  const roster = useRoster({ activeOnly: false });
 
   return useMemo(
     () =>
@@ -47,9 +47,11 @@ const useRosterCsv = () => {
             char.class,
             char.level,
             char.warden,
-            char.tags.length ? `"${char.tags.join(",")}"` : "",
             char.active ? 1 : 0,
-          ].join(", "),
+            char.tags.length ? `"${char.tags.join(",")}"` : null,
+          ]
+            .filter((r) => r !== null)
+            .join(", "),
         )
         .join("\n"),
     [roster],
@@ -100,6 +102,7 @@ export const RosterImporter = () => {
 
     try {
       parsed = parseDraft(draft);
+      console.log({ parsed });
     } catch (e) {
       setError(e.message);
       return;
