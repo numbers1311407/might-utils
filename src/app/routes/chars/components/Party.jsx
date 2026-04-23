@@ -84,7 +84,7 @@ export const Party = ({ id: partyId }) => {
                   score={party.might}
                   comp={maps.comps.get(party.comp)}
                 />
-                <Title order={4} c="primary">
+                <Title order={4} c="primary" mt="-xs">
                   Stats
                 </Title>
                 <PartyStatsTable stats={maps.stats.get(party.comp)} />
