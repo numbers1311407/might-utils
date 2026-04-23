@@ -5,6 +5,7 @@ import {
   Paper,
   Text,
   Title,
+  Tooltip,
   Table,
   Stack,
   useMantineTheme,
@@ -47,20 +48,42 @@ const Colors = {
 export const PartyDiffColors = Colors;
 
 const BADGE_MAP = {
-  INVALID_ROSTER: [Colors.INVALID_ROSTER, "Invalid"],
-  WARDEN_UNDER: [Colors.WARDEN_UNDER, "Unattained Warden"],
-  LEVEL_OVER: [Colors.LEVEL_OVER, "Over-leveled"],
-  LEVEL_UNDER: [Colors.LEVEL_UNDER, "Under-leveled"],
-  READY: [Colors.READY, "Ready!"],
+  INVALID_ROSTER: [
+    Colors.INVALID_ROSTER,
+    "Invalid",
+    "This party is empty or invalid",
+  ],
+  WARDEN_UNDER: [
+    Colors.WARDEN_UNDER,
+    "Unattained Warden",
+    "This party has characters with higher warden than the roster",
+  ],
+  LEVEL_OVER: [
+    Colors.LEVEL_OVER,
+    "Over-leveled",
+    "This party has characters lower level than the roster and would require deleveling to assemble",
+  ],
+  LEVEL_UNDER: [
+    Colors.LEVEL_UNDER,
+    "Under-leveled",
+    "This party has charcters higher level than the roster and would require leveling to assemble",
+  ],
+  READY: [
+    Colors.READY,
+    "Ready!",
+    "This party can be assembled with no changes or by swapping warden rings only",
+  ],
 };
 
-const ReadinessBadge = ({ tier }) => {
-  const [color, message] = BADGE_MAP[tier];
+export const ReadinessBadge = ({ tier, ...props }) => {
+  const [color, message, tooltip] = BADGE_MAP[tier];
 
   return (
-    <Badge size="md" bg={color}>
-      {message}
-    </Badge>
+    <Tooltip label={tooltip} multiline w={240} withArrow>
+      <Badge size="md" bg={color} {...props}>
+        {message}
+      </Badge>
+    </Tooltip>
   );
 };
 
@@ -129,8 +152,8 @@ const PartyDiffInvalidRoster = (props) => {
         Missing roster characters: {props.missing.join(", ")}
       </Text>
       <Text size="sm">
-        This party is missing characters from the roster. They'll need to be
-        replaced or restored to make this party valid.
+        This party is empty or missing characters from the roster. The party
+        must contain 1 or more roster characters to be valid.
       </Text>
     </>
   );

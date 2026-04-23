@@ -1,4 +1,3 @@
-import { usePartyFinderOption } from "../hooks";
 import { SortSelect } from "@/core/components";
 
 const DATA = [
@@ -20,7 +19,6 @@ const DATA = [
   },
 ];
 
-export const PartySortSelect = () => {
-  const [sort, setSort] = usePartyFinderOption("sort");
-  return <SortSelect sort={sort} setSort={setSort} data={DATA} />;
+export const PartySortSelect = ({ sort, setSort, ...props }) => {
+  return <SortSelect sort={sort} setSort={setSort} data={DATA} {...props} />;
 };

@@ -2,12 +2,16 @@ import { useCallback } from "react";
 
 export const useSorter = (sort) => {
   return useCallback(
-    (parties, selector) => {
-      const copy = parties.slice();
-      const sorts = sort.split(" ");
-      const lastSort = sorts[sorts.length - 1];
+    (list, selector) => {
+      const copy = list.slice();
+      if (!sort?.length) {
+        return copy;
+      }
 
       try {
+        const sorts = sort.split(" ");
+        const lastSort = sorts[sorts.length - 1];
+
         return copy.sort((_a, _b) => {
           const a = selector?.(_a) ?? _a;
           const b = selector?.(_b) ?? _b;

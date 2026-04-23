@@ -14,4 +14,5 @@ export * from "./NumberField.jsx";
 export * from "./ModalStore.jsx";
 export * from "./PageTitle.jsx";
 export * from "./SmallButton.jsx";
+export * from "./SortSelect.jsx";
 export * from "./TextInput.jsx";

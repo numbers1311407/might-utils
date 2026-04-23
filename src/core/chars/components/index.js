@@ -5,5 +5,6 @@ export * from "./FloatingRoster.jsx";
 export * from "./PartyCard.jsx";
 export * from "./PartyForm.jsx";
 export * from "./PartyStack.jsx";
+export * from "./PartySortSelect.jsx";
 export * from "./PartyStatsTable.jsx";
 export * from "./party-diff";

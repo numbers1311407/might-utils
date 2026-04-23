@@ -3,6 +3,8 @@ import { Table } from "@mantine/core";
 
 export const PartyStatsTable = ({ stats, ...props }) => {
   const rows = useMemo(() => {
+    if (!stats) return [];
+
     return [
       ["Might Average", stats.mightAvg],
       [

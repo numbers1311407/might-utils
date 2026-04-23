@@ -35,6 +35,15 @@ const emptyResponse = {
 export const getPartyDiff = (party, roster) => {
   const { might: partyMight, chars } = party;
 
+  if (!chars.length) {
+    return {
+      ...emptyResponse,
+      tier: "INVALID_ROSTER",
+      missing: ["Any"],
+      score: 1000000,
+    };
+  }
+
   let dOver = 0;
   let dUnder = 0;
   let rosterMight = 0;

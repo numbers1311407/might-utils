@@ -5,6 +5,10 @@ export const getCompStatsMap = (compMap) => {
   const round = (v) => utilsRound(v, 3);
 
   return compMap.entries().reduce((map, [comp, compSlots]) => {
+    if (!compSlots?.length) {
+      return new Map();
+    }
+
     const stats = compSlots.reduce(
       (totals, slot, i) => {
         totals.scores.push(slot.might);

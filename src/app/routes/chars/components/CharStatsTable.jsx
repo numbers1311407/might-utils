@@ -7,7 +7,9 @@ const Tags = ({ children }) => <Group gap={10}>{children}</Group>;
 export const CharStatsTable = ({
   stats,
   mode = "vertical",
+  rowFilter,
   minMight = false,
+  titleColor,
 }) => {
   const rows = useMemo(() => {
     if (!stats) return [];
@@ -72,17 +74,17 @@ export const CharStatsTable = ({
           <TagCharCounts chars={stats.tags.chars} />
         </Tags>,
       ],
-    ];
-  }, [stats, minMight]);
+    ].filter((row) => !rowFilter || rowFilter.indexOf(row[0]) !== -1);
+  }, [stats, rowFilter, minMight]);
 
   return (
-    <Table align="top" mb="md" withColumnBorders>
+    <Table align="top" withColumnBorders>
       <Table.Tbody>
         {rows.map((row) => (
           <Table.Tr key={row[0]} style={{ verticalAlign: "top" }}>
             {mode === "vertical" && (
               <>
-                <Table.Td pl={0} py="sm" w="25%">
+                <Table.Td pl={0} py="sm" w="25%" c={titleColor}>
                   <Text fw="bold">{row[0]}</Text>
                 </Table.Td>
                 <Table.Td pr={0} py="sm" w="75%">
@@ -93,8 +95,8 @@ export const CharStatsTable = ({
             {mode === "stacked" && (
               <>
                 <Table.Td px={0} py="sm">
-                  <Stack gap="sm">
-                    <Text size="lg" fw="bold" mb={0}>
+                  <Stack gap="xs">
+                    <Text size="lg" fw="bold" c={titleColor}>
                       {row[0]}
                     </Text>
                     {row[1]}

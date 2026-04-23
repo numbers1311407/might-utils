@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from "react";
 import { Virtuoso } from "react-virtuoso";
-import { Stack } from "@mantine/core";
+import { Group, Stack } from "@mantine/core";
 import { createPartyComp } from "@/model/schemas/comp";
 import { PartyCard, usePartyEditor } from "@/core/chars";
 import { SaveSmallButton } from "@/core/components";
@@ -24,9 +24,11 @@ export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
           stats={stats.get(party.comp)}
           comp={comps.get(party.comp)}
           buttons={
-            <SaveSmallButton onClick={() => createParty(party)}>
-              Save as Party
-            </SaveSmallButton>
+            <Group justify="flex-end">
+              <SaveSmallButton onClick={() => createParty(party)}>
+                Save as Party
+              </SaveSmallButton>
+            </Group>
           }
         />
       )}

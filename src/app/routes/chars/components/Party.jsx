@@ -5,7 +5,6 @@ import {
   Group,
   Paper,
   Stack,
-  Switch,
   Text,
   Title,
 } from "@mantine/core";
@@ -19,6 +18,9 @@ import {
   PartyDiffProvider,
   PartyDiffToggle,
   usePartyEditor,
+  usePartiesData,
+  PartyStatsTable,
+  CompBreakdown,
 } from "@/core/chars";
 import { useCalculatorContext } from "@/core/calculators";
 import { CharStatsTable as StatsTable } from "./CharStatsTable.jsx";
@@ -30,12 +32,12 @@ export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();
   const beginPartyEdit = usePartyEditor();
 
-  const { party, stats, ...partyApi } = useParty(partyId);
-
+  const { party, stats: hookStats, ...partyApi } = useParty(partyId);
+  const maps = usePartiesData(party ? [party] : []);
   const partyNames = party.chars.map((char) => char.name);
 
   const { setMight } = useCalculatorContext();
-  const might = stats?.might.total || 0;
+  const might = hookStats?.might.total || 0;
   useEffect(() => {
     setMight(might);
   }, [might, setMight]);
@@ -69,21 +71,33 @@ export const Party = ({ id: partyId }) => {
 
         <Grid align="flex-start" gutter="xl">
           <Grid.Col span={{ base: 12, lg: 6 }} order={2}>
-            <Stack gap="md">
-              <Paper p="md" shadow="md">
+            <Paper p="md">
+              <Stack gap="md">
                 <Title order={4} c="primary">
-                  Party Stats
+                  Comp Breakdown
                 </Title>
-                <StatsTable stats={stats} />
-              </Paper>
-            </Stack>
+                <CompBreakdown comp={maps.comps.get(party.comp)} />
+                <Stack gap="xs">
+                  <Title order={4} c="primary">
+                    Stats
+                  </Title>
+                  <PartyStatsTable stats={maps.stats.get(party.comp)} />
+                </Stack>
+                <StatsTable
+                  mode="stacked"
+                  stats={hookStats}
+                  rowFilter="Tags"
+                  titleColor="primary"
+                />
+              </Stack>
+            </Paper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 6 }} order={1}>
             <Stack gap="md">
               <Paper shadow="md" p="md">
                 <Group align="center" mb="xs">
                   <Title order={4} c="primary" flex="1">
-                    The Party
+                    Party Members
                   </Title>
                   <PartyDiffToggle />
                 </Group>
@@ -127,7 +141,6 @@ export const Party = ({ id: partyId }) => {
                 <Divider />
                 <ToggleNpcSimButton mt="sm" />
               </Paper>
-              <Paper p="md">Comp Breakdown</Paper>
             </Stack>
           </Grid.Col>
         </Grid>

@@ -17,6 +17,22 @@ const PartyFinderResultsCount = ({ parties, ...props }) => (
   </Text>
 );
 
+const PartyFinderResultsHeader = ({ parties }) => (
+  <Group
+    bg="var(--mantine-color-body-custom)"
+    py="xl"
+    mt="-lg"
+    style={{
+      position: "sticky",
+      top: 66,
+      zIndex: 200,
+    }}
+  >
+    <PartyFinderResultsCount parties={parties} flex="1" />
+    <PartySortSelect />
+  </Group>
+);
+
 export const PartyFinderResults = () => {
   const { parties, isPending } = useFindPartiesResults();
 
@@ -32,19 +48,7 @@ export const PartyFinderResults = () => {
 
   return (
     <>
-      <Group
-        bg="var(--mantine-color-body-custom)"
-        py="xl"
-        mt="-lg"
-        style={{
-          position: "sticky",
-          top: 66,
-          zIndex: 200,
-        }}
-      >
-        <PartyFinderResultsCount parties={parties} flex="1" />
-        <PartySortSelect />
-      </Group>
+      <PartyFinderResultsHeader parties={parties} />
       <PartyResults />
     </>
   );
