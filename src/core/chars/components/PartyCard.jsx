@@ -1,4 +1,4 @@
-import { Box, Group, Grid, Stack, Paper, Text } from "@mantine/core";
+import { Group, Grid, Stack, Paper, Text } from "@mantine/core";
 import { PartyStack } from "./PartyStack.jsx";
 import { PartyStatsTable } from "./PartyStatsTable.jsx";
 import { CompBreakdown } from "./CompBreakdown.jsx";

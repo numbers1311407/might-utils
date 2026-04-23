@@ -10,6 +10,7 @@ export * from "./use-roster-char-api.js";
 export * from "./use-roster-controls.js";
 export * from "./use-roster-stats.js";
 export * from "./use-stable-callback.js";
+export * from "./use-sorter.js";
 export * from "./use-structured-clone.js";
 export * from "./use-tag-rules-active-filters.js";
 export * from "./use-tag-rules-list.js";

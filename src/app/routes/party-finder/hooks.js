@@ -1,9 +1,9 @@
 import { use, useCallback, useEffect } from "react";
 import { useSearchParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useDraftState } from "@/core/hooks";
-import { processComp } from "@/model/schemas/comp";
-import { round as utilsRound, standardDeviation } from "@/utils";
+import { useDraftState, useSorter } from "@/core/hooks";
+import { getPartyCompsMap, getCompStatsMap } from "@/core/chars";
+
 import { PartyFinderContext } from "./context.js";
 import { usePartyFinderStore } from "./store.js";
 import { findPartiesAsync } from "./find-parties/find-parties-async.js";
@@ -23,144 +23,16 @@ export const usePartyFinderOption = (option) => {
   return [draftValue, setValue];
 };
 
-const getStats = (comps) => {
-  const round = (v) => utilsRound(v, 3);
-  return comps.entries().reduce((map, [comp, compSlots]) => {
-    const stats = compSlots.reduce(
-      (totals, slot, i) => {
-        totals.scores.push(slot.might);
-
-        // TODO the size is right in the comp string but it's not parsed out
-        totals.size += slot.count;
-        totals.level += slot.level * slot.count;
-        totals.might += slot.might * slot.count;
-        totals.warden += slot.warden * slot.count;
-
-        totals.baseMight += slot.baseMight * slot.count;
-        totals.wardenMight += (slot.might - slot.baseMight) * slot.count;
-        totals.mightRange = [
-          Math.min(slot.might, totals.mightRange[0]),
-          Math.max(slot.might, totals.mightRange[1]),
-        ];
-
-        if (i !== compSlots.length - 1) {
-          return totals;
-        }
-
-        return {
-          score: totals.might,
-          size: totals.size,
-
-          levelAvg: round(totals.level / totals.size),
-          levelMightPct: round((totals.baseMight / totals.might) * 100),
-          levelMightTotal: totals.baseMight,
-          levelTotal: totals.level,
-
-          mightAvg: round(totals.might / totals.size),
-          mightRange: totals.mightRange[1] - totals.mightRange[0],
-          mightRangeBounds: totals.mightRange,
-          mightSD: round(
-            standardDeviation(totals.scores, { usePopulation: true }),
-          ),
-
-          wardenAvg: round(totals.warden / totals.size),
-          wardenMightPct: round((totals.wardenMight / totals.might) * 100),
-          wardenMightTotal: totals.wardenMight,
-          wardenRankTotal: totals.warden,
-        };
-      },
-      {
-        baseMight: 0,
-        size: 0,
-        level: 0,
-        might: 0,
-        warden: 0,
-        wardenMight: 0,
-        mightRange: [Infinity, 0],
-        scores: [],
-      },
-    );
-
-    return map.set(comp, stats);
-  }, new Map());
-};
-
-const sortParties = (sort, parties, stats) => {
-  const sorts = sort.split(" ");
-  const lastSort = sorts[sorts.length - 1];
-
-  try {
-    return parties.slice().sort((a, b) => {
-      for (const sort of sorts) {
-        const [_match, rev, field] = sort.match(/^(-)?(\w+)/);
-
-        const compA = stats.get(a.comp);
-        const compB = stats.get(b.comp);
-
-        if (compA[field] === compB[field] && sort !== lastSort) {
-          continue;
-        }
-
-        return (compA[field] - compB[field]) * (rev ? -1 : 1);
-      }
-    });
-  } catch (e) {
-    console.error(e);
-    return parties.slice();
-  }
-};
-
-const extractComps = ({ pool, parties }) => {
-  // going over each party
-  return parties.reduce((acc, party) => {
-    // add it to our set if it's not there, processing the comp
-    // string and attaching a `slots` set we'll use to track slots
-    // who fit this comp (for the UI to show a tooltip, etc)
-    if (!acc.has(party.comp)) {
-      acc.set(
-        party.comp,
-        processComp(party.comp).map((compSlot) => ({
-          ...compSlot,
-          slots: new Set(),
-        })),
-      );
-    }
-
-    // get the deserialized comp we just added
-    const compSlots = acc.get(party.comp);
-
-    // for each party member, figure out who's matching which of the
-    // warden/level/tags requirements for the comp slots, and add them
-    // to a set in the comp for use in the UI.
-    party.party.forEach((idx) => {
-      const slot = pool[idx];
-      const compItemIdx = compSlots.findIndex((o) => {
-        return (
-          o.warden === slot.warden &&
-          o.level === slot.level &&
-          o.terms.every((tag) => slot.tags.includes(tag))
-        );
-      });
-      if (compItemIdx !== -1) {
-        compSlots[compItemIdx].slots.add(slot);
-      }
-    });
-
-    return acc;
-  }, new Map());
-};
-
 export const useFindPartiesResults = () => {
   const { key, options, roster, targetScore } = use(PartyFinderContext);
+  const sortParties = useSorter(options.sort);
 
   const select = useCallback(
-    (data) => {
-      return {
-        ...data,
-        parties: sortParties(options.sort, data.parties, data.stats),
-      };
-    },
-    [options.sort],
+    (data) => ({
+      ...data,
+      parties: sortParties(data.parties, (party) => data.stats.get(party.comp)),
+    }),
+    [sortParties],
   );
 
   const { data, isPending, error } = useQuery({
@@ -170,11 +42,17 @@ export const useFindPartiesResults = () => {
     select,
     queryFn: async () => {
       return findPartiesAsync(roster, targetScore, options).then((data) => {
-        const comps = extractComps(data);
+        const comps = getPartyCompsMap(data.parties, (party) => {
+          return {
+            comp: party.comp,
+            chars: party.party.map((idx) => data.pool[idx]),
+          };
+        });
+
         return {
           ...data,
           comps,
-          stats: getStats(comps),
+          stats: getCompStatsMap(comps),
         };
       });
     },
