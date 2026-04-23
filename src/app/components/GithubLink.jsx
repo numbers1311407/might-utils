@@ -1,6 +1,6 @@
+import { Anchor, Image, VisuallyHidden } from "@mantine/core";
 import logoWhite from "@/assets/github-white.png";
 import logoBlack from "@/assets/github-black.png";
-import { Anchor, Image, VisuallyHidden } from "@mantine/core";
 
 export const GithubLink = (props) => {
   return (

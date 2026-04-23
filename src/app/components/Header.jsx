@@ -9,11 +9,12 @@ import {
   Title,
   Text,
 } from "@mantine/core";
-import { ColorSchemeButton } from "@/core/components";
 import { Link } from "wouter";
-import classes from "./Header.module.css";
+
 import { CONTAINER_WIDTH, HEADER_HEIGHT } from "@/config/constants";
+import { ColorSchemeButton } from "@/core/components";
 import { GithubLink } from "./GithubLink.jsx";
+import classes from "./Header.module.css";
 
 export const Header = ({ burgerOpened, onBurgerClick }) => (
   <AppShell.Header className={classes.header}>

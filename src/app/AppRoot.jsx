@@ -1,10 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { AppShell, Box, Group, Container, rem } from "@mantine/core";
 import { useAppContext } from "@/core/context";
-import { Routes } from "./routes";
-import { Header } from "./Header.jsx";
-import { Navbar } from "./Navbar.jsx";
-import { ErrorPage } from "./ErrorPage.jsx";
 import {
   CONTAINER_WIDTH,
   HEADER_HEIGHT,
@@ -12,7 +8,12 @@ import {
   ASIDE_WIDTH,
 } from "@/config/constants";
 
-export const Shell = () => {
+import { Header } from "./components/Header.jsx";
+import { Navbar } from "./components/Navbar.jsx";
+import { ErrorPage } from "./components/ErrorPage.jsx";
+import { Routes } from "./routes";
+
+export const AppRoot = () => {
   const { hasAside, toggleMobileNav, mobileNavOpened } = useAppContext();
 
   return (
