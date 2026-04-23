@@ -1,1 +1,1 @@
-export * from "./components";
+export { ClassTags } from "./components";

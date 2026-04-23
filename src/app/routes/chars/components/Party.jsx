@@ -13,14 +13,18 @@ import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useParty, useStableCallback } from "@/core/hooks";
 import { AppLink, Aside, CharSelect } from "@/core/components";
+import {
+  CharsTable,
+  PartyDiff,
+  PartyDiffProvider,
+  PartyDiffToggle,
+  usePartyEditor,
+} from "@/core/chars";
 import { useCalculatorContext } from "@/core/calculators";
-import { CharsTable } from "./CharsTable.jsx";
 import { CharStatsTable as StatsTable } from "./CharStatsTable.jsx";
-import { usePartyEditor } from "../hooks/use-party-editor.js";
 import { PartiesNav } from "./PartiesNav.jsx";
 import { PartyHeader } from "./PartyHeader.jsx";
 import { ToggleNpcSimButton } from "./ToggleNpcSimButton.jsx";
-import { PartyDiff, PartyDiffProvider, PartyDiffToggle } from "./party-diff";
 
 export const Party = ({ id: partyId }) => {
   const [_location, setLocation] = useLocation();

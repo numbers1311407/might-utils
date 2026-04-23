@@ -1,7 +1,7 @@
 import { Box, Group, Stack, Text } from "@mantine/core";
-import { ClassIcon } from "./ClassIcon.jsx";
+import { ClassIcon } from "@/core/components";
 
-export const PartyLine = ({
+export const PartyStack = ({
   party,
   bg = "dark.9",
   border = "var(--mantine-color-default-border)",

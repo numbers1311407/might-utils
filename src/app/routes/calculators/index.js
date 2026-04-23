@@ -1,1 +1,1 @@
-export * from "./components";
+export { MightRangeFinder, NpcSimulator } from "./components";

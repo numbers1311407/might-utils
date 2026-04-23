@@ -20,9 +20,10 @@ import {
   PageTitle,
 } from "@/core/components";
 
+import { CharsTable } from "@/core/chars";
+
 import { CharModalForm } from "./CharModalForm.jsx";
 import { RosterAside } from "./RosterAside.jsx";
-import { CharsTable } from "./CharsTable.jsx";
 import { RosterTagsEditor } from "./RosterTagsEditor.jsx";
 import { RosterImporter } from "./RosterImporter.jsx";
 

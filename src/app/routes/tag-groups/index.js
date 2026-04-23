@@ -1,1 +1,1 @@
-export * from "./components";
+export { TagGroups } from "./components";

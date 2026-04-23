@@ -1,1 +1,1 @@
-export * from "./components";
+export { PartyFinder } from "./components";

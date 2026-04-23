@@ -13,6 +13,5 @@ export * from "./LoadingPage.jsx";
 export * from "./NumberField.jsx";
 export * from "./ModalStore.jsx";
 export * from "./PageTitle.jsx";
-export * from "./PartyLine.jsx";
 export * from "./SmallButton.jsx";
 export * from "./TextInput.jsx";

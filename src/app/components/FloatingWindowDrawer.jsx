@@ -1,11 +1,11 @@
 import { Affix, Divider, Group, Paper, Text, Tooltip } from "@mantine/core";
 import { usePersistedFloatingWindowApi } from "@/core/hooks";
 import { HelpIconTooltip, RestoreButton } from "@/core/components";
+import { FloatingRoster } from "@/core/chars";
 import {
   FloatingNpcSimulator,
   FloatingMightRangeFinder,
 } from "@/core/calculators";
-import { FloatingRoster } from "../routes/chars";
 
 const HELP =
   "These buttons will open floating windows containing useful controls you might want on different pages of the app. They'll stay where you leave them on close.";

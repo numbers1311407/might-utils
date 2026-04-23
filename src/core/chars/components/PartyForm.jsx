@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Box, Button, Group, Stack, Text, CheckIcon } from "@mantine/core";
-import { TextInput } from "@/core/components";
-import { useForm } from "@mantine/form";
-import { usePartiesStoreApi as storeApi } from "@/model/store";
-import { partySchema } from "@/model/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
+import { useForm } from "@mantine/form";
+
+import { TextInput } from "@/core/components";
+import { partySchema } from "@/model/schemas";
+import { usePartiesStoreApi as storeApi } from "@/model/store";
 
 const formSchema = partySchema.refine(
   (record) => storeApi.nameAvailable(record),
