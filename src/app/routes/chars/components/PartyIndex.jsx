@@ -77,7 +77,9 @@ const PartyIndexHeader = ({ parties, sort, setSort, ...props }) => (
     <Text {...props}>
       <Text span>{parties.length} Saved Parties</Text>
     </Text>
-    <PartySortSelect sort={sort} setSort={setSort} />
+    <Group justify="right" flex="1">
+      <PartySortSelect sort={sort} setSort={setSort} />
+    </Group>
   </Group>
 );
 
