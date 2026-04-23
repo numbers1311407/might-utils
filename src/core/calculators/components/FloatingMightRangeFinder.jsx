@@ -2,11 +2,11 @@ import { Button, Stack } from "@mantine/core";
 import { FloatingWindow } from "@/core/components";
 import { MightRangeFinder as MightRangeFinderComponent } from "./MightRangeFinder.jsx";
 import { TierSelect } from "./TierSelect.jsx";
-import { useCalculatorContext } from "./calculator-context.js";
+import { useCalculatorContext } from "../calculator-context.js";
 import {
   FLOATING_MIGHT_RANGE_FINDER_NAME,
   useFloatingMightRangeFinder,
-} from "./floating-calculator-hooks.js";
+} from "../floating-calculator-hooks.js";
 
 const NAME = FLOATING_MIGHT_RANGE_FINDER_NAME;
 const HELP =

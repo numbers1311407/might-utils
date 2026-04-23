@@ -16,7 +16,7 @@ import { useForm } from "@mantine/form";
 
 import { CLASS_SHORTNAMES } from "@/config";
 import { capitalize } from "@/utils";
-import { TagsInput } from "@/core/components";
+import { TagsInput } from "@/core/tags";
 import { extendCharSchema, charClassSchema, tagSchema } from "@/model/schemas";
 import { useClassTagsStore, useRosterStore } from "@/model/store";
 import { MightMinLevel, MightMaxLevel } from "@/config/might";

@@ -1,6 +1,7 @@
 import { CloseButton, Flex, Stack, Text } from "@mantine/core";
 import { useRosterCharApi, useRoster } from "@/core/hooks";
-import { ClassIcon, TagsInput } from "@/core/components";
+import { ClassIcon } from "@/core/components";
+import { TagsInput } from "@/core/tags";
 import { getClassName } from "@/config/chars";
 
 export const RosterTagsEditorField = ({ name }) => {

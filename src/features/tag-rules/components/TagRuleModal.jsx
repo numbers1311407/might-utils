@@ -12,7 +12,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useMemo, useState } from "react";
 
 import { useStableCallback } from "@/core/hooks";
-import { HelpLabel } from "@/core/components/common/HelpLabel";
+import { HelpLabel } from "@/core/components/HelpLabel";
 import { tagRuleSchema } from "@/model/schemas";
 import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";

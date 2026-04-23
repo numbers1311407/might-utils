@@ -4,7 +4,8 @@ import { useForm } from "@mantine/form";
 import { useTagGroupsStoreApi as tgapi } from "@/model/store";
 import { tagSchema, tagGroupSchema } from "@/model/schemas";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { HelpLabel, TagsInput } from "@/core/components";
+import { HelpLabel } from "@/core/components";
+import { TagsInput } from "@/core/tags";
 
 const formSchema = tagGroupSchema
   .safeExtend({})

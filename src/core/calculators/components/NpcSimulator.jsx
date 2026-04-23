@@ -1,6 +1,6 @@
 import { Stack, Text } from "@mantine/core";
-import { simulateInstanceNPC } from "@/core/instances";
 import { capitalize } from "@/utils";
+import { simulateInstanceNPC } from "../npc-simulator.js";
 import { ChatWindow } from "./ChatWindow.jsx";
 import { ChatNpcGreetingInteraction } from "./ChatNpcGreetingInteraction.jsx";
 

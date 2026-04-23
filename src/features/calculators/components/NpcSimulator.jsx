@@ -5,7 +5,7 @@ import {
   TierSelect,
   useCalculatorContext,
   NpcSimulator as NpcSimulatorComponent,
-} from "@/core/components/calculators";
+} from "@/core/calculators";
 
 export const NpcSimulator = () => {
   const { might, setMight, instance, setInstance } = useCalculatorContext();

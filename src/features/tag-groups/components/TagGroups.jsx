@@ -10,12 +10,12 @@ import {
 import {
   Aside,
   PageTitle,
-  TagsInput,
   AddSmallButton,
   EditSmallButton,
   CopySmallButton,
   RemoveSmallButton,
 } from "@/core/components";
+import { TagsInput } from "@/core/tags";
 import { tagSchema } from "@/model/schemas";
 import { TagGroupModal } from "./TagGroupModal.jsx";
 

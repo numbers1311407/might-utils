@@ -2,7 +2,7 @@ import { Button } from "@mantine/core";
 import { Link } from "wouter";
 import { useRosterStoreApi as rosterApi } from "@/model/store";
 import { useRoster } from "@/core/hooks";
-import { FloatingWindow } from "@/core/components/common";
+import { FloatingWindow } from "@/core/components";
 import { CharsTable } from "./CharsTable.jsx";
 import {
   useFloatingRoster,

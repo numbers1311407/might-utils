@@ -2,7 +2,7 @@ import {
   INSTANCE_MEDALS,
   DIFFICULTY_NAME_MAP,
   AURA_NAME_MAP,
-} from "./constants.js";
+} from "./calculator-constants.js";
 import data from "@/assets/instance-data.csv";
 
 import { capitalize, toRomanNumeral, initDict } from "@/utils";

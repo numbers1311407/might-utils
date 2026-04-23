@@ -3,11 +3,11 @@ import { FloatingWindow } from "@/core/components";
 import { useRoute } from "wouter";
 import { NpcSimulator as NpcSimulatorComponent } from "./NpcSimulator.jsx";
 import { TierSelect } from "./TierSelect.jsx";
-import { useCalculatorContext } from "./calculator-context.js";
+import { useCalculatorContext } from "../calculator-context.js";
 import {
   useFloatingNpcSimulator,
   FLOATING_NPC_SIMULATOR_NAME,
-} from "./floating-calculator-hooks.js";
+} from "../floating-calculator-hooks.js";
 
 const NAME = FLOATING_NPC_SIMULATOR_NAME;
 const HELP =

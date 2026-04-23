@@ -1,6 +1,6 @@
 import { Button } from "@mantine/core";
 import { IconCalculator } from "@tabler/icons-react";
-import { useFloatingNpcSimulator } from "@/core/components";
+import { useFloatingNpcSimulator } from "@/core/calculators";
 
 export const ToggleNpcSimButton = (props) => {
   const { api } = useFloatingNpcSimulator();

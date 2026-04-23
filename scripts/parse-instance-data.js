@@ -3,7 +3,7 @@ import { initDict } from "../src/utils";
 import {
   INSTANCE_MEDALS,
   INSTANCE_TYPES,
-} from "../src/core/instances/constants.js";
+} from "../src/core/calculators/calculator-constants.js";
 
 export const parseInstanceData = () => ({
   name: "parse-instance-data",

@@ -7,19 +7,22 @@ manage parties that satisfy that score.
 
 - **Party Generator: MVP**
   - Error messaging - if there are zero (or potentially low) results, show human errors as to why that is. This will be critical for comp searches.
-  - Complete the search results with links to save party, comp
-  - Save party and comp should be modal based and on success, show a green check + message and present a link to go there now or close. This should all be doable with the modal
+  - *Saved Comp Mode*
+    - saved comps don't have a proper "show" page but rather act as permalinks to the saved comp search mode
+  
 - **Parties: MVP**
   - Parties needs an index page with filtering & sorting
   - Sort by name, might score, diff
   - The show page probably doesn't need the shared header, it's kind of fighting for space
-  - Comp breakdown view - Named/linked if saved, modal to save if not saved.
+  - Comp breakdown view
+    - NOTE this is probably simply *the* view and then the shared roster UI is the edit mode
+    - Once saving comps is in place you should be able to save a comp from here, or link to it if saved
   - Edit mode - one way or another users need to be able to mess with parties without committing changes. Edit mode solves this, while also making changes more intentional.  Roster doesn't feel like it needs this because by its nature it's constantly changing. Editing a saved party should be more intentional, while the ability to edit without committing also makes it possible to play around with the scores.
 - **Saved Comps**
   - Saved comp store
     - name
     - value/comp (primary key)
-    - tag group - questionable but making this link to tag group by ID mean we don't have to hardcode the tags into the comp string (it would use the no-terms option) and instead it'd just be a default query param. We can make it so if the tags group is changed on the comp search a button becomes active to save the change. But all this is is a default tag group which gets incorporated into the rules. Note this means there's only one type of comp, which can optionally be further specced with tags.
+    - "default" tag group pkey ref - NOTE the idea here is that there's 1 type of comp: untagged comps. Then the tagging is decoration that can be applied as needed. This does a few things: 1 we don't have to hardcode names into the comp string, 2 the comp is overall less fragile, more reusable, avoids clashing with superset base comps if it becomes one, and 3 it solves the prolbem of how the group tags form will interact with the saved comp searches. It simply populates the default, and on change of the tag group it enables a save button.
 - **Might Range Finder: MVP**
   - complete UI
   - include links from the might ranges to the finder, and possibly listings of "saved parties" that match the might level or are close?
@@ -32,9 +35,6 @@ manage parties that satisfy that score.
   
 ### Post MVP Roadmap
 
-- **Saved Comps**
-  - Saved comps "search" UI
-  - There's consideration whether this is treated as a first class record with its own "search page", but I think it makes more sense as party finder "mode" largely because we'll be linking to comp-based searches from other results and parties, and the act of saving is essentially like a permalink to a page on the site that already exists.
 - **Roster Changes**
   - Move the tag forms to the roster page and kill the tags editor
   - Let's do negative tags, it's almost there with the locked tag concept they just need to be toggleable instead of deletable. That toggle will be in the form of a 2nd tags array, antitags. And while we're at it, add might toggle buttons on the roster nav as well now that we're committing to opening that UI up a bit.

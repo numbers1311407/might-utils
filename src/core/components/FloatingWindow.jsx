@@ -8,7 +8,7 @@ import {
   ScrollArea,
   Text,
 } from "@mantine/core";
-import { HelpIconTooltip } from "@/core/components/common";
+import { HelpIconTooltip } from "@/core/components";
 import { usePersistedFloatingWindow } from "@/core/hooks";
 import { IconGripVertical } from "@tabler/icons-react";
 

@@ -1,5 +1,5 @@
 import { Stack, Text, List } from "@mantine/core";
-import { getTargetMightRanges, humanizeOffering } from "@/core/instances";
+import { getTargetMightRanges, humanizeOffering } from "@/core/calculators";
 import { DifficultySelect } from "./TierSelect";
 
 export const MightRangeFinder = ({

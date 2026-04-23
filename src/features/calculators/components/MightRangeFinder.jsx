@@ -5,7 +5,7 @@ import {
   TierSelect,
   MightRangeFinder as MightRangeFinderComponent,
   useCalculatorContext,
-} from "@/core/components/calculators";
+} from "@/core/calculators";
 
 export const MightRangeFinder = () => {
   const { difficulty, setDifficulty, setInstance, instance } =

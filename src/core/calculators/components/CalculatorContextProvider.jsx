@@ -1,17 +1,12 @@
 import { useCallback, useState } from "react";
-import { CalculatorContext } from "./calculator-context.js";
-
-export const CALCULATOR_DEFAULT_INSTANCE = {
-  tier: "T9",
-  type: "raid",
-  might: 1600,
-  maxIntense: 768,
-};
-
-export const CALCULATOR_DEFAULT_MIGHT = 1600;
-export const CALCULATOR_DEFAULT_DIFFICULTY = "N";
-export const CALCULATOR_INTENSE_MULT_RAID = 0.48;
-export const CALCULATOR_INTENSE_MULT_GROUP = 0.64;
+import { CalculatorContext } from "../calculator-context.js";
+import {
+  CALCULATOR_DEFAULT_DIFFICULTY,
+  CALCULATOR_DEFAULT_INSTANCE,
+  CALCULATOR_DEFAULT_MIGHT,
+  CALCULATOR_INTENSE_MULT_GROUP,
+  CALCULATOR_INTENSE_MULT_RAID,
+} from "../calculator-constants.js";
 
 export const CalculatorContextProvider = ({ children }) => {
   const [instance, setInstanceBase] = useState(CALCULATOR_DEFAULT_INSTANCE);

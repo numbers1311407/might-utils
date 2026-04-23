@@ -22,7 +22,7 @@ import {
   TrashButton,
   HelpIconTooltip,
   RestoreButton,
-} from "@/core/components/common";
+} from "@/core/components";
 import { PartyDiffColors, usePartyDiffContext } from "./party-diff";
 import { useRosterChar, usePreference } from "@/core/hooks";
 import { useClassTagsStore } from "@/model/store";

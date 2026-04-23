@@ -1,11 +1,10 @@
 import { Affix, Divider, Group, Paper, Text, Tooltip } from "@mantine/core";
 import { usePersistedFloatingWindowApi } from "@/core/hooks";
+import { HelpIconTooltip, RestoreButton } from "@/core/components";
 import {
   FloatingNpcSimulator,
   FloatingMightRangeFinder,
-  HelpIconTooltip,
-  RestoreButton,
-} from "@/core/components";
+} from "@/core/calculators";
 import { FloatingRoster } from "@/features/chars";
 
 const HELP =
