@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button, Group, Stack, Text } from "@mantine/core";
+import { Button, Divider, Group, Stack, Text } from "@mantine/core";
 import {
   AppLink,
   EditSmallButton,
@@ -121,13 +121,19 @@ export const PartyIndex = () => {
             buttons={
               <Group
                 justify="flex-start"
+                gap="sm"
                 style={{ flexDirection: "row-reverse" }}
               >
                 <ReadinessBadge size="lg" tier={party.diff.tier} />
+                <Divider orientation="vertical" />
                 <EditSmallButton
                   component={AppLink}
+                  // TODO this is necessary because AppLink otherwise
+                  // recolors the button like a link ignoring the variant.
+                  // There's probably a better way.
+                  bg="var(--mantine-primary-color-filled)"
+                  c="var(--mantine-primary-color-contrast)"
                   href={`/parties/${party.id}`}
-                  underline="never"
                 >
                   View & Edit
                 </EditSmallButton>

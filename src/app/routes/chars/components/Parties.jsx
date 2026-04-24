@@ -27,6 +27,7 @@ export const Parties = () => {
             underline="never"
             leftSection={<IconArrowLeft />}
             size="compact-sm"
+            variant="subtle"
             href="/parties"
           >
             Back to Party Index

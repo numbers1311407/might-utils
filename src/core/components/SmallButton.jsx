@@ -8,44 +8,55 @@ import {
   IconTrash,
   IconReload,
 } from "@tabler/icons-react";
-import { Button } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 
-export const SmallButton = ({ Icon, ...props }) => (
-  <Button
-    leftSection={Icon && <Icon size={20} />}
-    size="compact-sm"
-    {...props}
-  />
-);
+const ICONS = {
+  copy: IconCopy,
+  restore: IconRestore,
+  sort: IconSortAscendingNumbers,
+  plus: IconPlus,
+  save: IconDeviceFloppy,
+  edit: IconEdit,
+  trash: IconTrash,
+  reload: IconReload,
+};
 
-export const AddSmallButton = (props) => (
-  <SmallButton Icon={IconPlus} {...props} />
-);
+export const SmallButton = ({ icon, children, ...buttonProps }) => {
+  const Icon = ICONS[icon];
 
-export const AddSortButton = (props) => (
-  <SmallButton Icon={IconSortAscendingNumbers} {...props} />
-);
+  return (
+    <Tooltip label={children} withArrow>
+      <ActionIcon {...buttonProps}>
+        <Icon size={20} />
+      </ActionIcon>
+    </Tooltip>
+  );
+};
+
+export const AddSmallButton = (props) => <SmallButton icon="plus" {...props} />;
+
+export const AddSortButton = (props) => <SmallButton icon="sort" {...props} />;
 
 export const CopySmallButton = (props) => (
-  <SmallButton Icon={IconCopy} {...props} />
+  <SmallButton icon="copy" {...props} />
 );
 
 export const EditSmallButton = (props) => (
-  <SmallButton Icon={IconEdit} {...props} />
+  <SmallButton icon="edit" {...props} />
 );
 
 export const ReloadSmallButton = (props) => (
-  <SmallButton Icon={IconReload} {...props} />
+  <SmallButton icon="reload" {...props} />
 );
 
 export const RemoveSmallButton = (props) => (
-  <SmallButton variant="outline" Icon={IconTrash} {...props} />
+  <SmallButton variant="outline" icon="trash" {...props} />
 );
 
 export const RestoreSmallButton = (props) => (
-  <SmallButton variant="outline" Icon={IconRestore} {...props} />
+  <SmallButton variant="outline" icon="restore" {...props} />
 );
 
 export const SaveSmallButton = (props) => (
-  <SmallButton Icon={IconDeviceFloppy} {...props} />
+  <SmallButton icon="save" {...props} />
 );
