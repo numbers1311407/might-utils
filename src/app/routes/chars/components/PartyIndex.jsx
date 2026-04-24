@@ -116,6 +116,7 @@ export const PartyIndex = () => {
             key={party.id}
             party={party.chars}
             comp={comps.get(party.comp)}
+            compType="party"
             stats={stats.get(party.comp)}
             buttons={
               <Group

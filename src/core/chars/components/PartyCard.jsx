@@ -3,7 +3,7 @@ import { PartyStack } from "./PartyStack.jsx";
 import { PartyStatsTable } from "./PartyStatsTable.jsx";
 import { CompBreakdown } from "./CompBreakdown.jsx";
 
-export const PartyCard = ({ title, party, comp, stats, buttons }) => (
+export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
   <Paper p="xl" flex="1">
     <Stack gap="xs">
       <Group align="flex-start">
@@ -50,7 +50,7 @@ export const PartyCard = ({ title, party, comp, stats, buttons }) => (
               <Text size="lg" c="primary.5">
                 Party Composition
               </Text>
-              <CompBreakdown comp={comp} score={stats?.score} />
+              <CompBreakdown comp={comp} type={compType} score={stats?.score} />
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>

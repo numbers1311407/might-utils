@@ -5,7 +5,7 @@ const CompWarden = ({ rank, ...props }) => {
   return <Text {...props}>Rk. {rank}</Text>;
 };
 
-export const CompBreakdown = ({ comp, score, ...props }) => {
+export const CompBreakdown = ({ comp, type, score, ...props }) => {
   const key = (slot) => `${slot.level}/${slot.warden}/${slot.terms.join(",")}`;
 
   return (
@@ -13,7 +13,7 @@ export const CompBreakdown = ({ comp, score, ...props }) => {
       <Stack gap={6} py={4}>
         {comp.map((slot) => (
           <Group key={key(slot)} gap={4} align="baseline">
-            <Text span size="2xl" ff="mono" my={0} c="primary">
+            <Text span size="2xl" ff="mono" c="primary">
               {slot.count}
             </Text>
             <Text span c="primary.5">
@@ -24,18 +24,22 @@ export const CompBreakdown = ({ comp, score, ...props }) => {
             </Text>
             <CompWarden size="md" ff="mono" rank={slot.warden} />
             {slot.terms.length && (
-              <Group
-                style={{ alignSelf: "stretch" }}
-                align="flex-start"
-                pt={3}
-                pl={4}
-                gap={6}
-              >
-                {slot.terms.map((term) => (
-                  <Badge size="sm" key={term}>
-                    {term}
-                  </Badge>
-                ))}
+              <Group pb={3} style={{ alignSelf: "stretch" }} pl={4} gap={5}>
+                {slot.terms.reduce((items, term, _i, terms) => {
+                  items.push(
+                    <Badge size="sm" key={term}>
+                      {term}
+                    </Badge>,
+                  );
+                  if (type !== "party" && term !== terms[terms.length - 1]) {
+                    items.push(
+                      <Text span key={term + "+"}>
+                        +
+                      </Text>,
+                    );
+                  }
+                  return items;
+                }, [])}
               </Group>
             )}
             <Text ff="mono" ta="right" flex="1">
