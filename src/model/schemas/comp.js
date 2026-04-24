@@ -60,13 +60,17 @@ export const createPartyComp = (chars) => {
   const buckets = chars.reduce((acc, { name, warden, level }) => {
     const group = createCompGroup({ warden, level });
     if (!acc[group]) {
-      acc[group] = { level, warden, terms: [] };
+      acc[group] = [{ level, warden, terms: [name] }];
+    } else {
+      acc[group].forEach((grp) => {
+        grp.terms = [...grp.terms, name];
+      });
+      acc[group].push({ ...acc[group][0] });
     }
-    acc[group].terms.push(name);
     return acc;
   }, {});
 
-  return createComp(Object.values(buckets), "party");
+  return createComp(Object.values(buckets).flat(), "party");
 };
 
 export const createCompGroup = ({ level, warden, terms }) => {
