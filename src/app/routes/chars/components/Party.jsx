@@ -33,8 +33,9 @@ export const Party = ({ id: partyId }) => {
   const beginPartyEdit = usePartyEditor();
 
   const { party, stats: hookStats, ...partyApi } = useParty(partyId);
+
   const maps = usePartiesData(party ? [party] : []);
-  const partyNames = party.chars.map((char) => char.name);
+  const partyNames = party?.chars.map((char) => char.name) || [];
 
   const { setMight } = useCalculatorContext();
   const might = hookStats?.might.total || 0;
