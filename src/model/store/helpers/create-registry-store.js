@@ -112,15 +112,22 @@ export const createRegistryStore = (name, recordSchema, options = {}) => {
       return api.add(api.getCopy(record), done);
     },
 
+    getCopyName: (name) => {
+      let i = 1;
+      let iname = name;
+      while (name && !api.nameAvailable(name)) {
+        name = `${iname} (${i++})`;
+      }
+      return name;
+    },
+
     getCopy: (record, keepId = false) => {
       let { id: _id, ...copy } = record;
       if (keepId) copy.id = _id;
-      let i = 1;
-      let name = record.name;
-      while (name && !api.nameAvailable(name)) {
-        name = `${record.name} (${i++})`;
-      }
-      return recordSchema.parse({ ...copy, name });
+      return recordSchema.parse({
+        ...copy,
+        name: api.getCopyName(copy.name),
+      });
     },
 
     getFirst: () => {
