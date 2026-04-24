@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useStableCallback } from "@/core/hooks";
 import { identity } from "@/utils";
+import { createPartyComp } from "@/model/schemas/comp";
 import { createModal, usePartiesStoreApi as partiesApi } from "@/model/store";
 import { PartyForm } from "../components/PartyForm.jsx";
 
@@ -19,7 +20,19 @@ export const usePartyEditor = (options = {}) => {
   const [_location, setLocation] = useLocation();
 
   const beginPartyEdit = useStableCallback((party) => {
-    setDraftParty(prepareDraft(party || {}));
+    // pull off chars to generate a comp with if this is a
+    // "virtual" party.
+    const { chars, ...draft } = prepareDraft(party || {});
+
+    if (!draft.id && draft.name) {
+      draft.name = partiesApi.getCopyName(draft.name);
+    }
+
+    if (chars) {
+      draft.comp = createPartyComp(chars);
+    }
+
+    setDraftParty(draft);
   });
 
   const [openModal, modalApi] = createModal(PartyForm, {
@@ -36,19 +49,19 @@ export const usePartyEditor = (options = {}) => {
       ...props,
       record: draftParty,
       completed: false,
-      onSubmit: (record) => {
-        partiesApi.add(record);
-
-        if (confirmNav) {
-          modalApi.updateComponentProps({
-            navigate: () => props.done(record),
-          });
-          modalApi.updateModalProps({
-            title: "Success!",
-          });
-        } else {
-          props.done(record);
-        }
+      onSubmit: (values) => {
+        partiesApi.add(values, (record) => {
+          if (confirmNav) {
+            modalApi.updateComponentProps({
+              navigate: () => props.done(record),
+            });
+            modalApi.updateModalProps({
+              title: "Success!",
+            });
+          } else {
+            props.done(record);
+          }
+        });
       },
     }),
   });
