@@ -4,7 +4,7 @@ import { useDraftState } from "@/core/hooks";
 
 export const TextInput = ({
   clearable = true,
-  defaultValue,
+  defaultValue = "",
   value,
   size = "md",
   onChange,
