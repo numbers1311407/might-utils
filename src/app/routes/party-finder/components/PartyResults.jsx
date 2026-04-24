@@ -1,7 +1,6 @@
 import { forwardRef, useMemo } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { Group, Stack } from "@mantine/core";
-import { createPartyComp } from "@/model/schemas/comp";
 import { PartyCard, usePartyEditor } from "@/core/chars";
 import { SaveSmallButton } from "@/core/components";
 import { useFindPartiesResults } from "../hooks";
@@ -41,11 +40,10 @@ export const PartyResults = () => {
   const createParty = usePartyEditor({
     title: "Save this party?",
     confirmNav: true,
-    prepareDraft: (party) => {
-      return {
-        comp: createPartyComp(party.party),
-      };
-    },
+    prepareDraft: (party) => ({
+      name: `${party.score} Might / ${party.party.length} Members`,
+      chars: party.party,
+    }),
   });
 
   const hydratedParties = useMemo(() => {
