@@ -8,7 +8,7 @@ import {
   IconTrash,
   IconReload,
 } from "@tabler/icons-react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Tooltip } from "@mantine/core";
 
 const ICONS = {
   copy: IconCopy,
@@ -21,15 +21,24 @@ const ICONS = {
   reload: IconReload,
 };
 
-export const SmallButton = ({ icon, children, ...buttonProps }) => {
+export const SmallButton = ({
+  icon,
+  iconOnly = true,
+  children,
+  ...buttonProps
+}) => {
   const Icon = ICONS[icon];
 
-  return (
+  return iconOnly || typeof children !== "string" ? (
     <Tooltip label={children} withArrow>
       <ActionIcon {...buttonProps}>
         <Icon size={20} />
       </ActionIcon>
     </Tooltip>
+  ) : (
+    <Button leftSection={<Icon size={20} />} size="compact-sm" {...buttonProps}>
+      {children}
+    </Button>
   );
 };
 

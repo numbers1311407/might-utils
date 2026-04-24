@@ -24,7 +24,10 @@ export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
           comp={comps.get(party.comp)}
           buttons={
             <Group justify="flex-end">
-              <SaveSmallButton onClick={() => createParty(party)}>
+              <SaveSmallButton
+                iconOnly={false}
+                onClick={() => createParty(party)}
+              >
                 Save as Party
               </SaveSmallButton>
             </Group>

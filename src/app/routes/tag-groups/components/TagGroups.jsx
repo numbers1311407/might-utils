@@ -39,7 +39,7 @@ export const TagGroup = ({
         <Box flex={1}>
           <Text size="lg">{group.name}</Text>
         </Box>
-        <Group gap={4}>
+        <Group gap="xs">
           <EditSmallButton onClick={onEdit}>Edit</EditSmallButton>
           <CopySmallButton onClick={onCopy}>Duplicate</CopySmallButton>
           {onRemove && (

@@ -11,7 +11,10 @@ manage parties that satisfy that score.
     - saved comps don't have a proper "show" page but rather act as permalinks to the saved comp search mode
 - **Parties: MVP**
   - Once saving comps is in place you should be able to save a comp from here, or link to it if saved
-  - Edit mode - one way or another users need to be able to mess with parties without committing changes. Edit mode solves this, while also making changes more intentional.  Roster doesn't feel like it needs this because by its nature it's constantly changing. Editing a saved party should be more intentional, while the ability to edit without committing also makes it possible to play around with the scores.
+  - Some kind of "edit" mode where users can play with levels without
+    persisting the changes. This may be a commit button, it may be a
+    separate "mode". Point is a user needs to be able to experiment then
+    revert.
 - **Saved Comps**
   - Saved comp store
     - name
