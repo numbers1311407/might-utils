@@ -48,7 +48,7 @@ export const PartyForm = ({ record, navigate, cancel, onSubmit }) => {
         </Group>
         <Group justify="flex-end">
           <Button variant="outline" onClick={cancel}>
-            Cancel
+            Close and continue
           </Button>
           <Button onClick={navigate}>View it now?</Button>
         </Group>
