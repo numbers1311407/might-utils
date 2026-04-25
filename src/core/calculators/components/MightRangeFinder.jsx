@@ -126,7 +126,6 @@ export const MightRangeFinder = ({
                         size={size}
                         ff="mono"
                         href={generatorHref(line)}
-                        aria-
                       >
                         {line.minMight}-{line.maxMight}
                       </Text>
