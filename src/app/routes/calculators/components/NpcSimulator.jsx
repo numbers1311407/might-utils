@@ -4,11 +4,12 @@ import { PageTitle } from "@/core/components";
 import {
   TierSelect,
   useCalculatorContext,
+  CalculatorMightInput,
   NpcSimulator as NpcSimulatorComponent,
 } from "@/core/calculators";
 
 export const NpcSimulator = () => {
-  const { might, setMight, instance, setInstance } = useCalculatorContext();
+  const { might, instance, setInstance } = useCalculatorContext();
 
   return (
     <Stack>
@@ -19,14 +20,7 @@ export const NpcSimulator = () => {
       />
       <TierSelect value={instance} onChange={setInstance} w={400} />
       <Stack>
-        <NumberInput
-          value={might}
-          onChange={(value) => setMight(value)}
-          placeholder="Enter your party's might"
-          step={10}
-          size="md"
-          w={400}
-        />
+        <CalculatorMightInput />
         <NpcSimulatorComponent instance={instance} might={might} />
       </Stack>
     </Stack>

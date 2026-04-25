@@ -1,4 +1,5 @@
 export * from "./CalculatorContextProvider.jsx";
+export * from "./CalculatorMightInput.jsx";
 export * from "./ChatNpcGreetingInteraction.jsx";
 export * from "./FloatingNpcSimulator.jsx";
 export * from "./FloatingMightRangeFinder.jsx";

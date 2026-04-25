@@ -3,6 +3,7 @@ import { FloatingWindow } from "@/core/components";
 import { useRoute } from "wouter";
 import { NpcSimulator as NpcSimulatorComponent } from "./NpcSimulator.jsx";
 import { TierSelect } from "./TierSelect.jsx";
+import { CalculatorMightInput } from "./CalculatorMightInput.jsx";
 import { useCalculatorContext } from "../calculator-context.js";
 import {
   useFloatingNpcSimulator,
@@ -38,30 +39,9 @@ export const FloatingNpcSimulator = (props) => {
             w={400}
             zIndex={500}
           />
-          <NumberInput
-            value={might}
-            onChange={(value) => setMight(value)}
-            placeholder="Your party's might"
+          <CalculatorMightInput
             disabled={match}
             description={match && "Tracking the current party's might"}
-            step={10}
-            size="md"
-            styles={{
-              description: {
-                fontSize: 13,
-              },
-              input: {
-                paddingLeft: 70,
-              },
-            }}
-            leftSectionWidth={60}
-            leftSectionProps={{
-              style: {
-                background: "var(--mantine-color-default-border)",
-              },
-            }}
-            leftSection="Might"
-            w={400}
           />
           <NpcSimulatorComponent instance={instance} might={might} />
         </Stack>
