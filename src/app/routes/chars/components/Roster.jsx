@@ -130,7 +130,7 @@ export const Roster = () => {
                         <Button
                           component={Link}
                           size="compact-md"
-                          href="/roster?tab=io"
+                          href="/roster/io"
                         >
                           Import a list?
                         </Button>
@@ -154,7 +154,7 @@ export const Roster = () => {
             )}
           </Tabs.Panel>
           <Tabs.Panel value="tags">
-            {currentTab === "tags" && <RosterTagsEditor />}
+            {currentTab === "tags" && <RosterTagsEditor setChar={setChar} />}
           </Tabs.Panel>
           <Tabs.Panel value="io">
             {currentTab === "io" && <RosterImporter />}
