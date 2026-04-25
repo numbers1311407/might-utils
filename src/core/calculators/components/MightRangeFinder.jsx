@@ -88,6 +88,8 @@ export const MightRangeFinder = ({
           <ScrollArea.Autosize
             mah={resultsHeight}
             type={resultsHeight > 0 ? "always" : "auto"}
+            overscrollBehavior="contain"
+            scrollbars="y"
           >
             <Grid gap={0}>
               {getTargetMightRanges(instance.type, instance.might, difficulty)
@@ -119,16 +121,15 @@ export const MightRangeFinder = ({
                       pr={resultsHeight > 0 ? 18 : undefined}
                       {...colProps}
                     >
-                      <Tooltip>
-                        <Text
-                          component={AppLink}
-                          size={size}
-                          ff="mono"
-                          href={generatorHref(line)}
-                        >
-                          {line.minMight}-{line.maxMight}
-                        </Text>
-                      </Tooltip>
+                      <Text
+                        component={AppLink}
+                        size={size}
+                        ff="mono"
+                        href={generatorHref(line)}
+                        aria-
+                      >
+                        {line.minMight}-{line.maxMight}
+                      </Text>
                     </Grid.Col>
                   </Fragment>
                 ))}
