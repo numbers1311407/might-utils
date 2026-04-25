@@ -1,6 +1,7 @@
 import {
   alpha,
   Badge,
+  Box,
   Group,
   Paper,
   Text,
@@ -13,6 +14,7 @@ import {
 } from "@mantine/core";
 import { usePartyDiffContext } from "./party-diff-context.js";
 import { PartyDiffProvider } from "./PartyDiffProvider.jsx";
+import { PartyDiffToggle } from "./PartyDiffToggle.jsx";
 
 const { Tr, Tbody, Thead } = Table;
 
@@ -233,6 +235,9 @@ export const PartyDiffComponent = () => {
           <Component {...diff} />
         )}
       </Stack>
+      <Box mt="md">
+        <PartyDiffToggle label="Stylize diffed party table rows" />
+      </Box>
     </Paper>
   );
 };

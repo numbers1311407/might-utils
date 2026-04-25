@@ -9,7 +9,7 @@ export const PartyDiffToggle = (props) => {
   const aligned = !diff?.score;
   const tooltip = aligned
     ? "This party's levels are in alignment with the roster besides the potential need to swap warden rings."
-    : "Toggle to show indicators for party characters with significant differences from the roster for warden or character level.";
+    : "Toggle to stylize party table rows for characters with significant differences from the roster for warden or character level.";
   const logLength = diff?.log?.length || 0;
   const subject = logLength === 1 ? "diff" : "diffs";
   const label = showPartyDiffs
@@ -17,7 +17,7 @@ export const PartyDiffToggle = (props) => {
     : `Show ${logLength} ${subject}`;
 
   return (
-    <Group gap={10}>
+    <Group gap={10} justify="flex-end">
       {aligned ? (
         <Text size="sm" c="success.10">
           Roster aligned
@@ -26,8 +26,8 @@ export const PartyDiffToggle = (props) => {
         <Switch
           checked={showPartyDiffs}
           onChange={setShowPartyDiffs}
-          {...props}
           label={label}
+          {...props}
           styles={{
             label: {
               color: "var(--mantine-color-warning-2)",
