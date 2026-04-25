@@ -27,7 +27,7 @@ export const AppRoot = () => {
     >
       <Header burgerOpened={mobileNavOpened} onBurgerClick={toggleMobileNav} />
       <AppShell.Navbar>
-        <Navbar />
+        <Navbar py="lg" px="md" />
       </AppShell.Navbar>
       <Container size={CONTAINER_WIDTH} px="sm">
         <Group align="flex-start" wrap="nowrap" gap="2xl">
