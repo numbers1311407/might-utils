@@ -24,7 +24,7 @@ export const FloatingRoster = (props) => {
   return (
     <>
       <Button size="compact-sm" {...props} onClick={api.toggle}>
-        Character Roster
+        Roster
       </Button>
       <FloatingWindow
         name={FLOATING_ROSTER_NAME}

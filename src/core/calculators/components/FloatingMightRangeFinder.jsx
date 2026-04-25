@@ -21,7 +21,7 @@ export const FloatingMightRangeFinder = (props) => {
   return (
     <>
       <Button size="compact-sm" {...props} onClick={api.toggle}>
-        Might Range
+        Might Ranges
       </Button>
       <FloatingWindow
         name={NAME}
