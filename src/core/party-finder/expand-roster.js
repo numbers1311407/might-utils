@@ -10,11 +10,11 @@ export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
     .filter(({ level, active }) => {
       return active && level >= minLevel && level <= maxLevel;
     })
-    .reduce((acc, char) => {
+    .reduce((buckets, char) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
       const charBucket = [];
-      acc.push(charBucket);
+      buckets.push(charBucket);
 
       for (const rank of Warden.Ranks) {
         const { rank: warden, requiredLevel, mightMultiplier } = rank;
@@ -44,7 +44,9 @@ export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
           slot.idx = slotIdx++;
         });
 
-      return acc;
+      return buckets.sort((bucketA, bucketB) => {
+        return bucketA[0].score - bucketB[0].score;
+      });
     }, []);
 
   return { buckets, pool: buckets.flat() };
