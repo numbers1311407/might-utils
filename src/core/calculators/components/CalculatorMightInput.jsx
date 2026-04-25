@@ -16,7 +16,6 @@ export const CalculatorMightInput = (props) => {
         },
       }}
       leftSection="Might"
-      w={400}
       {...props}
       value={might}
       onChange={setMight}

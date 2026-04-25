@@ -31,16 +31,14 @@ export const FloatingMightRangeFinder = (props) => {
         title="Might Range Finder"
       >
         <Stack gap="xs">
-          <TierSelect
-            value={instance}
-            onChange={setInstance}
-            w={400}
-            zIndex={500}
-          />
+          <TierSelect value={instance} onChange={setInstance} zIndex={500} />
           <MightRangeFinderComponent
             instance={instance}
             difficulty={difficulty}
             setDifficulty={setDifficulty}
+            resultsHeight={175}
+            compact
+            gap="xs"
           />
         </Stack>
       </FloatingWindow>

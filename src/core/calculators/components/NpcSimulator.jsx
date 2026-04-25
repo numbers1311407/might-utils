@@ -1,8 +1,10 @@
-import { Stack, Text } from "@mantine/core";
+import { Button, Stack, Text } from "@mantine/core";
+import { Link } from "wouter";
 import { capitalize } from "@/utils";
 import { simulateInstanceNPC } from "../npc-simulator.js";
 import { ChatWindow } from "./ChatWindow.jsx";
 import { ChatNpcGreetingInteraction } from "./ChatNpcGreetingInteraction.jsx";
+import { CalculatorDisclaimer } from "./CalculatorDisclaimer.jsx";
 
 export const NpcSimulator = ({ instance, might, ...containerProps }) => {
   return (
@@ -25,12 +27,15 @@ export const NpcSimulator = ({ instance, might, ...containerProps }) => {
         ))}
         <ChatWindow.Divider />
       </ChatWindow>
-      <Text size="sm" c="dark">
-        <Text span fw="bold">
-          Warning:
-        </Text>{" "}
-        This output is experimental, incomplete, and may be inaccurate.
-      </Text>
+      <CalculatorDisclaimer mt={-6} />
+      <Button
+        component={Link}
+        size="compact-sm"
+        variant="subtle"
+        href={`/party-generator?targetScore=${might}`}
+      >
+        Search for parties with {might} might
+      </Button>
     </Stack>
   );
 };

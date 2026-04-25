@@ -5,11 +5,17 @@ export const ChatWindow = ({ children }) => {
     <Box
       bg="slate.8"
       c="goldenrod"
-      p="sm"
+      p="md"
       size="xs"
+      bd="1px solid var(--mantine-color-default-border)"
+      bdrs="xs"
       component={Stack}
       gap={0}
-      style={{ fontFamily: "Arial, Sans", maxWidth: 700 }}
+      style={{
+        fontFamily: "Roboto, Arial, sans-serif",
+        boxShadow: "inset 3px 3px 8px rgba(0, 0, 0, 0.7)",
+        overflow: "hidden",
+      }}
     >
       {children}
     </Box>
