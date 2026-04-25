@@ -62,11 +62,6 @@ export const MightRangeFinder = ({
   const rosterMinMight = useRosterMinMight();
   const defaultMargin = 50;
 
-  console.log({
-    rosterMinMight,
-    defaultMargin,
-  });
-
   const generatorHref = ({ minMight, maxMight }) => {
     const targetScore =
       rosterMinMight >= 5 ? maxMight : Math.floor(maxMight / 5) * 5;
