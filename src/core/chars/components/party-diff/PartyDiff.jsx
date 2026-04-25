@@ -95,9 +95,9 @@ const PartyDiffWardenOver = ({ log }) => {
   return wardenLog.map((item, i) => (
     <Tr key={i} c={Colors.WARDEN_UNDER}>
       <Th>{item.char}</Th>
-      <Td>{item.warden}</Td>
+      <Td>Rk. {item.warden}</Td>
       <Td c="green">
-        {item.warden - item.warden} (-{item.warden})
+        Rk. {item.warden - item.warden} (-{item.warden})
       </Td>
     </Tr>
   ));
@@ -216,8 +216,8 @@ export const PartyDiffComponent = () => {
               <Thead>
                 <Tr>
                   <Th></Th>
-                  <Th w={80}>Party</Th>
-                  <Th w={80}>Roster</Th>
+                  <Th w={64}>Party</Th>
+                  <Th w={100}>Roster</Th>
                 </Tr>
               </Thead>
               <Tbody>
