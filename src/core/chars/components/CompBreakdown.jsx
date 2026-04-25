@@ -1,4 +1,5 @@
-import { Divider, Badge, Group, Stack, Text } from "@mantine/core";
+import { AppLink } from "@/core/components";
+import { Divider, Badge, Group, Stack, Text, Tooltip } from "@mantine/core";
 
 const CompWarden = ({ rank, ...props }) => {
   if (!rank) return null;
@@ -53,7 +54,16 @@ export const CompBreakdown = ({ comp, type, score, ...props }) => {
           <Divider my={4} />
           <Group justify="right">
             <Text ff="mono" ta="right" flex="1">
-              Total Might: {score}
+              Total Might:{" "}
+              <Tooltip
+                w={210}
+                multiline
+                label={`Search for parties with ${score} might in the party generator`}
+              >
+                <AppLink href={`/party-generator?targetScore=${score}`}>
+                  {score}
+                </AppLink>
+              </Tooltip>
             </Text>
           </Group>
         </>
