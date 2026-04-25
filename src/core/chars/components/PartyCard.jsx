@@ -37,7 +37,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
       </Group>
       {stats && comp && (
         <Grid gap="xl">
-          <Grid.Col pr={{ base: 0, md: "lg" }} span={{ base: 12, md: 4 }}>
+          <Grid.Col pr={{ base: 0, lg: "lg" }} span={{ base: 12, lg: 4 }}>
             <Stack gap="xs">
               <Text size="lg" c="primary.5">
                 Party Stats
@@ -45,7 +45,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
               <PartyStatsTable stats={stats} />
             </Stack>
           </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+          <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
             <Stack gap="xs">
               <Text size="lg" c="primary.5">
                 Party Composition
@@ -53,7 +53,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
               <CompBreakdown comp={comp} type={compType} score={stats?.score} />
             </Stack>
           </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+          <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
             <Stack gap="xs">
               <Text size="lg" c="primary.5">
                 Party Lineup
