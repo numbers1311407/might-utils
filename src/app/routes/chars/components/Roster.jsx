@@ -102,7 +102,7 @@ export const Roster = () => {
         <Tabs value={currentTab} onChange={onTabsChange} mt="-xs">
           <Tabs.List>
             <Tabs.Tab value="characters">Character List</Tabs.Tab>
-            <Tabs.Tab value="tags">Bulk Tag Editor</Tabs.Tab>
+            <Tabs.Tab value="tags">Tags Editor</Tabs.Tab>
             <Tabs.Tab value="io">Import/Export</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="characters" pt="lg">
