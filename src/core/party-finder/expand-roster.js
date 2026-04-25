@@ -3,8 +3,6 @@ import { intersection } from "@/utils";
 import { FindPartiesError } from "./find-parties-error.js";
 
 export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
-  let slotIdx = 0;
-
   const buckets = roster
     // filter out of bounds levels
     .filter(({ level, active }) => {
@@ -14,7 +12,6 @@ export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
       const level = char.level;
       const score = MightScoreByLevel[level];
       const charBucket = [];
-      buckets.push(charBucket);
 
       for (const rank of Warden.Ranks) {
         const { rank: warden, requiredLevel, mightMultiplier } = rank;
@@ -38,16 +35,26 @@ export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
         }
       }
 
-      charBucket
-        .sort((a, b) => a.score - b.score)
-        .forEach((slot) => {
-          slot.idx = slotIdx++;
-        });
+      // sort each bucket by ascending score, this is expected by the algorithm to function
+      charBucket.sort((a, b) => a.score - b.score);
 
-      return buckets.sort((bucketA, bucketB) => {
-        return bucketA[0].score - bucketB[0].score;
-      });
+      buckets.push(charBucket);
+      return buckets;
     }, []);
 
-  return { buckets, pool: buckets.flat() };
+  // Then sort all the buckets by ascending score. This is less critical than sorting the
+  // individual buckets, but the algorithm does expect the first slot in the first bucket to
+  // be the lowest score for purpose of detecting if the target margin is larger than the
+  // lowest possible slot score.
+  buckets.sort((bucketA, bucketB) => bucketA[0].score - bucketB[0].score);
+
+  // Finally tack the slot "idx" into each character in the buckets as for the purposes of
+  // the algorithm, we're accessing pool slots out of context by their pool index (while
+  // referending them from their buckets, not the flat pool)
+  const pool = buckets.flat();
+  pool.forEach((slot, idx) => {
+    slot.idx = idx;
+  });
+
+  return { buckets, pool };
 };
