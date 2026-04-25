@@ -75,7 +75,9 @@ const PartyIndexHeader = ({ parties, sort, setSort, ...props }) => (
     }}
   >
     <Text {...props}>
-      <Text span>{parties.length} Saved Parties</Text>
+      <Text span>
+        {parties.length} Saved {parties.length == 1 ? "Party" : "Parties"}
+      </Text>
     </Text>
     <Group justify="right" flex="1">
       <PartySortSelect sort={sort} setSort={setSort} />
@@ -107,12 +109,20 @@ export const PartyIndex = () => {
 
   return (
     <>
+      <PartyIndexHeader parties={parties} sort={sort} setSort={setSort} />
       <Stack>
-        <PartyIndexHeader parties={parties} sort={sort} setSort={setSort} />
         {!parties.length && <EmptyResult />}
         {sortedParties.map((party) => (
           <PartyCard
-            title={party.name}
+            title={
+              <AppLink
+                c="primary"
+                href={`/parties/${party.id}`}
+                underline="hover"
+              >
+                {party.name}
+              </AppLink>
+            }
             key={party.id}
             party={party.chars}
             comp={comps.get(party.comp)}
@@ -134,6 +144,8 @@ export const PartyIndex = () => {
                   bg="var(--mantine-primary-color-filled)"
                   c="var(--mantine-primary-color-contrast)"
                   href={`/parties/${party.id}`}
+                  iconOnly={false}
+                  underline="never"
                 >
                   View & Edit
                 </EditSmallButton>

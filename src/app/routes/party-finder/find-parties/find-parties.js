@@ -52,10 +52,11 @@ export const findParties = (roster, targetScore, options = {}) => {
 
   if (buckets.length < minSize) {
     throw new FindPartiesError(
-      "The search options applied to your roster didn't result in enough characters to " +
-        `satisfy the query. ${buckets.length} eligible characters found, but min party ` +
-        `size is set to ${minSize}.`,
+      "The search configuration applied to roster didn't result in enough characters to " +
+        `satisfy the query. There were ${buckets.length} eligible characters found, but ` +
+        `the min party size is ${minSize}.`,
       "POOL_SIZE",
+      { eligible: buckets.length, available: minSize },
     );
   }
 
@@ -110,7 +111,8 @@ export const findParties = (roster, targetScore, options = {}) => {
   if (!validator.status.isPossible) {
     throw new FindPartiesError(
       "It is impossible to create the minimum sized group with the given rules.",
-      "IMPOSSIBLE_RULES",
+      "RESULTS_IMPOSSIBLE",
+      validator.reports,
     );
   }
 
@@ -118,6 +120,7 @@ export const findParties = (roster, targetScore, options = {}) => {
     throw new FindPartiesError(
       `Margin must be less than minimum individual score of ${pool[0].score}, received ${margin}.`,
       "MARGIN_TOO_SMALL",
+      validator.reports,
     );
   }
 
@@ -159,6 +162,7 @@ export const findParties = (roster, targetScore, options = {}) => {
         `Max recursions reached (${MAX_RECURSIONS.toLocaleString()}) trying to assemble ` +
           "the parties. Try adding more rules or reducing your roster size.",
         "MAX_RECURSIONS",
+        validator.reports,
       );
     }
 
@@ -246,6 +250,50 @@ export const findParties = (roster, targetScore, options = {}) => {
   instr.wrap("findParty", () => {
     recurse(targetScore, 0);
   });
+
+  // If there are no parties inspect the telemetry to see if there's anything unusual and if
+  // not, throw an error with any reports if any exist.
+  //
+  // TODO this would also be a good spot to check for unusual telemetry data even in there ARE
+  // results to warn/advise on how to improve or fix the search params.
+  if (!parties.length) {
+    const { counts } = validator.telemetry;
+
+    // Checking for imopssible high and low scores here which isn't much but it's a start and
+    // covers an easy to miss case.
+    if (counts.pathEnds.branchLow === counts.totalPaths) {
+      throw new FindPartiesError(
+        "Your search is failing immediately because the target might score is higher than " +
+          "the resolved eligible roster can possibly fill. Ensure your desired roster " +
+          "characters are active and the min/max party size and level options are correct.",
+        "TARGET_SCORE_HIGH",
+        validator.telemetry,
+      );
+    }
+
+    if (counts.pathEnds.branchHigh === counts.totalPaths) {
+      throw new FindPartiesError(
+        "Your search is failing immediately because the target might score is lower than " +
+          "the resolved eligible roster can possibly fill. Ensure your desired roster " +
+          "characters are active and the min/max party size and level options are correct.",
+        "TARGET_SCORE_LOW",
+        validator.telemetry,
+      );
+    }
+
+    const errorCount = validator.reports.filter(
+      (r) => r.level === "ERROR",
+    ).length;
+
+    if (errorCount) {
+      throw new FindPartiesError(
+        "No results were found and errors were reported in the rules evaluation. " +
+          "Inspect your search options, rules, and roster for issues.",
+        "RESULTS_PREVENTED",
+        validator.reports,
+      );
+    }
+  }
 
   // TODO possibly figure out flattening of response after we figure out tags, i.e.
   //

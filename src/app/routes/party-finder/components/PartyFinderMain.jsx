@@ -2,23 +2,10 @@ import { Box } from "@mantine/core";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { LoadingPage, PageTitle } from "@/core/components";
-import { FindPartiesError } from "@/core/party-finder";
 import * as titles from "@/config/constants/titles";
 import { PartyFinderResults } from "./PartyFinderResults.jsx";
+import { PartyFinderError } from "./PartyFinderError.jsx";
 import { usePartyFinderContext } from "../context";
-
-const UNEXPECTED_ERROR_MESSAGE =
-  "An unexpected error occurred. Please be sure you've selected all options and corrected any " +
-  "form input errors if they exist and try to refresh the page.";
-
-const ErrorPage = ({ error }) => {
-  const message =
-    error instanceof FindPartiesError
-      ? error.message
-      : UNEXPECTED_ERROR_MESSAGE;
-
-  return message;
-};
 
 export const PartyFinderMain = () => {
   const { key } = usePartyFinderContext();
@@ -33,7 +20,7 @@ export const PartyFinderMain = () => {
           "and generate your party!"
         }
       />
-      <ErrorBoundary resetKeys={[key]} FallbackComponent={ErrorPage}>
+      <ErrorBoundary resetKeys={[key]} FallbackComponent={PartyFinderError}>
         <Suspense fallback={<LoadingPage />}>
           <PartyFinderResults />
         </Suspense>

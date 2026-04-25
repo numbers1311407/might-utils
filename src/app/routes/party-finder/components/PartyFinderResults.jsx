@@ -1,4 +1,4 @@
-import { Box, Group, Text } from "@mantine/core";
+import { Group, Stack, Title, Text } from "@mantine/core";
 import { LoadingPage } from "@/core/components";
 import { PartyResults } from "./PartyResults.jsx";
 import { useFindPartiesResults } from "../hooks";
@@ -43,7 +43,27 @@ export const PartyFinderResults = () => {
   // TODO here's where we wanna show errors about why using the
   // error reports and telemetry data in the response
   if (!parties.length) {
-    return "No results";
+    return (
+      <Stack>
+        <Title order={3} c="warning.7">
+          No Results Found
+        </Title>
+        <Text>
+          Make sure all your desired roster characters are active and that your
+          total roster score is well above your target might score, such that
+          plenty of candidate party combinations can be found.
+        </Text>
+        <Text>
+          There are no glaring errors, so insufficient might score in the roster
+          to generate party combinations is the most likely problem.
+        </Text>
+        <Text>
+          If you have plenty of might and your min/max party size and char
+          levels are correct, take a look at your rules to make sure they're set
+          up as you intended.
+        </Text>
+      </Stack>
+    );
   }
 
   return (

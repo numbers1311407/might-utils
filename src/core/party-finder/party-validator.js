@@ -101,6 +101,15 @@ const createPreChecksRunner = ({
       reports.push({ size, level: "WARNING", type: "SIZE_RULES_GAP" });
     }
 
+    if (unusedCapacity < 0) {
+      return reports.concat({
+        size,
+        level: "ERROR",
+        type: "INSUFFICIENT_ROSTER",
+        details: { rosterSize: buckets.length },
+      });
+    }
+
     // Pretest clear single rule failures
     for (const rule of appliedRules) {
       const passingBuckets = bucketPassesByRule.get(rule);
@@ -115,7 +124,7 @@ const createPreChecksRunner = ({
           level: "ERROR",
           type: "INSUFFICIENT_CANDIDATES",
           rule,
-          details: { required: min, available: passingBuckets.size },
+          details: { required: min, passing: passingBuckets.size },
         });
       }
 
@@ -131,7 +140,11 @@ const createPreChecksRunner = ({
           level: "ERROR",
           type: "EXCLUSION_IMPOSSIBLE",
           rule,
-          details: { mustExclude, availableCapacity: unusedCapacity },
+          details: {
+            passing: passingBuckets.size,
+            mustExclude,
+            availableCapacity: unusedCapacity,
+          },
         });
       }
     }
@@ -155,12 +168,19 @@ const createPreChecksRunner = ({
         const setA = bucketPassesByRule.get(rA);
         const setB = bucketPassesByRule.get(rB);
 
+        if (setA.size === 0 || setB.size === 0) {
+          // if either rule has 0 passing we're not "conflicted" over
+          // the passers, one rule just can't pass (and will be reported
+          // elsewhere).
+          continue;
+        }
+
         // take the union and intersction for the next steps
         const intersection = setA.intersection(setB).size;
         const union = setA.union(setB).size;
 
         // The combined min required is the min of each rule required to
-        // pass minus the indexes that pass both. For example if rule A
+        // pass minus the slots that pass both. For example if rule A
         // requires 3, and rule B require 4, and 2 slots pass both, that's
         // 3 + 4 - 2 = 5 slots minimum that would be needed to fulfil both
         // rules, broken down:
@@ -183,6 +203,7 @@ const createPreChecksRunner = ({
             rules: [rA, rB],
             details: {
               maxAvailable,
+              mins: [minA, minB],
               union,
               intersection,
               combinedMinRequired,
