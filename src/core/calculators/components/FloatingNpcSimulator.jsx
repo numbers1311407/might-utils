@@ -18,7 +18,7 @@ const HELP =
 export const FloatingNpcSimulator = (props) => {
   const { api } = useFloatingNpcSimulator();
   const [match] = useRoute("/parties/*?");
-  const { might, setMight, setInstance, instance } = useCalculatorContext();
+  const { might, setInstance, instance } = useCalculatorContext();
 
   return (
     <>
