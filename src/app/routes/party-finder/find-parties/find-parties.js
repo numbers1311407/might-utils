@@ -264,7 +264,7 @@ export const findParties = (roster, targetScore, options = {}) => {
     if (counts.pathEnds.branchLow === counts.totalPaths) {
       throw new FindPartiesError(
         "Your search is failing immediately because the target might score is higher than " +
-          "the resolved eligible roster can possibly fill. Ensure your desired roster " +
+          "the active roster can possibly fill for the maximum group size. Ensure your desired roster " +
           "characters are active and the min/max party size and level options are correct.",
         "TARGET_SCORE_HIGH",
         validator.telemetry,
@@ -274,7 +274,7 @@ export const findParties = (roster, targetScore, options = {}) => {
     if (counts.pathEnds.branchHigh === counts.totalPaths) {
       throw new FindPartiesError(
         "Your search is failing immediately because the target might score is lower than " +
-          "the resolved eligible roster can possibly fill. Ensure your desired roster " +
+          "the active roster can possibly fill for the minimum group size. Ensure your desired roster " +
           "characters are active and the min/max party size and level options are correct.",
         "TARGET_SCORE_LOW",
         validator.telemetry,

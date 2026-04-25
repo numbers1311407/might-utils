@@ -54,13 +54,9 @@ export const PartyFinderResults = () => {
           plenty of candidate party combinations can be found.
         </Text>
         <Text>
-          There are no glaring errors, so insufficient might score in the roster
-          to generate party combinations is the most likely problem.
-        </Text>
-        <Text>
-          If you have plenty of might and your min/max party size and char
-          levels are correct, take a look at your rules to make sure they're set
-          up as you intended.
+          If you have plenty of might in your roster and your min/max party size
+          and char levels are correct, take a look at your rules to make sure
+          they're set up as you intended.
         </Text>
       </Stack>
     );
