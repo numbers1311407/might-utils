@@ -235,9 +235,11 @@ export const PartyDiffComponent = () => {
           <Component {...diff} />
         )}
       </Stack>
-      <Box mt="md">
-        <PartyDiffToggle label="Stylize diffed party table rows" />
-      </Box>
+      {diff?.score > 0 && (
+        <Box mt="md">
+          <PartyDiffToggle label="Stylize diffed party table rows" />
+        </Box>
+      )}
     </Paper>
   );
 };

@@ -136,17 +136,17 @@ export const TagGroups = () => {
 
       <Aside>
         <Stack>
-          <Title c="gold" order={4}>
+          <Title c="primary" order={4}>
             Quick Help
           </Title>
           <Text>
-            Generator grouping tags are what they sound like, tags which results
-            may be grouped by in the party generator.
+            Grouping tags are arbitrary tag sets used to group and classify
+            characters in party generator search results.
           </Text>
           <Text>
             They can be any tags you like, with the only rule being that
-            everyone in the roster has to have one of them, so they can be
-            grouped.
+            everyone in the roster has to have one of them so they can be
+            grouped by them.
           </Text>
           <Text>
             For convenience two "roles" tag groups come predefined, which you

@@ -25,23 +25,30 @@ const NavbarLink = ({ href, ...props }) => {
   );
 };
 
+const CategoryHeading = ({ name }) => (
+  <Text fw="bold" size="md" p="xs" c="primary">
+    {name}
+  </Text>
+);
+
+const Category = ({ name, children }) => {
+  return (
+    <Stack gap={2}>
+      <CategoryHeading name={name} />
+      {children}
+    </Stack>
+  );
+};
+
 export const Navbar = (props) => {
   return (
-    <Stack gap={0} {...props}>
-      <Stack gap={2} mb="lg">
-        <Stack gap={2} mb="lg">
-          <Text fw="bold" size="md" p="xs" pt={0} c="primary">
-            {titles.PARTY_CATEGORY}
-          </Text>
-          <NavbarLink
-            label={titles.PARTY_FINDER_TITLE}
-            href="/party-generator"
-          />
-          <NavbarLink label={titles.PARTIES_TITLE} href="/parties" />
-        </Stack>
-        <Text fw="bold" size="md" p="xs" c="primary">
-          {titles.ROSTER_CATEGORY}
-        </Text>
+    <Stack gap="md" {...props}>
+      <NavbarLink label="Home" href="/" />
+      <Category name={titles.PARTY_CATEGORY}>
+        <NavbarLink label={titles.PARTY_FINDER_TITLE} href="/party-generator" />
+        <NavbarLink label={titles.PARTIES_TITLE} href="/parties" />
+      </Category>
+      <Category name={titles.ROSTER_CATEGORY}>
         <NavbarLink
           label={titles.ROSTER_TITLE}
           className={(active) => (active ? "active" : "")}
@@ -52,25 +59,19 @@ export const Navbar = (props) => {
           href="/roster/tags"
         />
         <NavbarLink label={titles.ROSTER_IO_TITLE} href="/roster/io" />
-      </Stack>
-      <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" pt={0} c="primary">
-          {titles.CALCULATORS_CATEGORY}
-        </Text>
-        <NavbarLink label={titles.NPC_SIMULATOR_TITLE} href="/npc-simulator" />
+      </Category>
+      <Category name={titles.CALCULATORS_CATEGORY}>
         <NavbarLink
           label={titles.MIGHT_RANGE_FINDER_TITLE}
           href="/might-range-finder"
         />
-      </Stack>
-      <Stack gap={2} mb="lg">
-        <Text fw="bold" size="md" p="xs" c="primary">
-          {titles.SETTINGS_CATEGORY}
-        </Text>
+        <NavbarLink label={titles.NPC_SIMULATOR_TITLE} href="/npc-simulator" />
+      </Category>
+      <Category name={titles.SETTINGS_CATEGORY}>
         <NavbarLink label={titles.TAG_RULES_TITLE} href="/rulesets" />
         <NavbarLink label={titles.TAG_GROUPS_TITLE} href="/tag-groups" />
         <NavbarLink label={titles.CLASS_TAGS_TITLE} href="/class-tags" />
-      </Stack>
+      </Category>
     </Stack>
   );
 };

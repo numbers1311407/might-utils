@@ -10,6 +10,7 @@ import {
   Group,
   Paper,
   Text,
+  Title,
   Tooltip,
   Stack,
   Switch,
@@ -281,6 +282,25 @@ const TagRulesMain = () => {
           >
             Create New Ruleset
           </Button>
+          <Title c="primary" order={4}>
+            Quick Help
+          </Title>
+          <Text>
+            Create sets of rules based on character attributes and tags which
+            the party generator uses to build your parties.
+          </Text>
+          <Text>
+            A typical standard ruleset is created as a default, as well as a
+            more specific "Time-Flagged" ruleset to show how you might use rules
+            to filter on less obvious data points.
+          </Text>
+          <Text>
+            Ruleset are combinable in the generator, so it's up to you if you
+            want to have one big ruleset, or smaller combinable rulesets for
+            different purposes. For example you may have a "core" ruleset of
+            your tank and healers, with "melee" vs "caster" rulesets kept
+            separate for different group types.
+          </Text>
           <TagRulesNav current={ruleset.id}></TagRulesNav>
         </Stack>
       </Aside>

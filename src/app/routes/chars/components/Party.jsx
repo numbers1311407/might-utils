@@ -78,26 +78,35 @@ export const Party = ({ id: partyId }) => {
                   {party.might} Might
                 </Title>
                 <Divider />
-                <Title order={4} c="primary">
-                  Comp Breakdown
-                </Title>
-                <CompBreakdown
-                  score={party.might}
-                  type="party"
-                  comp={maps.comps.get(party.comp)}
-                />
-                <Title order={4} c="primary" mt="-xs">
-                  Stats
-                </Title>
-                <PartyStatsTable stats={maps.stats.get(party.comp)} />
-                <Box mt="-xs">
-                  <StatsTable
-                    mode="stacked"
-                    stats={hookStats}
-                    rowFilter="Tags"
-                    titleColor="primary"
-                  />
-                </Box>
+                {party.might > 0 ? (
+                  <>
+                    <Title order={4} c="primary">
+                      Comp Breakdown
+                    </Title>
+                    <CompBreakdown
+                      score={party.might}
+                      type="party"
+                      comp={maps.comps.get(party.comp)}
+                    />
+                    <Title order={4} c="primary" mt="-xs">
+                      Stats
+                    </Title>
+                    <PartyStatsTable stats={maps.stats.get(party.comp)} />
+                    <Box mt="-xs">
+                      <StatsTable
+                        mode="stacked"
+                        stats={hookStats}
+                        rowFilter="Tags"
+                        titleColor="primary"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <Text>
+                    Extended stats unavailable for empty parties, add some
+                    characters!
+                  </Text>
+                )}
               </Stack>
             </Paper>
           </Grid.Col>

@@ -8,11 +8,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
     <Stack gap="xs">
       <Group align="flex-start">
         <Stack gap="xs">
-          {title && (
-            <Text size="2xl" c="primary" fw="bold">
-              {title}
-            </Text>
-          )}
+          {title}
           <Group align="center" gap={10}>
             <Text
               size={title ? "xl" : "2xl"}

@@ -41,10 +41,8 @@ export const MightRangeFinder = () => {
             range.
           </Text>
           <Text>
-            For convenience the calculator returns links to look for the top end
-            of each range in the party generator. It will add score tolerance if
-            possible, respecting the score of the lowest active characters on
-            your roster as the minimum.
+            For convenience the calculator returns links to search for the top
+            end of each range in the party generator.
           </Text>
           <Text>
             You can summon a floating version of this calculator at any time

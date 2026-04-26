@@ -51,13 +51,20 @@ const EmptyResult = () => {
   const editParty = usePartyEditor();
 
   return (
-    <Stack align="center" m="xl">
+    <Stack gap="sm" align="center" my="3xl" mx="auto" w={400}>
       <Text size="xl" c="warning">
         You have no saved parties!
       </Text>
-      <Button onClick={() => editParty({})} size="md" w={200}>
+      <Button size="compact-sm" onClick={() => editParty({})} w={150}>
         Create one now?
       </Button>
+      <Text size="lg" c="warning">
+        OR
+      </Text>
+      <Text ta="center">
+        Use the <AppLink href="/party-generator">party generator</AppLink> to
+        find a party for a specific might score and save a result.
+      </Text>
     </Stack>
   );
 };
@@ -109,7 +116,9 @@ export const PartyIndex = () => {
 
   return (
     <>
-      <PartyIndexHeader parties={parties} sort={sort} setSort={setSort} />
+      {parties.length > 0 && (
+        <PartyIndexHeader parties={parties} sort={sort} setSort={setSort} />
+      )}
       <Stack>
         {!parties.length && <EmptyResult />}
         {sortedParties.map((party) => (
@@ -117,6 +126,7 @@ export const PartyIndex = () => {
             title={
               <AppLink
                 c="primary"
+                size="3xl"
                 href={`/parties/${party.id}`}
                 underline="hover"
               >

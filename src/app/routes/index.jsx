@@ -1,4 +1,5 @@
-import { Route, Link } from "wouter";
+import { Route } from "wouter";
+import { Home } from "./home";
 import { ClassTags } from "./class-tags";
 import { NpcSimulator, MightRangeFinder } from "./calculators";
 import { PartyFinder } from "./party-finder";
@@ -6,26 +7,11 @@ import { Roster, Parties } from "./chars";
 import { TagGroups } from "./tag-groups";
 import { TagRules } from "./tag-rules";
 
-const HomePage = () => {
-  return (
-    <div style={{ padding: "2rem" }}>
-      <div>
-        <Link href="/party-generator?targetScore=1250">1250</Link>
-      </div>
-      <div>
-        <Link href="/party-generator?targetScore=1010&margin=10">
-          1010 and 10 margin
-        </Link>
-      </div>
-    </div>
-  );
-};
-
 export const Routes = () => {
   return (
     <>
       <Route path="/">
-        <HomePage />
+        <Home />
       </Route>
       <Route path="/party-generator">
         <PartyFinder />
