@@ -93,7 +93,7 @@ const PartyIndexHeader = ({ parties, sort, setSort, ...props }) => (
 );
 
 export const PartyIndex = () => {
-  const roster = useRoster({ activeOnly: true });
+  const roster = useRoster({ activeOnly: false });
   const parties = usePartiesList({ hydrate: true, classTags: true });
   const [sort, setSort] = useState(SORT_OPTIONS[0].value);
   const { comps, stats } = usePartiesData(parties);
