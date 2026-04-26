@@ -2,7 +2,6 @@ import {
   Anchor,
   Box,
   Divider,
-  Group,
   List,
   Stack,
   Text,
@@ -140,7 +139,9 @@ export const Home = () => {
                   <Text mb="sm">
                     You'll want to enter all your characters, their classes,
                     levels and warden ranks, and optionally custom tags. A
-                    simple import/export tool is available to help with this.
+                    simple{" "}
+                    <AppLink href="/roster/io">import/export tool</AppLink> is
+                    available to help with this.
                   </Text>
                   <Text>
                     Note the roster and calculators are globally accessible as
@@ -198,8 +199,8 @@ export const Home = () => {
                 </Table.Td>
                 <Table.Td>
                   <Text mb="sm">
-                    Uses rules you define to find all possible parties within a
-                    given might score range.
+                    Uses <AppLink href="/rulesets">rules</AppLink> you define to
+                    find all possible parties within a given might score range.
                   </Text>
                   <Text mb="sm">
                     The parties themselves are composed of score units of
