@@ -25,7 +25,7 @@ const MEDAL_COLORS = {
   gold: "yellow.4",
   silver: "gray.4",
   bronze: "yellow.5",
-  platinum: "blue.1",
+  platinum: "blue.3",
 };
 
 const Medal = ({ medal }) => {
