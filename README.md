@@ -20,11 +20,6 @@ manage parties that satisfy that score.
     - name
     - value/comp (primary key)
     - "default" tag group pkey ref - NOTE the idea here is that there's 1 type of comp: untagged comps. Then the tagging is decoration that can be applied as needed. This does a few things: 1 we don't have to hardcode names into the comp string, 2 the comp is overall less fragile, more reusable, avoids clashing with superset base comps if it becomes one, and 3 it solves the prolbem of how the group tags form will interact with the saved comp searches. It simply populates the default, and on change of the tag group it enables a save button.
-- **Might Range Finder: MVP**
-  - complete UI
-  - include links from the might ranges to the finder, and possibly listings of "saved parties" that match the might level or are close?
-- **NPC Sim: MVP**
-  - Should add a 2nd window with metadata in the main calculator, namely links to the finder for the actual numeric ranges in the NPC response that you don't see in game.
   **Global: 404 page**
   - an actual in app 404 page for bad paths
   **Issues**
@@ -60,7 +55,6 @@ manage parties that satisfy that score.
       a slot but it would prioritize that that belong there. Characters already
       slotted will show in the select where they're slotted, and require a quick
       in-place confirmation (custom option field, in place ok press).
-    
 - **Tag Rules: Prettify**
   - decorate the rules human output with JSX to colorize keywords and so on.
   - RQB has NO validation. it should at least test for blank fields and no rules.

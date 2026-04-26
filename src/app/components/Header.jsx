@@ -42,23 +42,29 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
             display="box"
           >
             <Flex align="baseline" gap={2}>
-              <Text size="2xl" c="primary.1">
+              <Text
+                size="2xl"
+                c="light-dark(var(--mantine-color-primary-4), var(--mantine-color-primary-1))"
+              >
                 eq
               </Text>
               <Text c="primary" size="4xl" fw="bold">
                 Might
               </Text>
-              <Text size="2xl" c="primary.1">
+              <Text
+                size="2xl"
+                c="light-dark(var(--mantine-color-primary-4), var(--mantine-color-primary-1))"
+              >
                 utils
               </Text>
               <Badge
                 ml={0}
                 mt={-2}
                 size="xs"
-                bg="orange.4"
+                bg="yellow.5"
                 style={{ alignSelf: "flex-start" }}
               >
-                beta!
+                beta
               </Badge>
             </Flex>
           </Anchor>

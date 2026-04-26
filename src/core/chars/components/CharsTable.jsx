@@ -138,13 +138,23 @@ const Row = ({
         <Table.Td ta="center">
           {isRoster && char.warden > 0 && (
             <>
-              <Text c="primary.6" span title="Unwardened" ff="mono">
+              <Text
+                c="light-dark(var(--mantine-color-primary-4), var(--mantine-color-primary-6))"
+                span
+                title="Unwardened"
+                ff="mono"
+              >
                 {getCharMight(char, 0)}
               </Text>{" "}
               -{" "}
             </>
           )}
-          <Text c="primary.3" span title={`Warden ${char.warden}`} ff="mono">
+          <Text
+            c="light-dark(var(--mantine-color-primary-6), var(--mantine-color-primary-3))"
+            span
+            title={`Warden ${char.warden}`}
+            ff="mono"
+          >
             {getCharMight(char)}
           </Text>
         </Table.Td>

@@ -5,9 +5,17 @@
 
 :root,
 :host {
-  --paper-background-color: lighten(var(--mantine-color-body), 0.0175);
-  --paper-border-color-custom: rgba(255, 255, 255, 0.1);
   --mantine-color-body-custom: lighten(var(--mantine-color-body), 0.0275);
+
+  @mixin light-root {
+    --paper-border-color-custom: var(--mantine-color-secondary-2);
+    --paper-background-color: darken(var(--mantine-color-body), 0.01);
+  }
+
+  @mixin dark-root {
+    --paper-border-color-custom: rgba(255, 255, 255, 0.1);
+    --paper-background-color: lighten(var(--mantine-color-body), 0.0175);
+  }
 }
 
 body {

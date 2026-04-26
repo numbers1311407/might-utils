@@ -10,7 +10,7 @@ export const RosterActiveFilterToggle = () => {
     <Box>
       <SegmentedControl
         value={activeOnly}
-        color="var(--mantine-color-primary-7)"
+        color="light-dark(var(--mantine-color-primary-2), var(--mantine-color-primary-5))"
         size="sm"
         fullWidth
         data={[

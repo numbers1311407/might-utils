@@ -23,7 +23,11 @@ export const TagsInput = ({
         key={tag}
         withRemoveButton={!locked}
         disabled={locked}
-        bg={locked ? "primary.7" : undefined}
+        bg={
+          locked
+            ? "light-dark(var(--mantine-color-primary-2), var(--mantine-color-primary-6))"
+            : undefined
+        }
         onRemove={locked ? undefined : () => removeTag(tag)}
       >
         {tag}
