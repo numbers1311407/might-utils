@@ -1,5 +1,5 @@
 import { Link, useRoute } from "wouter";
-import { Stack, NavLink, Text } from "@mantine/core";
+import { Divider, Stack, NavLink, Text } from "@mantine/core";
 import { useAppContext } from "@/core/context";
 import * as titles from "@/config/constants/titles";
 
@@ -26,7 +26,7 @@ const NavbarLink = ({ href, ...props }) => {
 };
 
 const CategoryHeading = ({ name }) => (
-  <Text fw="bold" size="md" p="xs" c="primary-heading">
+  <Text fw="600" size="md" px="xs" c="primary-heading">
     {name}
   </Text>
 );
@@ -42,7 +42,7 @@ const Category = ({ name, children }) => {
 
 export const Navbar = (props) => {
   return (
-    <Stack gap="md" {...props}>
+    <Stack gap="lg" {...props}>
       <NavbarLink label="Home" href="/" />
       <Category name={titles.PARTY_CATEGORY}>
         <NavbarLink label={titles.PARTY_FINDER_TITLE} href="/party-generator" />
