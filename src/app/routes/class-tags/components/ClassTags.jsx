@@ -2,7 +2,11 @@ import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import * as titles from "@/config/constants/titles";
 import { getClassName } from "@/config/chars";
-import { getConfirmation, useClassTagsStore } from "@/model/store";
+import {
+  getConfirmation,
+  useClassTagsStore,
+  useClassTagsStoreApi as ctApi,
+} from "@/model/store";
 import {
   Aside,
   ClassIcon,
@@ -40,14 +44,11 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
   );
 };
 
+const { addClassTag, removeClassTag, resetClassTags, resetAllClassTags } =
+  ctApi;
+
 export const ClassTags = () => {
   const classTags = useClassTagsStore((store) => store.tags);
-  const addClassTag = useClassTagsStore((store) => store.addClassTag);
-  const removeClassTag = useClassTagsStore((store) => store.removeClassTag);
-  const resetClassTags = useClassTagsStore((store) => store.resetClassTags);
-  const resetAllClassTags = useClassTagsStore(
-    (store) => store.resetAllClassTags,
-  );
 
   return (
     <Box my="md">
