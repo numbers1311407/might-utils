@@ -438,6 +438,10 @@ export const cssVariablesResolver = () => ({
     "--mantine-color-pink-contrast": "var(--mantine-color-pink-0)",
   },
   dark: {
+    "--mantine-color-primary-text":
+      "color-mix(in srgb, var(--mantine-color-teal-4), white 20%)",
+    "--mantine-color-primary-filled": "var(--mantine-color-primary-5)", // used as secondary surface color
+
     // all variables that depend on dark color scheme
     "--mantine-primary-color-contrast": "var(--mantine-color-slate-8)", // used as primary color contrast
     "--mantine-color-text": "var(--mantine-color-secondary-0)", // used as text color

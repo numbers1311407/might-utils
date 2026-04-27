@@ -1,4 +1,4 @@
-import { Group, Stack, Title, Text } from "@mantine/core";
+import { Alert, Group, Stack, Title, Text } from "@mantine/core";
 import { LoadingPage } from "@/core/components";
 import { PartyResults } from "./PartyResults.jsx";
 import { useFindPartiesResults } from "../hooks";
@@ -45,9 +45,16 @@ export const PartyFinderResults = () => {
   if (!parties.length) {
     return (
       <Stack>
-        <Title order={3} c="warning.7">
-          No Results Found
-        </Title>
+        <Alert>
+          <Title order={3} c="warning.5">
+            No Results Found
+          </Title>
+          <Text c="warning.2">
+            No specific issues were encountered so either your search is too
+            restrictive or an unknown error was encountered.
+          </Text>
+        </Alert>
+        <Title order={4}>Tips:</Title>
         <Text>
           Make sure all your desired roster characters are active and that your
           total roster score is well above your target might score, such that

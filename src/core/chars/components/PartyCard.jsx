@@ -12,7 +12,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
           <Group align="center" gap={10}>
             <Text
               size={title ? "xl" : "2xl"}
-              c="primary"
+              c={title ? "primary.7" : "primary.4"}
               fw={title ? 400 : "bold"}
             >
               {stats?.score ?? 0}{" "}

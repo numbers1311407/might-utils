@@ -13,15 +13,9 @@ export const PartyStatsTable = ({ stats, ...props }) => {
       ],
       ["Might Std Dev", stats.mightSD],
       ["Level Average", stats.levelAvg],
-      ["Total Warden Ranks", stats.wardenRankTotal],
-      [
-        "Score from Levels",
-        `${stats.levelMightTotal} (${stats.levelMightPct}%)`,
-      ],
-      [
-        "Score from Warden Mult",
-        `${stats.wardenMightTotal} (${stats.wardenMightPct}%)`,
-      ],
+      ["Warden Ranks", stats.wardenRankTotal],
+      ["Level Might", `${stats.levelMightTotal} (${stats.levelMightPct}%)`],
+      ["Warden Might", `${stats.wardenMightTotal} (${stats.wardenMightPct}%)`],
     ].map(([label, value]) => (
       <Table.Tr key={label}>
         <Table.Th py={4} pl={0} pr={8} fw="400">

@@ -8,15 +8,15 @@ export const cssVariablesResolver = () => ({
       "var(--mantine-primary-color-filled)",
       0.9,
     ),
-    "--mantine-primary-color-light": "var(--mantine-color-amber-light)",
+    "--mantine-primary-color-light": "var(--mantine-color-slate-light)",
     "--mantine-primary-color-light-hover":
-      "var(--mantine-color-amber-light-hover)",
+      "var(--mantine-color-slate-light-hover)",
     "--mantine-primary-color-light-color":
-      "var(--mantine-color-amber-light-color)",
+      "var(--mantine-color-slate-light-color)",
   },
   light: {
     // all variables that depend on light color scheme
-    "--mantine-primary-color-contrast": "var(--mantine-color-amber-0)", // used as primary color contrast
+    "--mantine-primary-color-contrast": "var(--mantine-color-slate-0)", // used as primary color contrast
     "--mantine-color-text": "var(--mantine-color-secondary-9)", // used as text color
     "--mantine-color-body": "var(--mantine-color-white)", // used as body color
     "--mantine-color-error": "var(--mantine-color-error-10)", // used as error color
@@ -439,13 +439,12 @@ export const cssVariablesResolver = () => ({
   },
   dark: {
     // all variables that depend on dark color scheme
-    "--mantine-primary-color-contrast": "var(--mantine-color-stone-8)", // used as primary color contrast
+    "--mantine-primary-color-contrast": "var(--mantine-color-slate-8)", // used as primary color contrast
     "--mantine-color-text": "var(--mantine-color-secondary-0)", // used as text color
     "--mantine-color-body": "var(--mantine-color-secondary-9)", // used as body color
     "--mantine-color-error": "var(--mantine-color-error-10)", // used as error color
     "--mantine-color-placeholder": "var(--mantine-color-secondary-4)", // used as placeholder color
-    // "--mantine-color-anchor": "var(--mantine-color-secondary-4)", // used as anchor color
-    "--mantine-color-anchor": "var(--mantine-color-text)", // used as anchor color
+    "--mantine-color-anchor": "var(--mantine-color-secondary-4)", // used as anchor color
 
     "--mantine-color-default": "var(--mantine-color-secondary-9)", // used as default surface color
     "--mantine-color-default-hover": "var(--mantine-color-secondary-7)", // used as default hover color
@@ -464,6 +463,9 @@ export const cssVariablesResolver = () => ({
       "var(--mantine-color-secondary-light)",
       0.8,
     ), // used as primary light hover color
+
+    "--mantine-color-primary-text": "var(--mantine-color-amber-1)", // can be used as secondary text color
+    "--mantine-color-primary-6": "var(--mantine-color-amber-6)", // can be used as secondary text color
 
     "--mantine-color-secondary-text": "var(--mantine-primary-color-contrast)", // can be used as secondary text color
     "--mantine-color-secondary-light-color": "var(--mantine-color-secondary-0)", // used as primary light text color

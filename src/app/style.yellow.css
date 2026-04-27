@@ -506,10 +506,9 @@
 
 /* Tooltip */
 .mantine-Tooltip-tooltip {
-  font-size: var(--mantine-font-size-sm);
-  line-height: 1.4;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  font-size: var(--mantine-font-size-xs);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* Accordion */

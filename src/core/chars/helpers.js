@@ -2,7 +2,7 @@ import { processComp } from "@/model/schemas/comp";
 import { round as utilsRound, standardDeviation } from "@/utils";
 
 export const getCompStatsMap = (compMap) => {
-  const round = (v) => utilsRound(v, 3);
+  const round = (v) => utilsRound(v, 2);
 
   return compMap.entries().reduce((map, [comp, compSlots]) => {
     if (!compSlots?.length) {

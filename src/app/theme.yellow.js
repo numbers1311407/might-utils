@@ -1,5 +1,4 @@
 import { breakpoints } from "./breakpoints";
-
 import {
   ActionIcon,
   Alert,
@@ -357,9 +356,9 @@ export const theme = createTheme({
     fuchsia: fuchsiaColors,
     pink: pinkColors,
 
-    primary: amberColors,
-    secondary: stoneColors,
-    dark: stoneColors,
+    primary: slateColors,
+    secondary: slateColors,
+    dark: slateColors,
 
     error: redColors,
     success: greenColors,
@@ -369,7 +368,7 @@ export const theme = createTheme({
   focusRing: "never",
   scale: 1,
   primaryColor: "primary",
-  primaryShade: { light: 5, dark: 5 },
+  primaryShade: { light: 8, dark: 0 },
   autoContrast: true,
   luminanceThreshold: 0.3,
   fontFamily: "Geist-Variable",
@@ -936,7 +935,7 @@ export const theme = createTheme({
     }),
     Paper: Paper.extend({
       defaultProps: {
-        shadow: "md",
+        shadow: "xl",
       },
     }),
   },

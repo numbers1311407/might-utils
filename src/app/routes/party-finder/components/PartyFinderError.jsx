@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Box, Stack, List, Text, Title } from "@mantine/core";
+import { Alert, Box, Stack, List, Text, Title } from "@mantine/core";
 import { FindPartiesError, getQueryDescription } from "@/core/party-finder";
 
 const UnexpectedHandler = () => {
@@ -77,7 +77,7 @@ const REPORT_HANDLERS = {
       return (
         <Text span>
           Rule{" "}
-          <Text span c="primary.5">
+          <Text span c="primary">
             {ruleDesc}
           </Text>{" "}
           requires {humanizeRange(report.rule.value)} passing member(s) but your
@@ -94,11 +94,11 @@ const REPORT_HANDLERS = {
       const { rosterSize } = reports[0].details;
       return (
         <Text span>
-          Your eligible roster and max group size was resolved to{" "}
+          Your eligible roster or max group size were resolved to a maximum of{" "}
           <Text span c="primary">
             {rosterSize}
           </Text>{" "}
-          but your settings are looking for groups of{" "}
+          but your search is looking for groups of{" "}
           <Text span c="primary">
             {min}
             {plus}
@@ -193,13 +193,13 @@ const REPORT_HANDLERS = {
 const ReportsList = ({ reports, message, name, renderItem }) => {
   return (
     <Stack gap="xs">
-      <Text c="primary">{name || "General error"}</Text>
+      <Text c="primary.5">{name || "General error"}</Text>
       {message && <Box>{message}</Box>}
       {renderItem && (
         <List>
           {reports.map((report, i) => (
             <List.Item key={i}>
-              <Text span fw="bold" c="primary">
+              <Text span fw="bold">
                 Size {report.size}:
               </Text>{" "}
               {renderItem(report)}
@@ -305,17 +305,17 @@ export const PartyFinderError = ({ error }) => {
 
   return (
     <Stack>
-      <Title order={3} c="warning.7">
-        No Results Found
-      </Title>
-      <Text c="warning.2">
-        Either your rules are too restrictive/impossible, there's an error in
-        the search process, or both. If your search is impossible maybe the
-        specific issues can help.
-      </Text>
-      <Title order={4} c="warning.7">
-        Issue(s) encountered:
-      </Title>
+      <Alert>
+        <Title order={3} c="warning.5">
+          No Results Found
+        </Title>
+        <Text c="warning.2">
+          The rules and options you've selected are impossible or there was an
+          error in the search. Encountered issues are displayed below which may
+          help diagnose the problem.
+        </Text>
+      </Alert>
+      <Title order={4}>Issue(s) encountered:</Title>
       <Handler error={error} />
     </Stack>
   );
