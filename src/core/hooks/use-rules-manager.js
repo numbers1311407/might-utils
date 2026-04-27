@@ -1,22 +1,19 @@
 import { useCallback, useMemo } from "react";
 import { useDraftState } from "@/core/hooks";
-import { useTagRulesStore, useTagRulesStoreApi as api } from "@/model/store";
-import {
-  defaultFiltersTagRules,
-  defaultTimeFlagTagRules,
-} from "@/config/defaults";
+import { useRulesStore, useRulesStoreApi as api } from "@/model/store";
+import { defaultFiltersRules, defaultTimeFlagRules } from "@/config/defaults";
 
 const defaultIdMap = {
-  filters: [defaultFiltersTagRules.id, defaultTimeFlagTagRules.id],
+  filters: [defaultFiltersRules.id, defaultTimeFlagRules.id],
 };
 const defaultIds = Object.values(defaultIdMap).flat();
 
-export const useTagRulesManager = (type, initialId) => {
-  const active = useTagRulesStore((store) => store.active[type] || []);
+export const useRulesManager = (type, initialId) => {
+  const active = useRulesStore((store) => store.active[type] || []);
   const defaultId = defaultIdMap[type]?.[0];
   const [currentId, setCurrentId] = useDraftState(initialId || defaultId);
-  const current = useTagRulesStore((store) => store.sets[currentId]);
-  const currentDefaultDirty = useTagRulesStore((store) =>
+  const current = useRulesStore((store) => store.sets[currentId]);
+  const currentDefaultDirty = useRulesStore((store) =>
     store.dirtyDefaults.includes(currentId),
   );
   const currentDefault = defaultIds.includes(currentId);

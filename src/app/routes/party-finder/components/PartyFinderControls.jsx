@@ -3,9 +3,9 @@ import { Group, Paper, Stack, InputWrapper, RangeSlider } from "@mantine/core";
 import { useThrottledCallback } from "@mantine/hooks";
 import { useDraftState, useStableCallback } from "@/core/hooks";
 import { NumberField } from "@/core/components";
-import { ActiveTagFiltersSelect } from "@/core/tags";
+import { ActiveFilterRulesetsSelect } from "@/core/rulesets";
 import { MightMaxLevel, MightMinLevel } from "@/config/might";
-import { useTagRulesStore } from "@/model/store";
+import { useRulesStore } from "@/model/store";
 import { usePartyFinderStore } from "../store";
 import { ResultsGroupingSelect } from "./ResultsGroupingSelect.jsx";
 
@@ -78,7 +78,7 @@ const SizeRangeInput = (props) => {
     inputProps = {},
     ...wrapperProps
   } = props;
-  const showTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
+  const showTwenty = useRulesStore((store) => store.groupSizeTwenty);
   const [minSize, setMinSize] = usePartyOption("minSize");
   const [maxSize, setMaxSize] = usePartyOption("maxSize");
   const [draftValue, setDraftValue] = useDraftState([minSize, maxSize]);
@@ -148,7 +148,7 @@ export const PartyFinderControls = () => {
       </Paper>
       <Paper component={Stack} gap={8} p="sm" bdrs="sm">
         <ResultsGroupingSelect />
-        <ActiveTagFiltersSelect />
+        <ActiveFilterRulesetsSelect />
       </Paper>
     </Stack>
   );

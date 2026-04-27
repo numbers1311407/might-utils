@@ -1,8 +1,8 @@
 import * as z from "zod";
 import { nanoid } from "nanoid";
-import { tagRuleSchema } from "./tag-rule.js";
+import { tagRuleSchema } from "./rule.js";
 
-export const sortTagRulesetRules = (rules) => {
+export const sortRulesetRules = (rules) => {
   return [...rules].sort(({ size: a }, { size: b }) =>
     a[0] !== b[0] ? a[0] - b[0] : a[1] - b[1],
   );
@@ -26,5 +26,5 @@ export const tagRulesetSchema = z.object({
   // idea was group-level tagging which could add color to group results without
   // filtering, e.g. designating a group as a "pet group" or "port capable"
   type: z.enum(["filters"]).default("filters"),
-  rules: z.array(tagRuleSchema).default([]).transform(sortTagRulesetRules),
+  rules: z.array(tagRuleSchema).default([]).transform(sortRulesetRules),
 });

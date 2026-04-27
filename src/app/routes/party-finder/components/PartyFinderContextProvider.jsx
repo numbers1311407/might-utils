@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTagGroupsStoreApi as tgapi } from "@/model/store";
-import { useRoster, useTagRulesActiveFilters } from "@/core/hooks";
+import { useRoster, useRulesActiveFilters } from "@/core/hooks";
 import { PartyFinderContext } from "../context.js";
 import { useFindPartiesOptionsUrlHydration } from "../hooks.js";
 import { usePartyFinderStore } from "../store.js";
@@ -21,7 +21,7 @@ export const PartyFinderContextProvider = ({ children }) => {
   useFindPartiesOptionsUrlHydration();
 
   const finderOptions = usePartyFinderStore((store) => store.options);
-  const rules = useTagRulesActiveFilters();
+  const rules = useRulesActiveFilters();
   const roster = useRoster({ classTags: true });
 
   const [targetScore, options] = useMemo(() => {

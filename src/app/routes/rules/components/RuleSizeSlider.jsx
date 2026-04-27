@@ -2,17 +2,17 @@ import { useCallback, useMemo } from "react";
 import { RangeSlider } from "@mantine/core";
 import { deepEqual } from "fast-equals";
 import { useDraftState, useStableCallback } from "@/core/hooks";
-import { useTagRulesStore } from "@/model/store";
+import { useRulesStore } from "@/model/store";
 import { getNumberedArray } from "@/utils";
 
-export const TagRuleSizeSlider = ({
+export const RuleSizeSlider = ({
   defaultValue,
   value = defaultValue,
   onChange: propsOnChange,
   ...props
 }) => {
   const [draft, setDraft] = useDraftState(value);
-  const showTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
+  const showTwenty = useRulesStore((store) => store.groupSizeTwenty);
   const marks = useMemo(
     () =>
       getNumberedArray(1, showTwenty ? 20 : 12).map((n) => ({

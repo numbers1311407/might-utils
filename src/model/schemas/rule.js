@@ -50,4 +50,4 @@ const variance = z.discriminatedUnion("type", [
 ]);
 
 export const tagRuleSchema = base.and(variance);
-export const TagRuleTypes = types;
+export const RuleTypes = types;

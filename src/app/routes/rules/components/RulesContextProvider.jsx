@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
-import { TagRulesContext } from "../context.js";
+import { RulesContext } from "../context.js";
 
-export const TagRulesContextProvider = ({ children }) => {
+export const RulesContextProvider = ({ children }) => {
   const [ruleSizeFilter, setRuleSizeFilter] = useState(undefined);
 
   const value = {
@@ -9,5 +9,5 @@ export const TagRulesContextProvider = ({ children }) => {
     setRuleSizeFilter,
   };
 
-  return <TagRulesContext value={value}>{children}</TagRulesContext>;
+  return <RulesContext value={value}>{children}</RulesContext>;
 };

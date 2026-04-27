@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { useStableCallback } from "@/core/hooks";
 import { HelpLabel } from "@/core/components/HelpLabel";
 import { tagRuleSchema } from "@/model/schemas";
-import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
+import { RuleSizeSlider } from "./RuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
 import { ModalRangeInput } from "./ModalRangeInput.jsx";
 
@@ -33,7 +33,7 @@ const queryHelp =
   "is like OR for a group, while All is AND. E.g. a rule might be (\"tags includes 'tank' AND " +
   '(level >= 68 OR (level >= 66 AND warden >= 1)))"';
 
-export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
+export const RuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   return (
     <Modal
       size="lg"
@@ -42,7 +42,7 @@ export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
       closeOnClickOutside={false}
       title={rule ? `Edit Rule` : `New Rule`}
     >
-      <TagRuleForm
+      <RuleForm
         // note this key hack is to get around mantine's aggressive form caching
         key={opened ? "opened" : "closed"}
         rule={rule}
@@ -56,7 +56,7 @@ export const TagRuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
   );
 };
 
-const TagRuleForm = ({ rule = {}, onClose, onSubmit }) => {
+const RuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const parsed = tagRuleSchema.safeParse(rule);
   const initialValues = parsed.success
     ? parsed.data
@@ -123,7 +123,7 @@ const SizeField = ({ error, onChange, defaultValue }) => {
           {sizeMessage}
         </Text>
       </Group>
-      <TagRuleSizeSlider
+      <RuleSizeSlider
         onChange={(value) => {
           setSize(value);
           onChange(value);

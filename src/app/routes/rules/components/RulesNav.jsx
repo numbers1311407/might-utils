@@ -1,12 +1,12 @@
 import { Box, NavLink, Stack, Text, Tooltip } from "@mantine/core";
 import { Link } from "wouter";
-import { useTagRulesStore } from "@/model/store";
-import { useTagRulesList } from "@/core/hooks";
+import { useRulesStore } from "@/model/store";
+import { useRulesList } from "@/core/hooks";
 import { IconChevronLeft, IconStarFilled } from "@tabler/icons-react";
 
-export const TagRulesNav = ({ current, children, ...props }) => {
-  const list = useTagRulesList("filters");
-  const { filters: activeFilters } = useTagRulesStore((store) => store.active);
+export const RulesNav = ({ current, children, ...props }) => {
+  const list = useRulesList("filters");
+  const { filters: activeFilters } = useRulesStore((store) => store.active);
 
   return (
     <Box {...props}>

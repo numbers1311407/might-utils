@@ -14,8 +14,8 @@ import {
   EditSmallButton,
   CopySmallButton,
   RemoveSmallButton,
+  TagsInput,
 } from "@/core/components";
-import { TagsInput } from "@/core/tags";
 import { tagSchema } from "@/model/schemas";
 import { TagGroupModal } from "./TagGroupModal.jsx";
 

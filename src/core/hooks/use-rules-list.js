@@ -1,13 +1,13 @@
 import { useMemo } from "react";
-import { useTagRulesStore } from "@/model/store";
-import { defaultFiltersTagRules } from "@/config/defaults";
+import { useRulesStore } from "@/model/store";
+import { defaultFiltersRules } from "@/config/defaults";
 
 const defaultIds = {
-  filters: defaultFiltersTagRules.id,
+  filters: defaultFiltersRules.id,
 };
 
-export const useTagRulesList = (type) => {
-  const sets = useTagRulesStore((store) => store.sets);
+export const useRulesList = (type) => {
+  const sets = useRulesStore((store) => store.sets);
 
   return useMemo(() => {
     const defaultId = defaultIds[type];

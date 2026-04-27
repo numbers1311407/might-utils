@@ -1,1 +1,0 @@
-export { TagRules } from "./components";

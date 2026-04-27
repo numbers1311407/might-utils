@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { useTagRulesStore } from "@/model/store";
-import { useTagRulesList } from "@/core/hooks";
+import { useRulesStore } from "@/model/store";
+import { useRulesList } from "@/core/hooks";
 
-export const useTagRulesSelectOptions = (type, options = {}) => {
+export const useRulesSelectOptions = (type, options = {}) => {
   const { labelActive = true, includeNone } = options;
-  const list = useTagRulesList(type);
-  const active = useTagRulesStore((store) => store.active);
+  const list = useRulesList(type);
+  const active = useRulesStore((store) => store.active);
 
   return useMemo(() => {
     const checked = active[type] || [];

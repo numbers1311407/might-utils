@@ -6,4 +6,4 @@ export * from "./use-roster-store.js";
 export * from "./use-parties-store.js";
 export * from "./use-preferences-store.js";
 export * from "./use-tag-groups-store.js";
-export * from "./use-tag-rules-store.js";
+export * from "./use-rules-store.js";

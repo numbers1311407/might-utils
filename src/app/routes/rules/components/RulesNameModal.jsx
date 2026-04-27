@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CloseButton, Button, Modal, TextInput, Group } from "@mantine/core";
-import { useTagRulesStoreApi } from "@/model/store";
+import { useRulesStoreApi } from "@/model/store";
 import { tagRulesetSchema } from "@/model/schemas";
 
-const { nameAvailable } = useTagRulesStoreApi;
+const { nameAvailable } = useRulesStoreApi;
 
 const formSchema = tagRulesetSchema.refine(
   (ruleset) => nameAvailable(ruleset),
@@ -13,7 +13,7 @@ const formSchema = tagRulesetSchema.refine(
   },
 );
 
-export const TagRulesNameModal = ({ ruleset, onClose, onCommit }) => {
+export const RulesNameModal = ({ ruleset, onClose, onCommit }) => {
   const [name, setName] = useState(ruleset.name || "");
   const [error, setError] = useState(false);
   const [dirty, setDirty] = useState(false);

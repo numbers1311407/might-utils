@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { Kbd, Group, Text, Tooltip } from "@mantine/core";
 import { getQueryDescription } from "@/core/party-finder";
 
-const TagRuleSizeAll = (props) => (
+const RuleSizeAll = (props) => (
   <Tooltip
     withArrow
     multiline
@@ -36,7 +36,7 @@ const getRangeRuleTooltip = (min, max) => {
         : `Beteen ${min} and ${max} characters must satisfy this rule`;
 };
 
-const TagRuleSizeRange = ({ rule, ...props }) => (
+const RuleSizeRange = ({ rule, ...props }) => (
   <Tooltip
     withArrow
     multiline
@@ -50,26 +50,26 @@ const TagRuleSizeRange = ({ rule, ...props }) => (
 );
 
 const comps = {
-  all: TagRuleSizeAll,
-  range: TagRuleSizeRange,
+  all: RuleSizeAll,
+  range: RuleSizeRange,
 };
 
-const TagRuleSize = forwardRef(({ rule }, ref) => {
+const RuleSize = forwardRef(({ rule }, ref) => {
   const Component = comps[rule.type];
   return <Component ref={ref} rule={rule} />;
 });
 
-const TagRuleDescription = ({ rule, ...props }) => (
+const RuleDescription = ({ rule, ...props }) => (
   <Text size="md" {...props}>
     {getQueryDescription(rule.query)}
   </Text>
 );
 
-export const TagRule = ({ rule, ...props }) => {
+export const Rule = ({ rule, ...props }) => {
   return (
     <Group {...props} gap={8} align="center">
-      <TagRuleSize rule={rule} />
-      <TagRuleDescription rule={rule} size="md" />
+      <RuleSize rule={rule} />
+      <RuleDescription rule={rule} size="md" />
     </Group>
   );
 };

@@ -1,8 +1,5 @@
 import { deepEqual } from "fast-equals";
-import {
-  defaultFiltersTagRules,
-  defaultTimeFlagTagRules,
-} from "@/config/defaults";
+import { defaultFiltersRules, defaultTimeFlagRules } from "@/config/defaults";
 import { tagRulesetSchema, tagRuleSchema } from "@/model/schemas";
 import { createStore } from "./helpers";
 
@@ -19,8 +16,8 @@ const addUniquely = (array, value) => {
   return Array.from(new Set([...array, value]));
 };
 
-const defaultFilters = tagRulesetSchema.parse(defaultFiltersTagRules);
-const defaultTimeFlag = tagRulesetSchema.parse(defaultTimeFlagTagRules);
+const defaultFilters = tagRulesetSchema.parse(defaultFiltersRules);
+const defaultTimeFlag = tagRulesetSchema.parse(defaultTimeFlagRules);
 
 const defaultTypeStorage = {
   filters: TYPES.Multi,
@@ -48,7 +45,7 @@ const handleDirtyDefaults = (ruleset, state) => {
 // TODO originally there were to be multiple types of these rules but I don't
 // even remember what the original concept was. Since there's only "filters"
 // a lot if this could be simplified.
-export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
+export const useRulesStore = createStore("might-utils-rules", () => ({
   active: {
     filters: [defaultFilters.id],
   },
@@ -60,7 +57,7 @@ export const useTagRulesStore = createStore("might-utils-tag-rules", () => ({
   },
 }));
 
-const { getState: get, setState: set } = useTagRulesStore;
+const { getState: get, setState: set } = useRulesStore;
 const api = {
   nameAvailable: (name, record) => {
     if (typeof name === "object") {
@@ -79,7 +76,7 @@ const api = {
     const cleanDefault = defaults.find((d) => d.id === id);
 
     if (cleanDefault) {
-      useTagRulesStoreApi.addSet(cleanDefault);
+      useRulesStoreApi.addSet(cleanDefault);
     }
   },
 
@@ -246,4 +243,4 @@ const api = {
   },
 };
 
-export const useTagRulesStoreApi = api;
+export const useRulesStoreApi = api;

@@ -1,9 +1,9 @@
-import { TagRulesetSelect } from "./tag-ruleset-select";
-import { useTagRulesStoreApi as api } from "@/model/store";
+import { RulesetSelect } from "./ruleset-select";
+import { useRulesStoreApi as api } from "@/model/store";
 
-export const ActiveTagFiltersSelect = (props) => {
+export const ActiveFilterRulesetsSelect = (props) => {
   return (
-    <TagRulesetSelect
+    <RulesetSelect
       type="filters"
       {...props}
       onChange={(ids) => {

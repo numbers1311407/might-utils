@@ -1,4 +1,4 @@
-import { TagRuleTypes } from "@/model/schemas";
+import { RuleTypes } from "@/model/schemas";
 import { applyRule } from "./json-logic.js";
 
 const createReporter = ({
@@ -46,7 +46,7 @@ const createTester = ({ rulesBySize, validIdxsByRule, telemetry }) => {
 
       const size = partyIdxs.size;
       const [min, max] =
-        rule.type === TagRuleTypes.ALL ? [size, size] : rule.value;
+        rule.type === RuleTypes.ALL ? [size, size] : rule.value;
 
       const rulePassed =
         validCount >= min && (max === undefined || validCount <= max);
@@ -114,7 +114,7 @@ const createPreChecksRunner = ({
     for (const rule of appliedRules) {
       const passingBuckets = bucketPassesByRule.get(rule);
       const [min, max] =
-        rule.type === TagRuleTypes.ALL ? [size, size] : rule.value;
+        rule.type === RuleTypes.ALL ? [size, size] : rule.value;
 
       // If there aren't enough passing character buckets to satisfy the
       // min value then this rule cannot pass at this size.
@@ -161,8 +161,8 @@ const createPreChecksRunner = ({
         const rB = appliedRules[j];
 
         // get their mins...
-        const [minA] = rA.type === TagRuleTypes.ALL ? [size] : rA.value;
-        const [minB] = rB.type === TagRuleTypes.ALL ? [size] : rB.value;
+        const [minA] = rA.type === RuleTypes.ALL ? [size] : rA.value;
+        const [minB] = rB.type === RuleTypes.ALL ? [size] : rB.value;
 
         // and their passed idxs
         const setA = bucketPassesByRule.get(rA);

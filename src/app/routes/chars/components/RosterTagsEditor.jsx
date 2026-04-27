@@ -9,8 +9,7 @@ import {
 } from "@mantine/core";
 import { Link } from "wouter";
 import { useRosterCharApi, useRoster } from "@/core/hooks";
-import { AppLink, ClassIcon } from "@/core/components";
-import { TagsInput } from "@/core/tags";
+import { AppLink, ClassIcon, TagsInput } from "@/core/components";
 import { getClassName } from "@/config/chars";
 
 export const RosterTagsEditorField = ({ name }) => {

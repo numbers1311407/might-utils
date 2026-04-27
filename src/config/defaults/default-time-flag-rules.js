@@ -1,4 +1,4 @@
-export const defaultTimeFlagTagRules = {
+export const defaultTimeFlagRules = {
   id: "time-flagged",
   name: "Time-Flagged",
   type: "filters",

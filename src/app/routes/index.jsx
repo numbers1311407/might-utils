@@ -5,7 +5,7 @@ import { NpcSimulator, MightRangeFinder } from "./calculators";
 import { PartyFinder } from "./party-finder";
 import { Roster, Parties } from "./chars";
 import { TagGroups } from "./tag-groups";
-import { TagRules } from "./tag-rules";
+import { Rules } from "./rules";
 
 export const Routes = () => {
   return (
@@ -35,7 +35,7 @@ export const Routes = () => {
         <NpcSimulator />
       </Route>
       <Route path="/rulesets/:id?">
-        <TagRules />
+        <Rules />
       </Route>
       <Route path="/class-tags">
         <ClassTags />

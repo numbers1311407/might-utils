@@ -31,19 +31,19 @@ import {
   RestoreSmallButton,
 } from "@/core/components";
 import {
-  useTagRulesStore,
-  useTagRulesStoreApi as tagRulesApi,
+  useRulesStore,
+  useRulesStoreApi as tagRulesApi,
   getConfirmation,
 } from "@/model/store";
-import { useTagRulesManager } from "@/core/hooks";
-import { useTagRulesContext } from "../context.js";
-import { TagRulesContextProvider } from "./TagRulesContextProvider.jsx";
-import { TagRulesNameModal } from "./TagRulesNameModal.jsx";
-import { TagRuleModal } from "./TagRuleModal.jsx";
-import { TagRule } from "./TagRule.jsx";
-import { TagRulesNav } from "./TagRulesNav.jsx";
-import { TagRuleSizeSlider } from "./TagRuleSizeSlider.jsx";
-import classes from "./TagRules.module.css";
+import { useRulesManager } from "@/core/hooks";
+import { useRulesContext } from "../context.js";
+import { RulesContextProvider } from "./RulesContextProvider.jsx";
+import { RulesNameModal } from "./RulesNameModal.jsx";
+import { RuleModal } from "./RuleModal.jsx";
+import { Rule } from "./Rule.jsx";
+import { RulesNav } from "./RulesNav.jsx";
+import { RuleSizeSlider } from "./RuleSizeSlider.jsx";
+import classes from "./Rules.module.css";
 
 const ActiveToggle = ({ api }) => (
   <InputLabel
@@ -75,8 +75,8 @@ const ActiveToggle = ({ api }) => (
 );
 
 const RuleSizeFilterButtons = () => {
-  const isTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
-  const { ruleSizeFilter: active, setRuleSizeFilter } = useTagRulesContext();
+  const isTwenty = useRulesStore((store) => store.groupSizeTwenty);
+  const { ruleSizeFilter: active, setRuleSizeFilter } = useRulesContext();
 
   useEffect(() => {
     setRuleSizeFilter();
@@ -111,7 +111,7 @@ const RuleSizeFilterButtons = () => {
 };
 
 const ToggleGroupSizeTwenty = () => {
-  const isTwenty = useTagRulesStore((store) => store.groupSizeTwenty);
+  const isTwenty = useRulesStore((store) => store.groupSizeTwenty);
 
   return (
     <InputLabel
@@ -135,14 +135,14 @@ const ToggleGroupSizeTwenty = () => {
   );
 };
 
-const TagRulesMain = () => {
+const RulesMain = () => {
   const [_match, { id }] = useRoute("/rulesets/:id?");
-  const [ruleset = {}, _setRuleset, api] = useTagRulesManager("filters", id);
+  const [ruleset = {}, _setRuleset, api] = useRulesManager("filters", id);
   const [draftRuleset, setDraftRuleset] = useState(null);
-  const [draftTagRuleProps, setDraftTagRuleProps] = useState(null);
+  const [draftRuleProps, setDraftRuleProps] = useState(null);
   const [newRule, setNewRule] = useState(null);
   const [_location, setLocation] = useLocation();
-  const { ruleSizeFilter: activeSize } = useTagRulesContext();
+  const { ruleSizeFilter: activeSize } = useRulesContext();
 
   const activeRules = useMemo(() => {
     return ruleset.rules.filter(
@@ -182,7 +182,7 @@ const TagRulesMain = () => {
       <AddSmallButton
         aria-label="Add a rule"
         onClick={() => {
-          setDraftTagRuleProps({});
+          setDraftRuleProps({});
         }}
       >
         Add a Rule
@@ -301,7 +301,7 @@ const TagRulesMain = () => {
             your tank and healers, with "melee" vs "caster" rulesets kept
             separate for different group types.
           </Text>
-          <TagRulesNav current={ruleset.id}></TagRulesNav>
+          <RulesNav current={ruleset.id}></RulesNav>
         </Stack>
       </Aside>
 
@@ -345,7 +345,7 @@ const TagRulesMain = () => {
                 </>
               )}
             </Text>
-            <Button size="md" onClick={() => setDraftTagRuleProps({})}>
+            <Button size="md" onClick={() => setDraftRuleProps({})}>
               Add a rule now?
             </Button>
           </Box>
@@ -359,19 +359,19 @@ const TagRulesMain = () => {
               gap={8}
             >
               <Group gap={4} align="center">
-                <TagRule
+                <Rule
                   rule={rule}
                   flex="1"
-                  onClick={(rule) => setDraftTagRuleProps({ rule })}
+                  onClick={(rule) => setDraftRuleProps({ rule })}
                 />
-                <EditButton onClick={() => setDraftTagRuleProps({ rule })} />
+                <EditButton onClick={() => setDraftRuleProps({ rule })} />
                 <TrashButton
                   onClick={getConfirmation(() => api.removeCurrentRule(rule), {
                     title: "Are you sure you want to remove this rule?",
                   })}
                 />
               </Group>
-              <TagRuleSizeSlider
+              <RuleSizeSlider
                 flex="1"
                 value={rule.size}
                 mb={20}
@@ -387,7 +387,7 @@ const TagRulesMain = () => {
       <Divider my="lg" />
 
       {draftRuleset && (
-        <TagRulesNameModal
+        <RulesNameModal
           ruleset={draftRuleset}
           onClose={() => {
             setDraftRuleset(null);
@@ -402,15 +402,15 @@ const TagRulesMain = () => {
         />
       )}
 
-      {draftTagRuleProps && (
-        <TagRuleModal
-          {...draftTagRuleProps}
+      {draftRuleProps && (
+        <RuleModal
+          {...draftRuleProps}
           opened
           onClose={() => {
-            setDraftTagRuleProps(null);
+            setDraftRuleProps(null);
           }}
           onSubmit={(rule) => {
-            setDraftTagRuleProps(null);
+            setDraftRuleProps(null);
             api.addCurrentRule(rule);
             api.sortCurrent();
             flashRuleRow(rule);
@@ -421,8 +421,8 @@ const TagRulesMain = () => {
   );
 };
 
-export const TagRules = () => (
-  <TagRulesContextProvider>
-    <TagRulesMain />
-  </TagRulesContextProvider>
+export const Rules = () => (
+  <RulesContextProvider>
+    <RulesMain />
+  </RulesContextProvider>
 );

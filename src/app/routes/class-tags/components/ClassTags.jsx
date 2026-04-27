@@ -12,8 +12,8 @@ import {
   ClassIcon,
   PageTitle,
   ReloadSmallButton,
+  TagsInput,
 } from "@/core/components";
-import { TagsInput } from "@/core/tags";
 
 export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
   return (

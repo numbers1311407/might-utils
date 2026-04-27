@@ -1,14 +1,14 @@
 import { MultiSelect } from "@mantine/core";
-import { useTagRulesSelectOptions } from "./use-tag-rules-select-options.js";
+import { useRulesSelectOptions } from "./use-rules-select-options.js";
 
-export const TagRulesetSelect = ({
+export const RulesetSelect = ({
   type,
   onChange,
   label = "Rulesets",
   labelActive = true,
   ...props
 }) => {
-  const { data, checked } = useTagRulesSelectOptions(type, { labelActive });
+  const { data, checked } = useRulesSelectOptions(type, { labelActive });
 
   return (
     <MultiSelect
