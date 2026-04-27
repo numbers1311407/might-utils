@@ -17,7 +17,7 @@ export const CompBreakdown = ({ comp, type, score, ...props }) => {
             <Text span size="2xl" ff="mono" c="primary">
               {slot.count}
             </Text>
-            <Text span c="primary.5">
+            <Text span c="primary-accent">
               x
             </Text>
             <Text span size="2xl" ff="mono">

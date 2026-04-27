@@ -27,6 +27,7 @@ import {
   ThemeIcon,
   Timeline,
   Tooltip,
+  virtualColor,
 } from "@mantine/core";
 
 const CONTAINER_SIZES = {
@@ -364,6 +365,22 @@ export const theme = createTheme({
     success: greenColors,
     info: blueColors,
     warning: amberColors,
+
+    "primary-accent": virtualColor({
+      name: "primary-accent",
+      light: "primary",
+      dark: "primary",
+    }),
+    "primary-subdued": virtualColor({
+      name: "primary-subdued",
+      light: "brown",
+      dark: "brown",
+    }),
+    "primary-heading": virtualColor({
+      name: "primary-heading",
+      light: "yellow",
+      dark: "amber",
+    }),
   },
   focusRing: "never",
   scale: 1,

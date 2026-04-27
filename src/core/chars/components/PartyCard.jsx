@@ -12,7 +12,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
           <Group align="center" gap={10}>
             <Text
               size={title ? "xl" : "2xl"}
-              c={title ? "primary.7" : "primary.4"}
+              c={title ? "primary-accent" : "primary-bright"}
               fw={title ? 400 : "bold"}
             >
               {stats?.score ?? 0}{" "}
@@ -35,7 +35,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
         <Grid gap="xl">
           <Grid.Col pr={{ base: 0, lg: "lg" }} span={{ base: 12, lg: 4 }}>
             <Stack gap="xs">
-              <Text size="lg" c="primary.5">
+              <Text size="lg" c="primary-heading">
                 Party Stats
               </Text>
               <PartyStatsTable stats={stats} />
@@ -43,7 +43,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
             <Stack gap="xs">
-              <Text size="lg" c="primary.5">
+              <Text size="lg" c="primary-heading">
                 Party Composition
               </Text>
               <CompBreakdown comp={comp} type={compType} score={stats?.score} />
@@ -51,7 +51,7 @@ export const PartyCard = ({ title, party, comp, compType, stats, buttons }) => (
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
             <Stack gap="xs">
-              <Text size="lg" c="primary.5">
+              <Text size="lg" c="primary-heading">
                 Party Lineup
               </Text>
               <PartyStack party={party} />

@@ -21,7 +21,7 @@ export const PageTitle = ({
     <Group gap={6} align="flex-start">
       <Box flex="1 0" c="primary">
         {typeof section === "string" && (
-          <Text c="primary.6" pl={2} fw="bold">
+          <Text c="primary-heading" pl={2} fw="bold">
             {section}
           </Text>
         )}

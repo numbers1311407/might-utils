@@ -26,7 +26,7 @@ const NavbarLink = ({ href, ...props }) => {
 };
 
 const CategoryHeading = ({ name }) => (
-  <Text fw="bold" size="md" p="xs" c="primary">
+  <Text fw="bold" size="md" p="xs" c="primary-heading">
     {name}
   </Text>
 );

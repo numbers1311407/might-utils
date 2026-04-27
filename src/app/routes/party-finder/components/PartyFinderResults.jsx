@@ -45,7 +45,7 @@ export const PartyFinderResults = () => {
   if (!parties.length) {
     return (
       <Stack>
-        <Alert>
+        <Alert bg="light-dark(var(--mantine-color-secondary-5), var(--mantine-color-secondary-filled))">
           <Title order={3} c="warning.5">
             No Results Found
           </Title>

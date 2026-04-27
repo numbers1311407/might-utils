@@ -20,7 +20,7 @@ const { Tr, Tbody, Thead } = Table;
 
 const Th = ({ size = "xs", children, ...tdProps }) => {
   return (
-    <Table.Th bg="secondary.8" ta="right" {...tdProps}>
+    <Table.Th bg="dim" ta="right" {...tdProps}>
       <Text size={size}>{children}</Text>
     </Table.Th>
   );
@@ -174,6 +174,14 @@ const PartyDiffReady = (props) => {
         </Text>{" "}
         of your available warden ranks.
       </Text>
+      {props.warden.under.length > 0 && (
+        <Text size="xs">
+          <Text c="gold" size="xs" span>
+            {props.warden.under.map((char) => char.name).join(", ")}
+          </Text>{" "}
+          could be ranked up.
+        </Text>
+      )}
     </>
   );
 };

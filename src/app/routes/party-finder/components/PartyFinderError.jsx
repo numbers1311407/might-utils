@@ -57,7 +57,7 @@ const REPORT_HANDLERS = {
       return (
         <Text span>
           Rule{" "}
-          <Text span c="primary.5">
+          <Text span c="primary-accent">
             {ruleDesc}
           </Text>{" "}
           requires {humanizeRange(report.rule.value)} passing member(s) but your
@@ -180,7 +180,7 @@ const REPORT_HANDLERS = {
       return rules.map((rule) => (
         <Text span key={rule.id}>
           Rule{" "}
-          <Text span c="primary.5">
+          <Text span c="primary-accent">
             {getQueryDescription(rule.query)}
           </Text>{" "}
           could not be satisified.
@@ -193,7 +193,7 @@ const REPORT_HANDLERS = {
 const ReportsList = ({ reports, message, name, renderItem }) => {
   return (
     <Stack gap="xs">
-      <Text c="primary.5">{name || "General error"}</Text>
+      <Text c="primary-accent">{name || "General error"}</Text>
       {message && <Box>{message}</Box>}
       {renderItem && (
         <List>
@@ -251,7 +251,7 @@ const PoolSizeHandler = ({ error }) => {
       <Text>
         The search configuration applied to roster didn't result in enough
         eligible characters to satisfy the requirements. There were{" "}
-        <Text span c="primary">
+        <Text span c="trimary">
           {eligible}
         </Text>{" "}
         eligible characters found, but the min party size is{" "}
@@ -305,7 +305,7 @@ export const PartyFinderError = ({ error }) => {
 
   return (
     <Stack>
-      <Alert>
+      <Alert bg="light-dark(var(--mantine-color-secondary-5), var(--mantine-color-secondary-filled))">
         <Title order={3} c="warning.5">
           No Results Found
         </Title>

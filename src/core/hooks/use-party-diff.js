@@ -5,8 +5,7 @@ import { round } from "@/utils";
 
 const M_LEVEL_UP = 100;
 const M_LEVEL_DOWN = 10;
-const MAX_WARDEN_RATIO = 5;
-const BASE_OVER_LEVEL = MAX_WARDEN_RATIO * 100;
+const BASE_OVER_LEVEL = 500;
 const BASE_UNDER_LEVEL = 1000;
 
 export const usePartyDiff = (partyId) => {
@@ -29,6 +28,7 @@ const emptyResponse = {
     party: 0,
     roster: 0,
     ratio: 0,
+    under: [],
   },
 };
 
@@ -54,6 +54,7 @@ export const getPartyDiff = (party, roster) => {
   const status = {};
   const diffLog = [];
   const missingChars = [];
+  const underWarden = [];
 
   chars.forEach((char) => {
     const rosterChar = roster.find((c) => c.name === char.name);
@@ -65,6 +66,10 @@ export const getPartyDiff = (party, roster) => {
 
     const diff = rosterChar.level - char.level;
     const wdiff = rosterChar.warden - char.warden;
+
+    if (wdiff > 0) {
+      underWarden.push(char);
+    }
 
     status[char.name] = {
       pl: char.level,
@@ -113,10 +118,8 @@ export const getPartyDiff = (party, roster) => {
   let finalScore = 0;
   let tier = "READY";
 
-  const wardenRatio = Math.min(
-    round(partyWardenRanks / rosterWardenRanks, 2),
-    MAX_WARDEN_RATIO,
-  );
+  const wardenRatio =
+    partyWardenRanks === 0 ? 0 : round(partyWardenRanks / rosterWardenRanks, 2);
 
   if (missingChars.length) {
     return {
@@ -150,6 +153,7 @@ export const getPartyDiff = (party, roster) => {
       party: partyWardenRanks,
       roster: rosterWardenRanks,
       ratio: wardenRatio,
+      under: underWarden,
     },
   };
 };

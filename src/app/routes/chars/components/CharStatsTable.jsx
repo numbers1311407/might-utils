@@ -15,17 +15,17 @@ export const CharStatsTable = ({
     if (!stats) return [];
 
     return [
-      ["Count", <Text c="primary">{stats.size} members</Text>],
+      ["Count", <Text c="primary-accent">{stats.size} members</Text>],
       [
         "Might",
         <Text>
-          <Text span c="primary.4">
+          <Text span c="primary-subdued">
             {stats.might.total} {minMight ? "max" : ""}
           </Text>
           {minMight && (
             <>
               {" / "}
-              <Text span c="primary.5">
+              <Text span c="primary-accent">
                 {stats.might.minTotal}
               </Text>
             </>

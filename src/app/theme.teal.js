@@ -26,6 +26,7 @@ import {
   ThemeIcon,
   Timeline,
   Tooltip,
+  virtualColor,
 } from "@mantine/core";
 
 const CONTAINER_SIZES = {
