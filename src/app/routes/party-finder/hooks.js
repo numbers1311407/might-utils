@@ -45,7 +45,7 @@ export const useFindPartiesResults = () => {
         const comps = getPartyCompsMap(data.parties, (party) => {
           return {
             comp: party.comp,
-            chars: party.party.map((idx) => data.pool[idx]),
+            chars: Array.from(party.party).map((idx) => data.pool[idx]),
           };
         });
 

@@ -15,6 +15,10 @@ export const cssVariablesResolver = () => ({
       "var(--mantine-color-slate-light-color)",
   },
   light: {
+    // "--mantine-color-primary-heading-text": "var(--mantine-color-rose-5)",
+    "--mantine-color-primary-heading-text": "var(--mantine-color-amber-6)",
+    "--mantine-primary-color-filled": "#A8A9AD",
+    "--mantine-color-primary-text": "var(--mantine-color-red-9)",
     // all variables that depend on light color scheme
     "--mantine-primary-color-contrast": "var(--mantine-color-slate-0)", // used as primary color contrast
     "--mantine-color-text": "var(--mantine-color-secondary-9)", // used as text color
@@ -438,11 +442,14 @@ export const cssVariablesResolver = () => ({
     "--mantine-color-pink-contrast": "var(--mantine-color-pink-0)",
   },
   dark: {
-    "--mantine-color-primary-text": "var(--mantine-color-yellow-4)",
+    "--mantine-color-primary-text": "var(--mantine-color-yellow-3)",
+    "--mantine-color-primary-heading-text": "var(--mantine-color-amber-5)",
     // all variables that depend on dark color scheme
     "--mantine-primary-color-contrast": "var(--mantine-color-slate-8)", // used as primary color contrast
     "--mantine-color-text": "var(--mantine-color-secondary-0)", // used as text color
-    "--mantine-color-body": "var(--mantine-color-secondary-9)", // used as body color
+    // "--mantine-color-body": "var(--mantine-color-secondary-9)", // used as body color
+    "--mantine-color-body":
+      "color-mix(in srgb, var(--mantine-color-secondary-8), black 50%)",
     "--mantine-color-error": "var(--mantine-color-error-10)", // used as error color
     "--mantine-color-placeholder": "var(--mantine-color-secondary-4)", // used as placeholder color
     "--mantine-color-anchor": "var(--mantine-color-secondary-4)", // used as anchor color

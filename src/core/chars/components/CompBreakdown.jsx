@@ -1,5 +1,6 @@
 import { AppLink } from "@/core/components";
 import { Divider, Badge, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { getCharMight } from "@/config/chars/might";
 
 const CompWarden = ({ rank, ...props }) => {
   if (!rank) return null;
@@ -7,7 +8,8 @@ const CompWarden = ({ rank, ...props }) => {
 };
 
 export const CompBreakdown = ({ comp, type, score, ...props }) => {
-  const key = (slot) => `${slot.level}/${slot.warden}/${slot.terms.join(",")}`;
+  const key = (slot) =>
+    `${slot.level}/${slot.warden}/${slot.name || slot.terms.join(",")}`;
 
   return (
     <Stack gap={0} {...props}>
@@ -44,7 +46,7 @@ export const CompBreakdown = ({ comp, type, score, ...props }) => {
               </Group>
             )}
             <Text ff="mono" ta="right" flex="1">
-              {slot.might * slot.count}
+              {getCharMight(slot) * slot.count}
             </Text>
           </Group>
         ))}

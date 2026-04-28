@@ -1,8 +1,10 @@
 import { useRef } from "react";
 import { CloseButton, TextInput as MantineTextInput } from "@mantine/core";
+import { mergeRefs } from "@mantine/hooks";
 import { useDraftState } from "@/core/hooks";
 
 export const TextInput = ({
+  ref: propsRef,
   clearable = true,
   defaultValue = "",
   value,
@@ -11,14 +13,15 @@ export const TextInput = ({
   onKeyDown,
   ...props
 }) => {
-  const ref = useRef();
+  const localRef = useRef();
   const [localValue, setLocalValue] = useDraftState(value || defaultValue);
+  const ref = mergeRefs(localRef, propsRef);
 
   return (
     <MantineTextInput
-      ref={ref}
       size={size}
       value={localValue}
+      ref={ref}
       {...props}
       onChange={(e) => {
         setLocalValue(e.target.value);
@@ -30,7 +33,7 @@ export const TextInput = ({
             size={size}
             onClick={() => {
               setLocalValue("");
-              ref.current?.focus();
+              localRef.current?.focus();
             }}
           />
         ) : undefined
@@ -38,7 +41,7 @@ export const TextInput = ({
       onKeyDown={(e) => {
         if (e.key === "Escape") {
           setLocalValue(localValue);
-          ref.current?.blur();
+          localRef.current?.blur();
         }
         onKeyDown?.(e);
       }}

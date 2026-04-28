@@ -48,7 +48,6 @@ export const usePartyEditor = (options = {}) => {
     componentProps: (props) => ({
       ...props,
       record: draftParty,
-      completed: false,
       onSubmit: (values) => {
         partiesApi.add(values, (record) => {
           if (confirmNav) {

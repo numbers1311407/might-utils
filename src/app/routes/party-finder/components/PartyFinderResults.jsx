@@ -17,11 +17,15 @@ const PartyFinderResultsCount = ({ parties, ...props }) => (
   </Text>
 );
 
-const PartyFinderResultsHeader = ({ parties }) => (
+const PartyFinderResultsHeader = ({ parties, mx = 12 }) => (
   <Group
     bg="var(--mantine-color-body-custom)"
     py="xl"
     mt="-lg"
+    ml={mx * -1}
+    mr={mx * -1}
+    pl={mx + 8}
+    pr={mx + 8}
     style={{
       position: "sticky",
       top: 66,

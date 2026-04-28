@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Divider,
   Grid,
   Group,
@@ -11,6 +12,7 @@ import {
 import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useParty, useStableCallback } from "@/core/hooks";
+import { useRulesetCreator } from "@/core/rulesets";
 import { AppLink, Aside, CharSelect } from "@/core/components";
 import {
   CharsTable,
@@ -51,6 +53,8 @@ export const Party = ({ id: partyId }) => {
     partyApi.removeParty(() => setLocation(`/parties`));
   });
 
+  const createRuleset = useRulesetCreator();
+
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
   if (!party) {
@@ -80,9 +84,18 @@ export const Party = ({ id: partyId }) => {
                 <Divider />
                 {party.might > 0 ? (
                   <>
-                    <Title order={4} c="primary">
-                      Comp Breakdown
-                    </Title>
+                    <Group>
+                      <Title flex="1" order={4} c="primary">
+                        Comp Breakdown
+                      </Title>
+                      <Button
+                        onClick={() => createRuleset({ comp: party.comp })}
+                        size="compact-sm"
+                      >
+                        Create Ruleset
+                      </Button>
+                    </Group>
+
                     <CompBreakdown
                       score={party.might}
                       type="party"
@@ -121,6 +134,12 @@ export const Party = ({ id: partyId }) => {
                     ({party.chars.length})
                   </Text>
                   <PartyDiffToggle />
+                  <Button
+                    onClick={() => createRuleset({ party: party.chars })}
+                    size="compact-sm"
+                  >
+                    Create Ruleset
+                  </Button>
                 </Group>
                 <CharSelect
                   emits="char"

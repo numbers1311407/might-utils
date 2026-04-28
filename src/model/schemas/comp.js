@@ -1,6 +1,6 @@
 import * as z from "zod";
-import { getCharMight } from "@/config/chars/might";
 import { sum } from "@/utils";
+import { getCharMight } from "@/config/chars";
 
 // NOTE all these regexes assume the lowest level is 45 and highest is 71
 const baseValid =
@@ -88,10 +88,20 @@ export const humanizeComp = (comp) => {
     .join(", ");
 };
 
+export const processCompHeader = (compStr) => {
+  const [header] = compStr.split("|");
+  const [type, count] = header.split(";");
+  return {
+    type,
+    count: Number(count),
+  };
+};
+
 export const processComp = (compStr) => {
   if (!compStr) {
     return [];
   }
+  const header = processCompHeader(compStr);
 
   if (!baseValid.test(compStr) && !subtermsValid.test(compStr)) {
     console.error(
@@ -103,22 +113,22 @@ export const processComp = (compStr) => {
   const extractRegex =
     /(\d+):(4[5-9]|[56][0-9]|7[01])\/([0-3])(?:\/([a-zA-Z0-9\-,]+))?/g;
 
-  return [...compStr.matchAll(extractRegex)].map((match) => {
-    const [_, count, level, warden, subTerms] = match;
+  const comp = [...compStr.matchAll(extractRegex)].map((match) => {
+    const [_, count, level, warden, terms] = match;
 
     return {
       count: Number(count),
       level: Number(level),
       warden: Number(warden),
-      baseMight: getCharMight({ level: Number(level), warden: 0 }),
-      might: getCharMight({ level: Number(level), warden: Number(warden) }),
-      terms: subTerms ? subTerms.split(",") : [],
+      terms: terms?.length ? terms.split(",") : [],
     };
   });
+
+  return [comp, header];
 };
 
 export const processPartyComp = (compStr) => {
-  return processComp(compStr)
+  return processComp(compStr)[0]
     .reduce((party, group) => {
       const { terms, count: _c, ...rest } = group;
       terms.forEach((name) => party.push({ name, ...rest }));
@@ -130,5 +140,7 @@ export const processPartyComp = (compStr) => {
 };
 
 export const getMightFromPartyComp = (comp) => {
-  return comp ? sum(processPartyComp(comp).map(({ might }) => might)) : 0;
+  return comp
+    ? sum(processPartyComp(comp).map((slot) => getCharMight(slot)))
+    : 0;
 };

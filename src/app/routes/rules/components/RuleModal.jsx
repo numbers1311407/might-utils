@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 
 import { useStableCallback } from "@/core/hooks";
 import { HelpLabel } from "@/core/components/HelpLabel";
-import { tagRuleSchema } from "@/model/schemas";
+import { ruleSchema } from "@/model/schemas";
 import { RuleSizeSlider } from "./RuleSizeSlider.jsx";
 import { QueryBuilder } from "./QueryBuilder.jsx";
 import { ModalRangeInput } from "./ModalRangeInput.jsx";
@@ -57,7 +57,7 @@ export const RuleModal = ({ onClose, onSubmit, opened, rule, ruleset }) => {
 };
 
 const RuleForm = ({ rule = {}, onClose, onSubmit }) => {
-  const parsed = tagRuleSchema.safeParse(rule);
+  const parsed = ruleSchema.safeParse(rule);
   const initialValues = parsed.success
     ? parsed.data
     : { type: "range", value: [1], size: [1, 20] };
@@ -65,7 +65,7 @@ const RuleForm = ({ rule = {}, onClose, onSubmit }) => {
   const form = useForm({
     mode: "uncontrolled",
     initialValues,
-    validate: zod4Resolver(tagRuleSchema),
+    validate: zod4Resolver(ruleSchema),
   });
 
   const onFormSubmit = (values) => {

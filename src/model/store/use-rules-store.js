@@ -1,6 +1,6 @@
 import { deepEqual } from "fast-equals";
 import { defaultFiltersRules, defaultTimeFlagRules } from "@/config/defaults";
-import { tagRulesetSchema, tagRuleSchema } from "@/model/schemas";
+import { rulesetSchema, ruleSchema } from "@/model/schemas";
 import { createStore } from "./helpers";
 
 const TYPES = {
@@ -16,8 +16,8 @@ const addUniquely = (array, value) => {
   return Array.from(new Set([...array, value]));
 };
 
-const defaultFilters = tagRulesetSchema.parse(defaultFiltersRules);
-const defaultTimeFlag = tagRulesetSchema.parse(defaultTimeFlagRules);
+const defaultFilters = rulesetSchema.parse(defaultFiltersRules);
+const defaultTimeFlag = rulesetSchema.parse(defaultTimeFlagRules);
 
 const defaultTypeStorage = {
   filters: TYPES.Multi,
@@ -59,6 +59,15 @@ export const useRulesStore = createStore("might-utils-rules", () => ({
 
 const { getState: get, setState: set } = useRulesStore;
 const api = {
+  getCopyName: (name) => {
+    let copy = name;
+    let i = 0;
+    while (!api.nameAvailable(copy)) {
+      copy = `${name} (${++i})`;
+    }
+    return copy;
+  },
+
   nameAvailable: (name, record) => {
     if (typeof name === "object") {
       record = name;
@@ -80,7 +89,7 @@ const api = {
     }
   },
 
-  activate: (ids, exclusive = true) => {
+  activate: (ids) => {
     set((state) => {
       const sets = {};
 
@@ -132,7 +141,7 @@ const api = {
   },
 
   addSet: (ruleset, done) => {
-    const clone = tagRulesetSchema.parse(ruleset);
+    const clone = rulesetSchema.parse(ruleset);
     const id = clone.id;
 
     set((state) => {
@@ -181,7 +190,7 @@ const api = {
       const ruleset = state.sets[id];
 
       if (ruleset) {
-        rule = tagRuleSchema.parse(rule);
+        rule = ruleSchema.parse(rule);
 
         const i = findRuleIndex(ruleset.rules, rule);
 
@@ -191,7 +200,7 @@ const api = {
           ruleset.rules[i] = rule;
         }
 
-        const clone = tagRulesetSchema.parse(ruleset);
+        const clone = rulesetSchema.parse(ruleset);
         handleDirtyDefaults(clone, state);
       }
     });
@@ -209,7 +218,7 @@ const api = {
         ruleset.rules = ruleset.rules.filter((r) => r !== rule);
       }
 
-      const clone = tagRulesetSchema.parse(ruleset);
+      const clone = rulesetSchema.parse(ruleset);
       handleDirtyDefaults(clone, state);
     });
   },
@@ -220,7 +229,7 @@ const api = {
     if (!ruleset) return false;
 
     const { rules } = ruleset;
-    const { success, data } = tagRulesetSchema.safeParse(ruleset);
+    const { success, data } = rulesetSchema.safeParse(ruleset);
     return success && data.rules.every((rule, i) => rule.id === rules[i].id);
   },
 
@@ -229,7 +238,7 @@ const api = {
       const ruleset = state.sets[id];
 
       if (ruleset) {
-        const clone = tagRulesetSchema.parse(ruleset);
+        const clone = rulesetSchema.parse(ruleset);
         state.sets[id] = clone;
         handleDirtyDefaults(clone, state);
       }

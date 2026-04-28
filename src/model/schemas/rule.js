@@ -49,5 +49,5 @@ const variance = z.discriminatedUnion("type", [
   z.object({ type: z.literal(types.ALL), value: z.literal(types.ALL) }),
 ]);
 
-export const tagRuleSchema = base.and(variance);
+export const ruleSchema = base.and(variance);
 export const RuleTypes = types;

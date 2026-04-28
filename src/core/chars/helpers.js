@@ -1,5 +1,6 @@
 import { processComp } from "@/model/schemas/comp";
 import { round as utilsRound, standardDeviation } from "@/utils";
+import { getCharMight } from "@/config/chars/might";
 
 export const getCompStatsMap = (compMap) => {
   const round = (v) => utilsRound(v, 2);
@@ -11,19 +12,22 @@ export const getCompStatsMap = (compMap) => {
 
     const stats = compSlots.reduce(
       (totals, slot, i) => {
-        totals.scores.push(slot.might);
+        const baseMight = getCharMight({ level: slot.level, warden: 0 });
+        const might = getCharMight(slot);
+
+        totals.scores.push(might);
 
         // TODO the size is right in the comp string but it's not parsed out
         totals.size += slot.count;
         totals.level += slot.level * slot.count;
-        totals.might += slot.might * slot.count;
+        totals.might += might * slot.count;
         totals.warden += slot.warden * slot.count;
 
-        totals.baseMight += slot.baseMight * slot.count;
-        totals.wardenMight += (slot.might - slot.baseMight) * slot.count;
+        totals.baseMight += baseMight * slot.count;
+        totals.wardenMight += (might - baseMight) * slot.count;
         totals.mightRange = [
-          Math.min(slot.might, totals.mightRange[0]),
-          Math.max(slot.might, totals.mightRange[1]),
+          Math.min(might, totals.mightRange[0]),
+          Math.max(might, totals.mightRange[1]),
         ];
 
         if (i !== compSlots.length - 1) {
@@ -80,7 +84,7 @@ export const getPartyCompsMap = (parties, selector) => {
     if (!acc.has(party.comp)) {
       acc.set(
         party.comp,
-        processComp(party.comp).map((compSlot) => ({
+        processComp(party.comp)[0].map((compSlot) => ({
           ...compSlot,
           slots: new Set(),
         })),

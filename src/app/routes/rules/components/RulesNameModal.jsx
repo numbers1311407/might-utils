@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { CloseButton, Button, Modal, TextInput, Group } from "@mantine/core";
 import { useRulesStoreApi } from "@/model/store";
-import { tagRulesetSchema } from "@/model/schemas";
+import { rulesetSchema } from "@/model/schemas";
 
 const { nameAvailable } = useRulesStoreApi;
 
-const formSchema = tagRulesetSchema.refine(
-  (ruleset) => nameAvailable(ruleset),
-  {
-    message: "Name already taken",
-    path: ["name"],
-  },
-);
+const formSchema = rulesetSchema.refine((ruleset) => nameAvailable(ruleset), {
+  message: "Name already taken",
+  path: ["name"],
+});
 
 export const RulesNameModal = ({ ruleset, onClose, onCommit }) => {
   const [name, setName] = useState(ruleset.name || "");

@@ -378,7 +378,7 @@ export const theme = createTheme({
     }),
     "primary-heading": virtualColor({
       name: "primary-heading",
-      light: "yellow",
+      light: "id",
       dark: "amber",
     }),
   },
@@ -952,7 +952,7 @@ export const theme = createTheme({
     }),
     Paper: Paper.extend({
       defaultProps: {
-        shadow: "xl",
+        shadow: "lg",
       },
     }),
   },

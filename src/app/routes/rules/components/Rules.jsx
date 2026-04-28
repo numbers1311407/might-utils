@@ -32,7 +32,7 @@ import {
 } from "@/core/components";
 import {
   useRulesStore,
-  useRulesStoreApi as tagRulesApi,
+  useRulesStoreApi as rulesApi,
   getConfirmation,
 } from "@/model/store";
 import { useRulesManager } from "@/core/hooks";
@@ -128,7 +128,7 @@ const ToggleGroupSizeTwenty = () => {
         value={isTwenty ? "20" : "12"}
         data={["12", "20"]}
         onChange={(value) => {
-          tagRulesApi.setGroupSizeTwenty(value === "20");
+          rulesApi.setGroupSizeTwenty(value === "20");
         }}
       />
     </InputLabel>
@@ -160,7 +160,7 @@ const RulesMain = () => {
   };
 
   const restoreCurrent = getConfirmation(
-    () => tagRulesApi.restoreDefaultSet(ruleset.id),
+    () => rulesApi.restoreDefaultSet(ruleset.id),
     {
       message:
         "This will restore this ruleset to its original defaults. This cannot be undone.",
@@ -395,7 +395,7 @@ const RulesMain = () => {
           onCommit={(ruleset) => {
             setDraftRuleset(null);
 
-            tagRulesApi.addSet(ruleset, (set) => {
+            rulesApi.addSet(ruleset, (set) => {
               setLocation(`/rulesets/${set.id}`);
             });
           }}
