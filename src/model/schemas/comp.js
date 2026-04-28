@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { sum } from "@/utils";
 import { getCharMight } from "@/config/chars";
 
 // NOTE all these regexes assume the lowest level is 45 and highest is 71
