@@ -88,26 +88,27 @@ export const humanizeComp = (comp) => {
     .join(", ");
 };
 
-export const processCompHeader = (compStr) => {
+export const processCompHeader = (compStr = "") => {
   const [header] = compStr.split("|");
   const [type, count] = header.split(";");
   return {
-    type,
-    count: Number(count),
+    type: type ?? "base",
+    count: count ? Number(count) : 0,
   };
 };
 
 export const processComp = (compStr) => {
-  if (!compStr) {
-    return [];
-  }
   const header = processCompHeader(compStr);
+
+  if (!compStr) {
+    return [[], header];
+  }
 
   if (!baseValid.test(compStr) && !subtermsValid.test(compStr)) {
     console.error(
       `Invalid party composition format or level/warden out of range: "${compStr}"`,
     );
-    return [];
+    return [[], header];
   }
 
   const extractRegex =
