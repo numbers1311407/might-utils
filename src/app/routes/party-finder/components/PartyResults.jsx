@@ -19,7 +19,6 @@ export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
       itemContent={(_i, party) => (
         <PartyCard
           party={party.party}
-          createParty={() => createParty(party)}
           stats={stats.get(party.comp)}
           comp={comps.get(party.comp)}
           buttons={

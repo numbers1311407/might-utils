@@ -98,7 +98,6 @@ export const Party = ({ id: partyId }) => {
 
                     <CompBreakdown
                       score={party.might}
-                      type="party"
                       comp={maps.comps.get(party.comp)}
                     />
                     <Title order={4} c="primary" mt="-xs">

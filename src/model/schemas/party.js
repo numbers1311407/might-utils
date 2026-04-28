@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { nanoid } from "nanoid";
-import { compSchema, getMightFromPartyComp } from "./comp.js";
+import { compSchema, getCompMight } from "./comp.js";
 
 export const partySchemaBase = z.object({
   id: z.nanoid().default(() => nanoid()),
@@ -16,7 +16,7 @@ export const partySchemaBase = z.object({
 const transform = (party) => {
   return {
     ...party,
-    might: getMightFromPartyComp(party.comp),
+    might: getCompMight(party.comp),
   };
 };
 

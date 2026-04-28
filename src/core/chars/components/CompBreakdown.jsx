@@ -7,14 +7,20 @@ const CompWarden = ({ rank, ...props }) => {
   return <Text {...props}>Rk. {rank}</Text>;
 };
 
-export const CompBreakdown = ({ comp, type, score, ...props }) => {
+// NOTE TS would be helpful here as "comp" means many different things but in
+// this case, the comp prop is the mapped comp with derived metadata from the
+// chars helpers `getPartyCompsMap` function, includes score, type, and
+// the parsed comp slots array.
+export const CompBreakdown = ({ comp, ...props }) => {
+  const { type, slots, might } = comp;
+
   const key = (slot) =>
     `${slot.level}/${slot.warden}/${slot.name || slot.terms.join(",")}`;
 
   return (
     <Stack gap={0} {...props}>
       <Stack gap={6} py={4}>
-        {comp.map((slot) => (
+        {slots.map((slot) => (
           <Group key={key(slot)} gap={4} align="baseline">
             <Text span size="2xl" ff="mono" c="primary">
               {slot.count}
@@ -51,7 +57,7 @@ export const CompBreakdown = ({ comp, type, score, ...props }) => {
           </Group>
         ))}
       </Stack>
-      {score !== undefined && (
+      {might !== undefined && (
         <>
           <Divider my={4} />
           <Group justify="right">
@@ -60,10 +66,10 @@ export const CompBreakdown = ({ comp, type, score, ...props }) => {
               <Tooltip
                 w={210}
                 multiline
-                label={`Search for parties with ${score} might in the party generator`}
+                label={`Search for parties with ${might} might in the party generator`}
               >
-                <AppLink href={`/party-generator?targetScore=${score}`}>
-                  {score}
+                <AppLink href={`/party-generator?targetScore=${might}`}>
+                  {might}
                 </AppLink>
               </Tooltip>
             </Text>

@@ -97,6 +97,7 @@ export const PartyIndex = () => {
   const parties = usePartiesList({ hydrate: true, classTags: true });
   const [sort, setSort] = useState(SORT_OPTIONS[0].value);
   const { comps, stats } = usePartiesData(parties);
+
   const diffedParties = useMemo(() => {
     return parties.map((party) => ({
       ...party,
@@ -123,6 +124,7 @@ export const PartyIndex = () => {
         {!parties.length && <EmptyResult />}
         {sortedParties.map((party) => (
           <PartyCard
+            key={party.id}
             title={
               <AppLink
                 c="primary"
@@ -133,10 +135,8 @@ export const PartyIndex = () => {
                 {party.name}
               </AppLink>
             }
-            key={party.id}
             party={party.chars}
             comp={comps.get(party.comp)}
-            compType="party"
             stats={stats.get(party.comp)}
             buttons={
               <Group

@@ -16,6 +16,10 @@ export const compSchema = z.union([
 const groupCountSort = (a, b) =>
   b[1] === a[1] ? b[0].localeCompare(a[0]) : b[1] - a[1];
 
+const createCompGroup = ({ level, warden, terms }) => {
+  return `${level}/${warden}${terms ? "/" + [...terms].sort().join(",") : ""}`;
+};
+
 // items here expected to have warden+level and terms predefined
 export const createComp = (items, type = "base") => {
   if (!items.length) {
@@ -33,7 +37,7 @@ export const createComp = (items, type = "base") => {
     .map(([group, count]) => `${count}:${group}`)
     .join(";");
 
-  return `${type};${items.length}|${body}`;
+  return `${type}|${body}`;
 };
 
 export const createTagsComp = (chars, tags) => {
@@ -73,63 +77,58 @@ export const createPartyComp = (chars) => {
   return createComp(Object.values(buckets).flat(), "party");
 };
 
-export const createCompGroup = ({ level, warden, terms }) => {
-  return `${level}/${warden}${terms ? "/" + [...terms].sort().join(",") : ""}`;
-};
-
-export const humanizeComp = (comp) => {
-  return comp
-    .map((item) => {
-      return (
-        `${item.count} ${item.level}${item.warden ? ` Rk. ${item.warden}` : ""} ` +
-        `${item.terms.length ? `"${item.terms.join('", "')}"` : ""}`
-      );
-    })
-    .join(", ");
-};
-
-export const processCompHeader = (compStr = "") => {
+const processCompHeader = (compStr = "") => {
   const [header] = compStr.split("|");
-  const [type, count] = header.split(";");
+  const [type] = header.split(";");
   return {
-    type: type ?? "base",
-    count: count ? Number(count) : 0,
+    type: type || "base",
   };
 };
 
 export const processComp = (compStr) => {
   const header = processCompHeader(compStr);
+  const meta = { ...header, count: 0, might: 0 };
 
   if (!compStr) {
-    return [[], header];
+    return [[], meta];
   }
 
   if (!baseValid.test(compStr) && !subtermsValid.test(compStr)) {
     console.error(
       `Invalid party composition format or level/warden out of range: "${compStr}"`,
     );
-    return [[], header];
+    return [[], meta];
   }
 
   const extractRegex =
     /(\d+):(4[5-9]|[56][0-9]|7[01])\/([0-3])(?:\/([a-zA-Z0-9\-,]+))?/g;
 
   const comp = [...compStr.matchAll(extractRegex)].map((match) => {
-    const [_, count, level, warden, terms] = match;
+    const [_, _count, _level, _warden, terms] = match;
+    const count = Number(_count);
+    const level = Number(_level);
+    const warden = Number(_warden);
+    const might = getCharMight({ level, warden });
+
+    meta.count += count;
+    meta.might += might * count;
 
     return {
-      count: Number(count),
-      level: Number(level),
-      warden: Number(warden),
+      count,
+      level,
+      warden,
+      might,
       terms: terms?.length ? terms.split(",") : [],
     };
   });
 
-  return [comp, header];
+  return [comp, meta];
 };
 
-export const processPartyComp = (compStr) => {
-  return processComp(compStr)[0]
+export const processPartyComp = (value) => {
+  const compSlots = typeof value === "string" ? processComp(value)[0] : value;
+
+  return (compSlots || [])
     .reduce((party, group) => {
       const { terms, count: _c, ...rest } = group;
       terms.forEach((name) => party.push({ name, ...rest }));
@@ -140,8 +139,6 @@ export const processPartyComp = (compStr) => {
     });
 };
 
-export const getMightFromPartyComp = (comp) => {
-  return comp
-    ? sum(processPartyComp(comp).map((slot) => getCharMight(slot)))
-    : 0;
+export const getCompMight = (value) => {
+  return processComp(value)[1]?.might || 0;
 };

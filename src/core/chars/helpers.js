@@ -5,9 +5,9 @@ import { getCharMight } from "@/config/chars/might";
 export const getCompStatsMap = (compMap) => {
   const round = (v) => utilsRound(v, 2);
 
-  return compMap.entries().reduce((map, [comp, compSlots]) => {
+  const out = compMap.entries().reduce((map, [comp, { slots: compSlots }]) => {
     if (!compSlots?.length) {
-      return new Map();
+      return map;
     }
 
     const stats = compSlots.reduce(
@@ -70,6 +70,8 @@ export const getCompStatsMap = (compMap) => {
 
     return map.set(comp, stats);
   }, new Map());
+
+  return out;
 };
 
 // parties optionally with the help of selector should return virtual party
@@ -82,31 +84,49 @@ export const getPartyCompsMap = (parties, selector) => {
     // string and attaching a `slots` set we'll use to track slots
     // who fit this comp (for the UI to show a tooltip, etc)
     if (!acc.has(party.comp)) {
-      acc.set(
-        party.comp,
-        processComp(party.comp)[0].map((compSlot) => ({
-          ...compSlot,
-          slots: new Set(),
+      const [slots, { type, count, might }] = processComp(party.comp);
+      acc.set(party.comp, {
+        comp: party.comp,
+        count,
+        might,
+        type,
+        slots: slots.map((slot) => ({
+          ...slot,
+          chars: new Set(),
         })),
-      );
+      });
     }
 
     // get the deserialized comp we just added
-    const compSlots = acc.get(party.comp);
+    const comp = acc.get(party.comp);
 
     // for each party member, figure out who's matching which of the
     // warden/level/tags requirements for the comp slots, and add them
     // to a set in the comp for use in the UI.
     party.chars.forEach((slot) => {
-      const compItemIdx = compSlots.findIndex((o) => {
+      const compItemIdx = comp.slots.findIndex((o) => {
+        // NOTE party comps have a different index lookup here,
+        // becaues party comps use terms to track char names. So
+        // for party comps we just match the name.
+        if (comp.type === "party") {
+          return o.terms.includes(slot.name);
+        }
+        // If it's not a party comp it's a base or tags comp, both
+        // of which will rely on warden+level; base relies on these
+        // only, but tag types also need it to disambiguate when chars
+        // have multiple group tags (like a tank+dps mage) and may
+        // have tags in multiple groups but be assigned one slot based
+        // on warden/level. Base comps don't have terms so the
+        // `terms.every` is always true.
         return (
           o.warden === slot.warden &&
           o.level === slot.level &&
           o.terms.every((tag) => slot.tags.includes(tag))
         );
       });
+
       if (compItemIdx !== -1) {
-        compSlots[compItemIdx].slots.add(slot);
+        comp.slots[compItemIdx].chars.add(slot);
       }
     });
 
