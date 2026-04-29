@@ -1,4 +1,6 @@
-import { Route } from "wouter";
+import { Route, Switch } from "wouter";
+import { Stack, Text } from "@mantine/core";
+import { AppLink } from "@/core/components";
 import { Home } from "./home";
 import { ClassTags } from "./class-tags";
 import { NpcSimulator, MightRangeFinder } from "./calculators";
@@ -9,7 +11,7 @@ import { Rules } from "./rules";
 
 export const Routes = () => {
   return (
-    <>
+    <Switch>
       <Route path="/">
         <Home />
       </Route>
@@ -46,6 +48,21 @@ export const Routes = () => {
       <Route path="/parties/:id?">
         <Parties />
       </Route>
-    </>
+      <Route>
+        <NotFound />
+      </Route>
+    </Switch>
   );
 };
+
+const NotFound = () => (
+  <Stack p="lg" ta="center" pt={80}>
+    <Text size="3xl" fw="bold">
+      Whoops, how'd you get here?
+    </Text>
+    <Text size="xl">There's no page at this path.</Text>
+    <AppLink size="xl" href="/">
+      Return Home
+    </AppLink>
+  </Stack>
+);
