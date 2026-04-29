@@ -2,14 +2,21 @@ import { forwardRef, useMemo } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { Group, Stack } from "@mantine/core";
 import { PartyCard, usePartyEditor } from "@/core/chars";
-import { SaveSmallButton } from "@/core/components";
+import { useRulesetCreator } from "@/core/rulesets";
+import { SettingsSmallButton, SaveSmallButton } from "@/core/components";
 import { useFindPartiesResults } from "../hooks";
 
 const virtuosoComponents = {
   List: forwardRef((props, ref) => <Stack gap="lg" ref={ref} {...props} />),
 };
 
-export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
+export const PartyResultsList = ({
+  parties,
+  comps,
+  stats,
+  createParty,
+  createRuleset,
+}) => {
   return (
     <Virtuoso
       totalCount={parties.length}
@@ -22,7 +29,13 @@ export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
           stats={stats.get(party.comp)}
           comp={comps.get(party.comp)}
           buttons={
-            <Group justify="flex-end">
+            <Group justify="flex-end" gap="xs">
+              <SettingsSmallButton
+                onClick={() => createRuleset(party)}
+                iconOnly={false}
+              >
+                Make Ruleset
+              </SettingsSmallButton>
               <SaveSmallButton
                 iconOnly={false}
                 onClick={() => createParty(party)}
@@ -39,6 +52,10 @@ export const PartyResultsList = ({ parties, comps, stats, createParty }) => {
 
 export const PartyResults = () => {
   const { parties, pool, comps, stats } = useFindPartiesResults();
+  const createRuleset = useRulesetCreator({
+    defaultName: "Generator Result Ruleset",
+  });
+
   const createParty = usePartyEditor({
     title: "Save this party?",
     confirmNav: true,
@@ -61,6 +78,7 @@ export const PartyResults = () => {
       comps={comps}
       stats={stats}
       createParty={createParty}
+      createRuleset={createRuleset}
     />
   );
 };

@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Divider,
   Grid,
   Group,
@@ -13,7 +12,12 @@ import { useEffect } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useParty, useStableCallback } from "@/core/hooks";
 import { useRulesetCreator } from "@/core/rulesets";
-import { AppLink, Aside, CharSelect } from "@/core/components";
+import {
+  AppLink,
+  Aside,
+  CharSelect,
+  SettingsSmallButton,
+} from "@/core/components";
 import {
   CharsTable,
   PartyDiff,
@@ -53,7 +57,9 @@ export const Party = ({ id: partyId }) => {
     partyApi.removeParty(() => setLocation(`/parties`));
   });
 
-  const createRuleset = useRulesetCreator();
+  const createRuleset = useRulesetCreator({
+    defaultName: "Saved Party Ruleset",
+  });
 
   // if we're on a party route and it's not the correct party, or it's the first party,
   // redirect to the /parties route which will load the first party
@@ -78,24 +84,23 @@ export const Party = ({ id: partyId }) => {
           <Grid.Col span={{ base: 12, lg: 6 }} order={2}>
             <Paper p="md">
               <Stack gap="xs">
-                <Title order={3} c="primary" fw="bold">
-                  {party.might} Might
-                </Title>
+                <Group>
+                  <Title order={3} c="primary" fw="bold" flex="1">
+                    {party.might} Might
+                  </Title>
+                  <SettingsSmallButton
+                    onClick={() => createRuleset({ party })}
+                    iconOnly={false}
+                  >
+                    Make Ruleset
+                  </SettingsSmallButton>
+                </Group>
                 <Divider />
                 {party.might > 0 ? (
                   <>
-                    <Group>
-                      <Title flex="1" order={4} c="primary">
-                        Comp Breakdown
-                      </Title>
-                      <Button
-                        onClick={() => createRuleset({ party })}
-                        size="compact-sm"
-                      >
-                        Create Ruleset
-                      </Button>
-                    </Group>
-
+                    <Title order={4} c="primary">
+                      Comp Breakdown
+                    </Title>
                     <CompBreakdown
                       score={party.might}
                       comp={maps.comps.get(party.comp)}
@@ -178,7 +183,7 @@ export const Party = ({ id: partyId }) => {
           </Grid.Col>
         </Grid>
 
-        <Aside>
+        <Aside visibleFrom="sm">
           <Stack gap="xs">
             <PartyDiff />
             <PartiesNav />

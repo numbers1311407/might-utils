@@ -41,8 +41,8 @@ const Td = ({ size = "sm", children, ...tdProps }) => {
 
 const Colors = {
   INVALID_ROSTER: "error.10",
-  WARDEN_UNDER: "pink.4",
-  LEVEL_OVER: "warning.3",
+  WARDEN_UNDER: "warning.10",
+  LEVEL_OVER: "warning.6",
   LEVEL_UNDER: "error.5",
   READY: "success.10",
 };
@@ -81,7 +81,7 @@ export const ReadinessBadge = ({ tier, ...props }) => {
   const [color, message, tooltip] = BADGE_MAP[tier];
 
   return (
-    <Tooltip label={tooltip} multiline w={240} withArrow>
+    <Tooltip label={tooltip} multiline w={215} withArrow>
       <Badge size="md" bg={color} {...props}>
         {message}
       </Badge>

@@ -1,34 +1,10 @@
-import { processComp } from "@/model/schemas";
-import { sum } from "@/utils";
-
-export const createRuleset = ({ party, comp }) => {
-  return party ? createRulesetFromParty(party) : createRulesetFromComp(comp);
-};
-
-//
-// [
-//   {
-//     name,
-//     level,
-//     warden,
-//     [type = name, tags, base]
-//   }
-// ]
-//
-//
-//
-//
-//
-//
-
-export const createRulesetFromComp = (value) => {
-  const [comp] = typeof value === "string" ? processComp(value) : value;
-
-  const minSize = sum(comp.map(({ count }) => count));
-
-  const rules = comp.map((slot) =>
+export const createRulesetFromSlots = (slots) => {
+  const rules = slots.map((slot) =>
     createBasicRangeRule({
-      size: [minSize, 20],
+      // Even though the comp may have a static or minimum count, we set the
+      // initial to be [min, max] on the assumption that this ruleset should
+      // be exclusive.
+      size: [1, 20],
       count: [slot.count, slot.count],
       rules: [
         {
@@ -41,50 +17,40 @@ export const createRulesetFromComp = (value) => {
           operator: "=",
           value: slot.level,
         },
-        ...slot.terms.map((term) => ({
-          field: "tags",
-          operator: "contains",
-          value: term,
-        })),
+
+        ...(slot.name
+          ? [
+              {
+                field: "name",
+                operator: "=",
+                value: slot.name,
+              },
+            ]
+          : []),
+
+        ...(slot.class
+          ? [
+              {
+                field: "class",
+                operator: "=",
+                value: slot.class,
+              },
+            ]
+          : []),
+
+        ...(slot.tags
+          ? slot.tags.map((tag) => ({
+              field: "tags",
+              operator: "contains",
+              value: tag,
+            }))
+          : []),
       ],
     }),
   );
 
-  return _createRuleset({ rules });
+  return rules;
 };
-
-export const createRulesetFromParty = (party) => {
-  const rules = party.map((slot) =>
-    createBasicRangeRule({
-      size: [party.length, 20],
-      count: [1, 1],
-      rules: [
-        {
-          field: "warden",
-          operator: "=",
-          value: slot.warden,
-        },
-        {
-          field: "level",
-          operator: "=",
-          value: slot.level,
-        },
-        {
-          field: "name",
-          operator: "=",
-          value: slot.name,
-        },
-      ],
-    }),
-  );
-
-  return _createRuleset({ rules });
-};
-
-const _createRuleset = ({ rules }) => ({
-  type: "filters",
-  rules,
-});
 
 const createBasicRangeRule = ({ size, count, rules }) => {
   return {

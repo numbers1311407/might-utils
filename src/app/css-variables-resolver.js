@@ -25,7 +25,7 @@ export const cssVariablesResolver = () => ({
     "--mantine-color-body": "var(--mantine-color-white)", // used as body color
     "--mantine-color-error": "var(--mantine-color-error-10)", // used as error color
     "--mantine-color-placeholder": "var(--mantine-color-secondary-10)", // used as placeholder color
-    "--mantine-color-anchor": "var(--mantine-color-secondary-10)", // used as anchor color
+    "--mantine-color-anchor": "var(--mantine-color-red-8)", // used as anchor color
 
     "--mantine-color-default": "var(--mantine-color-secondary-0)", // used as default surface color
     "--mantine-color-default-hover": "var(--mantine-color-secondary-1)", // used as default hover color
@@ -452,7 +452,7 @@ export const cssVariablesResolver = () => ({
       "color-mix(in srgb, var(--mantine-color-secondary-8), black 50%)",
     "--mantine-color-error": "var(--mantine-color-error-10)", // used as error color
     "--mantine-color-placeholder": "var(--mantine-color-secondary-4)", // used as placeholder color
-    "--mantine-color-anchor": "var(--mantine-color-secondary-4)", // used as anchor color
+    "--mantine-color-anchor": "var(--mantine-color-amber-5)", // used as anchor color
 
     "--mantine-color-default": "var(--mantine-color-secondary-9)", // used as default surface color
     "--mantine-color-default-hover": "var(--mantine-color-secondary-7)", // used as default hover color

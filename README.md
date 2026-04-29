@@ -3,73 +3,48 @@
 Work in progress companion app for EQ Might, providing a set of tools to make your might experience more convenient, helping to figure out the might score you need and then helping to
 manage parties that satisfy that score.
 
-### Release checklist
-
-- **Party Generator: MVP**
-  - Error messaging - if there are zero (or potentially low) results, show human errors as to why that is. This will be critical for comp searches.
-  - *Saved Comp Mode*
-    - saved comps don't have a proper "show" page but rather act as permalinks to the saved comp search mode
-- **Parties: MVP**
-  - Once saving comps is in place you should be able to save a comp from here, or link to it if saved
-  - Some kind of "edit" mode where users can play with levels without
-    persisting the changes. This may be a commit button, it may be a
-    separate "mode". Point is a user needs to be able to experiment then
-    revert.
-- **Saved Comps**
-  - Saved comp store
-    - name
-    - value/comp (primary key)
-    - "default" tag group pkey ref - NOTE the idea here is that there's 1 type of comp: untagged comps. Then the tagging is decoration that can be applied as needed. This does a few things: 1 we don't have to hardcode names into the comp string, 2 the comp is overall less fragile, more reusable, avoids clashing with superset base comps if it becomes one, and 3 it solves the prolbem of how the group tags form will interact with the saved comp searches. It simply populates the default, and on change of the tag group it enables a save button.
-  **Global: 404 page**
-  - an actual in app 404 page for bad paths
-  **Issues**
-  - For parties and other records with duplicate name generation, if the name is near max it will fail validation silently. The answer is probably to not do that, we have the create form right there and can just ask for the name.
+### FINAL Release checklist
+- **Help Modal**
+  - The entire help page should live in a modal, which opens to the current page help via routing
+  - Then we put a help ? button in the header
+  - On first routing to a page it will auto-open help if it exists, once, track this
+  - Include footer link to stop auto-showing help, on check, save the setting and show a confirmation dialog pointing out the help icon.
+  - The modal could include screenshots, etc. It should try to be comprehensive.
+  **404 page**
+  - A dead simple 404 page, no frills. 404 link to home.
+- **Instance Data**
+  - Do one more round of research for lower tier dungeons, trios, duos
   
 ### Post MVP Roadmap
 
-- **Roster Changes**
+- **Known Bugs**
+  - "Copy" forms with name validation fail silently if the name duplication suffix makes the attribute invalid
+- **Generator Rules Transparencys**
+  - The rules feel like a black box in the generator as all you have to go on is name, and worse, rulesets are combined and you have no
+    high level view of ruels at each group size like you do per ruleset in the rules editor, even if you leave the search to inspect it.
+  - There needs to be a rules breakdown on the search page, likely very similar to the ruleset editor view, probably in a tab.
+- **Party Undo**
+  - Implement undo for party changes
+  - Use GFS backup rotation for previous snapshots and allow users to go "back", or back 10 minutes, back and hour, etc.
+- **Roster tags form squish**
   - Move the tag forms to the roster page and kill the tags editor
-  - Let's do negative tags, it's almost there with the locked tag concept they just need to be toggleable instead of deletable. That toggle will be in the form of a 2nd tags array, antitags. And while we're at it, add might toggle buttons on the roster nav as well now that we're committing to opening that UI up a bit.
-  - (probably actually just separate out the party list now since the two components are so different.
-- **Calculators: Complete calculator data**
-  - This is critical but I'm also waiting to see if post release either 1. we're asked not to expose the calculators and need to remove them or 2. a dev might offer us real data, or 3. we could crowdsource some more data from others with access to different tiers.
 - **Multiple: for finder purposes each warden rank should be opt-in**
   - Character warden options shouldn't be a fixed range, it should be possible to toggle specific warden levels on or off. This would be possible with the reintroduction of name rules but it would be a very clunky and expensive approach for what should be a reduction in complexity via voluntary pool shrinking.
+- **Roster negative tags**
+  - Add a 2nd hidden tags array to chars for "negative tags" allowing a revert of class tags
+  - These tags are never shown to the user but are used to scrub the tag list of class tags for use/display
+  - The tag input just makes the class tags toggleable, when they're toggled off that inserts the negative tag
+- **TagsInput Autocomplete**
+  - Combobox behavior for the TagsInput that has a searchable list of all applied tags collected from class tags & roster
 - **Roster: Alt tags**
-  - The tags ui should be removed from the modal and replaced witha link to the roster tags editor, making that the only place to edit character tags. In that editor the characters have a toggle to turn on their "alt" tags, allowing for two tag sets. This is the replacement for lost functionality from the removal of "distinct grouping tags", but better as it's more controlled.  Implementation would probably be a 2nd tags array. For UI purposes the char would just be considered to have all the tags, but in the party finder they'd be split.
-  - Potentially we could even have a separate toggle for the alt tag version, letting the active roster include either or both.
-- **Calculators: Might Range Finder**
-  - A toggle to show "and up" from the dificulty to show the full range.
-  - This calculator is currently confusing because as it only shows you one difficulty, it also presents gaps where the difficulty has shifted. There's probably a better UX here.
-- **Party Generator: Analytics**
-  - Show analytic data about the search and potentially some analysis to go along.
+  - Allow a toggle of a 2nd tag set which functions as an alternate character which can itself be activated or deactivate in the roster
+  - Negative tags feels natural for this it's very likely the alt character will have unorthodoxed tags
  
 ### Nice to haves (future work)
 
-- **Saved Comps: Party builder/Party Integration**
-  - A few ideas:
-    - Parties could have fixed comps which which would change the layout of their
-      page to show the comp sections. We wouldn't restrict sections to be only
-      eligible characters probably, just rather show how the character is invalid
-      for the slot they're in.  In the char-select, you could add any character to
-      a slot but it would prioritize that that belong there. Characters already
-      slotted will show in the select where they're slotted, and require a quick
-      in-place confirmation (custom option field, in place ok press).
 - **Tag Rules: Prettify**
   - decorate the rules human output with JSX to colorize keywords and so on.
   - RQB has NO validation. it should at least test for blank fields and no rules.
-- **Tags: Negative tags**
-  - Introduce the concept of "negative tags" which could be used to couner class tags.
-  - The main case is there may be times where a character doesn't want class tags,
-    and it feels like overkill to create some kind of clone situation or other complicated
-    change to fix that. Negative tags are never seen in the UI, they're processed out
-    to "remove" class tags from arrays before being rendered or sent to the finder.
-    In tag input, they're consumed and rendered as toggleable class tag pills.
-    One consideration here is that if someone deletes a class tag the -tag may live
-    on in tags forever, but that's probably not a real issue. If concerned we could
-    scrub tags for orphaned negative tags via schema transform.
-- **Global: Help/guidance**
-  - Help modals and/or guided tours
 - **Roster: Character portraits**
   - baldur's gate style 2 portrait options to use in small UI besides the class icons to
     distinguish between members of the same class. There are plenty of places where you want
@@ -80,14 +55,3 @@ manage parties that satisfy that score.
   - bigger increment buttons for the might inputs +100/-100, etc, this will be
     particularly useful on the calculator pages where people are fishing and wanting
     to just click buttons.
-  
-### Ruled out or questionable ideas
-
-- **Roster Variations**
-  - Early on there was a concept of adding multiple rosters to choose from where you could
-    extend/modify the base roster. I think in reality this is an overkill concept that would
-    be better solved with "alt" (child) roster characters or just alt tag sets.
-
-### Potential optimizations
-
-- react-query for a caching layer for finder results and a more promise based approach

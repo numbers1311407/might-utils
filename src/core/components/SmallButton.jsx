@@ -4,6 +4,7 @@ import {
   IconSortAscendingNumbers,
   IconPlus,
   IconDeviceFloppy,
+  IconSettings,
   IconEdit,
   IconTrash,
   IconReload,
@@ -14,6 +15,7 @@ const ICONS = {
   copy: IconCopy,
   restore: IconRestore,
   sort: IconSortAscendingNumbers,
+  settings: IconSettings,
   plus: IconPlus,
   save: IconDeviceFloppy,
   edit: IconEdit,
@@ -68,4 +70,8 @@ export const RestoreSmallButton = (props) => (
 
 export const SaveSmallButton = (props) => (
   <SmallButton icon="save" {...props} />
+);
+
+export const SettingsSmallButton = (props) => (
+  <SmallButton icon="settings" {...props} />
 );

@@ -89,7 +89,7 @@ const api = {
     }
   },
 
-  activate: (ids) => {
+  activate: (ids, options = {}) => {
     set((state) => {
       const sets = {};
 
@@ -102,10 +102,9 @@ const api = {
         if (type in defaultTypeStorage) {
           const storage = defaultTypeStorage[type];
 
-          if (storage === TYPES.Unique) {
+          if (storage === TYPES.Unique || options.exclusive) {
             sets[type] = [ruleset.id];
           } else {
-            state.active[type] = addUniquely(state.active[type], ruleset.id);
             sets[type] = addUniquely(sets[type], ruleset.id);
           }
         }

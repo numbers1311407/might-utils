@@ -9,13 +9,9 @@ import { ScrollToTop } from "./components/ScrollToTop.jsx";
 import { FloatingWindowDrawer } from "./components/FloatingWindowDrawer.jsx";
 import { AppRoot } from "./AppRoot.jsx";
 
-// import { cssVariablesResolver } from "./css-variables-resolver.teal.js";
-// import { theme } from "./theme.teal.js";
-// import "./style.teal.css";
-import { cssVariablesResolver } from "./css-variables-resolver.yellow.js";
-import { theme } from "./theme.yellow.js";
-import "./style.yellow.css";
-
+import { cssVariablesResolver } from "./css-variables-resolver.js";
+import { theme } from "./theme.js";
+import "./style.css";
 import "./style-override.css";
 
 const queryClient = new QueryClient();

@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react";
 import { Button, Divider, Group, Stack, Text } from "@mantine/core";
+import { useRulesetCreator } from "@/core/rulesets";
+import { IconLink } from "@tabler/icons-react";
 import {
   AppLink,
   EditSmallButton,
   RemoveSmallButton,
+  SettingsSmallButton,
   SortSelect,
 } from "@/core/components";
 import {
@@ -115,6 +118,10 @@ export const PartyIndex = () => {
     }));
   }, [diffedParties, sortParty, stats]);
 
+  const createRuleset = useRulesetCreator({
+    defaultName: "Saved Party Ruleset",
+  });
+
   return (
     <>
       {parties.length > 0 && (
@@ -126,14 +133,19 @@ export const PartyIndex = () => {
           <PartyCard
             key={party.id}
             title={
-              <AppLink
-                c="primary"
-                size="3xl"
-                href={`/parties/${party.id}`}
-                underline="hover"
-              >
-                {party.name}
-              </AppLink>
+              <Group>
+                <AppLink
+                  c="primary"
+                  size="2xl"
+                  href={`/parties/${party.id}`}
+                  underline="hover"
+                  display="flex"
+                  style={{ alignItems: "center", gap: 8 }}
+                >
+                  <IconLink size={20} />
+                  {party.name}
+                </AppLink>
+              </Group>
             }
             party={party.chars}
             comp={comps.get(party.comp)}
@@ -146,6 +158,9 @@ export const PartyIndex = () => {
               >
                 <ReadinessBadge size="lg" tier={party.diff.tier} />
                 <Divider orientation="vertical" />
+                <SettingsSmallButton onClick={() => createRuleset({ party })}>
+                  Make Ruleset
+                </SettingsSmallButton>
                 <EditSmallButton
                   component={AppLink}
                   // TODO this is necessary because AppLink otherwise
@@ -154,7 +169,6 @@ export const PartyIndex = () => {
                   bg="var(--mantine-primary-color-filled)"
                   c="var(--mantine-primary-color-contrast)"
                   href={`/parties/${party.id}`}
-                  iconOnly={false}
                   underline="never"
                 >
                   View & Edit

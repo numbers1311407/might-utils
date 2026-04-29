@@ -17,6 +17,7 @@ export const RulesetSelect = ({
       label={label}
       value={checked}
       onChange={onChange}
+      maxDropdownHeight={350}
       {...props}
     />
   );

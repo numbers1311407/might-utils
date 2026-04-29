@@ -34,6 +34,7 @@ export const TagGroupsSelect = ({
       value={value}
       onChange={onChange}
       maxDropdownHeight={350}
+      allowDeselect={false}
       {...props}
     />
   );

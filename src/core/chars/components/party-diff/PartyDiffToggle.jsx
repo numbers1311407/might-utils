@@ -28,11 +28,6 @@ export const PartyDiffToggle = (props) => {
           onChange={setShowPartyDiffs}
           label={label}
           {...props}
-          styles={{
-            label: {
-              color: "var(--mantine-color-warning-2)",
-            },
-          }}
           labelPosition="left"
         />
       )}

@@ -1,4 +1,3 @@
-import { MightMaxLevel, MightMinLevel } from "@/config";
 import {
   createPartyValidator,
   expandRoster,
@@ -6,19 +5,12 @@ import {
 } from "@/core/party-finder";
 import { instrument } from "@/utils";
 import { createComp, createTagsComp } from "@/model/schemas/comp";
+import { defaultFindPartiesOptions as defaultOptions } from "@/config/defaults";
 
 export const MAX_RECURSIONS = 10_000_000;
 export const MAX_RESPONSE_LENGTH = 5000;
 
-export const defaultOptions = {
-  targetScore: 1250,
-  minLevel: MightMinLevel,
-  maxLevel: MightMaxLevel,
-  minSize: 6,
-  maxSize: 12,
-  margin: 0,
-  sort: "-score mightSD mightRange -mightAvg",
-};
+export { defaultOptions };
 
 export const findParties = (roster, targetScore, options = {}) => {
   const instr = instrument();
