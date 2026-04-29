@@ -89,7 +89,7 @@ export const Party = ({ id: partyId }) => {
                         Comp Breakdown
                       </Title>
                       <Button
-                        onClick={() => createRuleset({ comp: party.comp })}
+                        onClick={() => createRuleset({ party })}
                         size="compact-sm"
                       >
                         Create Ruleset
@@ -133,12 +133,6 @@ export const Party = ({ id: partyId }) => {
                     ({party.chars.length})
                   </Text>
                   <PartyDiffToggle />
-                  <Button
-                    onClick={() => createRuleset({ party: party.chars })}
-                    size="compact-sm"
-                  >
-                    Create Ruleset
-                  </Button>
                 </Group>
                 <CharSelect
                   emits="char"

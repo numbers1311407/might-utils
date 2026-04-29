@@ -5,6 +5,22 @@ export const createRuleset = ({ party, comp }) => {
   return party ? createRulesetFromParty(party) : createRulesetFromComp(comp);
 };
 
+//
+// [
+//   {
+//     name,
+//     level,
+//     warden,
+//     [type = name, tags, base]
+//   }
+// ]
+//
+//
+//
+//
+//
+//
+
 export const createRulesetFromComp = (value) => {
   const [comp] = typeof value === "string" ? processComp(value) : value;
 

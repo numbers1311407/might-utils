@@ -9,6 +9,7 @@
 
   @mixin light-root {
     --paper-border-color-custom: lighten(var(--mantine-color-zinc-5), 0.8);
+    --paper-background-color: var(--mantine-color-body);
   }
 
   @mixin dark-root {

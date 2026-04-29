@@ -16,4 +16,5 @@ export * from "./PageTitle.jsx";
 export * from "./SmallButton.jsx";
 export * from "./SortSelect.jsx";
 export * from "./TagsInput.jsx";
+export * from "./TagGroupsSelect.jsx";
 export * from "./TextInput.jsx";

@@ -9,13 +9,10 @@ export const useRulesetCreator = () => {
   const [draft, setDraft] = useState();
   const [_location, setLocation] = useLocation();
 
-  const startCreate = useStableCallback((newRuleset) => {
-    const { name, party, comp, ...rest } = newRuleset;
-
+  const startCreate = useStableCallback(({ name, party }) => {
     const ruleset = {
-      name: name || (party ? "Party Ruleset" : "Comp Ruleset"),
-      ...rest,
-      ...createRuleset({ name, party, comp }),
+      name: name || "New Ruleset",
+      party,
     };
 
     ruleset.name = rulesApi.getCopyName(ruleset.name);
@@ -31,6 +28,7 @@ export const useRulesetCreator = () => {
       }
     },
     modalProps: {
+      size: "xl",
       title: "New Ruleset",
     },
     componentProps: (props) => ({
@@ -38,7 +36,6 @@ export const useRulesetCreator = () => {
       record: draft,
       onSubmit: (values) => {
         console.log({ values });
-
         console.log("submitted");
       },
     }),

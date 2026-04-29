@@ -486,6 +486,7 @@ export const theme = createTheme({
             : undefined;
         return {
           root: {
+            "--checkbox-radius": "0.25em",
             "--checkbox-color": colorKey
               ? `var(--mantine-color-${colorKey}-filled)`
               : "var(--mantine-primary-color-filled)",

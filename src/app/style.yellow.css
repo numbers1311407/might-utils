@@ -1,5 +1,6 @@
 /* Checkbox */
 .mantine-Checkbox-root {
+  --checkbox-radius: 2px;
   --checkbox-color: var(--mantine-primary-color-filled);
   --checkbox-icon-color: var(--mantine-primary-color-contrast);
 
