@@ -13,6 +13,7 @@ import { Link } from "wouter";
 import { CONTAINER_WIDTH, HEADER_HEIGHT } from "@/config/constants";
 import { ColorSchemeButton } from "@/core/components";
 import { GithubLink } from "./GithubLink.jsx";
+import { HelpModal } from "./HelpModal.jsx";
 import classes from "./Header.module.css";
 
 const HomeLink = () => (
@@ -79,6 +80,8 @@ export const Header = ({ burgerOpened, onBurgerClick }) => (
           Party building utility for{" "}
           <Anchor href="https://eqmight.com">EQ Might</Anchor>
         </Text>
+        <Divider orientation="vertical" mx="md" my="sm" />
+        <HelpModal />
         <Divider orientation="vertical" mx="md" my="sm" />
         <GithubLink
           href="https://github.com/numbers1311407/might-utils"

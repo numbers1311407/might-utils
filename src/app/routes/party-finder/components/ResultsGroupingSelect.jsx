@@ -37,7 +37,7 @@ export const ResultsGroupingSelect = () => {
       allowDeselect={false}
       clearable
       data={data}
-      label="Grouping Tags"
+      label="Tag Groups"
       onSearchChange={setSearch}
       placeholder="Select grouping..."
       ref={ref}

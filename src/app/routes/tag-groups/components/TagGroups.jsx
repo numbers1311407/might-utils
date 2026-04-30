@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, Box, Group, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import * as titles from "@/config/constants/titles";
 import {
@@ -8,7 +8,6 @@ import {
   useTagGroupsStoreApi as tgapi,
 } from "@/model/store";
 import {
-  Aside,
   PageTitle,
   AddSmallButton,
   EditSmallButton,
@@ -133,32 +132,6 @@ export const TagGroups = () => {
         onCommit={onModalCommit}
         group={currentGroup}
       />
-
-      <Aside>
-        <Stack>
-          <Title c="primary" order={4}>
-            Quick Help
-          </Title>
-          <Text>
-            Grouping tags are arbitrary tag sets used to group and classify
-            characters in party generator search results.
-          </Text>
-          <Text>
-            They can be any tags you like, with the only rule being that
-            everyone in the roster has to have one of them so they can be
-            grouped by them.
-          </Text>
-          <Text>
-            For convenience two "roles" tag groups come predefined, which you
-            can use or edit to your preferences.
-          </Text>
-          <Text>
-            Note that if characters have multiple of these tags, they won't be
-            grouped with each tag individually, but rather they'll be put into a
-            merged group that requires all the group tags they're assigned.
-          </Text>
-        </Stack>
-      </Aside>
     </Box>
   );
 };

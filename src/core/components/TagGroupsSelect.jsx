@@ -28,7 +28,7 @@ export const TagGroupsSelect = ({
 
   return (
     <Select
-      label="Grouping Tags"
+      label="Tag Groups"
       data={data}
       error={error || data.length === 1 ? filterError : undefined}
       value={value}

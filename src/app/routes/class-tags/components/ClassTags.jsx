@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Flex, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Flex, Stack, Text } from "@mantine/core";
 import { IconReload } from "@tabler/icons-react";
 import * as titles from "@/config/constants/titles";
 import { getClassName } from "@/config/chars";
@@ -8,7 +8,6 @@ import {
   useClassTagsStoreApi as ctApi,
 } from "@/model/store";
 import {
-  Aside,
   ClassIcon,
   PageTitle,
   ReloadSmallButton,
@@ -81,27 +80,6 @@ export const ClassTags = () => {
           />
         ))}
       </Stack>
-      <Aside>
-        <Stack>
-          <Title order={4} c="primary">
-            Quick Help
-          </Title>
-          <Text>
-            Class tags are a convenient way to manage tags common to all
-            characters of the same class. E.g. in most cases every warrior is a
-            "tank" and every cleric is a "healer".
-          </Text>
-          <Text>
-            Characters of the respective classes are always assigned these tags
-            during party generation. If you{" "}
-            <Text span fs="italic" fw="bold">
-              don't
-            </Text>{" "}
-            want a character to have certain tags, you will need to delete the
-            tags you don't want assigned here.
-          </Text>
-        </Stack>
-      </Aside>
     </Box>
   );
 };

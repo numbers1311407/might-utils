@@ -10,5 +10,5 @@ export const ROSTER_IO_TITLE = "Roster Import/Export";
 export const NPC_SIMULATOR_TITLE = "Instance NPC Simulator";
 export const MIGHT_RANGE_FINDER_TITLE = "Might Range Finder";
 export const TAG_RULES_TITLE = "Generator Rulesets";
-export const TAG_GROUPS_TITLE = "Generator Grouping Tags";
+export const TAG_GROUPS_TITLE = "Generator Tag Groups";
 export const CLASS_TAGS_TITLE = "Generator Class Tags";

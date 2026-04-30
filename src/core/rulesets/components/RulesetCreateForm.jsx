@@ -275,7 +275,7 @@ export const RulesetCreateForm = ({
 
         <FilteredTagGroupsSelect
           description={
-            'Grouping tags can make rules more generic, e.g. any char tagged "healer"' +
+            'Tag groups can make rules more generic, e.g. any char tagged "healer"' +
             "vs. a specific cleric by name"
           }
           party={party}
@@ -293,10 +293,10 @@ export const RulesetCreateForm = ({
             <Text size="sm" c="dark">
               Configure how specific your ruleset will be. "Slot Alone" will
               only look for the level+warden combination, but you can also
-              specify characters by name or by grouping tags. Note if you
-              specify all characters by name the ruleset will only match this
-              group exactly, so in reality you probably want to rely on slots,
-              tags, or some combination of the 3 types.
+              specify characters by name or by tag groups. Note if you specify
+              all characters by name the ruleset will only match this group
+              exactly, so in reality you probably want to rely on slots, tags,
+              or some combination of the 3 types.
             </Text>
             <Text size="sm" c="dark">
               This is all further customizable in the rules editor UI after
