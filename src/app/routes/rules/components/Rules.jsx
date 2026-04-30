@@ -50,18 +50,10 @@ const ActiveToggle = ({ api }) => (
     display="flex"
     style={{ alignItems: "center", gap: 12, cursor: "pointer" }}
   >
-    {api.currentActive && (
-      <Text span c="bright" size="md" flex="1">
-        Active in the party generator
-      </Text>
-    )}
-    {!api.currentActive && (
-      <Text span c="neutral" size="md" flex="1">
-        Click to activate
-      </Text>
-    )}
+    <Text span c={api.currentActive ? "bright" : "neutral"} size="md" flex="1">
+      {api.currentActive ? "Active" : "Inactive"}
+    </Text>
     <Switch
-      mt={4}
       checked={api.currentActive}
       onChange={(e) => {
         if (e.currentTarget.checked) {
@@ -178,7 +170,7 @@ const RulesMain = () => {
   );
 
   const buttons = (
-    <Group gap="xs">
+    <>
       <AddSmallButton
         aria-label="Add a rule"
         onClick={() => {
@@ -234,7 +226,7 @@ const RulesMain = () => {
           </RestoreSmallButton>
         </Tooltip>
       )}
-    </Group>
+    </>
   );
 
   if (!ruleset?.id) {
@@ -267,10 +259,11 @@ const RulesMain = () => {
         mb={8}
         mt={8}
       >
-        <ActiveToggle api={api} />
+        <Group gap="xs">
+          <ActiveToggle api={api} />
+          {buttons}
+        </Group>
       </PageTitle>
-
-      {buttons}
 
       <Aside>
         <Stack gap="sm">
@@ -282,25 +275,6 @@ const RulesMain = () => {
           >
             Create New Ruleset
           </Button>
-          <Title c="primary" order={4}>
-            Quick Help
-          </Title>
-          <Text>
-            Create sets of rules based on character attributes and tags which
-            the party generator uses to build your parties.
-          </Text>
-          <Text>
-            A typical standard ruleset is created as a default, as well as a
-            more specific "Time-Flagged" ruleset to show how you might use rules
-            to filter on less obvious data points.
-          </Text>
-          <Text>
-            Ruleset are combinable in the generator, so it's up to you if you
-            want to have one big ruleset, or smaller combinable rulesets for
-            different purposes. For example you may have a "core" ruleset of
-            your tank and healers, with "melee" vs "caster" rulesets kept
-            separate for different group types.
-          </Text>
           <RulesNav current={ruleset.id}></RulesNav>
         </Stack>
       </Aside>
