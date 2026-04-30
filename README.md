@@ -4,14 +4,6 @@ Work in progress companion app for EQ Might, providing a set of tools to make yo
 manage parties that satisfy that score.
 
 ### FINAL Release checklist
-- **Help Modal**
-  - The entire help page should live in a modal, which opens to the current page help via routing
-  - Then we put a help ? button in the header
-  - On first routing to a page it will auto-open help if it exists, once, track this
-  - Include footer link to stop auto-showing help, on check, save the setting and show a confirmation dialog pointing out the help icon.
-  - The modal could include screenshots, etc. It should try to be comprehensive.
-  **404 page**
-  - A dead simple 404 page, no frills. 404 link to home.
 - **Instance Data**
   - Do one more round of research for lower tier dungeons, trios, duos
   
