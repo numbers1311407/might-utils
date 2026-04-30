@@ -153,14 +153,16 @@ export const PartyIndex = () => {
             buttons={
               <Group
                 justify="flex-start"
-                gap="sm"
+                gap="xs"
                 style={{ flexDirection: "row-reverse" }}
               >
                 <ReadinessBadge size="lg" tier={party.diff.tier} />
                 <Divider orientation="vertical" />
-                <SettingsSmallButton onClick={() => createRuleset({ party })}>
-                  Make Ruleset
-                </SettingsSmallButton>
+                <RemoveSmallButton
+                  onClick={() => partiesStore.remove(party.id)}
+                >
+                  Remove
+                </RemoveSmallButton>
                 <EditSmallButton
                   component={AppLink}
                   // TODO this is necessary because AppLink otherwise
@@ -173,11 +175,12 @@ export const PartyIndex = () => {
                 >
                   View & Edit
                 </EditSmallButton>
-                <RemoveSmallButton
-                  onClick={() => partiesStore.remove(party.id)}
+                <SettingsSmallButton
+                  onClick={() => createRuleset({ party })}
+                  iconOnly={false}
                 >
-                  Remove
-                </RemoveSmallButton>
+                  Make Ruleset
+                </SettingsSmallButton>
               </Group>
             }
           />
