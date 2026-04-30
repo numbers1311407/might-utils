@@ -176,9 +176,19 @@ const RulesMain = () => {
         onClick={() => {
           setDraftRuleProps({});
         }}
+        iconOnly={false}
       >
-        Add a Rule
+        New Rule
       </AddSmallButton>
+
+      <EditSmallButton
+        aria-label="Rename ruleset"
+        onClick={() => {
+          setDraftRuleset(ruleset);
+        }}
+      >
+        Rename
+      </EditSmallButton>
 
       <Tooltip
         openDelay={600}
@@ -190,15 +200,6 @@ const RulesMain = () => {
           Duplicate
         </CopySmallButton>
       </Tooltip>
-
-      <EditSmallButton
-        aria-label="Rename ruleset"
-        onClick={() => {
-          setDraftRuleset(ruleset);
-        }}
-      >
-        Rename
-      </EditSmallButton>
 
       {!api.currentDefault && (
         <>
