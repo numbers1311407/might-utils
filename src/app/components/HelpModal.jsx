@@ -180,7 +180,7 @@ const PartyFinder = () => (
 );
 
 const Parties = () => (
-  <Section title={tls.PARTIES_TITLE} path="/parties">
+  <Section title={tls.PARTIES_TITLE} path="/parties/*?">
     <Subtitle>What is this?</Subtitle>
     <Text>
       Once you've found parties with the generator, you can save them to recall
@@ -391,7 +391,7 @@ const MightRangeFinder = () => (
 );
 
 const TagRules = () => (
-  <Section title={tls.TAG_RULES_TITLE} path="/rulesets">
+  <Section title={tls.TAG_RULES_TITLE} path="/rulesets/*?">
     <Subtitle>What is this?</Subtitle>
     <Text>
       Rulesets are combinable sets of rules which define how you'd like the
