@@ -82,7 +82,7 @@ export const Home = () => {
               saved parties can be created with your current roster.
             </List.Item>
             <List.Item>
-              Generate rules from saved parties to generate similar compositions
+              Create rules from saved parties to generate similar party comps
               with different characters or scores.
             </List.Item>
           </List>
