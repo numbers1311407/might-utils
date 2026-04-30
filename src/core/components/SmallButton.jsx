@@ -30,15 +30,21 @@ export const SmallButton = ({
   ...buttonProps
 }) => {
   const Icon = ICONS[icon];
+  const size = 28;
 
   return iconOnly || typeof children !== "string" ? (
     <Tooltip label={children} withArrow>
-      <ActionIcon {...buttonProps}>
+      <ActionIcon {...buttonProps} size={size}>
         <Icon size={20} />
       </ActionIcon>
     </Tooltip>
   ) : (
-    <Button leftSection={<Icon size={20} />} size="compact-sm" {...buttonProps}>
+    <Button
+      leftSection={<Icon size={20} />}
+      size="compact-sm"
+      h={size}
+      {...buttonProps}
+    >
       {children}
     </Button>
   );
