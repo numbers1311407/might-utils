@@ -38,7 +38,7 @@ export const AppRoot = () => {
             pt={14}
             style={{ flex: `0 0 ${rem(NAVBAR_WIDTH)}` }}
           />
-          <AppShell.Main flex="1">
+          <AppShell.Main flex="1" pb="70px">
             <ErrorBoundary fallback={<ErrorPage />}>
               <Routes />
             </ErrorBoundary>

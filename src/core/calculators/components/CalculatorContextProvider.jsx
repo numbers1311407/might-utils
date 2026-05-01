@@ -8,6 +8,18 @@ import {
   CALCULATOR_INTENSE_MULT_RAID,
 } from "../calculator-constants.js";
 
+const getMaxIntense = (type, might) => {
+  if (type === "solo" || type === "duo") {
+    return;
+  }
+
+  if (type === "group") {
+    return Math.floor(CALCULATOR_INTENSE_MULT_GROUP * might);
+  }
+
+  return Math.floor(CALCULATOR_INTENSE_MULT_RAID * might);
+};
+
 export const CalculatorContextProvider = ({ children }) => {
   const [instance, setInstanceBase] = useState(CALCULATOR_DEFAULT_INSTANCE);
   const [might, setMight] = useState(CALCULATOR_DEFAULT_MIGHT);
@@ -16,10 +28,7 @@ export const CalculatorContextProvider = ({ children }) => {
     (instance) => {
       setInstanceBase({
         ...instance,
-        maxIntense:
-          (instance.type === "raid"
-            ? CALCULATOR_INTENSE_MULT_RAID
-            : CALCULATOR_INTENSE_MULT_GROUP) * instance.might,
+        maxIntense: getMaxIntense(instance.type, instance.might),
       });
     },
     [setInstanceBase],

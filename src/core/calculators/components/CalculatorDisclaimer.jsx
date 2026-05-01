@@ -5,6 +5,7 @@ export const CalculatorDisclaimer = (props) => (
     <Text span fw="bold">
       Warning:
     </Text>{" "}
-    This data is incomplete, and may be inaccurate.
+    This data is incomplete and may be inaccurate. Most testing and data is for
+    T8-10.
   </Text>
 );

@@ -26,7 +26,13 @@ export const DIFFICULTY_NAME_MAP = new Map([
   ["I", "Intense"],
 ]);
 
-export const INSTANCE_TYPES = Object.freeze(["group", "raid", "solo", "trio"]);
+export const INSTANCE_TYPES = Object.freeze([
+  "group",
+  "raid",
+  "solo",
+  "duo",
+  "trio",
+]);
 
 export const INSTANCE_MEDALS = Object.freeze([
   "bronze",

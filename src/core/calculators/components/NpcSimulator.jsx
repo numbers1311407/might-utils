@@ -15,7 +15,11 @@ export const NpcSimulator = ({ instance, might, ...containerProps }) => {
         <ChatWindow.Divider />
         <ChatWindow.Line>
           Your options for {capitalize(instance.type)} instances (Suggested
-          Might: {instance.might}, Maximum for Intense: {instance.maxIntense}):
+          Might: {instance.might}
+          {instance.maxIntense
+            ? `, Maximum for Intense: ${instance.maxIntense}`
+            : ""}
+          ):
         </ChatWindow.Line>
         {simulateInstanceNPC(
           instance.type,
