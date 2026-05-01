@@ -34,6 +34,7 @@ export const useRulesetCreator = (options = {}) => {
     },
     modalProps: {
       size: "80vw",
+      styles: { content: { maxWidth: "1250px" } },
       title: "Create a New Ruleset",
       closeOnClickOutside: false,
     },
