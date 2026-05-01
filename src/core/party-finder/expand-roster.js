@@ -16,7 +16,27 @@ export const expandRoster = (roster, { minLevel, maxLevel, groupTags }) => {
       for (const rank of Warden.Ranks) {
         const { rank: warden, requiredLevel, mightMultiplier } = rank;
         if (char.warden >= warden && level >= requiredLevel) {
-          const slot = { ...char, score: score * mightMultiplier, warden };
+          const slot = {
+            ...char,
+            // TODO there's an ancient bug here due to how roster characters
+            // had a total might attribute in addition to this pool slot
+            // score attribute (1 max warden, 1 current warden). However
+            // later on parties would attach `might` to their slots as well,
+            // but calculated to the party warden, not total warden. Anyway,
+            // this eventually led to a bug in how party results were
+            // calculated because the `might`on pool slots is still max,
+            // when it should be relative to warden level. So when the
+            // feature to create rulesets from party results got added, the
+            // might score was calculated wrong.  This is a small bug but
+            // really I should be overwriting might here and removing score,
+            // which was never necessary (pool characters are effectively
+            // party slots, which have specific warden, not max)
+            //
+            // It's just a question of what else that might break.
+            score: score * mightMultiplier,
+            might: score * mightMultiplier,
+            warden,
+          };
 
           if (groupTags?.length) {
             const slotGroupTags = intersection(slot.tags, groupTags);

@@ -33,7 +33,7 @@ export const useRulesetCreator = (options = {}) => {
       }
     },
     modalProps: {
-      size: "xl",
+      size: "80vw",
       title: "Create a New Ruleset",
       closeOnClickOutside: false,
     },

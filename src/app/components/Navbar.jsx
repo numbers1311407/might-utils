@@ -44,16 +44,16 @@ export const Navbar = (props) => {
   return (
     <Stack gap="lg" {...props}>
       <NavbarLink label="Home" href="/" />
+      <Category name={titles.PARTY_CATEGORY}>
+        <NavbarLink label={titles.PARTY_FINDER_TITLE} href="/party-generator" />
+        <NavbarLink label={titles.PARTIES_TITLE} href="/parties" />
+      </Category>
       <Category name={titles.CALCULATORS_CATEGORY}>
         <NavbarLink
           label={titles.MIGHT_RANGE_FINDER_TITLE}
           href="/might-range-finder"
         />
         <NavbarLink label={titles.NPC_SIMULATOR_TITLE} href="/npc-simulator" />
-      </Category>
-      <Category name={titles.PARTY_CATEGORY}>
-        <NavbarLink label={titles.PARTY_FINDER_TITLE} href="/party-generator" />
-        <NavbarLink label={titles.PARTIES_TITLE} href="/parties" />
       </Category>
       <Category name={titles.ROSTER_CATEGORY}>
         <NavbarLink

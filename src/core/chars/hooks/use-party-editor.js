@@ -38,6 +38,8 @@ export const usePartyEditor = (options = {}) => {
   const [openModal, modalApi] = createModal(PartyForm, {
     onClose: () => setDraftParty(null),
     onDone: (record) => {
+      setDraftParty(null);
+
       if (record && draftParty.id !== record.id) {
         setLocation(`/parties/${record.id}`);
       }

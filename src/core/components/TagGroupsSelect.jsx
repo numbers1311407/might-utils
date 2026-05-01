@@ -22,9 +22,14 @@ export const TagGroupsSelect = ({
   filterError = "No valid groups avaiable",
   error,
   onChange,
+  ifEmpty,
   ...props
 }) => {
   const data = useTagGroupsSelectOptions(filter);
+
+  if (data.length === 1 && ifEmpty !== undefined) {
+    return ifEmpty;
+  }
 
   return (
     <Select

@@ -1,5 +1,5 @@
 import { deepEqual } from "fast-equals";
-import { defaultFiltersRules, defaultTimeFlagRules } from "@/config/defaults";
+import { defaultFiltersRules } from "@/config/defaults";
 import { rulesetSchema, ruleSchema } from "@/model/schemas";
 import { createStore } from "./helpers";
 
@@ -17,13 +17,12 @@ const addUniquely = (array, value) => {
 };
 
 const defaultFilters = rulesetSchema.parse(defaultFiltersRules);
-const defaultTimeFlag = rulesetSchema.parse(defaultTimeFlagRules);
 
 const defaultTypeStorage = {
   filters: TYPES.Multi,
 };
 const defaultsMap = {
-  filters: [defaultFilters, defaultTimeFlag],
+  filters: [defaultFilters],
 };
 const defaults = Object.values(defaultsMap).flat();
 const defaultIds = defaults.map((set) => set.id);
@@ -53,7 +52,6 @@ export const useRulesStore = createStore("might-utils-rules", () => ({
   groupSizeTwenty: false,
   sets: {
     [defaultFilters.id]: defaultFilters,
-    [defaultTimeFlag.id]: defaultTimeFlag,
   },
 }));
 
