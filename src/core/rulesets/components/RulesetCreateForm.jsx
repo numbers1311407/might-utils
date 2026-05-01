@@ -196,13 +196,6 @@ export const RulesetCreateForm = ({ record, navigate, cancel, onSubmit }) => {
     );
   }, [party, partyFieldsMap]);
 
-  console.log({
-    lockedState,
-    partyFieldsMap,
-    rules: rules.map((rule) => rule.query.rules),
-    rulesCounts: rules.map((rule) => rule.value),
-  });
-
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
