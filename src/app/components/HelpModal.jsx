@@ -28,6 +28,7 @@ export const HelpModal = () => {
         id="help-modal"
         title="Global Help"
         opened={opened}
+        styles={{ content: { maxWidth: "1250px" } }}
         onClose={() => setOpened(false)}
       >
         <Grid p="lg" flex="1">
