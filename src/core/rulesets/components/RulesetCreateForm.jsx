@@ -250,8 +250,7 @@ export const RulesetCreateForm = ({
 
         <FilteredTagGroupsSelect
           description={
-            'Tag groups can make rules more generic, e.g. any char tagged "healer"' +
-            "vs. a specific cleric by name"
+            "Apply tag groups to your party as they'd be organized in the generator results. Rules based on tags are useful to fill party roles without being too specific."
           }
           party={persistedParty}
           value={tagGroupId}

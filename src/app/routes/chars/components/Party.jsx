@@ -16,6 +16,7 @@ import {
   AppLink,
   Aside,
   CharSelect,
+  AddSmallButton,
   SettingsSmallButton,
 } from "@/core/components";
 import {
@@ -68,7 +69,7 @@ export const Party = ({ id: partyId }) => {
   }
 
   return (
-    <Box>
+    <Stack gap={0}>
       <PartyDiffProvider partyId={partyId}>
         <PartyHeader
           partyId={party.id}
@@ -77,8 +78,6 @@ export const Party = ({ id: partyId }) => {
           onRename={() => beginPartyEdit(party)}
           onReset={party.isDirty ? partyApi.resetChars : undefined}
         />
-
-        <Divider my="md" />
 
         <Grid align="flex-start" gutter="xl">
           <Grid.Col span={{ base: 12, lg: 6 }} order={2}>
@@ -184,12 +183,18 @@ export const Party = ({ id: partyId }) => {
         </Grid>
 
         <Aside visibleFrom="sm">
-          <Stack gap="xs">
-            <PartyDiff />
-            <PartiesNav />
-          </Stack>
+          <PartyDiff />
+          <AddSmallButton
+            iconOnly={false}
+            w="100%"
+            my="lg"
+            onClick={() => beginPartyEdit({})}
+          >
+            Create a New Party
+          </AddSmallButton>
+          <PartiesNav />
         </Aside>
       </PartyDiffProvider>
-    </Box>
+    </Stack>
   );
 };

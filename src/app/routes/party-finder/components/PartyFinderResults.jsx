@@ -21,7 +21,7 @@ const PartyFinderResultsHeader = ({ parties, mx = 12 }) => (
   <Group
     bg="var(--mantine-color-body-custom)"
     py="xl"
-    mt="-lg"
+    mt={-12}
     ml={mx * -1}
     mr={mx * -1}
     pl={mx + 8}

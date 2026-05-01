@@ -87,13 +87,15 @@ export const Roster = () => {
         title={titles.ROSTER_TITLE}
         subtitle="The list of all your characters, the reference for party generation and saved parties"
       >
-        <RestoreSmallButton onClick={onResetRoster}>Reset</RestoreSmallButton>
-        <RemoveSmallButton disabled={!roster?.length} onClick={onClearRoster}>
-          Remove All
-        </RemoveSmallButton>
-        <AddSmallButton onClick={() => setChar({})}>
-          New Character
+        <AddSmallButton iconOnly={false} onClick={() => setChar({})}>
+          Add Character
         </AddSmallButton>
+        <RestoreSmallButton onClick={onResetRoster}>
+          Restore Demo Roster
+        </RestoreSmallButton>
+        <RemoveSmallButton disabled={!roster?.length} onClick={onClearRoster}>
+          Clear
+        </RemoveSmallButton>
       </PageTitle>
 
       <RosterAside visibleFrom="lg" />

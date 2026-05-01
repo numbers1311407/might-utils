@@ -103,8 +103,8 @@ export const TagGroups = () => {
         title={titles.TAG_GROUPS_TITLE}
         subtitle="Collections of related tags used to group generated parties in a flexible way"
       >
-        <AddSmallButton onClick={() => setCurrentGroup({})}>
-          Create a New Tag Group
+        <AddSmallButton iconOnly={false} onClick={() => setCurrentGroup({})}>
+          Add a Tag Group
         </AddSmallButton>
       </PageTitle>
       <Box>

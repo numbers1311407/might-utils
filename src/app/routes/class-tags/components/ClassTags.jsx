@@ -30,14 +30,12 @@ export const ClassTagsClass = ({ cls, tags, addTag, removeTag, resetTags }) => {
         </Flex>
       }
       rightSection={
-        <ActionIcon
-          size="sm"
+        <ReloadSmallButton
           aria-label="Reset to default tags"
-          title="Reset to default tags"
           onClick={() => resetTags()}
         >
-          <IconReload />
-        </ActionIcon>
+          Restore Defaults
+        </ReloadSmallButton>
       }
     />
   );
@@ -57,6 +55,7 @@ export const ClassTags = () => {
         subtitle="Default tags added to each class for the targeting during party generation"
       >
         <ReloadSmallButton
+          iconOnly={false}
           onClick={getConfirmation(() => resetAllClassTags(), {
             message:
               "This will revert ALL classes to the default class tags, discarding any changes.",

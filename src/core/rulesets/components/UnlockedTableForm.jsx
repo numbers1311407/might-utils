@@ -56,10 +56,10 @@ export const UnlockedTableForm = ({
   return (
     <Stack gap={0}>
       <InputLabel>Per-Member Rules</InputLabel>
-      <Text size="xs" c="dark" mb={3}>
-        Select of the properties of the party members as rules. These will form
-        the baseline for a simple ruleset which you can further modify in the
-        rules UI.
+      <Text size="xs" c="dimmed" mb={3}>
+        Select properties from member rows you want to turn into generator
+        rules. For example, if you select level, class, and warden, you're
+        specifying that your party will need at least 1 member with all 3.
       </Text>
       <Table withTableBorder>
         <Thead>

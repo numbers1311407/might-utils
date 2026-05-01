@@ -86,7 +86,7 @@ const RuleSizeFilterButtons = () => {
   });
 
   return (
-    <Stack gap={4}>
+    <Stack gap={8}>
       <Text size="sm" c="dark">
         Filter by group size to inspect the rules that will be applied
       </Text>
@@ -178,7 +178,7 @@ const RulesMain = () => {
         }}
         iconOnly={false}
       >
-        New Rule
+        Add Rule
       </AddSmallButton>
 
       <EditSmallButton
@@ -249,7 +249,7 @@ const RulesMain = () => {
 
       <PageTitle
         section={
-          <Text color="dark" size="sm">
+          <Text c="white" size="sm" fw="bold">
             Current Ruleset:
           </Text>
         }

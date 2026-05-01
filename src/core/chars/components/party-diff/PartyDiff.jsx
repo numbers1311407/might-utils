@@ -15,6 +15,7 @@ import {
 import { usePartyDiffContext } from "./party-diff-context.js";
 import { PartyDiffProvider } from "./PartyDiffProvider.jsx";
 import { PartyDiffToggle } from "./PartyDiffToggle.jsx";
+import { round } from "@/utils";
 
 const { Tr, Tbody, Thead } = Table;
 
@@ -165,23 +166,25 @@ const PartyDiffReady = (props) => {
   return (
     <>
       <Text c={Colors.READY} size="sm">
-        This party can be assembled with warden ring swaps only.
+        Assemblable with warden ring swaps only
       </Text>
-      <Text size="xs">
-        Requires{" "}
-        <Text c="gold" size="sm" span>
-          {props.warden.ratio * 100}%
-        </Text>{" "}
-        of your available warden ranks.
-      </Text>
-      {props.warden.under.length > 0 && (
-        <Text size="xs">
-          <Text c="gold" size="xs" span>
-            {props.warden.under.map((char) => char.name).join(", ")}
+      <Stack gap={0}>
+        <Text size="sm">
+          Requires{" "}
+          <Text c="var(--mantine-color-primary-heading-text)" size="sm" span>
+            {round(props.warden.ratio * 100, 2)}%
           </Text>{" "}
-          could be ranked up.
+          of your available warden ranks.
         </Text>
-      )}
+        {props.warden.under.length > 0 && (
+          <Text size="sm">
+            <Text c="var(--mantine-color-primary-heading-text)" size="sm" span>
+              {props.warden.under.map((char) => char.name).join(", ")}
+            </Text>{" "}
+            could be ranked up if instance score requirement allows.
+          </Text>
+        )}
+      </Stack>
     </>
   );
 };

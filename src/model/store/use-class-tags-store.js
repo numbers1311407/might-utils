@@ -31,9 +31,7 @@ const api = {
   setClassTags: (cls, clsTags) => {
     set(({ tags }) => {
       if (!isValidClass(cls)) throw "invalid class";
-      tags[cls] = sortClassTags(
-        (clsTags ?? defaultClassTags[cls]).map(parseTag),
-      );
+      tags[cls] = (clsTags ?? defaultClassTags[cls]).sort().map(parseTag);
     });
   },
   removeClassTag: (cls, tag) => {
@@ -51,7 +49,7 @@ const api = {
     });
   },
   resetClassTags: (cls) => {
-    get().setClassTags(cls, undefined);
+    api.setClassTags(cls, undefined);
   },
   resetAllClassTags: () => {
     set((state) => {

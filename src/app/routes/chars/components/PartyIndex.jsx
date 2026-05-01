@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import { Button, Divider, Group, Stack, Text } from "@mantine/core";
+import { IconPlus, IconArrowLeft } from "@tabler/icons-react";
 import { useRulesetCreator } from "@/core/rulesets";
 import { IconLink } from "@tabler/icons-react";
+import * as titles from "@/config/constants/titles";
 import {
   AppLink,
   EditSmallButton,
+  PageTitle,
   RemoveSmallButton,
   SettingsSmallButton,
   SortSelect,
@@ -50,9 +53,7 @@ const PartySortSelect = ({ sort, setSort }) => {
   return <SortSelect sort={sort} setSort={setSort} data={SORT_OPTIONS} />;
 };
 
-const EmptyResult = () => {
-  const editParty = usePartyEditor();
-
+const EmptyResult = ({ editParty }) => {
   return (
     <Stack gap="sm" align="center" my="3xl" mx="auto" w={400}>
       <Text size="xl" c="warning">
@@ -77,7 +78,7 @@ const PartyIndexHeader = ({ parties, sort, setSort, ...props }) => (
     bg="var(--mantine-color-body-custom)"
     py="xl"
     px={2}
-    mt="-lg"
+    mt={-12}
     style={{
       position: "sticky",
       top: 66,
@@ -100,6 +101,7 @@ export const PartyIndex = () => {
   const parties = usePartiesList({ hydrate: true, classTags: true });
   const [sort, setSort] = useState(SORT_OPTIONS[0].value);
   const { comps, stats } = usePartiesData(parties);
+  const editParty = usePartyEditor();
 
   const diffedParties = useMemo(() => {
     return parties.map((party) => ({
@@ -123,12 +125,27 @@ export const PartyIndex = () => {
   });
 
   return (
-    <>
+    <Stack gap={0}>
+      <PageTitle
+        section={titles.PARTY_CATEGORY}
+        title={titles.PARTIES_TITLE}
+        subtitle={
+          "Assemble parties from your roster to track their might and target specific instance tiers"
+        }
+      >
+        <Button
+          leftSection={<IconPlus size={18} />}
+          onClick={() => editParty({})}
+          size="compact-sm"
+        >
+          Create a New Party
+        </Button>
+      </PageTitle>
       {parties.length > 0 && (
         <PartyIndexHeader parties={parties} sort={sort} setSort={setSort} />
       )}
       <Stack>
-        {!parties.length && <EmptyResult />}
+        {!parties.length && <EmptyResult editParty={editParty} />}
         {sortedParties.map((party) => (
           <PartyCard
             key={party.id}
@@ -172,6 +189,7 @@ export const PartyIndex = () => {
                   c="var(--mantine-primary-color-contrast)"
                   href={`/parties/${party.id}`}
                   underline="never"
+                  iconOnly={false}
                 >
                   View & Edit
                 </EditSmallButton>
@@ -186,6 +204,6 @@ export const PartyIndex = () => {
           />
         ))}
       </Stack>
-    </>
+    </Stack>
   );
 };
