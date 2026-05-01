@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRoute } from "wouter";
 import {
   Alert,
+  Anchor,
   Title,
   Text,
   Modal,
@@ -559,22 +560,69 @@ const TagRules = () => (
       evil vs good races, and so on. Rules like this are where the "All" type
       rules come in handy.
     </Text>
-    <Subtitle>Creating rulesets from parties</Subtitle>
+    <Subtitle>
+      Creating rulesets from saved parties or generator results
+    </Subtitle>
     <Text>
       The easiest way to create rulesets is to start with a party as a baseline.
-      From there, you can choose to define rule-based slots by score unit (level
-      + warden) alone, by specific character name, or by tag ownership.
-    </Text>
-    <Text>
-      The party to ruleset tool does have some limitations, namely it doesn't
-      allow changing level or warden in the interest of keeping the score fixed,
-      but still it is a quick way to form a baseline ruleset which you can then
-      edit and make more or less restrictive.
     </Text>
     <Text>
       You can create rulesets from parties by pressing the "Make Ruleset" button
       on the generator results screen, or the parties index or details pages.
+      When you press the button you'll be asked to name the ruleset, and
+      presented with a table of all the party members.
     </Text>
+    <Text>
+      This table will contain all the characters in your party with checkboxes
+      for all their attributes which can be the basis of rules. Click the
+      headers to select or deselect each character.
+    </Text>
+    <Text>
+      If tag groups can be applied to the characters they'll be presented in a
+      dropdown and you can choose which tag group you'd like to use. The tags in
+      the group which each character holds will be applicable as rules, which
+      mirrors how the tag groups do their job grouping search results.
+    </Text>
+    <Text>
+      Avoid being over-specific unless you're very sure of what you're doing, a
+      few pointers:
+    </Text>
+    <List spacing="sm">
+      <List.Item>
+        Name rules should typically be used sparingly unless you're defining a
+        core team as they're very specific and will greatly limit results. If
+        you do use them, you should only pair them with warden. As level isn't
+        varied during party generation, and tags are static, selecting
+        name+level will or name+tags will fail 100% if you later level/delevel
+        or change tags. Name+class is just redundant.
+      </List.Item>
+      <List.Item>
+        Rules created by this generator will always define a minium size and no
+        max. This can be changed after in the rules UI if you want, but
+        generally, this leads to more stable rules that will return better
+        results.
+      </List.Item>
+      <List.Item>
+        These rules are also applied to all party sizes. Realistically, what
+        you'll probably want to do is create your ruleset and then adjust it to
+        sizes which make sense for your needs. An advanced move would be to make
+        multiple rulesets for different party sizes, then select them both at
+        the same time in the party finder to cover any group size.
+      </List.Item>
+      <List.Item>
+        Like rules will be merged, so for example if you select the whole
+        "level" column and you have 3 level 66s and 3 level 67s, you'll end up
+        with 2 rules: at least 3 characters level 66, and at least 3 characters
+        67. (Again, these rules are always min, no max).
+      </List.Item>
+      <List.Item>
+        Remember this generator is just intended for a quick baseline to find
+        new parties with similar compositions to existing ones. The rules UI is
+        unfortunately a bit clunky but it will let you write nested logic rules
+        and give you full control over min/max counts and group sizes where the
+        rules apply.
+      </List.Item>
+    </List>
   </Section>
 );
 
