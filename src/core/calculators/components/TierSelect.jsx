@@ -42,6 +42,7 @@ export const TierSelect = ({
         value={value}
         {...props}
         data={TIER_DATA}
+        allowDeselect={false}
         maxDropdownHeight={500}
         leftSection="Tier"
         styles={{
@@ -112,6 +113,7 @@ export const DifficultySelect = ({ onChange, zIndex = 800, ...props }) => {
             background: "var(--mantine-color-default-border)",
           },
         }}
+        allowDeselect={false}
         leftSection="Diff."
         comboboxProps={{ zIndex }}
         maxDropdownHeight={400}
