@@ -93,7 +93,13 @@ const LockButton = ({ checked, onChange }) => {
   );
 };
 
-export const RulesetCreateForm = ({ record, navigate, cancel, onSubmit }) => {
+export const RulesetCreateForm = ({
+  record,
+  navigate,
+  cancel,
+  onSubmit,
+  allowLockedToggle = false,
+}) => {
   const [submitted, setSubmitted] = useState(false);
   const [scoreLocked, setScoreLocked] = useState(false);
 
@@ -287,7 +293,9 @@ export const RulesetCreateForm = ({ record, navigate, cancel, onSubmit }) => {
 
         <Group>
           <Box flex="1">
-            <LockButton checked={scoreLocked} onChange={setScoreLocked} />
+            {allowLockedToggle && (
+              <LockButton checked={scoreLocked} onChange={setScoreLocked} />
+            )}
           </Box>
           <Button variant="subtle" onClick={cancel}>
             Cancel

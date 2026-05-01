@@ -55,11 +55,11 @@ export const UnlockedTableForm = ({
 }) => {
   return (
     <Stack gap={0}>
-      <InputLabel>Freeform Configuration</InputLabel>
+      <InputLabel>Per-Member Rules</InputLabel>
       <Text size="xs" c="dark" mb={3}>
-        More flexible than the locked configuration (and probably what you
-        want). Lets you select any or all rules for each slot, but score will
-        vary if you deselect level or warden.
+        Select of the properties of the party members as rules. These will form
+        the baseline for a simple ruleset which you can further modify in the
+        rules UI.
       </Text>
       <Table withTableBorder>
         <Thead>
