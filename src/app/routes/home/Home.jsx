@@ -64,7 +64,7 @@ export const Home = () => {
 
           <Text>
             The core app here is an enumerator for all possible combinations of
-            your characters to hit a specific warden score. Things kind of
+            your characters to hit a specific might score. Things kind of
             snowballed from there and this is the result.
           </Text>
 
