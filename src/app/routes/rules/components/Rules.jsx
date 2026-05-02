@@ -337,7 +337,7 @@ const RulesMain = () => {
                 <Rule
                   rule={rule}
                   flex="1"
-                  onClick={(rule) => setDraftRuleProps({ rule })}
+                  onClick={() => setDraftRuleProps({ rule })}
                 />
                 <EditButton onClick={() => setDraftRuleProps({ rule })} />
                 <TrashButton
